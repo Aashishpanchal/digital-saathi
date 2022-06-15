@@ -5,10 +5,12 @@ export default function LabelTextInput(props: {
   label?: string;
   type: React.HTMLInputTypeAttribute;
   name?: string;
-  value?: string;
+  value?: string | number | readonly string[] | undefined;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   hint?: string;
-  hintColor?: "green" | "red";
+  hintColor?: "green" | "red" | "base";
+  required?: boolean;
+  maxLength?: number;
 }) {
   const random = Math.random().toString(36).substring(7);
   const id = `${props.name}-${props.type}-${random}`;
@@ -23,16 +25,11 @@ export default function LabelTextInput(props: {
         name={props.name}
         value={props.value}
         onChange={props.onChange}
+        helperText={props.hint}
+        color={props.hintColor}
+        required={props.required}
+        maxLength={props.maxLength}
       />
-      {props.hint && (
-        <div
-          className={`${
-            props.hintColor === "green" ? "text-green-600" : "text-red-600"
-          } text-sm mt-2`}
-        >
-          {props.hint}
-        </div>
-      )}
     </div>
   );
 }

@@ -39,9 +39,12 @@ export default function SideBar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const onDashboard = () => navigate("/");
   const onFarmers = () => navigate("/management/farmers");
   const onRetailers = () => navigate("/management/retailers");
-  const onDashboard = () => navigate("/");
+  const onCategories = () => navigate("/management/categories");
+  const onBrands = () => navigate("/management/brands");
+  const onDeliveryPartners = () => navigate("/management/delivery-partners");
 
   return (
     <SidebarContainer>
@@ -75,14 +78,14 @@ export default function SideBar() {
         >
           <SideBarItem
             active={location.pathname.includes("/management/categories")}
-            onClick={onFarmers}
+            onClick={onCategories}
             icon={<MdOutlineAccountTree size={20} />}
           >
             Categories
           </SideBarItem>
           <SideBarItem
             active={location.pathname.includes("/management/brands")}
-            onClick={onFarmers}
+            onClick={onBrands}
             icon={<TbBrandSublimeText size={20} />}
           >
             Brands
@@ -110,6 +113,7 @@ export default function SideBar() {
           </SideBarItem>
           <SideBarItem
             active={location.pathname.includes("/management/delivery-partners")}
+            onClick={onDeliveryPartners}
             icon={<TbTruckDelivery size={30} />}
           >
             Delivery Partners

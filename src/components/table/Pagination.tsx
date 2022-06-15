@@ -95,6 +95,7 @@ export default function Pagination(props: {
     } else {
       endNumber = Math.floor(size / entries) + 1;
     }
+    // get end page with horizontal slot length
     setStopNext(endNumber);
     onPageChange(1);
     setEndPageNumber(endNumber);

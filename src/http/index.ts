@@ -1,7 +1,8 @@
 import axios from "axios";
+import { baseUrl } from "./config";
 
 export const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: baseUrl,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -66,6 +67,75 @@ export const retailer = (
 ) => {
   const params = options?.params ? "/" + options.params : "";
   const url = `/shop_retailer${params}`;
+  if (method.toLowerCase() === "get") {
+    return api.get(url);
+  }
+  if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  }
+  if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  }
+  if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+// list of all the endpoints of shop_categories
+export const categories = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string | FormData;
+    params?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  const url = `/shop_categories${params}`;
+  if (method.toLowerCase() === "get") {
+    return api.get(url);
+  }
+  if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  }
+  if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  }
+  if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+export const brands = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string | FormData;
+    params?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  const url = `/shop_brands${params}`;
+  if (method.toLowerCase() === "get") {
+    return api.get(url);
+  }
+  if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  }
+  if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  }
+  if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+export const deliveryPartners = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string | FormData;
+    params?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  const url = `/shop_deliverypartners${params}`;
   if (method.toLowerCase() === "get") {
     return api.get(url);
   }
