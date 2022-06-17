@@ -9,7 +9,7 @@ export default function Button(props: {
 }) {
   const className =
     props.color === "dark"
-      ? "text-white active:bg-purple-600 bg-blue-light hover:shadow-blue-light hover:shadow-md "
+      ? "text-white active:bg-green-400 bg-blue-light hover:shadow-blue-light hover:shadow-md "
       : "text-gray-700 active:bg-gray-100 hover:shadow-md dark:bg-gray-800 dark:hover:bg-gray-600 border dark:text-white border-gray-300 dark:border-gray-800 bg-white";
   return (
     <button

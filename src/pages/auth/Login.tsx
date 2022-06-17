@@ -38,7 +38,7 @@ export default function Login() {
   };
 
   return (
-    <BackgroundImage source="/assets/images/login.jpg">
+    <div className="bg-cover h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full md:max-w-sm lg:max-w-sm m-auto bg-white md:rounded-md lg:rounded-md shadow-md dark:bg-gray-800">
         <div className="p-4">
           <div className="flex justify-center">
@@ -77,7 +77,7 @@ export default function Login() {
             <div className="mt-6">
               <button
                 type="submit"
-                className="disabled:opacity-50 disabled:cursor-default w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+                className="disabled:opacity-50 disabled:cursor-default w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-light rounded-md hover:bg-blue-light focus:outline-none"
                 disabled={!loginData.username || !loginData.password}
                 onClick={(e) => handleSubmit(e)}
               >
@@ -92,6 +92,6 @@ export default function Login() {
           </h1>
         </div>
       </div>
-    </BackgroundImage>
+    </div>
   );
 }
