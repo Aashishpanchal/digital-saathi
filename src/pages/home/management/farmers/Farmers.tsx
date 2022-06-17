@@ -111,7 +111,6 @@ export default function Farmers() {
     }
   };
 
-  const onNew = () => navigate("/management/farmers/new");
   const onEdit = (id: string) => navigate(`/management/farmers/${id}`);
 
   const onDelete = async (id: string, setLoading: (l: boolean) => void) => {
@@ -139,11 +138,6 @@ export default function Farmers() {
   return (
     <AdminContainer>
       <MainContainer heading="Packages">
-        <div className="mb-4">
-          <Button onClick={onNew} icon={<FaTractor size={18} />} color="dark">
-            New
-          </Button>
-        </div>
         <Filter.FilterContainer>
           <Filter.FilterForm>
             <TextInput
