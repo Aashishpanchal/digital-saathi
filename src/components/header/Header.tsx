@@ -1,5 +1,5 @@
 import React from "react";
-import DarkThemeToggle from "../button/DarkThemeToggle";
+// import DarkThemeToggle from "../button/DarkThemeToggle";
 import NavMenu from "./NavMenu";
 import { BsMenuButtonWideFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,7 @@ export default function Header() {
   };
 
   return (
-    <nav className="bg-white shadow dark:bg-gray-800">
+    <nav className="bg-white border-b border-gray-400 dark:bg-gray-800">
       <div className="px-6 py-3">
         <div className="md:flex md:items-center md:justify-between">
           <div className="w-full flex items-center justify-between">
@@ -27,7 +27,7 @@ export default function Header() {
               />
             </div>
             <div className="flex items-center mt-0">
-              <DarkThemeToggle />
+              {/* <DarkThemeToggle /> */}
               <NavMenu />
             </div>
           </div>

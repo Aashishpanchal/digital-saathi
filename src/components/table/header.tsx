@@ -17,11 +17,7 @@ export default function header(headCell: Array<string>) {
           </Table.HeadCell>
         )}
         {headCell.map((cell, index) => {
-          return (
-            <Table.HeadCell key={index} className="dark:text-gray-300">
-              {cell}
-            </Table.HeadCell>
-          );
+          return <Table.HeadCell key={index}>{cell}</Table.HeadCell>;
         })}
         {props.children}
       </Table.Head>

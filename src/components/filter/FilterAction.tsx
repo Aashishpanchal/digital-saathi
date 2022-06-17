@@ -1,7 +1,7 @@
 import React from "react";
-
 import { FaSearch } from "react-icons/fa";
 import { BiReset } from "react-icons/bi";
+import Button from "../button/Button";
 
 export default function FilterAction(props: {
   onSearch?: () => void;
@@ -9,25 +9,21 @@ export default function FilterAction(props: {
 }) {
   return (
     <div className="px-4 py-2 flex flex-row space-x-3 justify-end">
-      <button
+      <Button
         onClick={props.onSearch}
         type="submit"
-        className="text-sm disabled:opacity-50 disabled:cursor-default px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+        icon={<FaSearch size={15} />}
+        color="dark"
       >
-        <span className="flex items-center justify-center space-x-2.5">
-          <FaSearch size={15} />
-          <h1>Search</h1>
-        </span>
-      </button>
-      <button
+        Search
+      </Button>
+      <Button
         onClick={props.onReset}
-        className="text-sm disabled:opacity-50 disabled:cursor-default px-4 py-2 tracking-wide dark:bg-gray-800 dark:hover:bg-gray-600 text-gray-700 border dark:text-white border-gray-300  dark:border-gray-800 transition-colors duration-200 transform bg-white rounded-md hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+        type="button"
+        icon={<BiReset size={15} />}
       >
-        <span className="flex items-center justify-center space-x-2.5">
-          <BiReset size={15} />
-          <h1>Reset</h1>
-        </span>
-      </button>
+        Reset
+      </Button>
     </div>
   );
 }

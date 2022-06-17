@@ -50,7 +50,7 @@ export default function SideBar() {
     <SidebarContainer>
       <div className="w-full flex justify-between sm:justify-center md:justify-center lg:justify-center items-center">
         <a href="/">
-          <div className="text-center text-3xl font-semibold text-gray-200 hover:text-white">
+          <div className="text-center text-3xl font-semibold text-blue-light">
             <div className="flex justify-center">
               <img
                 className="w-fit h-fit"
@@ -58,7 +58,6 @@ export default function SideBar() {
                 alt="Logo"
               />
             </div>
-            Admin Panel
           </div>
         </a>
         <CloseAction />

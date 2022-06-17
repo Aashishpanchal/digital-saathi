@@ -7,7 +7,6 @@ import AdminProtectedRoute from "./AdminProtectedRoute";
 import PublicRouter from "./PublicRouter";
 import Farmers from "../pages/home/management/farmers/Farmers";
 import Retailers from "../pages/home/management/retailers/Retailers";
-import CreateFarmers from "../pages/home/management/farmers/CreateFarmers";
 import RetrieveUpdate from "../pages/home/management/farmers/RetrieveUpdate";
 import {
   Categories,
@@ -69,14 +68,6 @@ export default function AppRouter() {
               element: (
                 <AdminProtectedRoute>
                   <Farmers />
-                </AdminProtectedRoute>
-              ),
-            },
-            {
-              path: "new",
-              element: (
-                <AdminProtectedRoute>
-                  <CreateFarmers />
                 </AdminProtectedRoute>
               ),
             },
@@ -205,7 +196,7 @@ export default function AppRouter() {
               ),
             },
             {
-              path: "retailer",
+              path: "retailer/:id",
               element: (
                 <AdminProtectedRoute>
                   <DeliveryPartnersRetailer />

@@ -22,13 +22,15 @@ export default function Card(props: {
     >
       <div className="h-[150px] dark:text-white flex justify-between items-center px-2 py-1">
         <div className="flex w-fit flex-col items-center space-y-4">
-          <span className="text-4xl font-bold">{props.total}</span>
-          <span className="text-sm">
+          <span className="text-4xl font-bold text-blue-light">
+            {props.total}
+          </span>
+          <span className="text-[15px] text-gray-400">
             {props.type[0].toUpperCase().concat(props.type.slice(1))}
           </span>
         </div>
         <div className="self-start mt-2">
-          <Icon size={50} className="text-gray-600 dark:text-white " />
+          <Icon size={50} className="text-blue-light dark:text-white " />
         </div>
       </div>
     </div>

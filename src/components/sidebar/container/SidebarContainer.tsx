@@ -18,7 +18,7 @@ export default function SidebarContainer(props: { children: React.ReactNode }) {
           : sideBar
           ? "flex flex-col w-full"
           : "hidden"
-      } sm:w-64 md:w-64 lg:w-64 flex-shrink-0 min-h-screen px-4 py-4 border-0 sm:border-r md:border-r lg:border-r bg-gray-800 dark:border-gray-600`}
+      } sm:w-64 md:w-64 lg:w-64 flex-shrink-0 min-h-screen px-4 py-4 border-0 sm:border-r md:border-r lg:border-r border-gray-400 bg-white dark:border-gray-600`}
     >
       {props.children}
     </div>

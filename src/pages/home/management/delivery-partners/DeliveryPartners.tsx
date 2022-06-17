@@ -75,7 +75,7 @@ function TableContent(props: {
             className="hover:text-gray-700 hover:cursor-pointer"
           />
         )}
-        <Tooltip content="sub categories" style="dark" placement="bottom">
+        <Tooltip content="Retailer" style="dark" placement="bottom">
           <FaArrowRight
             onClick={() => {
               if (props.onRetailer) {
@@ -200,7 +200,7 @@ export default function DeliveryPartners() {
   const onEdit = (id: string) =>
     navigate(`/management/delivery-partners/${id}`);
   const onRetailer = (id: string) =>
-    navigate(`/management/delivery-partners/retailer`);
+    navigate(`/management/delivery-partners/retailer/${id}`);
 
   React.useEffect(() => {
     onCategoriesGet();
