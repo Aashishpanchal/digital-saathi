@@ -24,7 +24,7 @@ function PageNumber(props: {
             key={index}
             className={"hover:cursor-pointer border dark:border-gray-700 list-none rounded ".concat(
               num === current
-                ? "bg-gray-900 text-white"
+                ? "bg-blue-light text-white"
                 : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             )}
           >
