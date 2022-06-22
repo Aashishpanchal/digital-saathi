@@ -4,7 +4,7 @@ import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 export default function Filters(props: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = React.useState(true);
   return (
-    <div className="border-gray-200 dark:border-gray-600 border rounded-md mb-2">
+    <div className="border-gray-200 dark:border-gray-600 border rounded-md pb-2 mb-2 overflow-x-auto">
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`${

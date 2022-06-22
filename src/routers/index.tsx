@@ -26,6 +26,31 @@ import {
   DeliveryPartnersRetailer,
   RetrieveUpdateDeliveryPartner,
 } from "../pages/home/management/delivery-partners";
+import {
+  Products,
+  RetrieveUpdateProduct,
+} from "../pages/home/management/products";
+import {
+  CreatePackage,
+  Packages,
+  RetrieveUpdatePackage,
+} from "../pages/home/master/packages";
+import {
+  CreateUnit,
+  RetrieveUpdateUnit,
+  Units,
+} from "../pages/home/master/units";
+import { Areas, CreateArea } from "../pages/home/master/areas";
+import RetrieveUpdateArea from "../pages/home/master/areas/RetrieveUpdateArea";
+import { AmountCollectionReport } from "../pages/home/reports/amount-collection-report";
+import { NewOrders } from "../pages/home/orders/new";
+import { InProcessOrders } from "../pages/home/orders/in-process";
+import { AcceptedOrders } from "../pages/home/orders/accepted";
+import { OutForDeliveryOrders } from "../pages/home/orders/out-for-delivery";
+import { DeliveredOrders } from "../pages/home/orders/delivered";
+import { CancelledOrders } from "../pages/home/orders/cancelled";
+import { ReturningOrders } from "../pages/home/orders/returning";
+import { ReturnedOrders } from "../pages/home/orders/Returned";
 
 export default function AppRouter() {
   const Element = useRoutes([
@@ -196,10 +221,250 @@ export default function AppRouter() {
               ),
             },
             {
-              path: "retailer/:id",
+              path: ":id/retailer",
               element: (
                 <AdminProtectedRoute>
                   <DeliveryPartnersRetailer />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "products",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <Products />
+                </AdminProtectedRoute>
+              ),
+            },
+            {
+              path: ":id",
+              element: (
+                <AdminProtectedRoute>
+                  <RetrieveUpdateProduct />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: "/masters",
+      children: [
+        {
+          path: "packages",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <Packages />
+                </AdminProtectedRoute>
+              ),
+            },
+            {
+              path: "new",
+              element: (
+                <AdminProtectedRoute>
+                  <CreatePackage />
+                </AdminProtectedRoute>
+              ),
+            },
+            {
+              path: ":id",
+              element: (
+                <AdminProtectedRoute>
+                  <RetrieveUpdatePackage />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "units",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <Units />
+                </AdminProtectedRoute>
+              ),
+            },
+            {
+              path: "new",
+              element: (
+                <AdminProtectedRoute>
+                  <CreateUnit />
+                </AdminProtectedRoute>
+              ),
+            },
+            {
+              path: ":id",
+              element: (
+                <AdminProtectedRoute>
+                  <RetrieveUpdateUnit />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "areas",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <Areas />
+                </AdminProtectedRoute>
+              ),
+            },
+            {
+              path: "new",
+              element: (
+                <AdminProtectedRoute>
+                  <CreateArea />
+                </AdminProtectedRoute>
+              ),
+            },
+            {
+              path: ":id",
+              element: (
+                <AdminProtectedRoute>
+                  <RetrieveUpdateArea />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: "/reports",
+      children: [
+        {
+          path: "amount-collection-report",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <AmountCollectionReport />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: "/orders",
+      children: [
+        {
+          path: "new-orders",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <NewOrders />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "orders-accepted",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <AcceptedOrders />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "orders-in-progress",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <InProcessOrders />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "orders-out-for-delivery",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <OutForDeliveryOrders />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "orders-delivered",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <DeliveredOrders />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "orders-cancelled",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <CancelledOrders />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "orders-returning",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <ReturningOrders />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "orders-returned",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <ReturnedOrders />
                 </AdminProtectedRoute>
               ),
             },

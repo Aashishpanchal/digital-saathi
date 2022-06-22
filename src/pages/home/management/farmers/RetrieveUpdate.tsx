@@ -18,6 +18,7 @@ export default function RetrieveUpdate() {
 
   const navigate = useNavigate();
   const params = useParams();
+  const { farmer_id } = params;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -26,7 +27,7 @@ export default function RetrieveUpdate() {
   const onRetrieve = async () => {
     try {
       const res = await farmers("get", {
-        params: params.id,
+        params: farmer_id,
       });
       if (res?.status === 200) {
         setData({
@@ -45,8 +46,11 @@ export default function RetrieveUpdate() {
       setLoading(true);
       const res = await farmers("put", {
         data: JSON.stringify(data),
-        params: params.id,
+        params: farmer_id,
       });
+      if (res?.status === 200) {
+        await onRetrieve();
+      }
     } catch (e) {
       console.log(e);
     }
@@ -84,7 +88,6 @@ export default function RetrieveUpdate() {
             </div>
             <div className="my-4 flex items-center gap-2">
               <Checkbox
-                disabled
                 name="active"
                 checked={Boolean(data.active)}
                 onChange={(e) => {

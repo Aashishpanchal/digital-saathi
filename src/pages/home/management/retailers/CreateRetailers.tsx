@@ -5,6 +5,8 @@ import CreateActions from "../../../../components/common/CreateActions";
 import MainContainer from "../../../../components/common/MainContainer";
 import { Form } from "../../../../components/form";
 import LabelTextInput from "../../../../components/form/LabelTextInput";
+import { setEmpty } from "../../../../components/Utils";
+// import useValidation from "../../../../hooks/useValidation";
 import { retailer } from "../../../../http";
 
 export default function CreateRetailers() {
@@ -27,6 +29,11 @@ export default function CreateRetailers() {
     distributor_level: "",
     subzone_id: "",
   });
+  // const { isValid, validFields, checkValidate } = useValidation([
+  //   "retailer_name",
+  //   "email",
+  //   "pincode",
+  // ]);
 
   const [loading, setLoading] = React.useState(false);
 
@@ -35,6 +42,7 @@ export default function CreateRetailers() {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
   const onCreated = async () => {
     try {
       setLoading(true);
@@ -52,9 +60,9 @@ export default function CreateRetailers() {
 
   const onCancel = () => navigate(-1);
   const onReset = () => {
-    for (let key in data) {
-      setData({ ...data, [key]: "" });
-    }
+    setEmpty(data, (clearData) => {
+      setData(clearData);
+    });
   };
 
   return (
@@ -69,7 +77,7 @@ export default function CreateRetailers() {
               value={data.retailer_name}
               onChange={onChange}
               hint="Retailer Name is required"
-              hintColor="green"
+              hintColor={"green"}
             />
             <LabelTextInput
               label="Email"
@@ -78,7 +86,7 @@ export default function CreateRetailers() {
               value={data.email}
               onChange={onChange}
               hint="Email is required"
-              hintColor="green"
+              hintColor={"green"}
             />
             <LabelTextInput
               label="Phone Number"
@@ -136,7 +144,7 @@ export default function CreateRetailers() {
               value={data.pincode}
               onChange={onChange}
               hint="Pincode is required"
-              hintColor="green"
+              hintColor={"green"}
             />
             <LabelTextInput
               label="Jurisdiction"

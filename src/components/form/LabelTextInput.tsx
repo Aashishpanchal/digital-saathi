@@ -11,6 +11,7 @@ export default function LabelTextInput(props: {
   hintColor?: "green" | "red" | "base";
   required?: boolean;
   maxLength?: number;
+  placeholder?: string;
 }) {
   const random = Math.random().toString(36).substring(7);
   const id = `${props.name}-${props.type}-${random}`;
@@ -26,9 +27,10 @@ export default function LabelTextInput(props: {
         value={props.value}
         onChange={props.onChange}
         helperText={props.hint}
-        color={props.hintColor}
         required={props.required}
         maxLength={props.maxLength}
+        placeholder={props.placeholder}
+        color={props.hintColor}
       />
     </div>
   );

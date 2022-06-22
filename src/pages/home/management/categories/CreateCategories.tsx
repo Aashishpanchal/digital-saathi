@@ -12,9 +12,12 @@ import { FileUploader } from "react-drag-drop-files";
 export default function CreateFarmers() {
   const [data, setData] = React.useState({
     name: "",
-    country: "0",
+    parent_category_id: "0",
     description: "",
   });
+
+  const [selectCategory, setSelectCategory] = React.useState([]);
+
   const [avatar, setAvatar] = React.useState("");
 
   const fileTypes = ["JPEG", "PNG"];
@@ -41,15 +44,28 @@ export default function CreateFarmers() {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
+  const onRetrieveCategory = async () => {
+    try {
+      const res = await categories("get");
+      if (res?.status === 200) {
+        setSelectCategory(res.data);
+      }
+    } catch (err: any) {
+      console.log(err.response);
+    }
+  };
+
   const onCreated = async () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      console.log(data);
-      formData.append("name", data.name);
-      formData.append("country", data.country);
-      formData.append("description", data.description);
-      formData.append("image", file[0]);
+      if (file) {
+        formData.append("image", file[0]);
+      }
+      for (const key in data) {
+        formData.append(key, (data as any)[key]);
+      }
       const res = await categories("post", {
         data: formData,
       });
@@ -66,12 +82,16 @@ export default function CreateFarmers() {
   const onReset = () => {
     setData({
       description: "",
-      country: "0",
+      parent_category_id: "0",
       name: "",
     });
     setFile(null);
     setAvatar("");
   };
+
+  React.useEffect(() => {
+    onRetrieveCategory();
+  }, []);
 
   return (
     <AdminContainer>
@@ -88,21 +108,22 @@ export default function CreateFarmers() {
               hintColor="green"
             />
             <div>
-              <Label htmlFor="countries">Select your country</Label>
+              <Label htmlFor="countries">Parent Category</Label>
               <Select
                 id="countries"
                 required
                 name="country"
-                value={data.country}
+                value={data.parent_category_id}
                 onChange={(e) => {
-                  setData({ ...data, country: e.target.value });
+                  setData({ ...data, parent_category_id: e.target.value });
                 }}
               >
                 <option value="0">None</option>
-                <option value="1">Fertilizer</option>
-                <option value="2">Chemical</option>
-                <option value="3">Seed</option>
-                <option value="4">Plant Promoter</option>
+                {selectCategory.map((item: any, index) => (
+                  <option key={index} value={item.category_id}>
+                    {item.name}
+                  </option>
+                ))}
               </Select>
             </div>
             <div className="my-3">

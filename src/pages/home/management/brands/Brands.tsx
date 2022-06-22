@@ -1,105 +1,38 @@
 import React from "react";
-import { Spinner, Table } from "flowbite-react";
-import { RiDeleteBinFill, RiFileEditLine } from "react-icons/ri";
-import { BsShopWindow } from "react-icons/bs";
+import { Spinner } from "flowbite-react";
 import AdminContainer from "../../../../components/AdminContainer";
-import * as Filter from "../../../../components/filter";
-import Pagination from "../../../../components/table/Pagination";
 import MainContainer from "../../../../components/common/MainContainer";
-import header from "../../../../components/table/header";
 import { brands } from "../../../../http";
-import TextInput from "../../../../components/form/inputs/TextInput";
-import Button from "../../../../components/button/Button";
 import { useNavigate } from "react-router-dom";
-import ActivateDeactivateBar from "../../../../components/common/ActiveDeactiveBar";
 import Image from "../../../../components/Image/Index";
+import { FcDeleteDatabase } from "react-icons/fc";
+import { DeleteModal } from "../../../../components/modals";
+import {
+  ActiveDeactivateCell,
+  Table,
+  TableActionsCell,
+} from "../../../../components/table";
+import { SelectColumActiveDeactivateFilter } from "../../../../components/filter/SelectColumnFilter";
+import Button from "../../../../components/button/Button";
+import { BsShopWindow } from "react-icons/bs";
 
-function TableContent(props: {
-  data?: any;
-  onDelete?: (id: string, setLoading: (l: boolean) => void) => void;
-  onEdit?: (id: string) => void;
-  onActivate?: (
-    id: string,
-    active: 1 | 0,
-    setLoading: (l: boolean) => void
-  ) => void;
-}) {
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
-  const [activateLoading, setActivateLoading] = React.useState(false);
-  const { data } = props;
-
-  return (
-    <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-      <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-        {data.brand_id}
-      </Table.Cell>
-      <Table.Cell>
-        <ActivateDeactivateBar
-          loading={activateLoading}
-          active={data.active === 1}
-          onClick={() => {
-            if (props.onActivate) {
-              props.onActivate(
-                `${data.brand_id}`,
-                data.active === 1 ? 0 : 1,
-                setActivateLoading
-              );
-            }
-          }}
-        />
-      </Table.Cell>
-      <Table.Cell>
-        <Image src={`brand-images/${data.brand_image}`} alt={data.brand_name} />
-      </Table.Cell>
-      <Table.Cell>{data.brand_name}</Table.Cell>
-      <Table.Cell className="flex space-x-4 justify-center items-center">
-        <RiFileEditLine
-          onClick={() => {
-            if (props.onEdit) {
-              props.onEdit(`${data.brand_id}`);
-            }
-          }}
-          size={20}
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
-        {deleteLoading ? (
-          <Spinner size="md" />
-        ) : (
-          <RiDeleteBinFill
-            onClick={() =>
-              props.onDelete &&
-              props.onDelete(`${data.brand_id}`, setDeleteLoading)
-            }
-            size={20}
-            className="hover:text-gray-700 hover:cursor-pointer"
-          />
-        )}
-      </Table.Cell>
-    </Table.Row>
-  );
-}
 export default function Brands() {
   const [data, setData] = React.useState([]);
-  const [slice, setSlice] = React.useState([]);
-  const [copyData, setCopyData] = React.useState([]);
-  const [entries, setEntries] = React.useState(10);
   const [loading, setLoading] = React.useState(true);
-  const [title, setTitle] = React.useState("");
-  const [dataSize, setDataSize] = React.useState(0);
-  const [resetActive, setResetActive] = React.useState(false);
+  const [deleteModalShow, setDeleteModalShow] = React.useState(false);
+  const [value, setValue] = React.useState<{
+    brand_id: string;
+    setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  }>();
 
   const navigate = useNavigate();
 
-  const [page, setPage] = React.useState(1);
-  const Head = header(["S No.", "Disable", "Image", "title"]);
-
-  const onCategoriesGet = async () => {
+  const onBrandsGet = async () => {
+    setLoading(true);
     try {
       const res: any = await brands("get");
       if (res.status === 200) {
         setData(res.data);
-        setSlice(res.data.slice(0, 10));
-        setDataSize(res.data.length);
       }
     } catch (err: any) {
       console.log(err);
@@ -107,81 +40,133 @@ export default function Brands() {
     setLoading(false);
   };
 
-  const onSearch = (search: string) => {
-    setLoading(true);
-    const filtered = data.filter((item: any) => {
-      return item.brand_name.toLowerCase().includes(search.toLowerCase());
-    });
-    setDataSize(filtered.length);
-    setSlice(filtered.slice(0, entries));
-    setData(filtered);
-    setCopyData(data);
-    setLoading(false);
-    setResetActive(true);
-  };
-
-  const onReset = () => {
-    if (title.length !== 0 && resetActive) {
-      setSlice(data.slice(0, entries));
-      setDataSize(data.length);
-      setTitle("");
-      setData(copyData);
-      setSlice(copyData.slice(0, entries));
-      setDataSize(copyData.length);
-      setPage(1);
-    }
-  };
-
-  const onDelete = async (id: string, setLoading: (l: boolean) => void) => {
-    try {
-      setLoading(true);
-      const res: any = await brands("delete", {
-        params: id,
-      });
-      if (res.status === 200) {
-        const filtered = slice.filter((item: any) => {
-          return `${item.brand_id}` !== id;
+  const onBrandDelete = async () => {
+    if (value) {
+      setDeleteModalShow(false);
+      const { brand_id, setDeleteLoading } = value;
+      setValue(undefined);
+      try {
+        setDeleteLoading(true);
+        const res: any = await brands("delete", {
+          params: brand_id,
         });
-        setSlice(filtered);
+        if (res.status === 200) {
+          await onBrandsGet();
+        }
+      } catch (err: any) {
+        console.log(err.response);
       }
-    } catch (err: any) {
-      console.log(err);
+      setDeleteLoading(false);
     }
-    setLoading(false);
   };
 
   const onActivate = async (
-    id: string,
-    active: 1 | 0,
-    setLoading: (l: boolean) => void
+    value: { [key: string]: any },
+    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
+    const { brand_id, active } = value;
+    const isActive = active === 1 ? 0 : 1;
     try {
-      setLoading(true);
-      await brands("put", {
-        params: id,
+      setActiveLoading(true);
+      const res = await brands("put", {
+        params: brand_id,
         data: JSON.stringify({
-          active: active,
+          active: isActive,
         }),
       });
-      // set active current slice
-      const filtered = slice.map((item: any) => {
-        if (`${item.brand_id}` === id) {
-          return { ...item, active: active };
-        }
-        return item;
-      });
-      setSlice(filtered as any);
+      if (res?.status === 200) {
+        await onBrandsGet();
+      }
     } catch (err: any) {
-      console.log(err);
+      console.log(err.response);
     }
-    setLoading(false);
+    setActiveLoading(false);
   };
 
   const onNew = () => navigate("/management/brands/new");
-  const onEdit = (id: string) => navigate(`/management/brands/${id}`);
+  const onBrandEdit = (value: { [key: string]: any }) =>
+    navigate(`/management/brands/${value.brand_id}`);
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "S No.",
+        accessor: "brand_id",
+        extraProps: {
+          columnStyle: {
+            width: "0px",
+            textAlign: "center",
+            paddingRight: "0px",
+          },
+        },
+      },
+      {
+        Header: "Status",
+        accessor: "active",
+        Filter: SelectColumActiveDeactivateFilter,
+        filter: "equals",
+        Cell: (cell: any) => (
+          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+        ),
+        extraProps: {
+          columnStyle: {
+            width: "250px",
+            textAlign: "center",
+            paddingRight: "0px",
+          },
+          align: "center",
+        },
+      },
+      {
+        Header: "Image",
+        accessor: "brand_image",
+        extraProps: {
+          columnStyle: { textAlign: "center" },
+          align: "center",
+        },
+        Cell: (cell: any) => {
+          return (
+            <Image
+              src={`brand-images/${cell.row.original.brand_image}`}
+              alt={""}
+            />
+          );
+        },
+      },
+      {
+        Header: "Brand Name",
+        accessor: "brand_name",
+        extraProps: {
+          align: "center",
+        },
+        Cell: (cell: any) => {
+          return <h1 className="text-md font-bold">{cell.value}</h1>;
+        },
+      },
+      {
+        Header: "Action",
+        Cell: (cell: any) => (
+          <TableActionsCell
+            cell={cell}
+            onDelete={async (value, setDeleteLoading) => {
+              setDeleteModalShow(true);
+              setValue({
+                brand_id: value.brand_id,
+                setDeleteLoading,
+              });
+            }}
+            onEdit={onBrandEdit}
+          />
+        ),
+      },
+    ],
+    []
+  );
+
+  const getData = React.useMemo(() => data, [data]);
 
   React.useEffect(() => {
-    onCategoriesGet();
+    onBrandsGet();
   }, []);
   return (
     <AdminContainer>
@@ -195,70 +180,32 @@ export default function Brands() {
             New
           </Button>
         </div>
-        <Filter.FilterContainer>
-          <Filter.FilterForm>
-            <TextInput
-              label="Brand Name"
-              type={"text"}
-              placeholder="example: Chemical"
-              value={title}
-              onChange={(e: any) => setTitle(e.target.value)}
-            />
-          </Filter.FilterForm>
-          <Filter.FilterAction
-            onSearch={() => onSearch(title)}
-            onReset={onReset}
-          />
-        </Filter.FilterContainer>
         {loading ? (
           <div className="flex flex-col justify-center items-center space-y-3 mt-4">
-            <Spinner color="blue" size="xl" />
-            <h2 className="dark:text-gray-100">Loading.....</h2>
+            <Spinner
+              color="blue"
+              size="xl"
+              className="object-cover w-24 h-24"
+            />
+            <h2 className="dark:text-gray-100">
+              Please wait fetch data from server....
+            </h2>
           </div>
+        ) : data.length !== 0 ? (
+          <Table columns={columns} data={getData} />
         ) : (
-          <Table>
-            <Head>
-              <Table.HeadCell>
-                <span className="sr-only">Edit</span>
-              </Table.HeadCell>
-            </Head>
-            <Table.Body>
-              {slice.map((item: any, index: number) => (
-                <TableContent
-                  data={item}
-                  key={index}
-                  onDelete={onDelete}
-                  onEdit={onEdit}
-                  onActivate={onActivate}
-                />
-              ))}
-            </Table.Body>
-          </Table>
-        )}
-        {slice.length === 0 && (
-          <div className="flex flex-col justify-center items-center space-y-3 mt-4">
-            <h1 className="dark:text-gray-100">No Data Found....</h1>
+          <div className="flex flex-col space-y-4 justify-center items-center font-bold">
+            <FcDeleteDatabase size={100} />
+            <h2 className="text-lg">Sorry Data Not Available</h2>
           </div>
         )}
-        <Pagination
-          currentPage={page}
-          onPageChange={(page) => {
-            setPage(page);
-            if (entries > data.length) {
-              setSlice(data.slice(0, entries));
-            } else {
-              setSlice(data.slice((page - 1) * entries, page * entries));
-            }
-          }}
-          size={dataSize}
-          horizontalSlotLength={5}
-          showPageSet
-          onChangePageSet={(e) => {
-            setSlice(data.slice(0, e));
-            setEntries(e);
-          }}
-        />
       </MainContainer>
+      <DeleteModal
+        show={deleteModalShow}
+        onClose={() => setDeleteModalShow(false)}
+        onClickNo={() => setDeleteModalShow(false)}
+        onClickYes={onBrandDelete}
+      />
     </AdminContainer>
   );
 }

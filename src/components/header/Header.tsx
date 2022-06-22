@@ -26,7 +26,7 @@ export default function Header() {
                 onClick={onToggleSideBar}
               />
             </div>
-            <div className="flex items-center mt-0">
+            <div className="flex items-center mt-0 relative">
               {/* <DarkThemeToggle /> */}
               <NavMenu />
             </div>

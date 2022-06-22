@@ -58,8 +58,8 @@ export default function RetrieveUpdateCategories() {
         });
         setAvatar(`${baseImageUrl}category-images/${res.data.image}`);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      console.log(e.response);
     }
   };
 
@@ -76,22 +76,13 @@ export default function RetrieveUpdateCategories() {
         params: params.id,
       });
       await onRetrieve();
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      console.log(e.response);
     }
     setLoading(false);
   };
 
   const onCancel = () => navigate(-1);
-  const onReset = () => {
-    setData({
-      description: "",
-      country: "0",
-      name: "",
-    });
-    setFile(null);
-    setAvatar("");
-  };
   React.useEffect(() => {
     onRetrieve();
   }, []);

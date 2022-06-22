@@ -3,6 +3,7 @@ import { baseUrl } from "./config";
 
 export const api = axios.create({
   baseURL: baseUrl,
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -91,14 +92,25 @@ export const categories = (
 ) => {
   const params = options?.params ? "/" + options.params : "";
   const url = `/shop_categories${params}`;
+  const header = {
+    "Content-Type":
+      options?.data instanceof FormData
+        ? "multipart/form-data"
+        : "application/json",
+  };
+
   if (method.toLowerCase() === "get") {
     return api.get(url);
   }
   if (method.toLowerCase() === "post") {
-    return api.post(url, options?.data);
+    return api.post(url, options?.data, {
+      headers: header,
+    });
   }
   if (method.toLowerCase() === "put") {
-    return api.put(url, options?.data);
+    return api.put(url, options?.data, {
+      headers: header,
+    });
   }
   if (method.toLowerCase() === "delete") {
     return api.delete(url);
@@ -173,6 +185,126 @@ export const deliveryRetailer = (
     return api.put(url, options?.data);
   }
   if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+// list of all the endpoints of shop_products
+export const shopProducts = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string | FormData;
+    params?: string;
+    postfix?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  let url = `/shop_products${params}`;
+  if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
+    return api.get(url);
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  } else if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+// list of all the endpoints of shop_packages
+export const shopPackages = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string | FormData;
+    params?: string;
+    postfix?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  let url = `/shop_packages${params}`;
+  if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
+    return api.get(url);
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  } else if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+// list of all the endpoints of shop_units
+export const shopUnits = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string | FormData;
+    params?: string;
+    postfix?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  let url = `/shop_units${params}`;
+  if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
+    return api.get(url);
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  } else if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+// list of all the endpoints of shop_areas
+export const shopAreas = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string | FormData;
+    params?: string;
+    postfix?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  let url = `/shop_areas${params}`;
+  if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
+    return api.get(url);
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  } else if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+// list of all the endpoints of shop_orders
+export const shopOrders = (
+  method: "get" | "delete",
+  options?: {
+    params?: string;
+    postfix?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  let url = `/shop_orders${params}`;
+  if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
+    return api.get(url);
+  } else if (method.toLowerCase() === "delete") {
     return api.delete(url);
   }
 };

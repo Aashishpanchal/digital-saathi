@@ -4,7 +4,6 @@ import AdminContainer from "../../components/AdminContainer";
 import Card from "../../components/dashboard/Card";
 import DoughnutChart from "../../components/dashboard/chart/DoughnutChart";
 import VerticalBarChart from "../../components/dashboard/chart/VerticalBarChart";
-import RecentlyOrdersTable from "../../components/table/RecentlyOrdersTable";
 import { farmers, retailer, warehouse } from "../../http";
 
 export default function Dashboard() {
@@ -90,9 +89,6 @@ export default function Dashboard() {
             <div className="mx-1">
               <DoughnutChart />
             </div>
-          </div>
-          <div>
-            <RecentlyOrdersTable />
           </div>
         </div>
       </div>
