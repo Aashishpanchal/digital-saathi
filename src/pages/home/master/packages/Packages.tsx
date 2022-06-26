@@ -13,7 +13,7 @@ import {
 } from "../../../../components/table";
 import { SelectColumActiveDeactivateFilter } from "../../../../components/filter/SelectColumnFilter";
 import Button from "../../../../components/button/Button";
-import { BsShopWindow } from "react-icons/bs";
+import { RiShoppingBag3Fill } from "react-icons/ri";
 
 export default function Packages() {
   const [data, setData] = React.useState([]);
@@ -157,7 +157,7 @@ export default function Packages() {
         <div className="mb-4">
           <Button
             onClick={onNew}
-            icon={<BsShopWindow size={18} />}
+            icon={<RiShoppingBag3Fill size={18} />}
             color="dark"
           >
             New

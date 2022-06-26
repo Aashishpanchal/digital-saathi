@@ -13,7 +13,7 @@ import { deliveryPartners } from "../../../../http";
 import { FcDeleteDatabase } from "react-icons/fc";
 import { DeleteModal } from "../../../../components/modals";
 import Button from "../../../../components/button/Button";
-import { BsShopWindow } from "react-icons/bs";
+import { TbTruckDelivery } from "react-icons/tb";
 
 export default function DeliveryPartners() {
   const [data, setData] = React.useState([]);
@@ -59,29 +59,6 @@ export default function DeliveryPartners() {
     }
   };
 
-  const onActivate = async (
-    value: { [key: string]: any },
-    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const { partner_id, active } = value;
-    const isActive = active === 1 ? 0 : 1;
-    try {
-      setActiveLoading(true);
-      const res = await deliveryPartners("put", {
-        params: partner_id,
-        data: JSON.stringify({
-          active: isActive,
-        }),
-      });
-      if (res?.status === 200) {
-        await onDeliveryPartnersGet();
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setActiveLoading(false);
-  };
-
   const onNew = () => navigate("/management/delivery-partners/new");
   const onDeliveryPartnerEdit = (value: { [key: string]: any }) =>
     navigate(`/management/delivery-partners/${value.partner_id}`);
@@ -115,7 +92,11 @@ export default function DeliveryPartners() {
           align: "center",
         },
         Cell: (cell: any) => (
-          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="partner_id"
+            axiosFunction={deliveryPartners}
+          />
         ),
       },
       {
@@ -170,7 +151,7 @@ export default function DeliveryPartners() {
         <div className="mb-4">
           <Button
             onClick={onNew}
-            icon={<BsShopWindow size={18} />}
+            icon={<TbTruckDelivery size={18} />}
             color="dark"
           >
             New

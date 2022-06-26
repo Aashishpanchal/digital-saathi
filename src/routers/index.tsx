@@ -12,6 +12,7 @@ import {
   Categories,
   CreateCategories,
   RetrieveUpdateCategories,
+  SubCategories,
 } from "../pages/home/management/categories";
 import CreateRetailers from "../pages/home/management/retailers/CreateRetailers";
 import RetrieveUpdateRetailers from "../pages/home/management/retailers/RetrieveUpdateRetailers";
@@ -27,8 +28,11 @@ import {
   RetrieveUpdateDeliveryPartner,
 } from "../pages/home/management/delivery-partners";
 import {
+  CreateProductWeightPrice,
   Products,
+  ProductWeightPrice,
   RetrieveUpdateProduct,
+  RetrieveUpdateProductWeightPrice,
 } from "../pages/home/management/products";
 import {
   CreatePackage,
@@ -162,6 +166,19 @@ export default function AppRouter() {
                 </AdminProtectedRoute>
               ),
             },
+            {
+              path: ":parent_category_id/sub-categories/:category_name",
+              children: [
+                {
+                  path: "",
+                  element: (
+                    <AdminProtectedRoute>
+                      <SubCategories />
+                    </AdminProtectedRoute>
+                  ),
+                },
+              ],
+            },
           ],
         },
         {
@@ -248,6 +265,35 @@ export default function AppRouter() {
                   <RetrieveUpdateProduct />
                 </AdminProtectedRoute>
               ),
+            },
+            {
+              path: ":sku_id/product-weight-price/:sku_name",
+              children: [
+                {
+                  path: "",
+                  element: (
+                    <AdminProtectedRoute>
+                      <ProductWeightPrice />
+                    </AdminProtectedRoute>
+                  ),
+                },
+                {
+                  path: "new",
+                  element: (
+                    <AdminProtectedRoute>
+                      <CreateProductWeightPrice />
+                    </AdminProtectedRoute>
+                  ),
+                },
+                {
+                  path: ":price_id",
+                  element: (
+                    <AdminProtectedRoute>
+                      <RetrieveUpdateProductWeightPrice />
+                    </AdminProtectedRoute>
+                  ),
+                },
+              ],
             },
           ],
         },

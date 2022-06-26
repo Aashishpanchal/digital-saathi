@@ -14,23 +14,28 @@ import {
 } from "../../../../components/table";
 import { SelectColumActiveDeactivateFilter } from "../../../../components/filter/SelectColumnFilter";
 import Button from "../../../../components/button/Button";
-import { BsShopWindow } from "react-icons/bs";
+import { TbBrandSublimeText } from "react-icons/tb";
 
 export default function Brands() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    brands: [],
+  });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
     brand_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
+  const [page, setPage] = React.useState(0);
 
   const navigate = useNavigate();
 
   const onBrandsGet = async () => {
     setLoading(true);
     try {
-      const res: any = await brands("get");
+      const res: any = await brands("get", { postfix: `?page=${page}` });
       if (res.status === 200) {
         setData(res.data);
       }
@@ -60,29 +65,6 @@ export default function Brands() {
     }
   };
 
-  const onActivate = async (
-    value: { [key: string]: any },
-    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const { brand_id, active } = value;
-    const isActive = active === 1 ? 0 : 1;
-    try {
-      setActiveLoading(true);
-      const res = await brands("put", {
-        params: brand_id,
-        data: JSON.stringify({
-          active: isActive,
-        }),
-      });
-      if (res?.status === 200) {
-        await onBrandsGet();
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setActiveLoading(false);
-  };
-
   const onNew = () => navigate("/management/brands/new");
   const onBrandEdit = (value: { [key: string]: any }) =>
     navigate(`/management/brands/${value.brand_id}`);
@@ -106,7 +88,12 @@ export default function Brands() {
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
         Cell: (cell: any) => (
-          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="brand_id"
+            axiosFunction={brands}
+            setData={setData}
+          />
         ),
         extraProps: {
           columnStyle: {
@@ -163,18 +150,18 @@ export default function Brands() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.brands, [data, page]);
 
   React.useEffect(() => {
     onBrandsGet();
-  }, []);
+  }, [page]);
   return (
     <AdminContainer>
       <MainContainer heading="Brands">
         <div className="mb-4">
           <Button
             onClick={onNew}
-            icon={<BsShopWindow size={18} />}
+            icon={<TbBrandSublimeText size={18} />}
             color="dark"
           >
             New
@@ -191,8 +178,17 @@ export default function Brands() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />

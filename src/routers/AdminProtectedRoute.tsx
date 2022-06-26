@@ -16,7 +16,7 @@ export default function AdminProtectedRoute({
       {isAuth && user?.permissions.isActive && user?.permissions.isAdmin ? (
         children
       ) : (
-        <Navigate to="auth/login" state={{ from: location }} replace />
+        <Navigate to="/auth/login" state={{ from: location }} replace />
       )}
     </>
   );

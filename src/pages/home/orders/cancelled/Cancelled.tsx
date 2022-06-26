@@ -33,8 +33,6 @@ export default function Cancelled() {
         let realData = [];
         for (let i = 0; i < filterData.length; i++) {
           realData.push({
-            farmerName: await onFarmerRetrieve(filterData[i].customer_id),
-            retailerName: await onRetailerRetrieve(filterData[i].retailer_id),
             date: DateFormate(filterData[i].order_date),
             ...filterData[i],
           });
@@ -120,12 +118,12 @@ export default function Cancelled() {
       },
       {
         Header: "Farmer Name",
-        accessor: "farmerName",
+        accessor: "customer_id",
         // Cell: (cell: any) => <FarmerNameCell customer_id={cell.value} />,
       },
       {
         Header: "Retailer Name",
-        accessor: "retailerName",
+        accessor: "retailer_id",
         // Cell: (cell: any) => <RetailerNameCell retailer_id={cell.value} />,
       },
       {

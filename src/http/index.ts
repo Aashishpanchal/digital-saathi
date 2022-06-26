@@ -88,31 +88,27 @@ export const categories = (
   options?: {
     data?: string | FormData;
     params?: string;
+    postfix?: string;
   }
 ) => {
   const params = options?.params ? "/" + options.params : "";
-  const url = `/shop_categories${params}`;
+  let url = `/shop_categories${params}`;
   const header = {
     "Content-Type":
       options?.data instanceof FormData
         ? "multipart/form-data"
         : "application/json",
   };
-
   if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
     return api.get(url);
-  }
-  if (method.toLowerCase() === "post") {
-    return api.post(url, options?.data, {
-      headers: header,
-    });
-  }
-  if (method.toLowerCase() === "put") {
-    return api.put(url, options?.data, {
-      headers: header,
-    });
-  }
-  if (method.toLowerCase() === "delete") {
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data, { headers: header });
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data, { headers: header });
+  } else if (method.toLowerCase() === "delete") {
     return api.delete(url);
   }
 };
@@ -123,20 +119,27 @@ export const brands = (
   options?: {
     data?: string | FormData;
     params?: string;
+    postfix?: string;
   }
 ) => {
   const params = options?.params ? "/" + options.params : "";
-  const url = `/shop_brands${params}`;
+  let url = `/shop_brands${params}`;
+  const header = {
+    "Content-Type":
+      options?.data instanceof FormData
+        ? "multipart/form-data"
+        : "application/json",
+  };
   if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
     return api.get(url);
-  }
-  if (method.toLowerCase() === "post") {
-    return api.post(url, options?.data);
-  }
-  if (method.toLowerCase() === "put") {
-    return api.put(url, options?.data);
-  }
-  if (method.toLowerCase() === "delete") {
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data, { headers: header });
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data, { headers: header });
+  } else if (method.toLowerCase() === "delete") {
     return api.delete(url);
   }
 };
@@ -200,6 +203,31 @@ export const shopProducts = (
 ) => {
   const params = options?.params ? "/" + options.params : "";
   let url = `/shop_products${params}`;
+  if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
+    return api.get(url);
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  } else if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+// list of all the endpoints of shop_productweightprice
+export const shopProductWeightPrice = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string;
+    params?: string;
+    postfix?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  let url = `/shop_productweightprice${params}`;
   if (method.toLowerCase() === "get") {
     if (options?.postfix) {
       url += options.postfix;

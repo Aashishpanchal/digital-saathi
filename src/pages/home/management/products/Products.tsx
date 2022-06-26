@@ -12,19 +12,23 @@ import {
 import { shopProducts } from "../../../../http";
 import { FcDeleteDatabase } from "react-icons/fc";
 import { DeleteModal } from "../../../../components/modals";
-import { CategoryCell, FocusSKUCell } from "./cell";
+import { FocusSKUCell } from "./cell";
+import Button from "../../../../components/button/Button";
+import { MdProductionQuantityLimits } from "react-icons/md";
 
 export default function Products() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState<any>({
+    products: [],
+  });
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
     sku_id: string;
-    setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setInnerLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
 
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(0);
 
   const onProductsGet = async () => {
     setLoading(true);
@@ -42,10 +46,10 @@ export default function Products() {
   const onCategoryDelete = async () => {
     if (value) {
       setDeleteModalShow(false);
-      const { sku_id, setDeleteLoading } = value;
+      const { sku_id, setInnerLoading } = value;
       setValue(undefined);
       try {
-        setDeleteLoading(true);
+        setInnerLoading(true);
         const res: any = await shopProducts("delete", {
           params: sku_id,
         });
@@ -55,35 +59,21 @@ export default function Products() {
       } catch (err: any) {
         console.log(err.response);
       }
-      setDeleteLoading(false);
+      setInnerLoading(false);
     }
-  };
-
-  const onActivate = async (
-    value: { [key: string]: any },
-    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const { sku_id, active } = value;
-    const isActive = active === 1 ? 0 : 1;
-    try {
-      setActiveLoading(true);
-      const res = await shopProducts("put", {
-        params: sku_id,
-        data: JSON.stringify({
-          active: isActive,
-        }),
-      });
-      if (res?.status === 200) {
-        await onProductsGet();
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setActiveLoading(false);
   };
 
   const onShopProductEdit = (value: { [key: string]: any }) =>
     navigate(`/management/products/${value.sku_id}`);
+
+  const onProductWeightPrice = (value: { [key: string]: any }) =>
+    navigate(
+      `/management/products/${value.sku_id}/product-weight-price/${encodeURI(
+        value.sku_name
+      )}`
+    );
+
+  const onNew = () => navigate("new");
 
   const columns = React.useMemo(
     () => [
@@ -104,7 +94,12 @@ export default function Products() {
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
         Cell: (cell: any) => (
-          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="sku_id"
+            axiosFunction={shopProducts}
+            setData={setData}
+          />
         ),
         extraProps: {
           columnStyle: {
@@ -133,26 +128,28 @@ export default function Products() {
       {
         Header: "Category",
         accessor: "category_id",
-        Cell: (cell: any) => <CategoryCell category_id={cell.value} />,
       },
       {
         Header: "Focus SKU",
         accessor: "focus_sku",
-        Cell: (cell: any) => <FocusSKUCell cell={cell} />,
+        Cell: (cell: any) => (
+          <FocusSKUCell cell={cell} idKey="sku_id" setData={setData} />
+        ),
       },
       {
         Header: "Action",
         Cell: (cell: any) => (
           <TableActionsCell
             cell={cell}
-            onDelete={async (value, setDeleteLoading) => {
+            onDelete={async (value, setInnerLoading) => {
               setDeleteModalShow(true);
               setValue({
                 sku_id: value.sku_id,
-                setDeleteLoading,
+                setInnerLoading,
               });
             }}
             onEdit={onShopProductEdit}
+            onWeightPrice={onProductWeightPrice}
           />
         ),
       },
@@ -160,7 +157,7 @@ export default function Products() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.products, [data, page]);
 
   React.useEffect(() => {
     onProductsGet();
@@ -169,6 +166,15 @@ export default function Products() {
   return (
     <AdminContainer>
       <MainContainer heading="Products">
+        <div className="mb-4">
+          <Button
+            onClick={onNew}
+            icon={<MdProductionQuantityLimits size={18} />}
+            color="dark"
+          >
+            New
+          </Button>
+        </div>
         {loading ? (
           <div className="flex flex-col justify-center items-center space-y-3 mt-4">
             <Spinner
@@ -180,16 +186,16 @@ export default function Products() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
+        ) : data.products ? (
           <Table
             columns={columns}
             data={getData}
             showPagination
             page={page}
             changePage={(page: number) => setPage(page)}
-            totalEntries={476}
-            totalPages={10}
-            entriesPerPage={data.length}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">

@@ -13,48 +13,77 @@ export default function Pagination(props: {
   });
 
   const onNext = () => {
-    if (props.changePage && props.page) {
-      props.changePage(props.page + 1);
+    // check value is not undefine, ...
+    if (
+      props.changePage &&
+      typeof props.page === "number" &&
+      props.totalPages
+    ) {
+      // check page
+      if (props.page < props.totalPages) {
+        props.changePage(props.page + 1);
+      }
     }
   };
 
   const onPrev = () => {
-    if (props.changePage && props.page) {
-      if (props.page > 1) {
+    // check value is not undefine, ...
+    if (props.changePage && typeof props.page === "number") {
+      // check page
+      if (props.page > 0) {
         props.changePage(props.page - 1);
       }
     }
   };
 
   React.useEffect(() => {
-    if (props.page) {
-      // if (props.totalPages && props.entriesPerPage && props.totalEntries) {
-      //   const check = props.totalEntries - entries.end;
-      //   if (props.entriesPerPage < props.totalEntries) {
-      //   const start = (props.page - 1) * props.entriesPerPage + 1;
-      //   const end = start + props.entriesPerPage - 1;
-      //   setEntries({
-      //     start,
-      //     end,
-      //   });
-      // }
+    if (typeof props.page === "number") {
+      if (props.totalPages && props.entriesPerPage && props.totalEntries) {
+        // showing default pages entries
+        if (props.page === 0) {
+          setEntries({
+            ...entries,
+            end: props.entriesPerPage,
+          });
+        } else {
+          // dynamic entries showing
+          const showStart = props.page * props.entriesPerPage + 1;
+          const showEnd =
+            (props.page + 1) * props.entriesPerPage < props.totalEntries
+              ? (props.page + 1) * props.entriesPerPage
+              : props.totalEntries;
+          setEntries({
+            ...entries,
+            start: showStart,
+            end: showEnd,
+          });
+        }
+      }
     }
   }, [props.page]);
-  // 0 = new, 1, 2 = Accepted, 3 - in-process, 4 - out of delivery,, 5 - delivered, 6 - returned, 7 - cancelled, 8 - returning
+
   return (
-    <div className="flex justify-between flex-wrap items-center flex-row-reverse mx-2">
-      <ul className="flex items-center space-x-1">
+    <div className="flex justify-center md:justify-between flex-wrap items-center flex-row-reverse mx-2 ">
+      <ul className="flex items-center space-x-2">
         <li>
           <button
-            disabled={props.page ? props.page === 1 : true}
+            disabled={typeof props.page === "number" ? props.page === 0 : true}
             className="flex items-center px-2.5 py-1 rounded-md border-2 border-blue-light text-blue-light font-bold hover:text-white hover:bg-blue-light hover:shadow-lg transition-colors duration-200 ease-in-out"
             onClick={onPrev}
           >
             Prev
           </button>
         </li>
+        <li className="font-bold">
+          Page {(props.page as any) + 1} of {(props.totalPages as any) + 1}
+        </li>
         <li>
           <button
+            disabled={
+              typeof props.page === "number"
+                ? props.page === props.totalPages
+                : false
+            }
             className="flex items-center px-2.5 py-1 rounded-md border-2 border-blue-light text-blue-light font-bold hover:text-white hover:bg-blue-light hover:shadow-lg transition-colors "
             onClick={onNext}
           >

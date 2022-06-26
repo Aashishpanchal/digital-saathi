@@ -47,9 +47,9 @@ export default function CreateFarmers() {
 
   const onRetrieveCategory = async () => {
     try {
-      const res = await categories("get");
+      const res = await categories("get", { postfix: `?page=${0}` });
       if (res?.status === 200) {
-        setSelectCategory(res.data);
+        setSelectCategory(res.data.categories);
       }
     } catch (err: any) {
       console.log(err.response);
@@ -120,7 +120,7 @@ export default function CreateFarmers() {
               >
                 <option value="0">None</option>
                 {selectCategory.map((item: any, index) => (
-                  <option key={index} value={item.category_id}>
+                  <option key={index.toString()} value={item.category_id}>
                     {item.name}
                   </option>
                 ))}

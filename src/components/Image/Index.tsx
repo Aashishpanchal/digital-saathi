@@ -8,6 +8,9 @@ export default function Image(props: { src: string; alt: string }) {
         className="w-full h-full"
         src={baseImageUrl?.concat(props.src)}
         alt={props.alt.concat(" image")}
+        onError={(e) => {
+          (e.target as any).src = "/assets/images/default-image.png";
+        }}
       />
     </div>
   );

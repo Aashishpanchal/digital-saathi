@@ -13,7 +13,7 @@ import {
 } from "../../../../components/table";
 import { SelectColumActiveDeactivateFilter } from "../../../../components/filter/SelectColumnFilter";
 import Button from "../../../../components/button/Button";
-import { BsShopWindow } from "react-icons/bs";
+import { MdAcUnit } from "react-icons/md";
 
 export default function Units() {
   const [data, setData] = React.useState([]);
@@ -154,11 +154,7 @@ export default function Units() {
     <AdminContainer>
       <MainContainer heading="Units">
         <div className="mb-4">
-          <Button
-            onClick={onNew}
-            icon={<BsShopWindow size={18} />}
-            color="dark"
-          >
+          <Button onClick={onNew} icon={<MdAcUnit size={18} />} color="dark">
             New
           </Button>
         </div>

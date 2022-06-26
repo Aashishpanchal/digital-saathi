@@ -63,29 +63,6 @@ export default function Retailers() {
   const onRetailerEdit = (values: { [key: string]: any }) =>
     navigate(`/management/retailers/${values.retailer_id}`);
 
-  const onActivate = async (
-    value: { [key: string]: any },
-    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const { retailer_id, active } = value;
-    const isActive = active === 1 ? 0 : 1;
-    try {
-      setActiveLoading(true);
-      const res = await retailer("put", {
-        params: retailer_id,
-        data: JSON.stringify({
-          active: isActive,
-        }),
-      });
-      if (res?.status === 200) {
-        await onRetailerGet();
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setActiveLoading(false);
-  };
-
   const columns = React.useMemo(
     () => [
       {
@@ -105,7 +82,11 @@ export default function Retailers() {
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
         Cell: (cell: any) => (
-          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="retailer_id"
+            axiosFunction={retailer}
+          />
         ),
         extraProps: {
           columnStyle: {

@@ -16,7 +16,7 @@ export default function LabelTextInput(props: {
   const random = Math.random().toString(36).substring(7);
   const id = `${props.name}-${props.type}-${random}`;
   return (
-    <div className="my-4">
+    <div className="my-1">
       <Label htmlFor={id} className="md-2 block">
         {props.label}
       </Label>

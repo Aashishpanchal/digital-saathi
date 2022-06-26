@@ -17,28 +17,33 @@ import {
   SelectColumnFilter,
 } from "../../../../components/filter/SelectColumnFilter";
 import Button from "../../../../components/button/Button";
-import { BsShopWindow } from "react-icons/bs";
+import { MdOutlineAccountTree } from "react-icons/md";
 
 export default function Categories() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    categories: [],
+  });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
     category_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
+  const [page, setPage] = React.useState(0);
 
   const navigate = useNavigate();
 
   const onCategoriesGet = async () => {
     setLoading(true);
     try {
-      const res: any = await categories("get");
-      if (res.status === 200) {
+      const res = await categories("get", { postfix: `?page=${page}` });
+      if (res?.status === 200) {
         setData(res.data);
       }
     } catch (err: any) {
-      console.log(err);
+      console.log(err.response);
     }
     setLoading(false);
   };
@@ -63,35 +68,15 @@ export default function Categories() {
     }
   };
 
-  const onActivate = async (
-    value: { [key: string]: any },
-    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const { category_id, active } = value;
-    const isActive = active === 1 ? 0 : 1;
-    try {
-      setActiveLoading(true);
-      const res = await categories("put", {
-        params: category_id,
-        data: JSON.stringify({
-          active: isActive,
-        }),
-      });
-      if (res?.status === 200) {
-        await onCategoriesGet();
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setActiveLoading(false);
-  };
-
-  const onNew = () => navigate("/management/categories/new");
+  const onNew = () => navigate("new");
   const onCategoryEdit = (value: { [key: string]: any }) =>
-    navigate(`/management/categories/${value.category_id}`);
+    navigate(`${value.category_id}`);
 
-  const onNext = (value: { [key: string]: any }) =>
-    navigate(`/management/categories/${value.subcategory_id}/sub-categories`);
+  const onNext = (values: { [key: string]: any }) => {
+    navigate(
+      `${values.parent_category_id}/sub-categories/${decodeURI(values.name)}`
+    );
+  };
 
   const columns = React.useMemo(
     () => [
@@ -112,7 +97,12 @@ export default function Categories() {
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
         Cell: (cell: any) => (
-          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="category_id"
+            setData={setData}
+            axiosFunction={categories}
+          />
         ),
         extraProps: {
           columnStyle: {
@@ -167,11 +157,11 @@ export default function Categories() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.categories, [data, page]);
 
   React.useEffect(() => {
     onCategoriesGet();
-  }, []);
+  }, [page]);
 
   return (
     <AdminContainer>
@@ -179,7 +169,7 @@ export default function Categories() {
         <div className="mb-4">
           <Button
             onClick={onNew}
-            icon={<BsShopWindow size={18} />}
+            icon={<MdOutlineAccountTree size={18} />}
             color="dark"
           >
             New
@@ -196,8 +186,17 @@ export default function Categories() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />
