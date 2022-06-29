@@ -73,9 +73,7 @@ export default function Categories() {
     navigate(`${value.category_id}`);
 
   const onNext = (values: { [key: string]: any }) => {
-    navigate(
-      `${values.parent_category_id}/sub-categories/${decodeURI(values.name)}`
-    );
+    navigate(`${values.category_id}/sub-categories/${decodeURI(values.name)}`);
   };
 
   const columns = React.useMemo(

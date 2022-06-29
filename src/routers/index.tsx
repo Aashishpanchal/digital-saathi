@@ -11,7 +11,9 @@ import RetrieveUpdate from "../pages/home/management/farmers/RetrieveUpdate";
 import {
   Categories,
   CreateCategories,
+  CreateSubCategories,
   RetrieveUpdateCategories,
+  RetrieveUpdateSubCategory,
   SubCategories,
 } from "../pages/home/management/categories";
 import CreateRetailers from "../pages/home/management/retailers/CreateRetailers";
@@ -174,6 +176,22 @@ export default function AppRouter() {
                   element: (
                     <AdminProtectedRoute>
                       <SubCategories />
+                    </AdminProtectedRoute>
+                  ),
+                },
+                {
+                  path: "new",
+                  element: (
+                    <AdminProtectedRoute>
+                      <CreateSubCategories />
+                    </AdminProtectedRoute>
+                  ),
+                },
+                {
+                  path: ":subcategory_id",
+                  element: (
+                    <AdminProtectedRoute>
+                      <RetrieveUpdateSubCategory />
                     </AdminProtectedRoute>
                   ),
                 },

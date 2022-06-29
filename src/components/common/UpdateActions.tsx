@@ -3,12 +3,15 @@ import { MdSaveAlt } from "react-icons/md";
 import { Spinner } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
 import Button from "../button/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function UpdateActions(props: {
   onSave?: () => void;
   onCancel?: () => void;
   startLoading?: boolean;
 }) {
+  const navigate = useNavigate();
+
   return (
     <div className="mt-5 flex flex-row space-x-3">
       <Button
@@ -22,7 +25,9 @@ export default function UpdateActions(props: {
         Update
       </Button>
       <Button
-        onClick={props.onCancel}
+        onClick={() => {
+          navigate(-1);
+        }}
         type="button"
         color="white"
         icon={<IoMdClose size={22} />}

@@ -38,12 +38,19 @@ export default function Pagination(props: {
 
   React.useEffect(() => {
     if (typeof props.page === "number") {
-      if (props.totalPages && props.entriesPerPage && props.totalEntries) {
+      if (
+        typeof props.totalPages === "number" &&
+        props.entriesPerPage &&
+        props.totalEntries
+      ) {
         // showing default pages entries
         if (props.page === 0) {
           setEntries({
             ...entries,
-            end: props.entriesPerPage,
+            end:
+              props.totalPages === 0
+                ? props.totalEntries
+                : props.entriesPerPage,
           });
         } else {
           // dynamic entries showing

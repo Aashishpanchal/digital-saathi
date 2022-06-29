@@ -1,5 +1,8 @@
 import { Spinner } from "flowbite-react";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTableAlert } from "../../../redux/slices/alertSlice";
+import { RootState } from "../../../redux/store";
 
 export default function ActivateDeactivateCell(props: {
   cell: any;
@@ -11,9 +14,12 @@ export default function ActivateDeactivateCell(props: {
   axiosFunction?: any;
   setData?: any;
   onUpdate?: any;
+  postfix?: string;
 }) {
   const [isActive, setIsActive] = React.useState(props.cell.value);
   const [loading, setLoading] = React.useState(false);
+  const { tableAlert } = useSelector((state: RootState) => state.alertSlice);
+  const dispatch = useDispatch();
 
   const onActive = async () => {
     if (typeof props.axiosFunction === "function" && props.idKey) {
@@ -35,15 +41,38 @@ export default function ActivateDeactivateCell(props: {
               try {
                 props
                   .axiosFunction("get", {
-                    postfix: `?page=${prev.currentPage}`,
+                    postfix: `?page=${prev.currentPage}${props.postfix || ""}`,
                   })
                   .then((res: any) => {
                     if (res?.status === 200) {
+                      dispatch(
+                        setTableAlert({
+                          ...tableAlert,
+                          show: true,
+                          highLight: "Success ",
+                          text: `s/no. ${id} is ${
+                            isActive === 1 ? "Activate" : "Deactivate"
+                          } successfully applied.`,
+                          type: "green",
+                        })
+                      );
                       props.setData(res.data);
                     }
                   });
               } catch (err: any) {
-                console.log(err.response);
+                if (err?.response?.status === 400) {
+                  dispatch(
+                    setTableAlert({
+                      ...tableAlert,
+                      show: true,
+                      highLight: "Server Error! ",
+                      text: `s/no. ${id} is ${
+                        isActive === 1 ? "Activate" : "Deactivate"
+                      } not applied. ${err?.response?.data?.message}`,
+                      type: "red",
+                    })
+                  );
+                }
               }
             } else {
               props.onUpdate(setLoading);

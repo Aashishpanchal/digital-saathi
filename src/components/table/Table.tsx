@@ -3,8 +3,12 @@ import { useTable, useGlobalFilter, useFilters, useSortBy } from "react-table";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import * as Filter from "../filter";
 import GlobalFilterInput from "../filter/GlobalFilterInput";
-import { Label } from "flowbite-react";
+import { Alert, Label } from "flowbite-react";
 import Pagination from "./Pagination";
+import { HiInformationCircle } from "react-icons/hi";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { setTableAlert } from "../../redux/slices/alertSlice";
 
 export default function Table(props: {
   columns: any;
@@ -33,8 +37,28 @@ export default function Table(props: {
     useSortBy
   );
 
+  const { tableAlert } = useSelector((state: RootState) => state.alertSlice);
+  const dispatch = useDispatch();
+  const onDismiss = () => {
+    dispatch(setTableAlert({ ...tableAlert, show: false }));
+  };
+
   return (
     <div className="text-gray-500">
+      <div className="my-2">
+        {tableAlert.show && (
+          <Alert
+            color={tableAlert.type as any}
+            icon={HiInformationCircle}
+            onDismiss={onDismiss}
+          >
+            <span>
+              <span className="font-medium">{tableAlert.highLight}</span>
+              {tableAlert.text}
+            </span>
+          </Alert>
+        )}
+      </div>
       <Filter.FilterContainer>
         <Filter.FilterForm>
           <GlobalFilterInput {...(others as any)} />

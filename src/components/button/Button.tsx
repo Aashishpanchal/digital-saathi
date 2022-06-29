@@ -4,7 +4,7 @@ export default function Button(props: {
   children: string | React.ReactNode;
   onClick?: () => void;
   icon?: React.ReactNode;
-  type?: "submit" | "button";
+  type?: "submit" | "button" | "reset";
   color?: "white" | "dark";
 }) {
   const className =
