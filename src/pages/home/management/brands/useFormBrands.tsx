@@ -1,31 +1,31 @@
 import React from "react";
-import ImageInput from "../../../../../components/form/inputs/ImageInput";
+import ImageInput from "../../../../components/form/inputs/ImageInput";
 
-export default function useFormSubCategories() {
+export default function useFormBrands() {
   const getFormsFields = React.useMemo(
     () => [
       {
         type: "string",
-        label: "Category Name",
-        name: "name",
+        label: "Brand Name",
+        name: "brand_name",
         defaultValue: "",
         validate: true,
-        hintText: "Category Name is compulsory",
+        hintText: "Brand Name is compulsory",
       },
       {
         label:
           "Drag & Drop Files But Image size should be square (500) x (500).",
-        name: "image",
+        name: "brand_image",
         defaultValue: null,
         Field: (props: any) => {
           return (
             <ImageInput
               label={props.label}
               handleChange={(file: any) => {
-                props.setData({ ...props.data, image: file });
+                props.setData({ ...props.data, brand_image: file });
               }}
-              file={props.data.image}
-              imageMiddleUri="category-images"
+              file={props.data.brand_image}
+              imageMiddleUri="brand-images"
             />
           );
         },
@@ -39,5 +39,6 @@ export default function useFormSubCategories() {
     ],
     []
   );
+
   return { getFormsFields };
 }

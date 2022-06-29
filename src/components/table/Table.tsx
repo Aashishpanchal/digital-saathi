@@ -43,6 +43,12 @@ export default function Table(props: {
     dispatch(setTableAlert({ ...tableAlert, show: false }));
   };
 
+  React.useEffect(() => {
+    return () => {
+      onDismiss();
+    };
+  }, []);
+
   return (
     <div className="text-gray-500">
       <div className="my-2">

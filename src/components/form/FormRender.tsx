@@ -22,6 +22,8 @@ interface FieldsType {
   value?: string;
   validate?: boolean;
   hintText?: string;
+  options?: { [key: string]: any };
+  onChange?: (e: any) => void;
 }
 
 export type onClickType = () => Promise<boolean>;
@@ -52,6 +54,12 @@ export default function FormRender(props: {
   const onDismiss = () => {
     dispatch(setFormAlert({ ...formAlert, show: false }));
   };
+
+  React.useEffect(() => {
+    return () => {
+      onDismiss();
+    };
+  }, []);
 
   return (
     <Form>
@@ -95,7 +103,10 @@ export default function FormRender(props: {
               label={item.label}
               placeholder={item.placeholder}
               name={item.name}
-              onChange={onChange}
+              onChange={(e) => {
+                onChange(e);
+                item.onChange && item.onChange(e);
+              }}
               value={props.data[item.name]}
               hint={props.errors[item.name]?.hintText}
               hintColor={
@@ -105,6 +116,7 @@ export default function FormRender(props: {
                     : "green"
                   : "base"
               }
+              options={item.options}
             />
           );
         }

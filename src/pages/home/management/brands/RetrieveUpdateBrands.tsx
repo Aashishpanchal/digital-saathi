@@ -1,86 +1,68 @@
-import { Label, Textarea } from "flowbite-react";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import AdminContainer from "../../../../components/AdminContainer";
 import MainContainer from "../../../../components/common/MainContainer";
-import UpdateActions from "../../../../components/common/UpdateActions";
-import { Form } from "../../../../components/form";
+import { FormRender } from "../../../../components/form";
 import { brands } from "../../../../http";
-import { FileUploader } from "react-drag-drop-files";
-import LabelTextInput from "../../../../components/form/LabelTextInput";
-import { baseImageUrl } from "../../../../http/config";
+import { useDispatch } from "react-redux";
+import useFormBrands from "./useFormBrands";
+import useForms from "../../../../hooks/useForms";
+import { setFormAlert } from "../../../../redux/slices/alertSlice";
+import { useParams } from "react-router-dom";
 
 export default function RetrieveUpdateBrands() {
-  const [data, setData] = React.useState({
-    brand_name: "",
-    description: "",
+  const { getFormsFields } = useFormBrands();
+
+  const dispatch = useDispatch();
+
+  const { data, setData, errors, onValidate } = useForms({
+    fields: getFormsFields,
   });
-
-  const [avatar, setAvatar] = React.useState("");
-
-  const fileTypes = ["JPEG", "PNG"];
-
-  const [file, setFile] = React.useState<any>(null);
-
-  const [loading, setLoading] = React.useState(false);
-
-  const navigate = useNavigate();
   const params = useParams();
-
-  const handleChange = (file: any) => {
-    setFile(file);
-    const reader = new FileReader();
-    if (file) {
-      reader.readAsDataURL(file[0]);
-    }
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setAvatar(reader.result);
-      }
-    };
-  };
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
 
   const onRetrieve = async () => {
     try {
-      const res = await brands("get", {
-        params: params.id,
-      });
+      const res = await brands("get", { params: params.id });
       if (res?.status === 200) {
-        setData({
-          brand_name: res.data.brand_name,
-          description: res.data.description,
+        const setValues: any = {};
+        getFormsFields.forEach((item) => {
+          setValues[item.name] = res.data[item.name] || item.defaultValue;
         });
-        setAvatar(`${baseImageUrl}brand-images/${res.data.brand_image}`);
+        setData(setValues);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (err: any) {
+      console.log(err.response);
     }
   };
 
   const onUpdate = async () => {
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      let key: keyof typeof data;
-      for (key in data) {
-        formData.append(key, data[key]);
+    const isValid = onValidate();
+    if (isValid) {
+      try {
+        const res = await brands("put", {
+          params: params.id,
+          data: JSON.stringify(data),
+        });
+        if (res?.status === 200) {
+          await onRetrieve();
+          return true;
+        }
+      } catch (err: any) {
+        if (err?.response?.status === 400) {
+          dispatch(
+            setFormAlert({
+              type: "red",
+              highLight: "Server Validation Error! ",
+              text: err?.response?.data?.message,
+              show: true,
+            })
+          );
+        }
       }
-      await brands("put", {
-        data: formData,
-        params: params.id,
-      });
-      await onRetrieve();
-    } catch (e) {
-      console.log(e);
+      return false;
     }
-    setLoading(false);
+    return isValid;
   };
 
-  const onCancel = () => navigate(-1);
   React.useEffect(() => {
     onRetrieve();
   }, []);
@@ -88,52 +70,15 @@ export default function RetrieveUpdateBrands() {
   return (
     <AdminContainer>
       <MainContainer heading="Brand Details">
-        <Form>
-          <div className="w-full md:w-[28rem] lg:w-[28rem]">
-            <LabelTextInput
-              type={"text"}
-              label="Brand Name"
-              name="brand_name"
-              value={data.brand_name}
-              onChange={onChange}
-              hint="brand name is compulsory"
-              hintColor="green"
-            />
-            <div className="my-3">
-              <Label className="md-2 block">
-                Drag & Drop Files But Image size should be square (500) x (500).
-              </Label>
-              <FileUploader
-                multiple={true}
-                handleChange={handleChange}
-                name="file"
-                types={fileTypes}
-              />
-              <p className="font-bold">
-                {file ? `File name: ${file[0].name}` : "no files uploaded yet"}
-              </p>
-              {avatar && (
-                <div className="rounded-xl overflow-hidden w-1/2 h-1/2 shadow-lg">
-                  <img className="object-cover" src={avatar} alt="preview" />
-                </div>
-              )}
-            </div>
-            <div>
-              <Label className="md-2 block">Description</Label>
-              <Textarea
-                value={data.description}
-                onChange={(e) => {
-                  setData({ ...data, description: e.target.value });
-                }}
-              />
-            </div>
-          </div>
-          <UpdateActions
-            startLoading={loading}
-            onSave={onUpdate}
-            onCancel={onCancel}
+        <div className="w-full md:w-[30] lg:w-[30rem]">
+          <FormRender
+            data={data}
+            setData={setData}
+            fields={getFormsFields}
+            errors={errors}
+            onUpdate={onUpdate}
           />
-        </Form>
+        </div>
       </MainContainer>
     </AdminContainer>
   );

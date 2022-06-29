@@ -1,7 +1,35 @@
 import React from "react";
 import ImageInput from "../../../../components/form/inputs/ImageInput";
+import { categories } from "../../../../http";
 
-export default function useFormSubCategories() {
+export default function useFormCategories() {
+  const [categoriesOptions, setCategoriesOptions] = React.useState<{
+    [key: string]: any;
+  }>({
+    "0": "None",
+  });
+
+  const onRetrieveCategory = async () => {
+    try {
+      const res = await categories("get");
+      if (res?.status === 200) {
+        const { categories } = res.data;
+        if (categories) {
+          let options: any = {};
+          categories.map((item: any) => {
+            options[item?.category_id?.toString()] = item?.name;
+          });
+          setCategoriesOptions({
+            ...categoriesOptions,
+            ...options,
+          });
+        }
+      }
+    } catch (err: any) {
+      console.log(err.response);
+    }
+  };
+
   const getFormsFields = React.useMemo(
     () => [
       {
@@ -11,6 +39,13 @@ export default function useFormSubCategories() {
         defaultValue: "",
         validate: true,
         hintText: "Category Name is compulsory",
+      },
+      {
+        type: "select",
+        label: "Parent Category",
+        name: "parent_category_id",
+        options: categoriesOptions,
+        defaultValue: "0",
       },
       {
         label:
@@ -25,6 +60,7 @@ export default function useFormSubCategories() {
                 props.setData({ ...props.data, image: file });
               }}
               file={props.data.image}
+              imageMiddleUri="category-images"
             />
           );
         },
@@ -36,7 +72,12 @@ export default function useFormSubCategories() {
         defaultValue: "",
       },
     ],
-    []
+    [categoriesOptions]
   );
+
+  React.useEffect(() => {
+    onRetrieveCategory();
+  }, []);
+
   return { getFormsFields };
 }

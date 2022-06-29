@@ -3,6 +3,7 @@ import React from "react";
 interface FieldsType {
   name: string;
   validation?: (value: any) => { error: boolean; hintText?: string };
+  onReset?: (value: any) => any;
   validate?: boolean;
   hintText?: string;
   defaultValue: any;
@@ -23,7 +24,23 @@ export default function useForms(props: {
   const [errors, setErrors] = React.useState<any>({});
 
   const onClear = () => {
-    setData(setValue());
+    // than run reset function
+    let resetValue: any = {};
+    props.fields.map((item) => {
+      if (typeof item.onReset === "function") {
+        const result = item.onReset(data[item.name]);
+        resetValue[item.name] =
+          typeof result === "undefined" ? item.defaultValue : result;
+      } else {
+        resetValue[item.name] = item.defaultValue;
+      }
+    });
+    setData({
+      ...data,
+      ...resetValue,
+    });
+
+    // reset errors
     let validateValue: any = {};
     Object.keys(errors).forEach((name: any) => {
       validateValue[name] = {

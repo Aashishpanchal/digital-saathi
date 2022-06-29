@@ -30,6 +30,7 @@ import {
   RetrieveUpdateDeliveryPartner,
 } from "../pages/home/management/delivery-partners";
 import {
+  CreateProducts,
   CreateProductWeightPrice,
   Products,
   ProductWeightPrice,
@@ -273,6 +274,14 @@ export default function AppRouter() {
               element: (
                 <AdminProtectedRoute>
                   <Products />
+                </AdminProtectedRoute>
+              ),
+            },
+            {
+              path: "new",
+              element: (
+                <AdminProtectedRoute>
+                  <CreateProducts />
                 </AdminProtectedRoute>
               ),
             },

@@ -1,4 +1,4 @@
-import { Label, Textarea, TextInput } from "flowbite-react";
+import { Label, Select, Textarea, TextInput } from "flowbite-react";
 import React from "react";
 
 export default function LabelTextInput(props: {
@@ -12,6 +12,7 @@ export default function LabelTextInput(props: {
   required?: boolean;
   maxLength?: number;
   placeholder?: string;
+  options?: { [key: string]: any };
 }) {
   const random = Math.random().toString(36).substring(7);
   const id = `${props.name}-${props.type}-${random}`;
@@ -33,6 +34,30 @@ export default function LabelTextInput(props: {
           placeholder={props.placeholder}
           color={props.hintColor}
         />
+      </div>
+    );
+  }
+  if (props.type === "select") {
+    return (
+      <div className="my-1">
+        <Label htmlFor={id}>{props.label}</Label>
+        <Select
+          className="border-2"
+          id={id}
+          required
+          name={props.name}
+          value={props.value}
+          onChange={props.onChange as any}
+          helperText={props.hint}
+          color={props.hintColor}
+        >
+          {props.options &&
+            Object.keys(props.options).map((name, index) => (
+              <option key={index.toString()} value={name}>
+                {(props?.options as any)[name]}
+              </option>
+            ))}
+        </Select>
       </div>
     );
   }

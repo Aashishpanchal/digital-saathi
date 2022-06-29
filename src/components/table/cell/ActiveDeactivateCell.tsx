@@ -51,7 +51,7 @@ export default function ActivateDeactivateCell(props: {
                           show: true,
                           highLight: "Success ",
                           text: `s/no. ${id} is ${
-                            isActive === 1 ? "Activate" : "Deactivate"
+                            active === 1 ? "Activate" : "Deactivate"
                           } successfully applied.`,
                           type: "green",
                         })

@@ -8,6 +8,7 @@ export default function ImageInput(props: {
   types?: Array<string>;
   file?: any;
   label?: string;
+  imageMiddleUri?: string;
 }) {
   const [avatar, setAvatar] = React.useState("");
 
@@ -26,7 +27,7 @@ export default function ImageInput(props: {
     if (props.file === null) {
       setAvatar(props.file);
     } else {
-      setAvatar(`${baseImageUrl}category-images/${props.file}`);
+      setAvatar(`${baseImageUrl}${props.imageMiddleUri}/${props.file}`);
     }
   }, [props.file]);
 

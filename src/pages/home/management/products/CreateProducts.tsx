@@ -7,44 +7,23 @@ import useForms from "../../../../hooks/useForms";
 import { useDispatch } from "react-redux";
 import { setFormAlert } from "../../../../redux/slices/alertSlice";
 import useFormProducts from "./useFormProducts";
-import { useParams } from "react-router-dom";
 
-export default function RetrieveUpdateProduct() {
+export default function CreateProducts() {
   const { getFormsFields } = useFormProducts();
-
-  const params = useParams();
 
   const dispatch = useDispatch();
 
-  const { data, setData, errors, onValidate } = useForms({
+  const { data, setData, onClear, errors, onValidate } = useForms({
     fields: getFormsFields,
   });
 
-  const onRetrieve = async () => {
-    try {
-      const res = await shopProducts("get", { params: params.id });
-      if (res?.status === 200) {
-        const setValues: any = {};
-        getFormsFields.forEach((item) => {
-          setValues[item.name] = res.data[item.name] || item.defaultValue;
-        });
-        setData(setValues);
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-  };
-
-  const onUpdate = async () => {
-    const isValid = onValidate();
-    if (isValid) {
+  const onSave = async () => {
+    if (onValidate()) {
       try {
-        const res = await shopProducts("put", {
-          params: params.id,
+        const res = await shopProducts("post", {
           data: JSON.stringify(data),
         });
         if (res?.status === 200) {
-          await onRetrieve();
           return true;
         }
       } catch (err: any) {
@@ -59,14 +38,23 @@ export default function RetrieveUpdateProduct() {
           );
         }
       }
-      return false;
     }
-    return isValid;
+    return false;
   };
 
-  React.useEffect(() => {
-    onRetrieve();
-  }, []);
+  const onSaveStay = async () => {
+    const res = await onSave();
+    if (res) {
+      dispatch(
+        setFormAlert({
+          type: "green",
+          highLight: "Success! ",
+          text: "Data Add Successfully..",
+          show: true,
+        })
+      );
+    }
+  };
 
   return (
     <AdminContainer>
@@ -75,9 +63,11 @@ export default function RetrieveUpdateProduct() {
           <FormRender
             data={data}
             setData={setData}
+            onReset={onClear}
             fields={getFormsFields}
             errors={errors}
-            onUpdate={onUpdate}
+            onSave={onSave}
+            onSaveStay={onSaveStay}
           />
         </div>
       </MainContainer>
