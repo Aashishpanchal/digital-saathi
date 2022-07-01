@@ -11,7 +11,12 @@ module.exports = {
       "blue-dark": "#2a2b36",
       "blue-light": "#12A87F",
     },
-    extend: {},
+    extend: {
+      screens: {
+        print: { raw: "print" },
+        screen: { raw: "screen" },
+      },
+    },
   },
   plugins: [require("flowbite/plugin")],
 };

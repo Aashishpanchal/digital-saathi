@@ -16,9 +16,15 @@ import Button from "../../../../components/button/Button";
 import { MdAcUnit } from "react-icons/md";
 
 export default function Units() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    brands: [],
+    units: [],
+  });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
+  const [page, setPage] = React.useState(0);
   const [value, setValue] = React.useState<{
     units_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,12 +34,12 @@ export default function Units() {
   const onShopUnitsGet = async () => {
     setLoading(true);
     try {
-      const res: any = await shopUnits("get");
-      if (res.status === 200) {
+      const res = await shopUnits("get", { postfix: `?page=${page}` });
+      if (res?.status === 200) {
         setData(res.data);
       }
     } catch (err: any) {
-      console.log(err);
+      console.log(err.response);
     }
     setLoading(false);
   };
@@ -58,30 +64,6 @@ export default function Units() {
     }
   };
 
-  const onActivate = async (
-    value: { [key: string]: any },
-    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const { units_id, active } = value;
-
-    const isActive = active === 1 ? 0 : 1;
-    try {
-      setActiveLoading(true);
-      const res = await shopUnits("put", {
-        params: units_id,
-        data: JSON.stringify({
-          units: value.units,
-          active: isActive,
-        }),
-      });
-      if (res?.status === 200) {
-        await onShopUnitsGet();
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setActiveLoading(false);
-  };
   const onNew = () => navigate("/masters/units/new");
   const onShopUnitsEdit = (values: { [key: string]: any }) =>
     navigate(`/masters/units/${values.units_id}`);
@@ -105,7 +87,13 @@ export default function Units() {
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
         Cell: (cell: any) => (
-          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="units_id"
+            axiosFunction={shopUnits}
+            setData={setData}
+            payload={["units"]}
+          />
         ),
         extraProps: {
           columnStyle: {
@@ -144,11 +132,11 @@ export default function Units() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.units, [data, page]);
 
   React.useEffect(() => {
     onShopUnitsGet();
-  }, []);
+  }, [page]);
 
   return (
     <AdminContainer>
@@ -169,8 +157,17 @@ export default function Units() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data.totalItems ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />

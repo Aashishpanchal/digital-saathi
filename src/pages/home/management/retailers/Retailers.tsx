@@ -16,19 +16,27 @@ import Button from "../../../../components/button/Button";
 import { BsShopWindow } from "react-icons/bs";
 
 export default function Retailers() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    brands: [],
+    retailers: [],
+  });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
+  const [page, setPage] = React.useState(0);
+
   const [value, setValue] = React.useState<{
     retailer_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
+
   const navigate = useNavigate();
 
   const onRetailerGet = async () => {
     setLoading(true);
     try {
-      const res: any = await retailer("get");
+      const res: any = await retailer("get", { postfix: `?page=${page}` });
       if (res.status === 200) {
         setData(res.data);
       }
@@ -60,6 +68,18 @@ export default function Retailers() {
   };
 
   const onNew = () => navigate("/management/retailers/new");
+  const onDashBoard = (values: any) =>
+    navigate(
+      `${values.retailer_id}/retailer-dashboard/${encodeURI(
+        values.retailer_name
+      )}`
+    );
+  const onOrder = (values: any) =>
+    navigate(`${values.retailer_id}/retailer-orders`);
+  const onArea = (values: any) =>
+    navigate(`${values.retailer_id}/retailer-areas`);
+  const onWarehouse = (values: any) =>
+    navigate(`${values.retailer_id}/retailer-warehouse`);
   const onRetailerEdit = (values: { [key: string]: any }) =>
     navigate(`/management/retailers/${values.retailer_id}`);
 
@@ -86,6 +106,7 @@ export default function Retailers() {
             cell={cell}
             idKey="retailer_id"
             axiosFunction={retailer}
+            setData={setData}
           />
         ),
         extraProps: {
@@ -121,6 +142,10 @@ export default function Retailers() {
               });
             }}
             onEdit={onRetailerEdit}
+            onDashBoard={onDashBoard}
+            onOrder={onOrder}
+            onArea={onArea}
+            onWarehouse={onWarehouse}
           />
         ),
       },
@@ -128,11 +153,11 @@ export default function Retailers() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.retailers, [data, page]);
 
   React.useEffect(() => {
     onRetailerGet();
-  }, []);
+  }, [page]);
   return (
     <AdminContainer>
       <MainContainer heading="Retailer Name">
@@ -156,8 +181,17 @@ export default function Retailers() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data.totalItems ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />

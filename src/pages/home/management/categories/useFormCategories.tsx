@@ -5,9 +5,7 @@ import { categories } from "../../../../http";
 export default function useFormCategories() {
   const [categoriesOptions, setCategoriesOptions] = React.useState<{
     [key: string]: any;
-  }>({
-    "0": "None",
-  });
+  }>({});
 
   const onRetrieveCategory = async () => {
     try {
@@ -20,7 +18,6 @@ export default function useFormCategories() {
             options[item?.category_id?.toString()] = item?.name;
           });
           setCategoriesOptions({
-            ...categoriesOptions,
             ...options,
           });
         }
@@ -45,6 +42,9 @@ export default function useFormCategories() {
         label: "Parent Category",
         name: "parent_category_id",
         options: categoriesOptions,
+        defaultOption: {
+          "0": "None",
+        },
         defaultValue: "0",
       },
       {

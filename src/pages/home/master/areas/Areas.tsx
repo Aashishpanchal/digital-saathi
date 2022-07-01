@@ -16,9 +16,15 @@ import Button from "../../../../components/button/Button";
 import { TbSquareAsterisk } from "react-icons/tb";
 
 export default function Areas() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    brands: [],
+    areas: [],
+  });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
+  const [page, setPage] = React.useState(0);
   const [value, setValue] = React.useState<{
     area_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,8 +34,8 @@ export default function Areas() {
   const onShopAreasGet = async () => {
     setLoading(true);
     try {
-      const res: any = await shopAreas("get");
-      if (res.status === 200) {
+      const res = await shopAreas("get", { postfix: `?page=${page}` });
+      if (res?.status === 200) {
         setData(res.data);
       }
     } catch (err: any) {
@@ -58,30 +64,6 @@ export default function Areas() {
     }
   };
 
-  const onActivate = async (
-    value: { [key: string]: any },
-    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const { area_id, active } = value;
-
-    const isActive = active === 1 ? 0 : 1;
-    try {
-      setActiveLoading(true);
-      const res = await shopAreas("put", {
-        params: area_id,
-        data: JSON.stringify({
-          active: isActive,
-        }),
-      });
-      if (res?.status === 200) {
-        await onShopAreasGet();
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setActiveLoading(false);
-  };
-
   const onNew = () => navigate("/masters/areas/new");
   const onShopAreasEdit = (values: { [key: string]: any }) =>
     navigate(`/masters/areas/${values.area_id}`);
@@ -104,7 +86,12 @@ export default function Areas() {
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
         Cell: (cell: any) => (
-          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="area_id"
+            axiosFunction={shopAreas}
+            setData={setData}
+          />
         ),
         extraProps: {
           align: "center",
@@ -150,11 +137,11 @@ export default function Areas() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.areas, [data, page]);
 
   React.useEffect(() => {
     onShopAreasGet();
-  }, []);
+  }, [page]);
 
   return (
     <AdminContainer>
@@ -179,8 +166,17 @@ export default function Areas() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data.totalItems ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />

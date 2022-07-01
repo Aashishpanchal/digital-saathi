@@ -10,9 +10,9 @@ import useFormProducts from "./useFormProducts";
 import { useParams } from "react-router-dom";
 
 export default function RetrieveUpdateProduct() {
-  const { getFormsFields } = useFormProducts();
+  const { getFormsFields, onRetrieveSubCategory } = useFormProducts();
 
-  const params = useParams();
+  const { sku_id } = useParams();
 
   const dispatch = useDispatch();
 
@@ -22,11 +22,11 @@ export default function RetrieveUpdateProduct() {
 
   const onRetrieve = async () => {
     try {
-      const res = await shopProducts("get", { params: params.id });
+      const res = await shopProducts("get", { params: sku_id });
       if (res?.status === 200) {
         const setValues: any = {};
         getFormsFields.forEach((item) => {
-          setValues[item.name] = res.data[item.name] || item.defaultValue;
+          setValues[item.name] = `${res.data[item.name] || item.defaultValue}`;
         });
         setData(setValues);
       }
@@ -40,7 +40,7 @@ export default function RetrieveUpdateProduct() {
     if (isValid) {
       try {
         const res = await shopProducts("put", {
-          params: params.id,
+          params: sku_id,
           data: JSON.stringify(data),
         });
         if (res?.status === 200) {
@@ -67,6 +67,12 @@ export default function RetrieveUpdateProduct() {
   React.useEffect(() => {
     onRetrieve();
   }, []);
+
+  React.useEffect(() => {
+    if (data.category_id) {
+      onRetrieveSubCategory(data.category_id);
+    }
+  }, [data]);
 
   return (
     <AdminContainer>

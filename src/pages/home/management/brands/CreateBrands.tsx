@@ -20,8 +20,9 @@ export default function CreateBrands() {
   const onSave = async () => {
     if (onValidate()) {
       try {
+        const { brand_image, ...newData } = data;
         const res = await brands("post", {
-          data: JSON.stringify(data),
+          data: JSON.stringify(newData),
         });
         if (res?.status === 200) {
           return true;

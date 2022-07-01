@@ -7,19 +7,27 @@ import { RootState } from "../../../redux/store";
 export default function ActivateDeactivateCell(props: {
   cell: any;
   idKey?: string;
-  onClick?: (
-    value: { [key: string]: any },
-    setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => Promise<void>;
   axiosFunction?: any;
   setData?: any;
   onUpdate?: any;
   postfix?: string;
+  payload?: Array<string>;
 }) {
   const [isActive, setIsActive] = React.useState(props.cell.value);
+  const { original } = props.cell.row;
   const [loading, setLoading] = React.useState(false);
   const { tableAlert } = useSelector((state: RootState) => state.alertSlice);
   const dispatch = useDispatch();
+
+  const getPayload = () => {
+    let result: any = {};
+    if (props.payload) {
+      props.payload.map((name) => {
+        result[name] = original[name];
+      });
+    }
+    return result;
+  };
 
   const onActive = async () => {
     if (typeof props.axiosFunction === "function" && props.idKey) {
@@ -29,7 +37,7 @@ export default function ActivateDeactivateCell(props: {
         setLoading(true);
         const res = await props.axiosFunction("put", {
           params: id,
-          data: JSON.stringify({ active }),
+          data: JSON.stringify({ ...getPayload(), active }),
         });
         if (res?.status === 200) {
           setIsActive(active);
@@ -81,7 +89,7 @@ export default function ActivateDeactivateCell(props: {
           });
         }
       } catch (err: any) {
-        console.log(err.response);
+        console.log(err);
       }
       setLoading(false);
     }

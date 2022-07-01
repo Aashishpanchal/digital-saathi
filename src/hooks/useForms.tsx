@@ -4,6 +4,7 @@ interface FieldsType {
   name: string;
   validation?: (value: any) => { error: boolean; hintText?: string };
   onReset?: (value: any) => any;
+  onAllReset?: (data?: any) => { [key: string]: any };
   validate?: boolean;
   hintText?: string;
   defaultValue: any;
@@ -11,13 +12,19 @@ interface FieldsType {
 
 export default function useForms(props: {
   fields: Array<FieldsType>;
-  axiosFunction?: any;
+  setDefaultValue?: { [key: string]: any };
 }) {
   const setValue = () => {
     let values: any = {};
     props.fields.forEach((item) => {
       values[item.name as any] = item.defaultValue;
     });
+    if (props.setDefaultValue) {
+      return {
+        ...values,
+        ...props.setDefaultValue,
+      };
+    }
     return values;
   };
   const [data, setData] = React.useState<any>(setValue());
@@ -30,7 +37,13 @@ export default function useForms(props: {
       if (typeof item.onReset === "function") {
         const result = item.onReset(data[item.name]);
         resetValue[item.name] =
-          typeof result === "undefined" ? item.defaultValue : result;
+          typeof result === "undefined" ? item.defaultValue || "" : result;
+      }
+      if (typeof item.onAllReset === "function") {
+        const result = item.onAllReset(data);
+        Object.keys(result).map((key) => {
+          resetValue[key] = result[key];
+        });
       } else {
         resetValue[item.name] = item.defaultValue;
       }

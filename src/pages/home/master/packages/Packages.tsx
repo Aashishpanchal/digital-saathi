@@ -16,9 +16,15 @@ import Button from "../../../../components/button/Button";
 import { RiShoppingBag3Fill } from "react-icons/ri";
 
 export default function Packages() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    brands: [],
+    packages: [],
+  });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
+  const [page, setPage] = React.useState(0);
   const [value, setValue] = React.useState<{
     package_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,12 +34,12 @@ export default function Packages() {
   const onShopPackagesGet = async () => {
     setLoading(true);
     try {
-      const res: any = await shopPackages("get");
-      if (res.status === 200) {
+      const res = await shopPackages("get", { postfix: `?page=${page}` });
+      if (res?.status === 200) {
         setData(res.data);
       }
     } catch (err: any) {
-      console.log(err);
+      console.log(err.response);
     }
     setLoading(false);
   };
@@ -62,31 +68,6 @@ export default function Packages() {
   const onShopPackagesEdit = (values: { [key: string]: any }) =>
     navigate(`/masters/packages/${values.package_id}`);
 
-  const onActivate = async (
-    value: { [key: string]: any },
-    setActiveLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const { package_id, active } = value;
-
-    const isActive = active === 1 ? 0 : 1;
-    try {
-      setActiveLoading(true);
-      const res = await shopPackages("put", {
-        params: package_id,
-        data: JSON.stringify({
-          package: value.package,
-          active: isActive,
-        }),
-      });
-      if (res?.status === 200) {
-        await onShopPackagesGet();
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setActiveLoading(false);
-  };
-
   const columns = React.useMemo(
     () => [
       {
@@ -106,7 +87,13 @@ export default function Packages() {
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
         Cell: (cell: any) => (
-          <ActiveDeactivateCell cell={cell} onClick={onActivate} />
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="package_id"
+            axiosFunction={shopPackages}
+            setData={setData}
+            payload={["package"]}
+          />
         ),
         extraProps: {
           columnStyle: {
@@ -145,11 +132,11 @@ export default function Packages() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.packages, [data, page]);
 
   React.useEffect(() => {
     onShopPackagesGet();
-  }, []);
+  }, [page]);
 
   return (
     <AdminContainer>
@@ -174,8 +161,17 @@ export default function Packages() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data.totalItems ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />

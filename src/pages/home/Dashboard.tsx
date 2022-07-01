@@ -20,7 +20,7 @@ export default function Dashboard() {
     try {
       const res: any = await farmers("get");
       if (res.status === 200) {
-        setTotalFarmers(res.data.length);
+        setTotalFarmers(res.data.totalItems);
       }
     } catch (err: any) {
       console.log(err);
@@ -31,7 +31,7 @@ export default function Dashboard() {
     try {
       const res: any = await warehouse("get");
       if (res.status === 200) {
-        setTotalWarehouses(res.data.length);
+        setTotalWarehouses(res.data.totalItems);
       }
     } catch (err: any) {
       console.log(err);
@@ -42,7 +42,7 @@ export default function Dashboard() {
     try {
       const res: any = await retailer("get");
       if (res.status === 200) {
-        setTotalRetailers(res.data.length);
+        setTotalRetailers(res.data.totalItems);
       }
     } catch (err: any) {
       console.log(err);
@@ -87,7 +87,19 @@ export default function Dashboard() {
               <VerticalBarChart />
             </div>
             <div className="mx-1">
-              <DoughnutChart />
+              <DoughnutChart
+                data={{
+                  labels: ["Farmers", "Warehouses", "Retailers"],
+                  datasets: [
+                    {
+                      data: [totalFarmers, totalWarehouses, totalRetailers],
+                      backgroundColor: ["#61efcd", "#2485fa", "#f9a825"],
+                      borderColor: ["#61efcd", "#2485fa", "#f9a825"],
+                      borderWidth: 1,
+                    },
+                  ],
+                }}
+              />
             </div>
           </div>
         </div>

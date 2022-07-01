@@ -14,8 +14,12 @@ import { FcDeleteDatabase } from "react-icons/fc";
 import { DeleteModal } from "../../../../components/modals";
 
 export default function Farmers() {
-  const [data, setData] = React.useState([]);
-  const navigate = useNavigate();
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    brands: [],
+    customers: [],
+  });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
@@ -23,15 +27,19 @@ export default function Farmers() {
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
 
+  const [page, setPage] = React.useState(0);
+
+  const navigate = useNavigate();
+
   const onFarmerGet = async () => {
     setLoading(true);
     try {
-      const res: any = await farmers("get");
+      const res: any = await farmers("get", { postfix: `?page=${page}` });
       if (res.status === 200) {
         setData(res.data);
       }
     } catch (err: any) {
-      console.log(err.response);
+      console.log(err);
     }
     setLoading(false);
   };
@@ -77,7 +85,14 @@ export default function Farmers() {
         accessor: "active",
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
-        Cell: (cell: any) => <ActiveDeactivateCell cell={cell} />,
+        Cell: (cell: any) => (
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="customer_id"
+            axiosFunction={farmers}
+            setData={setData}
+          />
+        ),
         extraProps: {
           columnStyle: {
             width: "250px",
@@ -118,11 +133,11 @@ export default function Farmers() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.customers, [data, page]);
 
   React.useEffect(() => {
     onFarmerGet();
-  }, []);
+  }, [page]);
 
   return (
     <AdminContainer>
@@ -138,8 +153,17 @@ export default function Farmers() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data.totalItems ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />

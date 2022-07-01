@@ -1,0 +1,2 @@
+1 -> shop_orders
+2 -> shop_assignretailerproducts

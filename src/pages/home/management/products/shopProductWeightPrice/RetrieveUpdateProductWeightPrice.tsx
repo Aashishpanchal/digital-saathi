@@ -1,35 +1,27 @@
-import { Select } from "flowbite-react";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import AdminContainer from "../../../../../components/AdminContainer";
 import MainContainer from "../../../../../components/common/MainContainer";
-import UpdateActions from "../../../../../components/common/UpdateActions";
-import { Form } from "../../../../../components/form";
-import LabelTextInput from "../../../../../components/form/LabelTextInput";
+import { FormRender } from "../../../../../components/form";
+import useForms from "../../../../../hooks/useForms";
 import { shopProductWeightPrice } from "../../../../../http";
+import { setFormAlert } from "../../../../../redux/slices/alertSlice";
+import useFormShopProductsWeightPrice from "./useFormShopProductsWeightPrice";
 
 export default function RetrieveUpdateProductWeightPrice() {
-  const [data, setData] = React.useState({
-    sku_id: "",
-    mrp: "",
-    cgst: "",
-    sgst: "",
-    igst: "",
-    price: "",
-    weight: "",
-    package: "",
-    units_per_case: "",
-    focus_sku: "",
-    dimension: "",
-    totalweight: "",
-    units: "",
+  const { sku_name, sku_id, price_id } = useParams();
+  const { getFormsFields, getUnitOptionsId, unitOptions, removePostFix } =
+    useFormShopProductsWeightPrice();
+
+  const dispatch = useDispatch();
+
+  const { data, setData, errors, onValidate } = useForms({
+    fields: getFormsFields,
+    setDefaultValue: {
+      units: "",
+    },
   });
-
-  const [loading, setLoading] = React.useState(false);
-
-  const { sku_name, price_id } = useParams();
-  const navigate = useNavigate();
-  const selection = ["ml", "kg", "litre", "gm"];
 
   const onRetrieve = async () => {
     try {
@@ -37,16 +29,14 @@ export default function RetrieveUpdateProductWeightPrice() {
         params: price_id,
       });
       if (res?.status === 200) {
-        let retrieveData: any = {};
-        for (let key in data) {
-          retrieveData[key] = res.data[key] || "";
-        }
-
-        const [weight, postfix] = removePostFix(res.data.weight || "");
+        const setValues: any = {};
+        getFormsFields.forEach((item) => {
+          setValues[item.name] = `${res.data[item.name] || item.defaultValue}`;
+        });
         setData({
-          ...retrieveData,
-          weight: weight || "",
-          units: postfix || "",
+          ...setValues,
+          units: getUnitOptionsId(setValues.weight),
+          weight: removePostFix(setValues.weight)[0],
         });
       }
     } catch (e: any) {
@@ -54,151 +44,56 @@ export default function RetrieveUpdateProductWeightPrice() {
     }
   };
 
-  const removePostFix = (value: string): any => {
-    const reg = /([\d]+(?:\.[\d]+)?(?![\d]))|([a-z.]+)(?![a-z.])/gi;
-    return value.match(reg) || ["", ""];
-  };
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
-  const onCancel = () => navigate(-1);
-
   const onUpdate = async () => {
-    let { units, ...updateData } = data;
-    updateData.weight += units;
-    try {
-      setLoading(true);
-      await shopProductWeightPrice("put", {
-        data: JSON.stringify(updateData),
-        params: price_id,
-      });
-      await onRetrieve();
-    } catch (e: any) {
-      console.log(e.response);
+    const isValid = onValidate();
+    if (isValid) {
+      let { units, ...updateData } = data;
+      updateData.weight += unitOptions[units];
+      try {
+        const res = await shopProductWeightPrice("put", {
+          params: price_id,
+          data: JSON.stringify({
+            ...updateData,
+            sku_id,
+          }),
+        });
+        if (res?.status === 200) {
+          await onRetrieve();
+          return true;
+        }
+      } catch (err: any) {
+        if (err?.response?.status === 400) {
+          dispatch(
+            setFormAlert({
+              type: "red",
+              highLight: "Server Validation Error! ",
+              text: err?.response?.data?.message,
+              show: true,
+            })
+          );
+        }
+      }
+      return false;
     }
-    setLoading(false);
+    return isValid;
   };
 
   React.useEffect(() => {
     onRetrieve();
-  }, []);
+  }, [unitOptions]);
 
   return (
     <AdminContainer>
       <MainContainer heading={`${sku_name} / Price Details`}>
-        <Form>
-          <div className="w-full md:w-[28rem] lg:w-[28rem]">
-            <LabelTextInput
-              type={"text"}
-              label="MRP"
-              name="mrp"
-              value={data.mrp || ""}
-              onChange={onChange}
-              hint="MRP is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="IGST"
-              name="igst"
-              value={data.igst || ""}
-              onChange={onChange}
-              hint="IGST is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="CGST"
-              name="cgst"
-              value={data.cgst || ""}
-              onChange={onChange}
-              hint="CGST is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="SGST"
-              name="sgst"
-              value={data.sgst || ""}
-              onChange={onChange}
-              hint="SGST is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Price"
-              name="price"
-              value={data.price || ""}
-              onChange={onChange}
-              hint="Price is compulsory"
-              hintColor="green"
-            />
-            <div className="flex items-center justify-between">
-              <LabelTextInput
-                type={"text"}
-                label="Weight"
-                name="weight"
-                value={removePostFix(data.weight || "")[0]}
-                onChange={onChange}
-              />
-              <div className="mt-5 w-1/2">
-                <Select
-                  id="units"
-                  required
-                  name="units"
-                  value={data.units}
-                  onChange={(e) => {
-                    setData({ ...data, units: e.target.value });
-                  }}
-                >
-                  <option>--Select Units--</option>
-                  {selection.map((item, index) => (
-                    <option key={index.toString()} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            </div>
-            <LabelTextInput
-              type={"text"}
-              label="Package"
-              name="package"
-              value={data.package || ""}
-              onChange={onChange}
-              hint="Package is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Dimension"
-              name="dimension"
-              value={data.dimension || ""}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Total Weight"
-              name="totalweight"
-              value={data.totalweight || ""}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Units Per Case"
-              name="units_per_case"
-              value={data.units_per_case || ""}
-              onChange={onChange}
-            />
-          </div>
-          <UpdateActions
-            startLoading={loading}
-            onSave={onUpdate}
-            onCancel={onCancel}
+        <div className="w-full md:w-[30] lg:w-[30rem]">
+          <FormRender
+            data={data}
+            setData={setData}
+            fields={getFormsFields}
+            errors={errors}
+            onUpdate={onUpdate}
           />
-        </Form>
+        </div>
       </MainContainer>
     </AdminContainer>
   );

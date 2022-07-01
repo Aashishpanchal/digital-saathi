@@ -23,6 +23,7 @@ interface FieldsType {
   validate?: boolean;
   hintText?: string;
   options?: { [key: string]: any };
+  defaultOption?: { [key: string]: any };
   onChange?: (e: any) => void;
 }
 
@@ -79,26 +80,27 @@ export default function FormRender(props: {
         if (item.Field) {
           const { Field } = item;
           return (
-            <>
-              <Field
-                data={props.data}
-                setData={props.setData}
-                label={item.label}
-                hint={props.errors[item.name]?.hintText}
-                hintColor={
-                  item.validate
-                    ? props.errors[item.name]?.error
-                      ? "red"
-                      : "green"
-                    : "base"
-                }
-              />
-            </>
+            <Field
+              key={index.toString()}
+              data={props.data}
+              setData={props.setData}
+              label={item.label}
+              options={item.options}
+              defaultOption={item.defaultOption}
+              hint={props.errors[item.name]?.hintText}
+              hintColor={
+                item.validate
+                  ? props.errors[item.name]?.error
+                    ? "red"
+                    : "green"
+                  : "base"
+              }
+            />
           );
         } else {
           return (
             <LabelTextInput
-              key={index}
+              key={index.toString()}
               type={item.type}
               label={item.label}
               placeholder={item.placeholder}
@@ -117,6 +119,7 @@ export default function FormRender(props: {
                   : "base"
               }
               options={item.options}
+              defaultOption={item.defaultOption}
             />
           );
         }

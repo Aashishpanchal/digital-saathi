@@ -1,22 +1,16 @@
 import React from "react";
 import { brands, categories, subCategories } from "../../../../http";
 
-export default function useFormProducts(data?: any) {
+export default function useFormProducts() {
   const [categoriesOptions, setCategoriesOptions] = React.useState<{
     [key: string]: any;
-  }>({
-    "": "Select Category",
-  });
+  }>({});
   const [subCategoriesOptions, setSubCategoriesOptions] = React.useState<{
     [key: string]: any;
-  }>({
-    "": "Select SubCategory",
-  });
+  }>({});
   const [brandsOptions, setBrandsOptions] = React.useState<{
     [key: string]: any;
-  }>({
-    "": "Select Brand",
-  });
+  }>({});
 
   const onRetrieveCategory = async () => {
     try {
@@ -29,7 +23,6 @@ export default function useFormProducts(data?: any) {
             options[item?.category_id?.toString()] = item?.name;
           });
           setCategoriesOptions({
-            ...categoriesOptions,
             ...options,
           });
         }
@@ -52,7 +45,6 @@ export default function useFormProducts(data?: any) {
             options[item?.category_id?.toString()] = item?.name;
           });
           setSubCategoriesOptions({
-            ...subCategoriesOptions,
             ...options,
           });
         }
@@ -73,7 +65,6 @@ export default function useFormProducts(data?: any) {
             options[item?.brand_id?.toString()] = item?.brand_name;
           });
           setBrandsOptions({
-            ...brandsOptions,
             ...options,
           });
         }
@@ -114,8 +105,8 @@ export default function useFormProducts(data?: any) {
         label: "Category",
         name: "category_id",
         options: categoriesOptions,
-        onChange: async (e: any) => {
-          await onRetrieveSubCategory(e.target.value);
+        defaultOption: {
+          "": "Select Category",
         },
         defaultValue: "",
       },
@@ -124,6 +115,9 @@ export default function useFormProducts(data?: any) {
         label: "Sub Category",
         name: "subcategory_id",
         options: subCategoriesOptions,
+        defaultOption: {
+          "": "Select SubCategory",
+        },
         defaultValue: "",
       },
       {
@@ -131,6 +125,9 @@ export default function useFormProducts(data?: any) {
         label: "Brand",
         name: "brand_id",
         options: brandsOptions,
+        defaultOption: {
+          "": "Select Brand",
+        },
         defaultValue: "",
       },
       {
@@ -156,5 +153,5 @@ export default function useFormProducts(data?: any) {
     onRetrieveBrand();
   }, []);
 
-  return { getFormsFields };
+  return { getFormsFields, onRetrieveSubCategory };
 }

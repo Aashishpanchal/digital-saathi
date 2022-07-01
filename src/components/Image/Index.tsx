@@ -1,9 +1,18 @@
 import React from "react";
 import { baseImageUrl } from "../../http/config";
 
-export default function Image(props: { src: string; alt: string }) {
+export default function Image(props: {
+  src: string;
+  alt: string;
+  size?: number | string;
+}) {
   return (
-    <div className="w-16 h-fit">
+    <div
+      className="w-16 h-fit"
+      style={{
+        width: props.size ? props.size : undefined,
+      }}
+    >
       <img
         className="w-full h-full"
         src={baseImageUrl?.concat(props.src)}

@@ -3,12 +3,14 @@ import { useTable, useGlobalFilter, useFilters, useSortBy } from "react-table";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import * as Filter from "../filter";
 import GlobalFilterInput from "../filter/GlobalFilterInput";
-import { Alert, Label } from "flowbite-react";
+import { Alert, Label, Spinner } from "flowbite-react";
 import Pagination from "./Pagination";
 import { HiInformationCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { setTableAlert } from "../../redux/slices/alertSlice";
+import Button from "../button/Button";
+import { FaFileUpload } from "react-icons/fa";
 
 export default function Table(props: {
   columns: any;
@@ -19,6 +21,7 @@ export default function Table(props: {
   totalPages?: number;
   totalEntries?: number;
   entriesPerPage?: number;
+  onUpload?: (data: any) => Promise<void>;
 }) {
   const {
     getTableProps,
@@ -42,6 +45,7 @@ export default function Table(props: {
   const onDismiss = () => {
     dispatch(setTableAlert({ ...tableAlert, show: false }));
   };
+  const [uploadingLoading, setUploadingLoading] = React.useState(false);
 
   React.useEffect(() => {
     return () => {
@@ -153,7 +157,7 @@ export default function Table(props: {
                       } catch (error: any) {}
                       return (
                         <td
-                          className="whitespace-nowrap px-5 py-5 border-b border-gray-200 dark:border-gray-800 text-sm"
+                          className="whitespace-nowrap px-5 py-5 border-b border-gray-200 dark:border-gray-800 text-sm "
                           {...props}
                           align={align as any}
                         >
@@ -179,6 +183,30 @@ export default function Table(props: {
           </div>
         )}
       </div>
+      {props.onUpload && (
+        <div className="mt-4">
+          <Button
+            type={"button"}
+            color="dark"
+            onClick={async () => {
+              if (props.onUpload) {
+                setUploadingLoading(true);
+                await props.onUpload(rows);
+                setUploadingLoading(false);
+              }
+            }}
+            icon={
+              uploadingLoading ? (
+                <Spinner size="md" />
+              ) : (
+                <FaFileUpload size={20} />
+              )
+            }
+          >
+            Upload Now
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

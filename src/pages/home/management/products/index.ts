@@ -4,3 +4,8 @@ export { default as CreateProducts } from "./CreateProducts";
 export { default as ProductWeightPrice } from "./shopProductWeightPrice/ProductWeightPrice";
 export { default as CreateProductWeightPrice } from "./shopProductWeightPrice/CreateProductWeightPrice";
 export { default as RetrieveUpdateProductWeightPrice } from "./shopProductWeightPrice/RetrieveUpdateProductWeightPrice";
+export { default as ShopProductDetails } from "./ShopProductDetails";
+export { default as ShopProductMoreImages } from "./shopProductImages/ShopProductMoreImages";
+export { default as ShopProductUploadImage } from "./shopProductImages/ShopProductUploadImage";
+export { default as ShopProductRetrieveUpdateImage } from "./shopProductImages/ShopProductRetrieveUpdateImage";
+export { default as ImportCsvProducts } from "./importExport/ImportCsvProducts";

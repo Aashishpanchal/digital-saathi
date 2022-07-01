@@ -14,26 +14,26 @@ export const api = axios.create({
 export const farmers = (
   method: "get" | "post" | "put" | "delete",
   options?: {
-    data?: string;
+    data?: string | FormData;
     params?: string;
+    postfix?: string;
   }
 ) => {
   const params = options?.params ? "/" + options.params : "";
-  const url = `/shop_customer${params}`;
+  let url = `/shop_customer${params}`;
   if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
     return api.get(url);
-  }
-  if (method.toLowerCase() === "post") {
+  } else if (method.toLowerCase() === "post") {
     return api.post(url, options?.data);
-  }
-  if (method.toLowerCase() === "put") {
+  } else if (method.toLowerCase() === "put") {
     return api.put(url, options?.data);
-  }
-  if (method.toLowerCase() === "delete") {
+  } else if (method.toLowerCase() === "delete") {
     return api.delete(url);
   }
 };
-
 // list of all the endpoints of shop_warehouses
 export const warehouse = (
   method: "get" | "post" | "put" | "delete",
@@ -62,22 +62,23 @@ export const warehouse = (
 export const retailer = (
   method: "get" | "post" | "put" | "delete",
   options?: {
-    data?: string;
+    data?: string | FormData;
     params?: string;
+    postfix?: string;
   }
 ) => {
   const params = options?.params ? "/" + options.params : "";
-  const url = `/shop_retailer${params}`;
+  let url = `/shop_retailer${params}`;
   if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
     return api.get(url);
-  }
-  if (method.toLowerCase() === "post") {
+  } else if (method.toLowerCase() === "post") {
     return api.post(url, options?.data);
-  }
-  if (method.toLowerCase() === "put") {
+  } else if (method.toLowerCase() === "put") {
     return api.put(url, options?.data);
-  }
-  if (method.toLowerCase() === "delete") {
+  } else if (method.toLowerCase() === "delete") {
     return api.delete(url);
   }
 };
@@ -181,20 +182,21 @@ export const deliveryPartners = (
   options?: {
     data?: string | FormData;
     params?: string;
+    postfix?: string;
   }
 ) => {
   const params = options?.params ? "/" + options.params : "";
-  const url = `/shop_deliverypartners${params}`;
+  let url = `/shop_deliverypartners${params}`;
   if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
     return api.get(url);
-  }
-  if (method.toLowerCase() === "post") {
+  } else if (method.toLowerCase() === "post") {
     return api.post(url, options?.data);
-  }
-  if (method.toLowerCase() === "put") {
+  } else if (method.toLowerCase() === "put") {
     return api.put(url, options?.data);
-  }
-  if (method.toLowerCase() === "delete") {
+  } else if (method.toLowerCase() === "delete") {
     return api.delete(url);
   }
 };
@@ -259,6 +261,31 @@ export const shopProductWeightPrice = (
 ) => {
   const params = options?.params ? "/" + options.params : "";
   let url = `/shop_productweightprice${params}`;
+  if (method.toLowerCase() === "get") {
+    if (options?.postfix) {
+      url += options.postfix;
+    }
+    return api.get(url);
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
+  } else if (method.toLowerCase() === "delete") {
+    return api.delete(url);
+  }
+};
+
+// list of all the endpoints of shop_productimages
+export const shopProductImages = (
+  method: "get" | "post" | "put" | "delete",
+  options?: {
+    data?: string;
+    params?: string;
+    postfix?: string;
+  }
+) => {
+  const params = options?.params ? "/" + options.params : "";
+  let url = `/shop_productimages${params}`;
   if (method.toLowerCase() === "get") {
     if (options?.postfix) {
       url += options.postfix;

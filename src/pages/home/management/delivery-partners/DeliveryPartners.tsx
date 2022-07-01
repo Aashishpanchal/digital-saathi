@@ -16,9 +16,15 @@ import Button from "../../../../components/button/Button";
 import { TbTruckDelivery } from "react-icons/tb";
 
 export default function DeliveryPartners() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    brands: [],
+    partners: [],
+  });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
+  const [page, setPage] = React.useState(0);
   const [value, setValue] = React.useState<{
     partner_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,7 +35,9 @@ export default function DeliveryPartners() {
   const onDeliveryPartnersGet = async () => {
     setLoading(true);
     try {
-      const res: any = await deliveryPartners("get");
+      const res: any = await deliveryPartners("get", {
+        postfix: `?page=${page}`,
+      });
       if (res.status === 200) {
         setData(res.data);
       }
@@ -139,11 +147,11 @@ export default function DeliveryPartners() {
     []
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.partners, [data, page]);
 
   React.useEffect(() => {
     onDeliveryPartnersGet();
-  }, []);
+  }, [page]);
 
   return (
     <AdminContainer>
@@ -168,8 +176,17 @@ export default function DeliveryPartners() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data.totalItems ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />

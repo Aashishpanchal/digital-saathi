@@ -19,9 +19,10 @@ export default function CreateFarmers() {
 
   const onSave = async () => {
     if (onValidate()) {
+      const { image, ...newData } = data;
       try {
         const res = await categories("post", {
-          data: JSON.stringify(data),
+          data: JSON.stringify(newData),
         });
         if (res?.status === 200) {
           return true;

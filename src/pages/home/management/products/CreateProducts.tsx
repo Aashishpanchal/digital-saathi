@@ -9,7 +9,7 @@ import { setFormAlert } from "../../../../redux/slices/alertSlice";
 import useFormProducts from "./useFormProducts";
 
 export default function CreateProducts() {
-  const { getFormsFields } = useFormProducts();
+  const { getFormsFields, onRetrieveSubCategory } = useFormProducts();
 
   const dispatch = useDispatch();
 
@@ -55,6 +55,12 @@ export default function CreateProducts() {
       );
     }
   };
+
+  React.useEffect(() => {
+    if (data.category_id) {
+      onRetrieveSubCategory(data.category_id);
+    }
+  }, [data]);
 
   return (
     <AdminContainer>

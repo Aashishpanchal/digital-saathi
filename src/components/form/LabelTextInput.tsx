@@ -13,6 +13,7 @@ export default function LabelTextInput(props: {
   maxLength?: number;
   placeholder?: string;
   options?: { [key: string]: any };
+  defaultOption?: { [key: string]: any };
 }) {
   const random = Math.random().toString(36).substring(7);
   const id = `${props.name}-${props.type}-${random}`;
@@ -38,22 +39,31 @@ export default function LabelTextInput(props: {
     );
   }
   if (props.type === "select") {
+    const { defaultOption, options } = props;
+    const defaultOptionKeys = Object.keys(defaultOption || {});
+    const optionsKeys = Object.keys(options || {});
     return (
       <div className="my-1">
         <Label htmlFor={id}>{props.label}</Label>
         <Select
           className="border-2"
           id={id}
-          required
+          required={props.required}
           name={props.name}
           value={props.value}
           onChange={props.onChange as any}
           helperText={props.hint}
           color={props.hintColor}
         >
-          {props.options &&
-            Object.keys(props.options).map((name, index) => (
-              <option key={index.toString()} value={name}>
+          {defaultOptionKeys.length === 1 &&
+            defaultOptionKeys.map((name, index) => (
+              <option value={name.toString()} key={index.toString()}>
+                {(props.defaultOption as any)[name]}
+              </option>
+            ))}
+          {optionsKeys &&
+            optionsKeys.map((name, index) => (
+              <option key={index.toString()} value={name.toString()}>
                 {(props?.options as any)[name]}
               </option>
             ))}

@@ -15,6 +15,7 @@ import { DeleteModal } from "../../../../components/modals";
 import { FocusSKUCell } from "./cell";
 import Button from "../../../../components/button/Button";
 import { MdProductionQuantityLimits } from "react-icons/md";
+import { FaFileImport } from "react-icons/fa";
 
 export default function Products() {
   const [data, setData] = React.useState<any>({
@@ -63,16 +64,20 @@ export default function Products() {
     }
   };
 
-  const onShopProductEdit = (value: { [key: string]: any }) =>
-    navigate(`/management/products/${value.sku_id}`);
-
-  const onProductWeightPrice = (value: { [key: string]: any }) =>
+  const onShopProductEdit = (values: { [key: string]: any }) =>
+    navigate(`${values.sku_id}`);
+  const onMoreImage = (values: { [key: string]: any }) =>
     navigate(
-      `/management/products/${value.sku_id}/product-weight-price/${encodeURI(
-        value.sku_name
-      )}`
+      `${values.sku_id}/product-more-images/${encodeURI(values.sku_name)}`
+    );
+  const onProductDetails = (values: { [key: string]: any }) =>
+    navigate(`${values.sku_id}/product-details/${encodeURI(values.sku_name)}`);
+  const onProductWeightPrice = (values: { [key: string]: any }) =>
+    navigate(
+      `${values.sku_id}/product-weight-price/${encodeURI(values.sku_name)}`
     );
 
+  const onImport = () => navigate("product-import-export");
   const onNew = () => navigate("new");
 
   const columns = React.useMemo(
@@ -150,6 +155,8 @@ export default function Products() {
             }}
             onEdit={onShopProductEdit}
             onWeightPrice={onProductWeightPrice}
+            onImage={onMoreImage}
+            onView={onProductDetails}
           />
         ),
       },
@@ -166,13 +173,20 @@ export default function Products() {
   return (
     <AdminContainer>
       <MainContainer heading="Products">
-        <div className="mb-4">
+        <div className="mb-4 flex">
           <Button
             onClick={onNew}
             icon={<MdProductionQuantityLimits size={18} />}
             color="dark"
           >
             New
+          </Button>
+          <Button
+            onClick={onImport}
+            icon={<FaFileImport size={18} />}
+            color="dark"
+          >
+            Import
           </Button>
         </div>
         {loading ? (

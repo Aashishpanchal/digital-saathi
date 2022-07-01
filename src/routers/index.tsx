@@ -6,7 +6,6 @@ import Dashboard from "../pages/home/Dashboard";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 import PublicRouter from "./PublicRouter";
 import Farmers from "../pages/home/management/farmers/Farmers";
-import Retailers from "../pages/home/management/retailers/Retailers";
 import RetrieveUpdate from "../pages/home/management/farmers/RetrieveUpdate";
 import {
   Categories,
@@ -16,8 +15,6 @@ import {
   RetrieveUpdateSubCategory,
   SubCategories,
 } from "../pages/home/management/categories";
-import CreateRetailers from "../pages/home/management/retailers/CreateRetailers";
-import RetrieveUpdateRetailers from "../pages/home/management/retailers/RetrieveUpdateRetailers";
 import {
   Brands,
   CreateBrands,
@@ -32,10 +29,15 @@ import {
 import {
   CreateProducts,
   CreateProductWeightPrice,
+  ImportCsvProducts,
   Products,
   ProductWeightPrice,
   RetrieveUpdateProduct,
   RetrieveUpdateProductWeightPrice,
+  ShopProductDetails,
+  ShopProductMoreImages,
+  ShopProductRetrieveUpdateImage,
+  ShopProductUploadImage,
 } from "../pages/home/management/products";
 import {
   CreatePackage,
@@ -58,6 +60,12 @@ import { DeliveredOrders } from "../pages/home/orders/delivered";
 import { CancelledOrders } from "../pages/home/orders/cancelled";
 import { ReturningOrders } from "../pages/home/orders/returning";
 import { ReturnedOrders } from "../pages/home/orders/Returned";
+import {
+  CreateRetailers,
+  RetailerDashboard,
+  Retailers,
+  RetrieveUpdateRetailers,
+} from "../pages/home/management/retailers";
 
 export default function AppRouter() {
   const Element = useRoutes([
@@ -139,6 +147,19 @@ export default function AppRouter() {
                   <RetrieveUpdateRetailers />
                 </AdminProtectedRoute>
               ),
+            },
+            {
+              path: ":retailer_id/retailer-dashboard/:retailer_name",
+              children: [
+                {
+                  path: "",
+                  element: (
+                    <AdminProtectedRoute>
+                      <RetailerDashboard />
+                    </AdminProtectedRoute>
+                  ),
+                },
+              ],
             },
           ],
         },
@@ -286,39 +307,94 @@ export default function AppRouter() {
               ),
             },
             {
-              path: ":id",
-              element: (
-                <AdminProtectedRoute>
-                  <RetrieveUpdateProduct />
-                </AdminProtectedRoute>
-              ),
-            },
-            {
-              path: ":sku_id/product-weight-price/:sku_name",
+              path: "product-import-export",
               children: [
                 {
                   path: "",
                   element: (
                     <AdminProtectedRoute>
-                      <ProductWeightPrice />
+                      <ImportCsvProducts />
+                    </AdminProtectedRoute>
+                  ),
+                },
+              ],
+            },
+            {
+              path: ":sku_id",
+              children: [
+                {
+                  path: "",
+                  element: (
+                    <AdminProtectedRoute>
+                      <RetrieveUpdateProduct />
                     </AdminProtectedRoute>
                   ),
                 },
                 {
-                  path: "new",
+                  path: "product-more-images/:sku_name",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <ShopProductMoreImages />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                    {
+                      path: ":image_id",
+                      element: (
+                        <AdminProtectedRoute>
+                          <ShopProductRetrieveUpdateImage />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                    {
+                      path: "upload",
+                      element: (
+                        <AdminProtectedRoute>
+                          <ShopProductUploadImage />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
+                },
+                {
+                  path: "product-details/:sku_name",
                   element: (
                     <AdminProtectedRoute>
-                      <CreateProductWeightPrice />
+                      <ShopProductDetails />
                     </AdminProtectedRoute>
                   ),
                 },
                 {
-                  path: ":price_id",
-                  element: (
-                    <AdminProtectedRoute>
-                      <RetrieveUpdateProductWeightPrice />
-                    </AdminProtectedRoute>
-                  ),
+                  path: "product-weight-price/:sku_name",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <ProductWeightPrice />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                    {
+                      path: "new",
+                      element: (
+                        <AdminProtectedRoute>
+                          <CreateProductWeightPrice />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                    {
+                      path: ":price_id",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetrieveUpdateProductWeightPrice />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
                 },
               ],
             },

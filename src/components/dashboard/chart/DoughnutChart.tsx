@@ -4,18 +4,17 @@ import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function DoughnutChart() {
-  const data = {
-    labels: ["Farmers", "Warehouses", "Retailers"],
-    datasets: [
-      {
-        data: [23, 5, 8],
-        backgroundColor: ["#61efcd", "#2485fa", "#f9a825"],
-        borderColor: ["#61efcd", "#2485fa", "#f9a825"],
-        borderWidth: 1,
-      },
-    ],
+export default function DoughnutChart(props: {
+  data?: {
+    labels: string[];
+    datasets: {
+      data: number[];
+      backgroundColor: string[];
+      borderColor: string[];
+      borderWidth: number;
+    }[];
   };
+}) {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -31,12 +30,14 @@ export default function DoughnutChart() {
   };
   return (
     <div className="bg-white dark:bg-gray-800 p-2 border dark:border-gray-600 rounded-xl h-[400px]  shadow-sm hover:shadow-lg hover:cursor-pointer">
-      <Doughnut
-        height={400}
-        style={{ display: "block", height: "100%" }}
-        data={data}
-        options={options}
-      />
+      {props.data && (
+        <Doughnut
+          height={400}
+          style={{ display: "block", height: "100%" }}
+          data={props.data}
+          options={options}
+        />
+      )}
     </div>
   );
 }
