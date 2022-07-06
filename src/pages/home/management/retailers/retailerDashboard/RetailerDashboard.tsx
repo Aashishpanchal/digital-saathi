@@ -9,7 +9,7 @@ import {
   FaShoppingBasket,
   FaTruckLoading,
 } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminContainer from "../../../../../components/AdminContainer";
 import MainContainer from "../../../../../components/common/MainContainer";
 import { DashboardCard } from "../../../../../components/DashboardCard";
@@ -22,6 +22,8 @@ export default function RetailerDashboard() {
     retailers: 0,
     farmers: 0,
   });
+
+  const navigate = useNavigate();
 
   const layerOne = React.useMemo(
     () => [
@@ -52,7 +54,9 @@ export default function RetailerDashboard() {
       {
         Title: "Orders",
         Icon: <FaShoppingBasket size={50} />,
-        onClick: () => {},
+        onClick: () => {
+          navigate("retailer-orders");
+        },
       },
       {
         Title: "Input Sale Details",

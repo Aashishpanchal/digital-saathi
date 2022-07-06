@@ -66,6 +66,7 @@ import {
   Retailers,
   RetrieveUpdateRetailers,
 } from "../pages/home/management/retailers";
+import { RetailerOrders } from "../pages/home/management/retailers/retailerDashboard";
 
 export default function AppRouter() {
   const Element = useRoutes([
@@ -158,6 +159,19 @@ export default function AppRouter() {
                       <RetailerDashboard />
                     </AdminProtectedRoute>
                   ),
+                },
+                {
+                  path: "retailer-orders",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetailerOrders />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
                 },
               ],
             },
