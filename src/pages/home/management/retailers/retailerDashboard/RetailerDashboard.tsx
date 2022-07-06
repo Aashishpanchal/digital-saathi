@@ -83,23 +83,25 @@ export default function RetailerDashboard() {
     []
   );
 
-  const onTotalOrders = async () => {
+  const getTotalOrdersToSet = async () => {
     try {
-      const res = await shopOrders("get");
+      const res = await shopOrders("get", {
+        postfix: `?page=0&retailer_id=${retailer_id}`,
+      });
       if (res?.status === 200) {
-        const orderRetailers = res.data?.orders.filter(
-          (item: any) => item.retailer_id === retailer_id
-        );
         setTotals({
           ...totals,
-          orders: orderRetailers.length,
+          orders: res.data?.totalItems || 0,
         });
+        console.log(totals);
       }
-    } catch (err: any) {}
+    } catch (err: any) {
+      console.log(err?.response);
+    }
   };
 
   React.useEffect(() => {
-    onTotalOrders();
+    getTotalOrdersToSet();
   }, []);
 
   return (
