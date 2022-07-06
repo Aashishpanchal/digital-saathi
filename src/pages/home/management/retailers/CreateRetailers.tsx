@@ -5,7 +5,6 @@ import CreateActions from "../../../../components/common/CreateActions";
 import MainContainer from "../../../../components/common/MainContainer";
 import { Form } from "../../../../components/form";
 import LabelTextInput from "../../../../components/form/LabelTextInput";
-import { setEmpty } from "../../../../components/Utils";
 // import useValidation from "../../../../hooks/useValidation";
 import { retailer } from "../../../../http";
 
@@ -50,7 +49,6 @@ export default function CreateRetailers() {
         data: JSON.stringify(data),
       });
       if (res?.status === 200) {
-        onReset();
       }
     } catch (e) {
       console.log(e);
@@ -59,11 +57,6 @@ export default function CreateRetailers() {
   };
 
   const onCancel = () => navigate(-1);
-  const onReset = () => {
-    setEmpty(data, (clearData) => {
-      setData(clearData);
-    });
-  };
 
   return (
     <AdminContainer>
@@ -200,7 +193,7 @@ export default function CreateRetailers() {
             startLoading={loading}
             onSave={onCreated}
             onCancel={onCancel}
-            onReset={onReset}
+            onReset={() => {}}
           />
         </Form>
       </MainContainer>

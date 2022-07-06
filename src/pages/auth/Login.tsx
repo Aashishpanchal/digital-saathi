@@ -1,40 +1,34 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import BackgroundImage from "../../components/common/BackgroundImage";
-import TextInput from "../../components/form/inputs/TextInput";
+import { FormRender } from "../../components/form";
+import useForms from "../../hooks/useForms";
 import { setAuth } from "../../redux/slices/authSlice";
+import useLoginForm from "./useLoginForm";
 
 export default function Login() {
-  const [loginData, setLoginData] = React.useState({
-    username: "",
-    password: "",
+  const { getFormsFields } = useLoginForm();
+  const { data, setData, onValidate, errors } = useForms({
+    fields: getFormsFields,
   });
 
   // for login
   const dispatch = useDispatch();
 
-  // add onChange event to handle change in input
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   // please use this function to submit the form
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    dispatch(
-      setAuth({
-        id: "4545",
-        email: "",
-        username: loginData.username,
-        permissions: {
-          isAdmin: true,
-          isActive: true,
-        },
-      })
-    );
+  const onLogin = () => {
+    if (onValidate()) {
+      dispatch(
+        setAuth({
+          id: "4545",
+          email: "",
+          username: data.username,
+          permissions: {
+            isAdmin: true,
+            isActive: true,
+          },
+        })
+      );
+    }
   };
 
   return (
@@ -53,38 +47,23 @@ export default function Login() {
               Admin Panel
             </h1>
           </div>
-          <form className="mt-6" method="POST">
-            <div>
-              <TextInput
-                label="Username"
-                type="text"
-                name="username"
-                placeholder="admin456"
-                onChange={handleChange}
-                value={loginData.username}
-              />
-            </div>
-            <div className="mt-4">
-              <TextInput
-                label="Password"
-                type="password"
-                name="password"
-                placeholder="*********"
-                value={loginData.password}
-                onChange={handleChange}
-              />
-            </div>
+          <FormRender
+            data={data}
+            setData={setData}
+            fields={getFormsFields}
+            errors={errors}
+            showCancel={true}
+          >
             <div className="mt-6">
               <button
-                type="submit"
+                type="button"
                 className="disabled:opacity-50 disabled:cursor-default w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-light rounded-md hover:bg-blue-light focus:outline-none"
-                disabled={!loginData.username || !loginData.password}
-                onClick={(e) => handleSubmit(e)}
+                onClick={onLogin}
               >
                 Log in
               </button>
             </div>
-          </form>
+          </FormRender>
         </div>
         <div className="bg-gray-100 dark:bg-gray-700 py-4 rounded-b-md">
           <h1 className="block text-xs text-center font-medium text-gray-800 dark:text-gray-200">

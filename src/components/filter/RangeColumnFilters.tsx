@@ -2,50 +2,60 @@ import React from "react";
 import { TextInput } from "flowbite-react";
 import moment from "moment";
 
-export default function DateColumnFilter({
+const DateFormateString = "YYYY-MM-DD";
+
+export function DateColumnFilter({
   column: { filterValue = [], preFilteredRows, setFilter, id },
 }: any) {
-  const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length
-      ? new Date(preFilteredRows[0].values[id])
-      : new Date(0);
-    let max = preFilteredRows.length
-      ? new Date(preFilteredRows[0].values[id])
-      : new Date(0);
-
-    preFilteredRows.forEach((row: any) => {
-      const rowDate = new Date(row.values[id]);
-
-      min = rowDate <= min ? rowDate : min;
-      max = rowDate >= max ? rowDate : max;
-    });
-    return [min, max];
-  }, [id, preFilteredRows]);
+  const dates = preFilteredRows.map((val: any) => moment(val.original[id]));
+  const minDate = moment.min(dates).subtract(1, "day"); // To include the date
+  const maxDate = moment.max(dates).add(1, "day");
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center flex-wrap gap-2">
       <TextInput
+        className="hover:cursor-pointer"
         type="date"
-        min={min.toISOString().slice(0, 10)}
-        onChange={(e) => {
-          const val = e.target.value;
-          setFilter((old = []) => [val ? val : undefined, old[1]]);
-        }}
+        min={minDate.format(DateFormateString)}
+        max={maxDate.format(DateFormateString)}
         value={filterValue[0] || ""}
-      />
-      {" to "}
-      <TextInput
-        type="date"
-        max={max.toISOString().slice(0, 10)}
         onChange={(e) => {
           const val = e.target.value;
-          setFilter((old = []) => [
-            old[0],
-            val ? val.concat("T23:59:59.999Z") : undefined,
-          ]);
+          setFilter((old = []) => [val || undefined, old[1]]);
         }}
-        value={filterValue[1]?.slice(0, 10) || ""}
+        color="green"
+      />
+      <span className="font-bold mx-2">To</span>
+      <TextInput
+        className="hover:cursor-pointer"
+        type="date"
+        value={filterValue[1] || ""}
+        max={maxDate.format(DateFormateString)}
+        min={minDate.format(DateFormateString)}
+        onChange={(e) => {
+          const val = e.target.value;
+          setFilter((old = []) => [old[0], val || undefined]);
+        }}
+        color="green"
       />
     </div>
   );
+}
+
+export function DateTimeFilterMethod(
+  rows: any[],
+  columnIds: any,
+  filterValue: any
+) {
+  if (typeof filterValue[0] === "undefined") {
+    return rows;
+  }
+  if (typeof filterValue[1] === "undefined") {
+    return rows;
+  }
+  let start = moment(filterValue[0]).subtract(1, "day");
+  let end = moment(filterValue[1]).add(1, "day");
+  return rows.filter((val) => {
+    return moment(val.original[columnIds]).isBetween(start, end);
+  });
 }

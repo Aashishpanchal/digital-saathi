@@ -39,6 +39,7 @@ export default function FormRender(props: {
   onUpdate?: onClickType;
   onSaveStay?: () => Promise<void>;
   onReset?: () => void;
+  showCancel?: boolean;
 }) {
   const [updateLoading, setUpdateLoading] = React.useState(false);
   const [saveLoading, setSaveLoading] = React.useState(false);
@@ -203,16 +204,18 @@ export default function FormRender(props: {
             Reset
           </Button>
         )}
-        <Button
-          onClick={() => {
-            navigate(-1);
-          }}
-          type="button"
-          color="white"
-          icon={<IoMdClose size={22} />}
-        >
-          Cancel
-        </Button>
+        {!props.showCancel && (
+          <Button
+            onClick={() => {
+              navigate(-1);
+            }}
+            type="button"
+            color="white"
+            icon={<IoMdClose size={22} />}
+          >
+            Cancel
+          </Button>
+        )}
       </div>
     </Form>
   );

@@ -8,8 +8,8 @@ export default function Filters(props: { children: React.ReactNode }) {
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`${
-          isOpen ? "" : "border-gray-200 dark:border-gray-600 border-b mb-4"
-        } flex items-center justify-between cursor-pointer p-4`}
+          isOpen ? "" : "border-gray-200 dark:border-gray-600 border-b mb-2"
+        } flex items-center justify-between cursor-pointer p-3`}
       >
         <div className="flex items-center font-medium">Filters</div>
         {isOpen ? (
@@ -18,7 +18,9 @@ export default function Filters(props: { children: React.ReactNode }) {
           <FaChevronRight className="text-gray-600 dark:text-gray-300" />
         )}
       </div>
-      <div className={isOpen ? "hidden" : "block"}>{props.children}</div>
+      <div className={"pb-3 " + (isOpen ? "hidden" : "block")}>
+        {props.children}
+      </div>
     </div>
   );
 }

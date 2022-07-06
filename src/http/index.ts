@@ -377,8 +377,9 @@ export const shopAreas = (
 
 // list of all the endpoints of shop_orders
 export const shopOrders = (
-  method: "get" | "delete",
+  method: "get" | "post" | "put" | "delete",
   options?: {
+    data?: string | FormData;
     params?: string;
     postfix?: string;
   }
@@ -390,6 +391,10 @@ export const shopOrders = (
       url += options.postfix;
     }
     return api.get(url);
+  } else if (method.toLowerCase() === "post") {
+    return api.post(url, options?.data);
+  } else if (method.toLowerCase() === "put") {
+    return api.put(url, options?.data);
   } else if (method.toLowerCase() === "delete") {
     return api.delete(url);
   }

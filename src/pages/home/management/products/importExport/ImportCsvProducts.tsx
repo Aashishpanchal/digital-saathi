@@ -17,7 +17,6 @@ export default function ImportCsvProducts() {
     meta: [],
   });
   const [errors, setErrors] = React.useState<any>([]);
-  const [isValid, setValid] = React.useState(true);
 
   const navigate = useNavigate();
 
@@ -75,10 +74,10 @@ export default function ImportCsvProducts() {
         Cell: (cell: any) => <CheckDataCell cell={cell} />,
       },
     ],
-    [isValid]
+    []
   );
 
-  const getData = React.useMemo(() => file.data, [file, isValid]);
+  const getData = React.useMemo(() => file.data, [file]);
   const onCheck = (data: any) => {
     const error: any[] = [];
     data.forEach((item: any) => {
