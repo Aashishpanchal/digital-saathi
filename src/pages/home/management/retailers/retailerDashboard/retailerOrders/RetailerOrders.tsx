@@ -1,3 +1,4 @@
+import React from "react";
 import { useParams } from "react-router-dom";
 import AdminContainer from "../../../../../../components/AdminContainer";
 import CollapseDropDown from "../../../../../../components/common/CollapseDropDown";
@@ -5,6 +6,7 @@ import MainContainer from "../../../../../../components/common/MainContainer";
 
 export default function RetailerOrders() {
   const { retailer_name, retailer_id } = useParams();
+
 
   return (
     <AdminContainer>

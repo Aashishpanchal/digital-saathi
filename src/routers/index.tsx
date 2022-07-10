@@ -22,9 +22,11 @@ import {
 } from "../pages/home/management/brands";
 import {
   CreateDeliveryPartner,
+  CreateDPRetailer,
   DeliveryPartners,
   DeliveryPartnersRetailer,
   RetrieveUpdateDeliveryPartner,
+  RetrieveUpdateDPRetailer,
 } from "../pages/home/management/delivery-partners";
 import {
   CreateProducts,
@@ -142,7 +144,7 @@ export default function AppRouter() {
               ),
             },
             {
-              path: ":id",
+              path: ":retailer_id",
               element: (
                 <AdminProtectedRoute>
                   <RetrieveUpdateRetailers />
@@ -284,20 +286,46 @@ export default function AppRouter() {
               ),
             },
             {
-              path: ":id",
-              element: (
-                <AdminProtectedRoute>
-                  <RetrieveUpdateDeliveryPartner />
-                </AdminProtectedRoute>
-              ),
-            },
-            {
-              path: ":id/retailer",
-              element: (
-                <AdminProtectedRoute>
-                  <DeliveryPartnersRetailer />
-                </AdminProtectedRoute>
-              ),
+              path: ":partner_id",
+              children: [
+                {
+                  path: "",
+                  element: (
+                    <AdminProtectedRoute>
+                      <RetrieveUpdateDeliveryPartner />
+                    </AdminProtectedRoute>
+                  ),
+                },
+                {
+                  path: "dp-retailer/:partner_name",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <DeliveryPartnersRetailer />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                    {
+                      path: "new",
+                      element: (
+                        <AdminProtectedRoute>
+                          <CreateDPRetailer />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                    {
+                      path: ":del_ret_id",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetrieveUpdateDPRetailer />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
+                },
+              ],
             },
           ],
         },

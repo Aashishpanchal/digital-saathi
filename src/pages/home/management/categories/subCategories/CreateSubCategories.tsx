@@ -22,9 +22,10 @@ export default function CreateSubCategories() {
   const onSave = async () => {
     if (onValidate()) {
       try {
+        const { image, ...newData } = data;
         const res = await subCategories("post", {
           data: JSON.stringify({
-            ...data,
+            ...newData,
             parent_category_id,
           }),
         });

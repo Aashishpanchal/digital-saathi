@@ -1,41 +1,41 @@
 import { Spinner } from "flowbite-react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import AdminContainer from "../../../../components/AdminContainer";
-import MainContainer from "../../../../components/common/MainContainer";
-import { SelectColumActiveDeactivateFilter } from "../../../../components/filter/SelectColumnFilter";
+import { FcDeleteDatabase } from "react-icons/fc";
+import { TbTruckDelivery } from "react-icons/tb";
+import { useNavigate, useParams } from "react-router-dom";
+import AdminContainer from "../../../../../components/AdminContainer";
+import Button from "../../../../../components/button/Button";
+import MainContainer from "../../../../../components/common/MainContainer";
+import { DeleteModal } from "../../../../../components/modals";
 import {
   ActiveDeactivateCell,
   Table,
   TableActionsCell,
-} from "../../../../components/table";
-import { deliveryPartners } from "../../../../http";
-import { FcDeleteDatabase } from "react-icons/fc";
-import { DeleteModal } from "../../../../components/modals";
-import Button from "../../../../components/button/Button";
-import { TbTruckDelivery } from "react-icons/tb";
+} from "../../../../../components/table";
+import { deliveryRetailer } from "../../../../../http";
 
-export default function DeliveryPartners() {
+export default function DeliveryPartnersRetailer() {
   const [data, setData] = React.useState({
     totalItems: 0,
     totalPages: 1,
     brands: [],
-    partners: [],
+    retailers: [],
   });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [value, setValue] = React.useState<{
-    partner_id: string;
+    del_ret_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
 
+  const { partner_name } = useParams();
   const navigate = useNavigate();
 
-  const onDeliveryPartnersGet = async () => {
+  const onDPRetailerGet = async () => {
     setLoading(true);
     try {
-      const res: any = await deliveryPartners("get", {
+      const res: any = await deliveryRetailer("get", {
         postfix: `?page=${page}`,
       });
       if (res.status === 200) {
@@ -47,18 +47,18 @@ export default function DeliveryPartners() {
     setLoading(false);
   };
 
-  const onDeliveryPartnerDelete = async () => {
+  const onDPRetailerDelete = async () => {
     if (value) {
       setDeleteModalShow(false);
-      const { partner_id, setDeleteLoading } = value;
+      const { del_ret_id, setDeleteLoading } = value;
       setValue(undefined);
       try {
         setDeleteLoading(true);
-        const res: any = await deliveryPartners("delete", {
-          params: partner_id,
+        const res: any = await deliveryRetailer("delete", {
+          params: del_ret_id,
         });
         if (res.status === 200) {
-          await onDeliveryPartnersGet();
+          await onDPRetailerGet();
         }
       } catch (err: any) {
         console.log(err.response);
@@ -67,21 +67,15 @@ export default function DeliveryPartners() {
     }
   };
 
-  const onNew = () => navigate("/management/delivery-partners/new");
-  const onDeliveryPartnerEdit = (values: { [key: string]: any }) =>
-    navigate(`/management/delivery-partners/${values.partner_id}`);
-  const onNext = (values: { [key: string]: any }) =>
-    navigate(
-      `/management/delivery-partners/${
-        values.partner_id
-      }/dp-retailer/${decodeURI(values.partner_name)}`
-    );
+  const onNew = () => navigate("new");
+  const onDPEdit = (values: { [key: string]: any }) =>
+    navigate(`${values.del_ret_id}`);
 
   const columns = React.useMemo(
     () => [
       {
         Header: "S No.",
-        accessor: "partner_id",
+        accessor: "del_ret_id",
         extraProps: {
           columnStyle: {
             width: "0px",
@@ -93,8 +87,6 @@ export default function DeliveryPartners() {
       {
         Header: "Status",
         accessor: "active",
-        Filter: SelectColumActiveDeactivateFilter,
-        filter: "equals",
         extraProps: {
           columnStyle: {
             width: "250px",
@@ -106,29 +98,18 @@ export default function DeliveryPartners() {
         Cell: (cell: any) => (
           <ActiveDeactivateCell
             cell={cell}
-            idKey="partner_id"
-            axiosFunction={deliveryPartners}
+            idKey="del_ret_id"
+            setData={setData}
+            axiosFunction={deliveryRetailer}
           />
         ),
       },
       {
-        Header: "Partner Name",
-        accessor: "partner_name",
+        Header: "Retailer Name",
+        accessor: "retailer_id",
         extraProps: {
           columnStyle: { textAlign: "center" },
         },
-      },
-      {
-        Header: "Zone Name",
-        accessor: "zone_name",
-      },
-      {
-        Header: "Email",
-        accessor: "email_id",
-      },
-      {
-        Header: "Phone No.",
-        accessor: "phone_no",
       },
       {
         Header: "Action",
@@ -138,12 +119,11 @@ export default function DeliveryPartners() {
             onDelete={async (value, setDeleteLoading) => {
               setDeleteModalShow(true);
               setValue({
-                partner_id: value.partner_id,
+                del_ret_id: value.del_ret_id,
                 setDeleteLoading,
               });
             }}
-            onEdit={onDeliveryPartnerEdit}
-            onNext={onNext}
+            onEdit={onDPEdit}
           />
         ),
       },
@@ -151,15 +131,15 @@ export default function DeliveryPartners() {
     []
   );
 
-  const getData = React.useMemo(() => data.partners, [data, page]);
+  const getData = React.useMemo(() => data.retailers, [data, page]);
 
   React.useEffect(() => {
-    onDeliveryPartnersGet();
+    onDPRetailerGet();
   }, [page]);
 
   return (
     <AdminContainer>
-      <MainContainer heading="Delivery Partners">
+      <MainContainer heading={`${partner_name} / Retailer`}>
         <div className="mb-4">
           <Button
             onClick={onNew}
@@ -202,7 +182,7 @@ export default function DeliveryPartners() {
         show={deleteModalShow}
         onClose={() => setDeleteModalShow(false)}
         onClickNo={() => setDeleteModalShow(false)}
-        onClickYes={onDeliveryPartnerDelete}
+        onClickYes={onDPRetailerDelete}
       />
     </AdminContainer>
   );

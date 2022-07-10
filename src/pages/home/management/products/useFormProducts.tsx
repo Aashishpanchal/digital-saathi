@@ -18,7 +18,7 @@ export default function useFormProducts() {
       if (res?.status === 200) {
         const { categories } = res.data;
         if (categories) {
-          let options: any = {};
+          let options: any = { ...categoriesOptions };
           categories.map((item: any) => {
             options[item?.category_id?.toString()] = item?.name;
           });

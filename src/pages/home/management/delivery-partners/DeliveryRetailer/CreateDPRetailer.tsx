@@ -1,27 +1,27 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import AdminContainer from "../../../../components/AdminContainer";
-import MainContainer from "../../../../components/common/MainContainer";
-import { FormRender } from "../../../../components/form";
-import useForms from "../../../../hooks/useForms";
-import { retailer } from "../../../../http";
-import { setFormAlert } from "../../../../redux/slices/alertSlice";
-import useFormRetailer from "./useFormRetailer";
+import { useParams } from "react-router-dom";
+import AdminContainer from "../../../../../components/AdminContainer";
+import MainContainer from "../../../../../components/common/MainContainer";
+import { FormRender } from "../../../../../components/form";
+import useForms from "../../../../../hooks/useForms";
+import { deliveryRetailer } from "../../../../../http";
+import { setFormAlert } from "../../../../../redux/slices/alertSlice";
+import useFormDPRetailer from "./useFormDPRetailer";
 
-export default function CreateRetailers() {
-  const { getFormsFields } = useFormRetailer();
-
-  const dispatch = useDispatch();
-
+export default function CreateDPRetailer() {
+  const { partner_id } = useParams();
+  const { getFormsFields } = useFormDPRetailer();
   const { data, setData, onClear, errors, onValidate } = useForms({
     fields: getFormsFields,
   });
+  const dispatch = useDispatch();
 
   const onSave = async () => {
     if (onValidate()) {
       try {
-        const res = await retailer("post", {
-          data: JSON.stringify(data),
+        const res = await deliveryRetailer("post", {
+          data: JSON.stringify({ ...data, partner_id }),
         });
         if (res?.status === 200) {
           return true;
@@ -58,7 +58,7 @@ export default function CreateRetailers() {
 
   return (
     <AdminContainer>
-      <MainContainer heading="Retailer Details">
+      <MainContainer heading="Delivery Partner Details">
         <div className="w-full md:w-[30] lg:w-[30rem]">
           <FormRender
             data={data}

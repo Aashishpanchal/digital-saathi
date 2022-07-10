@@ -1,162 +1,75 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import AdminContainer from "../../../../components/AdminContainer";
-import CreateActions from "../../../../components/common/CreateActions";
 import MainContainer from "../../../../components/common/MainContainer";
-import { Form } from "../../../../components/form";
-import LabelTextInput from "../../../../components/form/LabelTextInput";
+import { FormRender } from "../../../../components/form";
+import useForms from "../../../../hooks/useForms";
 import { deliveryPartners } from "../../../../http";
+import { setFormAlert } from "../../../../redux/slices/alertSlice";
+import useFormDeliveryPartners from "./useFormDeliveryPartners";
 
 export default function CreateFarmers() {
-  const [data, setData] = React.useState({
-    partner_name: "",
-    zone_name: "",
-    erp_code: "",
-    phone_no: "",
-    email_id: "",
-    address: "",
-    state: "",
-    district: "",
-    city: "",
-    pincode: 0,
-    subzone_id: "",
+  const { getFormsFields } = useFormDeliveryPartners();
+
+  const { data, setData, onClear, errors, onValidate } = useForms({
+    fields: getFormsFields,
   });
-  const [loading, setLoading] = React.useState(false);
-  const navigate = useNavigate();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-  const onCreated = async () => {
-    try {
-      setLoading(true);
-      const res = await deliveryPartners("post", {
-        data: JSON.stringify({
-          ...data,
-          auth_code: "auth0|62905e7af9d32a006f911bcsa",
-        }),
-      });
-      if (res?.status === 200) {
-        onReset();
+  const dispatch = useDispatch();
+
+  const onSave = async () => {
+    if (onValidate()) {
+      try {
+        const res = await deliveryPartners("post", {
+          data: JSON.stringify(data),
+        });
+        if (res?.status === 200) {
+          return true;
+        }
+      } catch (err: any) {
+        if (err?.response?.status === 400) {
+          dispatch(
+            setFormAlert({
+              type: "red",
+              highLight: "Server Validation Error! ",
+              text: err?.response?.data?.message,
+              show: true,
+            })
+          );
+        }
       }
-    } catch (e: any) {
-      console.log(e.response);
     }
-    setLoading(false);
+    return false;
   };
 
-  const onCancel = () => navigate(-1);
-  const onReset = () => {
-    // automatically reset the form
-    setData({
-      partner_name: "",
-      zone_name: "",
-      erp_code: "",
-      phone_no: "",
-      email_id: "",
-      address: "",
-      state: "",
-      district: "",
-      city: "",
-      pincode: 0,
-      subzone_id: "",
-    });
+  const onSaveStay = async () => {
+    const res = await onSave();
+    if (res) {
+      dispatch(
+        setFormAlert({
+          type: "green",
+          highLight: "Success! ",
+          text: "Data Add Successfully..",
+          show: true,
+        })
+      );
+    }
   };
 
   return (
     <AdminContainer>
       <MainContainer heading="Delivery Partner Details">
-        <Form>
-          <div className="w-full md:w-[28rem] lg:w-[28rem]">
-            <LabelTextInput
-              type={"text"}
-              label="Partner Name"
-              name="partner_name"
-              value={data.partner_name}
-              onChange={onChange}
-              hint="partner name is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Zone Name"
-              name="zone_name"
-              value={data.zone_name}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="ERP Code"
-              name="erp_code"
-              value={data.erp_code}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Phone No"
-              name="phone_no"
-              value={data.phone_no}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Email Id"
-              name="email_id"
-              value={data.email_id}
-              onChange={onChange}
-              hint="email id is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Address"
-              name="address"
-              value={data.address}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="State"
-              name="state"
-              value={data.state}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="District"
-              name="district"
-              value={data.district}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="City"
-              name="city"
-              value={data.city}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"number"}
-              label="Pincode"
-              name="pincode"
-              value={data.pincode}
-              onChange={onChange}
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Subzone Id"
-              name="subzone_id"
-              value={data.subzone_id}
-              onChange={onChange}
-            />
-          </div>
-          <CreateActions
-            startLoading={loading}
-            onSave={onCreated}
-            onCancel={onCancel}
-            onReset={onReset}
+        <div className="w-full md:w-[30] lg:w-[30rem]">
+          <FormRender
+            data={data}
+            setData={setData}
+            onReset={onClear}
+            fields={getFormsFields}
+            errors={errors}
+            onSave={onSave}
+            onSaveStay={onSaveStay}
           />
-        </Form>
+        </div>
       </MainContainer>
     </AdminContainer>
   );
