@@ -4,13 +4,16 @@ import { RiDeleteBinFill, RiFileEditLine } from "react-icons/ri";
 import {
   FaArrowRight,
   FaCartPlus,
+  FaChevronCircleDown,
   FaImage,
   FaMapMarkedAlt,
+  FaPrint,
   FaRupeeSign,
   FaWarehouse,
 } from "react-icons/fa";
 import { CgViewList } from "react-icons/cg";
 import { MdSpaceDashboard } from "react-icons/md";
+import Button from "../../button/Button";
 
 type onClickType = (value: { [key: string]: any }) => void;
 
@@ -120,3 +123,30 @@ export default function TableActionsCell(props: {
     </div>
   );
 }
+
+export const PrintActionCell = (props: {
+  onPrint?: () => void;
+  printUrl?: string;
+  onShow?: () => void;
+}) => {
+  return (
+    <div className="flex space-x-2">
+      <Button
+        onClick={props.onPrint}
+        icon={<FaPrint size={18} />}
+        color="white"
+        url={props.printUrl}
+        target="_blank"
+      >
+        Print
+      </Button>
+      <Button
+        onClick={props.onShow}
+        color="dark"
+        icon={<FaChevronCircleDown size={18} />}
+      >
+        Action
+      </Button>
+    </div>
+  );
+};

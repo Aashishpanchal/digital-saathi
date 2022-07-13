@@ -67,7 +67,6 @@ export default function DeliveryPartners() {
     }
   };
 
-  const onNew = () => navigate("/management/delivery-partners/new");
   const onDeliveryPartnerEdit = (values: { [key: string]: any }) =>
     navigate(`/management/delivery-partners/${values.partner_id}`);
   const onNext = (values: { [key: string]: any }) =>
@@ -161,11 +160,7 @@ export default function DeliveryPartners() {
     <AdminContainer>
       <MainContainer heading="Delivery Partners">
         <div className="mb-4">
-          <Button
-            onClick={onNew}
-            icon={<TbTruckDelivery size={18} />}
-            color="dark"
-          >
+          <Button url="new" icon={<TbTruckDelivery size={18} />} color="dark">
             New
           </Button>
         </div>

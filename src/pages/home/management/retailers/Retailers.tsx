@@ -67,7 +67,6 @@ export default function Retailers() {
     }
   };
 
-  const onNew = () => navigate("/management/retailers/new");
   const onDashBoard = (values: any) =>
     navigate(
       `${values.retailer_id}/retailer-dashboard/${encodeURI(
@@ -162,11 +161,7 @@ export default function Retailers() {
     <AdminContainer>
       <MainContainer heading="Retailer Name">
         <div className="mb-4">
-          <Button
-            onClick={onNew}
-            icon={<BsShopWindow size={18} />}
-            color="dark"
-          >
+          <Button url="new" icon={<BsShopWindow size={18} />} color="dark">
             New
           </Button>
         </div>

@@ -29,14 +29,14 @@ export default function DeliveryPartnersRetailer() {
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
 
-  const { partner_name } = useParams();
+  const { partner_name, partner_id } = useParams();
   const navigate = useNavigate();
 
   const onDPRetailerGet = async () => {
     setLoading(true);
     try {
       const res: any = await deliveryRetailer("get", {
-        postfix: `?page=${page}`,
+        postfix: `?page=${page}&partner_id=${partner_id}`,
       });
       if (res.status === 200) {
         setData(res.data);

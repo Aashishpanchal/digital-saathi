@@ -9,10 +9,15 @@ import MainContainer from "../../../../../components/common/MainContainer";
 import { DeleteModal } from "../../../../../components/modals";
 import { Table, TableActionsCell } from "../../../../../components/table";
 import { shopProductWeightPrice } from "../../../../../http";
-import { FocusSKUCell } from "../cell";
+import FocusStarCell from "../../../../../components/table/cell/FocusStarCell";
 
 export default function ProductWeightPrice() {
-  const [data, setData] = React.useState<any>([]);
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
+    product_prices: [],
+  });
+  const [page, setPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
@@ -26,35 +31,16 @@ export default function ProductWeightPrice() {
   const onGetProductWeightPrice = async () => {
     setLoading(true);
     try {
-      const res = await shopProductWeightPrice("get");
+      const res = await shopProductWeightPrice("get", {
+        postfix: `?page=${page}&sku_id=${sku_id}`,
+      });
       if (res?.status === 200) {
-        const filter = res.data.filter((item: any) => {
-          return item.sku_id.toString() === sku_id;
-        });
-        setData(filter);
+        setData(res.data);
       }
     } catch (err: any) {
       console.log(err.response);
     }
     setLoading(false);
-  };
-
-  const onUpdate = async (
-    setInnerLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    setInnerLoading(true);
-    try {
-      const res = await shopProductWeightPrice("get");
-      if (res?.status === 200) {
-        const filter = res.data.filter((item: any) => {
-          return item.sku_id.toString() === sku_id;
-        });
-        setData(filter);
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setInnerLoading(false);
   };
 
   const onProductWeightPriceDelete = async () => {
@@ -135,11 +121,13 @@ export default function ProductWeightPrice() {
         Header: "Focus SKU",
         accessor: "focus_sku",
         Cell: (cell: any) => (
-          <FocusSKUCell
+          <FocusStarCell
             cell={cell}
             idKey="price_id"
             setData={setData}
-            onUpdate={onUpdate}
+            axiosFunction={shopProductWeightPrice}
+            postfix={`?page=${page}&sku_id=${sku_id}`}
+            payload={["sku_id", "mrp", "price", "weight", "package"]}
           />
         ),
       },
@@ -160,14 +148,14 @@ export default function ProductWeightPrice() {
         ),
       },
     ],
-    []
+    [page]
   );
 
-  const getData = React.useMemo(() => data, [data]);
+  const getData = React.useMemo(() => data.product_prices, [data, page]);
 
   React.useEffect(() => {
     onGetProductWeightPrice();
-  }, []);
+  }, [page]);
 
   return (
     <AdminContainer>
@@ -192,8 +180,17 @@ export default function ProductWeightPrice() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.length !== 0 ? (
-          <Table columns={columns} data={getData} />
+        ) : data.totalItems ? (
+          <Table
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
             <FcDeleteDatabase size={100} />

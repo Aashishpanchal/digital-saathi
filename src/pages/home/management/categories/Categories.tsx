@@ -68,7 +68,6 @@ export default function Categories() {
     }
   };
 
-  const onNew = () => navigate("new");
   const onCategoryEdit = (value: { [key: string]: any }) =>
     navigate(`${value.category_id}`);
 
@@ -166,7 +165,7 @@ export default function Categories() {
       <MainContainer heading="Categories">
         <div className="mb-4">
           <Button
-            onClick={onNew}
+            url="new"
             icon={<MdOutlineAccountTree size={18} />}
             color="dark"
           >

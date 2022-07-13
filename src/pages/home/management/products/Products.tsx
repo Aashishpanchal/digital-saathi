@@ -12,7 +12,7 @@ import {
 import { shopProducts } from "../../../../http";
 import { FcDeleteDatabase } from "react-icons/fc";
 import { DeleteModal } from "../../../../components/modals";
-import { FocusSKUCell } from "./cell";
+import FocusStarCell from "../../../../components/table/cell/FocusStarCell";
 import Button from "../../../../components/button/Button";
 import { MdProductionQuantityLimits } from "react-icons/md";
 import { FaFileImport } from "react-icons/fa";
@@ -138,7 +138,13 @@ export default function Products() {
         Header: "Focus SKU",
         accessor: "focus_sku",
         Cell: (cell: any) => (
-          <FocusSKUCell cell={cell} idKey="sku_id" setData={setData} />
+          <FocusStarCell
+            cell={cell}
+            idKey="sku_id"
+            setData={setData}
+            axiosFunction={shopProducts}
+            postfix={`?page=${page}`}
+          />
         ),
       },
       {
@@ -161,7 +167,7 @@ export default function Products() {
         ),
       },
     ],
-    []
+    [page]
   );
 
   const getData = React.useMemo(() => data.products, [data, page]);

@@ -69,6 +69,7 @@ import {
   RetrieveUpdateRetailers,
 } from "../pages/home/management/retailers";
 import { RetailerOrders } from "../pages/home/management/retailers/retailerDashboard";
+import { OrderInvoicePrint } from "../pages/home/orders/order-invoice";
 
 export default function AppRouter() {
   const Element = useRoutes([
@@ -557,6 +558,10 @@ export default function AppRouter() {
     {
       path: "/orders",
       children: [
+        {
+          path: "order-invoice-print/:order_status/:order_id",
+          element: <OrderInvoicePrint />,
+        },
         {
           path: "new-orders",
           children: [

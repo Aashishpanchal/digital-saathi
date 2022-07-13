@@ -25,13 +25,15 @@ export default function RetailerDashboard() {
 
   const navigate = useNavigate();
 
+  const navTotalOrders = () => navigate("retailer-orders");
+
   const layerOne = React.useMemo(
     () => [
       {
         Title: "Total Orders",
         Icon: <FaCartPlus size={50} />,
         num: totals.orders,
-        onClick: () => {},
+        onClick: navTotalOrders,
       },
       {
         Title: "Total SKUs",
@@ -54,9 +56,7 @@ export default function RetailerDashboard() {
       {
         Title: "Orders",
         Icon: <FaShoppingBasket size={50} />,
-        onClick: () => {
-          navigate("retailer-orders");
-        },
+        onClick: navTotalOrders,
       },
       {
         Title: "Input Sale Details",
