@@ -88,7 +88,7 @@ export default function MainRetailerOrders(props: {
           return (
             <div className="flex items-center justify-center">
               <PrintActionCell
-                printUrl={`/orders/order-invoice-print/${props.order_status}/${cell.row.original.order_id}`}
+                printUrl={`/orders/order-invoice-print/${cell.row.original.order_id}`}
                 onShow={() => setShow(!show)}
               />
             </div>

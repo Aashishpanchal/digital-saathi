@@ -70,6 +70,8 @@ import {
 } from "../pages/home/management/retailers";
 import { RetailerOrders } from "../pages/home/management/retailers/retailerDashboard";
 import { OrderInvoicePrint } from "../pages/home/orders/order-invoice";
+import Auth0ProtectedRoute from "./Auth0ProtectedRoute";
+import { Auth0UserInFormation } from "../pages/auth0";
 
 export default function AppRouter() {
   const Element = useRoutes([
@@ -96,6 +98,21 @@ export default function AppRouter() {
           <ChangePassword />
         </AdminProtectedRoute>
       ),
+    },
+    {
+      path: "/auth0-users",
+      children: [
+        {
+          path: ":auth0_id",
+          element: (
+            <AdminProtectedRoute>
+              <Auth0ProtectedRoute>
+                <Auth0UserInFormation />
+              </Auth0ProtectedRoute>
+            </AdminProtectedRoute>
+          ),
+        },
+      ],
     },
     {
       path: "*",
@@ -559,7 +576,7 @@ export default function AppRouter() {
       path: "/orders",
       children: [
         {
-          path: "order-invoice-print/:order_status/:order_id",
+          path: "order-invoice-print/:order_id",
           element: <OrderInvoicePrint />,
         },
         {

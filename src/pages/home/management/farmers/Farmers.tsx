@@ -12,6 +12,7 @@ import {
 import { farmers } from "../../../../http";
 import { FcDeleteDatabase } from "react-icons/fc";
 import { DeleteModal } from "../../../../components/modals";
+import RedirectAuth0UserInformation from "../../../../components/table/cell/RedirectAuth0UserInformation";
 
 export default function Farmers() {
   const [data, setData] = React.useState({
@@ -108,6 +109,7 @@ export default function Farmers() {
         extraProps: {
           columnStyle: { textAlign: "center" },
         },
+        Cell: RedirectAuth0UserInformation,
       },
       {
         Header: "Customer Name",

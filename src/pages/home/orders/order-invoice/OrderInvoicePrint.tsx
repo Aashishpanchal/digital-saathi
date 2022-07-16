@@ -1,50 +1,69 @@
 import React from "react";
-import { FaPrint } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+import { PrintInvoice } from "../../../../components/print";
+import useGetData from "../../../../hooks/useGetData";
+import { retailer, shopOrderDetails, shopOrders } from "../../../../http";
+
+type ResponseType = { [key: string]: any };
 
 export default function OrderInvoicePrint() {
-  const labelOne = React.useMemo(
+  const { order_id } = useParams();
+
+  const [retailerData, setRetailerData] = React.useState<ResponseType>({});
+  const [orderData, setOrderData] = React.useState<ResponseType>({});
+  const { data: orderDetailsData } = useGetData({
+    axiosFunction: shopOrderDetails,
+    extractKey: "order_details",
+    postfix: `order_id=${order_id}`,
+  });
+
+  const retailerLabel = React.useMemo(
     () => [
       {
         Label: "Sold by",
-        accessor: "sold_by",
+        accessor: "company_name",
       },
       {
-        Label: "Billing Address",
-        accessor: "billing_address",
-      },
-      {
-        Label: "Shipping Address",
-        accessor: "shipping_address",
-      },
-      {
-        Label: "Shipping Address",
-        accessor: "shipping_address",
+        Label: "Address",
+        accessor: "address",
       },
       {
         Label: "GST Registration No",
-        accessor: "gst_registration_no",
+        accessor: "gst_number",
       },
       {
         Label: "Pan Number",
-        accessor: "pan_number",
-      },
-      {
-        Label: "Phone",
-        accessor: "phone_billing",
-      },
-      {
-        Label: "Phone",
-        accessor: "phone_shipping",
+        accessor: "pan_no",
       },
     ],
     []
   );
 
-  const labelTwo = React.useMemo(
+  const billingLabel = React.useMemo(
+    () => [
+      {
+        Label: "Billing Address",
+        accessor: "billing_address_id",
+      },
+    ],
+    []
+  );
+
+  const shippingLabel = React.useMemo(
+    () => [
+      {
+        Label: "Shipping Address",
+        accessor: "shipping_address_id",
+      },
+    ],
+    []
+  );
+
+  const orderLabel = React.useMemo(
     () => [
       {
         Label: "Order Number",
-        accessor: "order_number",
+        accessor: "order_id",
       },
       {
         Label: "Order Date",
@@ -58,260 +77,173 @@ export default function OrderInvoicePrint() {
     []
   );
 
-  // React.useEffect(() => {
-  //   window.print();
-  // }, []);
+  const orderDetailCol = React.useMemo(
+    () => [
+      {
+        Header: "Sr. No",
+        accessor: "order_detail_id",
+        extraProps: {
+          columnStyle: {
+            width: "5%",
+            textAlign: "center",
+          },
+          align: "center",
+        },
+      },
+      {
+        Header: "Description",
+        accessor: "customer_id",
+        extraProps: {
+          columnStyle: {
+            width: "40%",
+            textAlign: "center",
+          },
+        },
+      },
+      {
+        Header: "Price",
+        accessor: "price_id",
+        extraProps: {
+          align: "center",
+        },
+      },
+      {
+        Header: "Qty",
+        accessor: "quantity",
+        extraProps: {
+          columnStyle: {
+            width: "4%",
+            textAlign: "center",
+          },
+          align: "center",
+        },
+      },
+      {
+        Header: "Net Amount",
+        accessor: "",
+
+        extraProps: {
+          align: "center",
+        },
+      },
+      {
+        Header: "Tax Type",
+        accessor: "igst",
+
+        extraProps: {
+          align: "center",
+        },
+      },
+      {
+        Header: "Tax Amount",
+        accessor: "",
+
+        extraProps: {
+          align: "center",
+        },
+      },
+      {
+        Header: "Total Amount",
+        accessor: "total_price",
+
+        extraProps: {
+          align: "center",
+        },
+      },
+    ],
+    []
+  );
+
+  const getOrderDetails = React.useMemo(
+    () => orderDetailsData,
+    [orderDetailsData]
+  );
+
+  const onGetOrder = async () => {
+    try {
+      const res = await shopOrders("get", {
+        params: order_id,
+      });
+      if (res?.status === 200) {
+        setOrderData(res.data);
+      }
+    } catch (error: any) {
+      console.log(error.response);
+    }
+  };
+
+  const onGetRetailer = async (retailerId: number) => {
+    try {
+      const res = await retailer("get", {
+        params: retailerId.toString(),
+      });
+      if (res?.status === 200) {
+        setRetailerData(res.data);
+      }
+    } catch (error: any) {
+      console.log(error.response);
+    }
+  };
+
+  React.useEffect(() => {
+    onGetOrder();
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof orderData?.retailer_id !== "undefined") {
+      onGetRetailer(orderData.retailer_id);
+    }
+  }, [orderData]);
 
   return (
-    <div className="lg:mx-32 xl:mx-44">
-      <table className="w-full">
-        <tbody>
+    <PrintInvoice.Container>
+      <PrintInvoice.TableContainer>
+        <PrintInvoice.TableBody>
           {/* Title Part */}
-          <tr className="flex justify-between items-center  border-2 border-b-0 pb-2">
-            <td>
-              <div className="flex justify-center w-36 xl:w-44 h-20">
-                <img
-                  className="w-fit h-fit print:h-20"
-                  src="/assets/images/logo.png"
-                  alt="Logo"
-                />
-              </div>
-            </td>
-            <td className="font-bold place-self-center">
-              Original Tax Invoice
-            </td>
-            <td className="text-sm print:text-xs">
-              <ul className="flex flex-col mx-2">
-                <li className="self-end print:hidden">
-                  <span className="text-end w-fit">
-                    <FaPrint
-                      size={25}
-                      className="active:text-gray-500 transition-colors hover:cursor-pointer my-2"
-                    />
-                  </span>
-                </li>
-                <li>
-                  <span className="font-bold">Invoice Number :</span>
-                  00044181652780675
-                </li>
-                <li>
-                  <span className="font-bold">Invoice Date :</span>2022-05-17
-                </li>
-              </ul>
-            </td>
-          </tr>
+          <PrintInvoice.TableRowHeader
+            invoiceNumber="00044181652780675"
+            invoiceDate="2022-05-17"
+          />
           {/* Order Header Part */}
-          <tr className="grid grid-cols-3 gap-4 text-xs px-4 py-5 border-2 border-black border-b-0">
-            <td>
-              <ul>
-                <li>
-                  <span>
-                    <strong>Sold by:</strong> Sri Banasankari Agro Centre
-                  </span>
-                </li>
-                <li>
-                  <span>Main Road,Rattihalli,Karnataka</span>
-                </li>
-                <li>
-                  <span>
-                    <strong>GST Rgirstration No:</strong> 29ABRPH660
-                  </span>
-                </li>
-                <li>
-                  <span>
-                    <strong>Pan Number:</strong> ABRPH6608K
-                  </span>
-                </li>
-              </ul>
-            </td>
-            <td>
-              <ul>
-                <li>
-                  <span>
-                    <strong>Billing Address:</strong>{" "}
-                  </span>
-                </li>
-                <li>
-                  <span>ramesh</span>
-                </li>
-                <li>
-                  <span>
-                    ghandi nagar,surajpur,ghaziabad,suraj,Andhra Pradesh, India
-                    (987654)
-                  </span>
-                </li>
-                <li>
-                  <span>
-                    <strong>Phone:</strong> 8765432109
-                  </span>
-                </li>
-              </ul>
-            </td>
-            <td>
-              <ul>
-                <li>
-                  <span>
-                    <strong>Shipping Address:</strong>
-                  </span>
-                </li>
-                <li>ram lal</li>
-                <li>
-                  <span>
-                    rahul bihar,paratap nagar,gzb,rahul bihar,Maharashtra, India
-                    (76890)
-                  </span>
-                </li>
-                <li>
-                  <span>
-                    <strong>Phone:</strong> 7654321098
-                  </span>
-                </li>
-              </ul>
-            </td>
-          </tr>
+          <PrintInvoice.TableRow borderColor="black" grid={true}>
+            <PrintInvoice.RenderTableCell
+              labels={retailerLabel}
+              data={retailerData}
+            />
+            <PrintInvoice.RenderTableCell
+              labels={billingLabel}
+              data={orderData}
+            />
+            <PrintInvoice.RenderTableCell
+              labels={shippingLabel}
+              data={orderData}
+            />
+          </PrintInvoice.TableRow>
           {/* Order Third Part */}
-          <tr className="grid grid-cols-3 gap-4 border-2 border-b-0 border-black px-4 py-5 text-xs">
-            <td>
-              <ul>
-                <li>
-                  <span>
-                    <strong>Order Number:</strong> 3
-                  </span>
-                </li>
-                <li>
-                  <span>
-                    <strong>Order Date:</strong> 2022-07-13 11:56:42
-                  </span>
-                </li>
-                <li>
-                  <span>
-                    <strong>Pan No :</strong>
-                  </span>
-                </li>
-              </ul>
-            </td>
-          </tr>
+          <PrintInvoice.TableRow borderColor="black" grid={true}>
+            <PrintInvoice.RenderTableCell
+              labels={orderLabel}
+              data={orderData}
+            />
+          </PrintInvoice.TableRow>
           {/* Order Forth */}
-          <tr className="w-full border-2 border-black grid text-xs">
-            <td>
-              <table className="w-full">
-                <thead>
-                  <tr>
-                    <th>
-                      <b> Sr. No</b>
-                    </th>
-                    <th>
-                      <b> Description</b>
-                    </th>
-                    <th>
-                      <b> Price</b>
-                    </th>
-                    <th>
-                      <b> Qty</b>
-                    </th>
-                    <th>
-                      <b> Net Amount</b>
-                    </th>
-                    <th>
-                      <b> Tax Type</b>
-                    </th>
-                    <th>
-                      <b> Tax Amount</b>
-                    </th>
-                    <th>
-                      <b> Total Amount</b>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>
-                      ASC BRG-5 TUR
-                      <br />
-                      ಎಎಸ್ಸಿ ಬಿಆರ್ ಜಿ-5 ತೂರ್
-                      <br />
-                      (SFG5)
-                    </td>
-                    <td>580.00</td>
-                    <td>2</td>
-                    <td>1160.00</td>
-
-                    <td>IGST (%)</td>
-                    <td>0</td>
-                    <td>1160</td>
-                  </tr>
-                </tbody>
-                <tbody>
-                  <tr>
-                    <td>2</td>
-                    <td>
-                      Hilclaim
-                      <br />
-                      ಹಿಲ್ಕ್ಲೇಮ್
-                      <br />
-                      (CI5)
-                    </td>
-                    <td>500.00</td>
-                    <td>1</td>
-                    <td>500.00</td>
-
-                    <td>IGST (%)</td>
-                    <td>0</td>
-                    <td>500</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <b>Total</b>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>1,660.00</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <b>Delivery charges</b>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>50</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <b>Delivery Discount</b>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>50</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <b>Amount Payable</b>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>1,660.00</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
+          <PrintInvoice.OrderDetailTable
+            columns={orderDetailCol}
+            data={getOrderDetails}
+          >
+            <tr>
+              <td></td>
+              <td className="font-bold p-3">Total</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td className="font-bold p-3" align="center">
+                {orderData?.grand_total}
+              </td>
+            </tr>
+          </PrintInvoice.OrderDetailTable>
           {/* Order Fifth */}
           <tr className="grid grid-cols-1 py-2 border-2 text-xs">
             <td>
@@ -320,8 +252,8 @@ export default function OrderInvoicePrint() {
               </span>
             </td>
           </tr>
-        </tbody>
-      </table>
-    </div>
+        </PrintInvoice.TableBody>
+      </PrintInvoice.TableContainer>
+    </PrintInvoice.Container>
   );
 }

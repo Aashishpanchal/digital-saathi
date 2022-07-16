@@ -1,14 +1,14 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "./redux/store";
 import AppRouter from "./routers";
 import { BrowserRouter as Router } from "react-router-dom";
+import useLoadingWithAuth0 from "./hooks/useLoadingWithAuth0";
 
 export default function App() {
-  const isDarkMode = useSelector((state: RootState) => state.themeSlice.isDark);
+  const { loading } = useLoadingWithAuth0();
+
   return (
     <Router>
-      <div className={`${isDarkMode ? "dark" : "light"}`}>
+      <div>
         <AppRouter />
       </div>
     </Router>

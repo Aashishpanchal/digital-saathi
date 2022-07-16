@@ -136,7 +136,7 @@ export const PrintActionCell = (props: {
         icon={<FaPrint size={18} />}
         color="white"
         url={props.printUrl}
-        target="_blank"
+        // target="_blank"
       >
         Print
       </Button>

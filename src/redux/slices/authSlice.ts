@@ -31,11 +31,14 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuth: (state, action: PayloadAction<authState["user"]>) => {
+    setAuth: (
+      state: typeof initialState,
+      action: PayloadAction<authState["user"]>
+    ) => {
       state.user = action.payload;
       state.isAuth = true;
     },
-    setLogout: (state) => {
+    setLogout: (state: typeof initialState) => {
       state.isAuth = false;
       state.user = undefined;
     },

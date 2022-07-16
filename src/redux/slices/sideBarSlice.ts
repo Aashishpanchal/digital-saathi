@@ -13,7 +13,7 @@ export const sideBarSlice = createSlice({
   initialState,
   reducers: {
     setSideBarOpenClose: (
-      state,
+      state: typeof initialState,
       action: PayloadAction<slideBarState["open"]>
     ) => {
       state.open = action.payload;

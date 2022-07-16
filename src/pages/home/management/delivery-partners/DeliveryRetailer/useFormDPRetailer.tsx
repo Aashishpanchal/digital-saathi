@@ -1,38 +1,27 @@
 import React from "react";
+import useGetData from "../../../../../hooks/useGetData";
 import { retailer } from "../../../../../http";
 
 export default function useFormDPRetailer() {
   const [retailerOptions, setRetailerOptions] = React.useState<{
     [key: string]: any;
   }>({});
-  const [localPage, setLocalPage] = React.useState(0);
+  const { data: retailerData } = useGetData({
+    axiosFunction: retailer,
+    extractKey: "retailers",
+  });
 
   const onRetrieveRetailer = async () => {
     try {
-      const res = await retailer("get", {
-        postfix: `?page=${localPage}`,
+      let options: any = { ...retailerOptions };
+      retailerData.map((item: any) => {
+        options[item?.retailer_id?.toString()] = item?.retailer_name;
       });
-      if (res?.status === 200) {
-        const { retailers, totalPages, currentPage } = res.data;
-        if (totalPages === currentPage) {
-          return;
-        }
-        if (totalPages !== currentPage) {
-          if (retailers) {
-            let options: any = { ...retailerOptions };
-            retailers.map((item: any) => {
-              options[item?.retailer_id?.toString()] = item?.retailer_name;
-            });
-            setRetailerOptions({
-              ...options,
-            });
-            setLocalPage(localPage + 1);
-          }
-        }
-      }
-    } catch (error: any) {
-      console.log(error.response);
-      return;
+      setRetailerOptions({
+        ...options,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -56,7 +45,7 @@ export default function useFormDPRetailer() {
 
   React.useEffect(() => {
     onRetrieveRetailer();
-  }, [localPage]);
+  }, [retailerData]);
 
   return { getFormsFields };
 }

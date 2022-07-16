@@ -29,10 +29,16 @@ export const alertSlice = createSlice({
   name: "alert",
   initialState,
   reducers: {
-    setFormAlert: (state, action: PayloadAction<alertState["formAlert"]>) => {
+    setFormAlert: (
+      state: typeof initialState,
+      action: PayloadAction<alertState["formAlert"]>
+    ) => {
       state.formAlert = action.payload;
     },
-    setTableAlert: (state, action: PayloadAction<alertState["tableAlert"]>) => {
+    setTableAlert: (
+      state: typeof initialState,
+      action: PayloadAction<alertState["tableAlert"]>
+    ) => {
       state.tableAlert = action.payload;
     },
   },
