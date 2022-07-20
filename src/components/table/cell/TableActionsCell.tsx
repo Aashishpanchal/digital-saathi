@@ -1,5 +1,5 @@
 import React from "react";
-import { Spinner } from "flowbite-react";
+import { Spinner, Tooltip } from "flowbite-react";
 import { RiDeleteBinFill, RiFileEditLine } from "react-icons/ri";
 import {
   FaArrowRight,
@@ -17,6 +17,23 @@ import Button from "../../button/Button";
 
 type onClickType = (value: { [key: string]: any }) => void;
 
+function SquareContainer(props: {
+  children: React.ReactNode;
+  hoverMessage?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <div
+      onClick={props.onClick}
+      className="border-2 p-1 rounded-lg text-blue-light border-blue-light  hover:cursor-pointer hover:bg-blue-light hover:text-white transition-colors"
+    >
+      <Tooltip content={props.hoverMessage} trigger="hover">
+        {props.children}
+      </Tooltip>
+    </div>
+  );
+}
+
 export default function TableActionsCell(props: {
   cell: any;
   onDelete?: (
@@ -30,95 +47,107 @@ export default function TableActionsCell(props: {
   onImage?: onClickType;
   onDashBoard?: onClickType;
   onWarehouse?: onClickType;
-  onOrder?: onClickType;
   onArea?: onClickType;
+  hoverMessage?: {
+    edit?: string;
+    delete?: string;
+    arrow?: string;
+    rupee?: string;
+    image?: string;
+    detail?: string;
+    wareHouse?: string;
+    dashboard?: string;
+    area?: string;
+  };
 }) {
   const [deleteLoading, setDeleteLoading] = React.useState(false);
   const { cell } = props;
   return (
     <div className="flex space-x-4 items-center justify-center">
       {props.onWeightPrice && (
-        <FaRupeeSign
-          size={18}
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.rupee || "Weights and Price"}
           onClick={() =>
             props.onWeightPrice && props.onWeightPrice(cell.row.original)
           }
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
+        >
+          <FaRupeeSign size={18} />
+        </SquareContainer>
       )}
       {props.onImage && (
-        <FaImage
-          size={24}
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.image || "More Image"}
           onClick={() => props.onImage && props.onImage(cell.row.original)}
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
+        >
+          <FaImage size={18} />
+        </SquareContainer>
       )}
 
       {props.onDashBoard && (
-        <MdSpaceDashboard
-          size={20}
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.dashboard || "Retailer-Dashboard"}
           onClick={() =>
             props.onDashBoard && props.onDashBoard(cell.row.original)
           }
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
-      )}
-      {props.onOrder && (
-        <FaCartPlus
-          size={20}
-          onClick={() => props.onOrder && props.onOrder(cell.row.original)}
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
+        >
+          <MdSpaceDashboard size={18} />
+        </SquareContainer>
       )}
       {props.onArea && (
-        <FaMapMarkedAlt
-          size={20}
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.area || "Area"}
           onClick={() => props.onArea && props.onArea(cell.row.original)}
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
+        >
+          <FaMapMarkedAlt size={18} />
+        </SquareContainer>
       )}
       {props.onWarehouse && (
-        <FaWarehouse
-          size={20}
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.wareHouse || "Ware-House"}
           onClick={() =>
             props.onWarehouse && props.onWarehouse(cell.row.original)
           }
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
+        >
+          <FaWarehouse size={18} />
+        </SquareContainer>
       )}
       {props.onEdit && (
-        <RiFileEditLine
-          size={20}
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.edit || "Edit"}
           onClick={() => props.onEdit && props.onEdit(cell.row.original)}
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
+        >
+          <RiFileEditLine size={18} />
+        </SquareContainer>
       )}
       {props.onDelete &&
         (deleteLoading ? (
-          <Spinner size="md" />
+          <Spinner size="md" color="green" />
         ) : (
-          <RiDeleteBinFill
+          <SquareContainer
+            hoverMessage={props.hoverMessage?.delete || "Delete"}
             onClick={() =>
               props.onDelete &&
               props.onDelete(cell.row.original, setDeleteLoading)
             }
-            size={20}
-            className="hover:text-gray-700 hover:cursor-pointer"
-          />
+          >
+            <RiDeleteBinFill size={18} />
+          </SquareContainer>
         ))}
       {props.onView && (
-        <CgViewList
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.detail || "Details"}
           onClick={() => props.onView && props.onView(cell.row.original)}
-          size={24}
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
+        >
+          <CgViewList size={18} />
+        </SquareContainer>
       )}
       {props.onNext && (
-        <FaArrowRight
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.arrow || "Next"}
           onClick={() => props.onNext && props.onNext(cell.row.original)}
-          size={20}
-          className="hover:text-gray-700 hover:cursor-pointer"
-        />
+        >
+          <FaArrowRight size={18} />
+        </SquareContainer>
       )}
     </div>
   );

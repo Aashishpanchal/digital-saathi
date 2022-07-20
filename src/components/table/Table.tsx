@@ -11,6 +11,7 @@ import { RootState } from "../../redux/store";
 import { setTableAlert } from "../../redux/slices/alertSlice";
 import Button from "../button/Button";
 import { FaFileUpload } from "react-icons/fa";
+import DownloadRows from "../csv/button/DownloadRows";
 
 export default function Table(props: {
   columns: any;
@@ -22,6 +23,8 @@ export default function Table(props: {
   totalEntries?: number;
   entriesPerPage?: number;
   onUpload?: (data: any) => Promise<void>;
+  exportFileName?: string;
+  showExport?: boolean;
 }) {
   const {
     getTableProps,
@@ -41,6 +44,7 @@ export default function Table(props: {
   );
 
   const { tableAlert } = useSelector((state: RootState) => state.alertSlice);
+
   const dispatch = useDispatch();
   const onDismiss = () => {
     dispatch(setTableAlert({ ...tableAlert, show: false }));
@@ -56,6 +60,13 @@ export default function Table(props: {
   return (
     <div className="text-gray-500">
       <div className="my-2">
+        {props.showExport && (
+          <DownloadRows
+            fileName={props.exportFileName}
+            title="Export"
+            rows={rows}
+          />
+        )}
         {tableAlert.show && (
           <Alert
             color={tableAlert.type as any}

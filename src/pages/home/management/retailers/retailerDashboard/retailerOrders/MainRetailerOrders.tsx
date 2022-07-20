@@ -108,7 +108,7 @@ export default function MainRetailerOrders(props: {
     <CollapseDropDown title={props.title} color="green">
       {loading ? (
         <div className="flex flex-col justify-center items-center space-y-3 mt-4">
-          <Spinner color="blue" size="xl" className="object-cover w-24 h-24" />
+          <Spinner color="green" size="xl" className="object-cover w-24 h-24" />
           <h2 className="dark:text-gray-100">
             Please wait fetch data from server....
           </h2>

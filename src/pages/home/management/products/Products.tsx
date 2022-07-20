@@ -167,7 +167,7 @@ export default function Products() {
         ),
       },
     ],
-    [page]
+    [data]
   );
 
   const getData = React.useMemo(() => data.products, [data, page]);
@@ -198,7 +198,7 @@ export default function Products() {
         {loading ? (
           <div className="flex flex-col justify-center items-center space-y-3 mt-4">
             <Spinner
-              color="blue"
+              color="green"
               size="xl"
               className="object-cover w-24 h-24"
             />
@@ -216,6 +216,8 @@ export default function Products() {
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
             entriesPerPage={10}
+            showExport
+            exportFileName="Product-Data"
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">

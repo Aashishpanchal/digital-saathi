@@ -89,9 +89,9 @@ export default function Farmers() {
         Cell: (cell: any) => (
           <ActiveDeactivateCell
             cell={cell}
-            idKey="customer_id"
-            axiosFunction={farmers}
-            setData={setData}
+            // idKey="customer_id"
+            // axiosFunction={farmers}
+            // setData={setData}
           />
         ),
         extraProps: {
@@ -147,7 +147,7 @@ export default function Farmers() {
         {loading ? (
           <div className="flex flex-col justify-center items-center space-y-3 mt-4">
             <Spinner
-              color="blue"
+              color="green"
               size="xl"
               className="object-cover w-24 h-24"
             />

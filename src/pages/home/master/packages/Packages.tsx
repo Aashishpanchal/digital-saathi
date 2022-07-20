@@ -153,7 +153,7 @@ export default function Packages() {
         {loading ? (
           <div className="flex flex-col justify-center items-center space-y-3 mt-4">
             <Spinner
-              color="blue"
+              color="green"
               size="xl"
               className="object-cover w-24 h-24"
             />

@@ -9,6 +9,7 @@ export default function Button(props: {
   color?: "white" | "dark";
   url?: string;
   target?: React.HTMLAttributeAnchorTarget | undefined;
+  disabled?: boolean;
 }) {
   const className =
     props.color === "dark"
@@ -41,6 +42,7 @@ export default function Button(props: {
       )}
       type={props.type}
       onClick={props.onClick}
+      disabled={props.disabled}
     >
       {props.icon}
       {typeof props.children === "string" ? (
