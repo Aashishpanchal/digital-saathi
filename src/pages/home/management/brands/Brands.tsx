@@ -5,7 +5,6 @@ import MainContainer from "../../../../components/common/MainContainer";
 import { brands } from "../../../../http";
 import { useNavigate } from "react-router-dom";
 import Image from "../../../../components/Image/Index";
-import { FcDeleteDatabase } from "react-icons/fc";
 import { DeleteModal } from "../../../../components/modals";
 import {
   ActiveDeactivateCell,
@@ -14,7 +13,7 @@ import {
 } from "../../../../components/table";
 import { SelectColumActiveDeactivateFilter } from "../../../../components/filter/SelectColumnFilter";
 import Button from "../../../../components/button/Button";
-import { TbBrandSublimeText } from "react-icons/tb";
+import { TbBrandSublimeText, TbDatabaseOff } from "react-icons/tb";
 
 export default function Brands() {
   const [data, setData] = React.useState({
@@ -191,7 +190,7 @@ export default function Brands() {
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
-            <FcDeleteDatabase size={100} />
+            <TbDatabaseOff size={100} className="text-blue-light" />
             <h2 className="text-lg">Sorry Data Not Available</h2>
           </div>
         )}

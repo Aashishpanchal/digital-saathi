@@ -10,7 +10,7 @@ import {
   TableActionsCell,
 } from "../../../../components/table";
 import { deliveryPartners } from "../../../../http";
-import { FcDeleteDatabase } from "react-icons/fc";
+import { TbDatabaseOff } from "react-icons/tb";
 import { DeleteModal } from "../../../../components/modals";
 import Button from "../../../../components/button/Button";
 import { TbTruckDelivery } from "react-icons/tb";
@@ -74,6 +74,12 @@ export default function DeliveryPartners() {
       `/management/delivery-partners/${
         values.partner_id
       }/dp-retailer/${decodeURI(values.partner_name)}`
+    );
+  const onDeliveryAgent = (values: { [key: string]: any }) =>
+    navigate(
+      `/management/delivery-partners/${values.partner_id}/dp-agents/${decodeURI(
+        values.partner_name
+      )}`
     );
 
   const columns = React.useMemo(
@@ -143,6 +149,8 @@ export default function DeliveryPartners() {
             }}
             onEdit={onDeliveryPartnerEdit}
             onNext={onNext}
+            onUser={onDeliveryAgent}
+            hoverMessage={{ user: "Delivery-Agent" }}
           />
         ),
       },
@@ -188,7 +196,7 @@ export default function DeliveryPartners() {
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
-            <FcDeleteDatabase size={100} />
+            <TbDatabaseOff size={100} className="text-blue-light" />
             <h2 className="text-lg">Sorry Data Not Available</h2>
           </div>
         )}

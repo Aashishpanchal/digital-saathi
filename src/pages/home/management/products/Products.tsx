@@ -10,7 +10,7 @@ import {
   TableActionsCell,
 } from "../../../../components/table";
 import { shopProducts } from "../../../../http";
-import { FcDeleteDatabase } from "react-icons/fc";
+import { TbDatabaseOff } from "react-icons/tb";
 import { DeleteModal } from "../../../../components/modals";
 import FocusStarCell from "../../../../components/table/cell/FocusStarCell";
 import Button from "../../../../components/button/Button";
@@ -221,7 +221,7 @@ export default function Products() {
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
-            <FcDeleteDatabase size={100} />
+            <TbDatabaseOff size={100} className="text-blue-light" />
             <h2 className="text-lg">Sorry Data Not Available</h2>
           </div>
         )}

@@ -58,7 +58,7 @@ export default function CreateDPRetailer() {
 
   return (
     <AdminContainer>
-      <MainContainer heading="Delivery Partner Details">
+      <MainContainer heading="Delivery Retailer Details">
         <div className="w-full md:w-[30] lg:w-[30rem]">
           <FormRender
             data={data}

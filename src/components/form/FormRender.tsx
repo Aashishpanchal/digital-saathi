@@ -126,7 +126,7 @@ export default function FormRender(props: {
         }
       })}
       {props.children}
-      <div className="mt-5 flex flex-row space-x-3">
+      <div className="mt-5 flex flex-row flex-wrap gap-2 justify-center">
         {props.onSave && (
           <Button
             onClick={async () => {

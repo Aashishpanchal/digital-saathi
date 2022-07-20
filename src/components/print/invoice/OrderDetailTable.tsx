@@ -1,21 +1,42 @@
 import React from "react";
 import { useTable } from "react-table";
+import Number2Words from "react-number2words";
 
 export default function OrderDetailTable(props: {
   columns: any;
   data: Array<{ [key: string]: any }>;
-  children?: React.ReactNode;
+  orderData: { [key: string]: any };
 }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns: props.columns,
       data: props.data,
     });
+
+  const OrdersTr = (props: { description: string; amount: string }) => {
+    return (
+      <tr>
+        <td className="border border-black"></td>
+        <td className="font-bold p-3 border border-black">
+          {props.description}
+        </td>
+        <td className="border border-black"></td>
+        <td className="border border-black"></td>
+        <td className="border border-black"></td>
+        <td className="border border-black"></td>
+        <td className="border border-black"></td>
+        <td className="font-bold p-3 border border-black" align="center">
+          {props.amount}
+        </td>
+      </tr>
+    );
+  };
+
   return (
-    <tr className="w-full grid border-2 border-black text-xs">
+    <tr className="flex flex-col border-2 border-black text-xs">
       <td>
         <table
-          className="border-collapse min-w-full leading-normal table-auto"
+          className="border-collapse border-black min-w-full leading-normal"
           {...getTableProps()}
           border={1}
         >
@@ -39,10 +60,7 @@ export default function OrderDetailTable(props: {
                   return (
                     <th
                       className={
-                        (headerGroup.headers.length - 1 !== index
-                          ? "border-r "
-                          : " ") +
-                        "text-left whitespace-nowrap p-2 border-b-2 border-black text-xs font-bold text-black first-letter:uppercase tracking-wider"
+                        "text-left whitespace-nowrap p-2 border border-black text-xs font-bold text-black first-letter:uppercase tracking-wider"
                       }
                       {...props}
                     >
@@ -68,7 +86,7 @@ export default function OrderDetailTable(props: {
                     } catch (error: any) {}
                     return (
                       <td
-                        className={"whitespace-nowrap p-3 text-sm"}
+                        className="whitespace-nowrap p-3 text-sm border border-black"
                         {...props}
                         align={align as any}
                       >
@@ -79,9 +97,31 @@ export default function OrderDetailTable(props: {
                 </tr>
               );
             })}
-            {props.children}
+            <OrdersTr
+              description="Total"
+              amount={props.orderData?.grand_total}
+            />
+            <OrdersTr
+              description="Delivery charges"
+              amount={props.orderData?.delivery_charge || "0"}
+            />
+            <OrdersTr
+              description="Delivery Discount"
+              amount={props.orderData?.delivery_discount || "0"}
+            />
+            <OrdersTr
+              description="Amount Payable"
+              amount={props.orderData?.grand_total || "0"}
+            />
           </tbody>
         </table>
+        {/* Order Fifth */}
+      </td>
+      <td className="py-2 px-1">
+        <span className="font-bold">
+          Amount in Words-{" "}
+          <Number2Words value={props.orderData?.grand_total || "0"} />
+        </span>
       </td>
     </tr>
   );

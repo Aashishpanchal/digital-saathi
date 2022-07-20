@@ -5,7 +5,6 @@ import MainContainer from "../../../../components/common/MainContainer";
 import { categories } from "../../../../http";
 import { useNavigate } from "react-router-dom";
 import Image from "../../../../components/Image/Index";
-import { FcDeleteDatabase } from "react-icons/fc";
 import { DeleteModal } from "../../../../components/modals";
 import {
   ActiveDeactivateCell,
@@ -18,6 +17,7 @@ import {
 } from "../../../../components/filter/SelectColumnFilter";
 import Button from "../../../../components/button/Button";
 import { MdOutlineAccountTree } from "react-icons/md";
+import { TbDatabaseOff } from "react-icons/tb";
 
 export default function Categories() {
   const [data, setData] = React.useState({
@@ -196,7 +196,7 @@ export default function Categories() {
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
-            <FcDeleteDatabase size={100} />
+            <TbDatabaseOff size={100} className="text-blue-light" />
             <h2 className="text-lg">Sorry Data Not Available</h2>
           </div>
         )}

@@ -11,7 +11,7 @@ export default function CreateActions(props: {
   startLoading?: boolean;
 }) {
   return (
-    <div className="mt-5 flex flex-row space-x-3">
+    <div className="mt-5 flex flex-row flex-wrap border space-x-3">
       <Button
         onClick={props.onSave}
         type="submit"

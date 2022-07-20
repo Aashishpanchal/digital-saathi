@@ -4,7 +4,7 @@ import AdminContainer from "../../../../components/AdminContainer";
 import MainContainer from "../../../../components/common/MainContainer";
 import { shopPackages } from "../../../../http";
 import { useNavigate } from "react-router-dom";
-import { FcDeleteDatabase } from "react-icons/fc";
+import { TbDatabaseOff } from "react-icons/tb";
 import { DeleteModal } from "../../../../components/modals";
 import {
   ActiveDeactivateCell,
@@ -174,7 +174,7 @@ export default function Packages() {
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
-            <FcDeleteDatabase size={100} />
+            <TbDatabaseOff size={100} className="text-blue-light" />
             <h2 className="text-lg">Sorry Data Not Available</h2>
           </div>
         )}

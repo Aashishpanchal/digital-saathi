@@ -15,4 +15,5 @@ export {
   shopUnits,
   subCategories,
   warehouse,
+  shopDeliveryAgent,
 } from "./server-api/server-apis";

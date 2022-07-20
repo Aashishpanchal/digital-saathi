@@ -21,10 +21,13 @@ import {
   RetrieveUpdateBrands,
 } from "../pages/home/management/brands";
 import {
+  CreateDeliveryAgent,
   CreateDeliveryPartner,
   CreateDPRetailer,
+  DeliveryAgents,
   DeliveryPartners,
   DeliveryPartnersRetailer,
+  RetrieveUpdateDeliveryAgent,
   RetrieveUpdateDeliveryPartner,
   RetrieveUpdateDPRetailer,
 } from "../pages/home/management/delivery-partners";
@@ -338,6 +341,35 @@ export default function AppRouter() {
                       element: (
                         <AdminProtectedRoute>
                           <RetrieveUpdateDPRetailer />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
+                },
+                {
+                  path: "dp-agents/:partner_name",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <DeliveryAgents />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                    {
+                      path: "new",
+                      element: (
+                        <AdminProtectedRoute>
+                          <CreateDeliveryAgent />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                    {
+                      path: ":agent_id",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetrieveUpdateDeliveryAgent />
                         </AdminProtectedRoute>
                       ),
                     },

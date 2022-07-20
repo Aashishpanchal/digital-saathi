@@ -1,61 +1,64 @@
-import React from "react";
 import { Spinner } from "flowbite-react";
-import AdminContainer from "../../../../components/AdminContainer";
-import MainContainer from "../../../../components/common/MainContainer";
-import { shopUnits } from "../../../../http";
-import { useNavigate } from "react-router-dom";
-import { TbDatabaseOff } from "react-icons/tb";
-import { DeleteModal } from "../../../../components/modals";
+import React from "react";
+import { TbDatabaseOff, TbTruckDelivery } from "react-icons/tb";
+import { useNavigate, useParams } from "react-router-dom";
+import AdminContainer from "../../../../../components/AdminContainer";
+import Button from "../../../../../components/button/Button";
+import MainContainer from "../../../../../components/common/MainContainer";
+import { SelectColumActiveDeactivateFilter } from "../../../../../components/filter/SelectColumnFilter";
+import { DeleteModal } from "../../../../../components/modals";
 import {
   ActiveDeactivateCell,
   Table,
   TableActionsCell,
-} from "../../../../components/table";
-import { SelectColumActiveDeactivateFilter } from "../../../../components/filter/SelectColumnFilter";
-import Button from "../../../../components/button/Button";
-import { MdAcUnit } from "react-icons/md";
+} from "../../../../../components/table";
+import { shopDeliveryAgent } from "../../../../../http";
 
-export default function Units() {
+export default function DeliveryAgentRetailer() {
   const [data, setData] = React.useState({
     totalItems: 0,
     totalPages: 1,
     brands: [],
-    units: [],
+    agents: [],
   });
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [value, setValue] = React.useState<{
-    units_id: string;
+    agent_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
+
+  const { partner_name, partner_id } = useParams();
   const navigate = useNavigate();
 
-  const onShopUnitsGet = async () => {
+  const onDPRetailerGet = async () => {
     setLoading(true);
     try {
-      const res = await shopUnits("get", { postfix: `?page=${page}` });
-      if (res?.status === 200) {
+      const res: any = await shopDeliveryAgent("get", {
+        postfix: `?page=${page}&partner_id=${partner_id}`,
+      });
+      if (res.status === 200) {
         setData(res.data);
       }
     } catch (err: any) {
-      console.log(err.response);
+      console.log(err);
     }
     setLoading(false);
   };
 
-  const onShopUnitsDelete = async () => {
+  const onDPRetailerDelete = async () => {
     if (value) {
       setDeleteModalShow(false);
-      const { units_id, setDeleteLoading } = value;
+      const { agent_id, setDeleteLoading } = value;
       setValue(undefined);
       try {
         setDeleteLoading(true);
-        const res: any = await shopUnits("delete", {
-          params: units_id,
+        const res: any = await shopDeliveryAgent("delete", {
+          params: agent_id,
         });
         if (res.status === 200) {
-          await onShopUnitsGet();
+          await onDPRetailerGet();
         }
       } catch (err: any) {
         console.log(err.response);
@@ -64,18 +67,17 @@ export default function Units() {
     }
   };
 
-  const onNew = () => navigate("/masters/units/new");
-  const onShopUnitsEdit = (values: { [key: string]: any }) =>
-    navigate(`/masters/units/${values.units_id}`);
+  const onDPEdit = (values: { [key: string]: any }) =>
+    navigate(`${values.agent_id}`);
 
   const columns = React.useMemo(
     () => [
       {
         Header: "S No.",
-        accessor: "units_id",
+        accessor: "agent_id",
         extraProps: {
           columnStyle: {
-            width: "150px",
+            width: "0px",
             textAlign: "center",
             paddingRight: "0px",
           },
@@ -86,31 +88,43 @@ export default function Units() {
         accessor: "active",
         Filter: SelectColumActiveDeactivateFilter,
         filter: "equals",
-        Cell: (cell: any) => (
-          <ActiveDeactivateCell
-            cell={cell}
-            idKey="units_id"
-            axiosFunction={shopUnits}
-            setData={setData}
-            payload={["units"]}
-          />
-        ),
         extraProps: {
           columnStyle: {
-            maxWidth: "250px",
+            width: "250px",
             textAlign: "center",
             paddingRight: "0px",
           },
           align: "center",
         },
+        Cell: (cell: any) => (
+          <ActiveDeactivateCell
+            cell={cell}
+            idKey="agent_id"
+            setData={setData}
+            axiosFunction={shopDeliveryAgent}
+          />
+        ),
       },
       {
-        Header: "Units Name",
-        accessor: "units",
+        Header: "Agent Name",
+        accessor: "agent_name",
         extraProps: {
-          align: "center",
+          columnStyle: { textAlign: "center" },
         },
-        Cell: (cell: any) => <span className="font-bold">{cell.value}</span>,
+      },
+      {
+        Header: "Email",
+        accessor: "email_id",
+        extraProps: {
+          columnStyle: { textAlign: "center" },
+        },
+      },
+      {
+        Header: "Phone Number",
+        accessor: "phone_no",
+        extraProps: {
+          columnStyle: { textAlign: "center" },
+        },
       },
       {
         Header: "Action",
@@ -120,11 +134,11 @@ export default function Units() {
             onDelete={async (value, setDeleteLoading) => {
               setDeleteModalShow(true);
               setValue({
-                units_id: value.units_id,
+                agent_id: value.agent_id,
                 setDeleteLoading,
               });
             }}
-            onEdit={onShopUnitsEdit}
+            onEdit={onDPEdit}
           />
         ),
       },
@@ -132,17 +146,17 @@ export default function Units() {
     []
   );
 
-  const getData = React.useMemo(() => data.units, [data, page]);
+  const getData = React.useMemo(() => data.agents, [data, page]);
 
   React.useEffect(() => {
-    onShopUnitsGet();
+    onDPRetailerGet();
   }, [page]);
 
   return (
     <AdminContainer>
-      <MainContainer heading="Units">
+      <MainContainer heading={`${partner_name} / Retailer`}>
         <div className="mb-4">
-          <Button onClick={onNew} icon={<MdAcUnit size={18} />} color="dark">
+          <Button url="new" icon={<TbTruckDelivery size={18} />} color="dark">
             New
           </Button>
         </div>
@@ -179,7 +193,7 @@ export default function Units() {
         show={deleteModalShow}
         onClose={() => setDeleteModalShow(false)}
         onClickNo={() => setDeleteModalShow(false)}
-        onClickYes={onShopUnitsDelete}
+        onClickYes={onDPRetailerDelete}
       />
     </AdminContainer>
   );

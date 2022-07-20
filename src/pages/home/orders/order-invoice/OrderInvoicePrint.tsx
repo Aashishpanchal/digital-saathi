@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { PrintInvoice } from "../../../../components/print";
+import Disclaimer from "../../../../components/print/invoice/Disclaimer";
 import useGetData from "../../../../hooks/useGetData";
 import { retailer, shopOrderDetails, shopOrders } from "../../../../http";
 
@@ -8,7 +9,6 @@ type ResponseType = { [key: string]: any };
 
 export default function OrderInvoicePrint() {
   const { order_id } = useParams();
-
   const [retailerData, setRetailerData] = React.useState<ResponseType>({});
   const [orderData, setOrderData] = React.useState<ResponseType>({});
   const { data: orderDetailsData } = useGetData({
@@ -16,6 +16,11 @@ export default function OrderInvoicePrint() {
     extractKey: "order_details",
     postfix: `order_id=${order_id}`,
   });
+  const disclaimText = [
+    "Invoice is raised directly by the seller in favor of Buyer and Digital Saathi has no role in its issuance.",
+    "Presence of Digital Saathi logo is for marketing purpose as a facilitator only.",
+    "Role and responsibility of Digital Saathi is subject to various conditions and disclaimers provided under Terms of Use of Digital Saathi App.",
+  ];
 
   const retailerLabel = React.useMemo(
     () => [
@@ -185,6 +190,10 @@ export default function OrderInvoicePrint() {
     }
   };
 
+  const onPrint = () => {
+    window.print();
+  };
+
   React.useEffect(() => {
     onGetOrder();
   }, []);
@@ -203,6 +212,7 @@ export default function OrderInvoicePrint() {
           <PrintInvoice.TableRowHeader
             invoiceNumber="00044181652780675"
             invoiceDate="2022-05-17"
+            onPrintClick={onPrint}
           />
           {/* Order Header Part */}
           <PrintInvoice.TableRow borderColor="black" grid={true}>
@@ -230,30 +240,17 @@ export default function OrderInvoicePrint() {
           <PrintInvoice.OrderDetailTable
             columns={orderDetailCol}
             data={getOrderDetails}
-          >
-            <tr>
-              <td></td>
-              <td className="font-bold p-3">Total</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td className="font-bold p-3" align="center">
-                {orderData?.grand_total}
-              </td>
-            </tr>
-          </PrintInvoice.OrderDetailTable>
-          {/* Order Fifth */}
-          <tr className="grid grid-cols-1 py-2 border-2 text-xs">
-            <td>
-              <span className="font-bold">
-                Amount in Words- one thousand six hundred and sixty Rupees{" "}
-              </span>
-            </td>
-          </tr>
+            orderData={orderData}
+          />
         </PrintInvoice.TableBody>
       </PrintInvoice.TableContainer>
+      <div className="mt-4 flex flex-col px-1">
+        <Disclaimer text={disclaimText} />
+        <div className="text-right font-bold text-sm my-4">
+          <h3 className="pb-3">{retailerData.company_name}</h3>
+          <p>Authorized Signature</p>
+        </div>
+      </div>
     </PrintInvoice.Container>
   );
 }

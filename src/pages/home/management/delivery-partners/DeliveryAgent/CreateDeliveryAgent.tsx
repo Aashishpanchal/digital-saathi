@@ -5,43 +5,25 @@ import AdminContainer from "../../../../../components/AdminContainer";
 import MainContainer from "../../../../../components/common/MainContainer";
 import { FormRender } from "../../../../../components/form";
 import useForms from "../../../../../hooks/useForms";
-import { deliveryRetailer } from "../../../../../http";
+import { shopDeliveryAgent } from "../../../../../http";
 import { setFormAlert } from "../../../../../redux/slices/alertSlice";
-import useFormDPRetailer from "./useFormDPRetailer";
+import useFormDeliveryAgent from "./useFormDeliveryAgent";
 
-export default function RetrieveUpdateDPRetailer() {
-  const { del_ret_id } = useParams();
-  const { getFormsFields } = useFormDPRetailer();
-  const { data, setData, errors, onValidate } = useForms({
+export default function CreateDeliveryAgent() {
+  const { partner_id } = useParams();
+  const { getFormsFields } = useFormDeliveryAgent();
+  const { data, setData, onClear, errors, onValidate } = useForms({
     fields: getFormsFields,
   });
   const dispatch = useDispatch();
 
-  const onRetrieve = async () => {
-    try {
-      const res = await deliveryRetailer("get", { params: del_ret_id });
-      if (res?.status === 200) {
-        const setValues: any = {};
-        getFormsFields.forEach((item) => {
-          setValues[item.name] = `${res.data[item.name] || item.defaultValue}`;
-        });
-        setData(setValues);
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-  };
-
-  const onUpdate = async () => {
-    const isValid = onValidate();
-    if (isValid) {
+  const onSave = async () => {
+    if (onValidate()) {
       try {
-        const res = await deliveryRetailer("put", {
-          params: del_ret_id,
-          data: JSON.stringify(data),
+        const res = await shopDeliveryAgent("post", {
+          data: JSON.stringify({ ...data, partner_id }),
         });
         if (res?.status === 200) {
-          await onRetrieve();
           return true;
         }
       } catch (err: any) {
@@ -56,25 +38,36 @@ export default function RetrieveUpdateDPRetailer() {
           );
         }
       }
-      return false;
     }
-    return isValid;
+    return false;
   };
 
-  React.useEffect(() => {
-    onRetrieve();
-  }, []);
+  const onSaveStay = async () => {
+    const res = await onSave();
+    if (res) {
+      dispatch(
+        setFormAlert({
+          type: "green",
+          highLight: "Success! ",
+          text: "Data Add Successfully..",
+          show: true,
+        })
+      );
+    }
+  };
 
   return (
     <AdminContainer>
-      <MainContainer heading="Delivery Retailer Details">
+      <MainContainer heading="Delivery Agent Details">
         <div className="w-full md:w-[30] lg:w-[30rem]">
           <FormRender
             data={data}
             setData={setData}
+            onReset={onClear}
             fields={getFormsFields}
             errors={errors}
-            onUpdate={onUpdate}
+            onSave={onSave}
+            onSaveStay={onSaveStay}
           />
         </div>
       </MainContainer>

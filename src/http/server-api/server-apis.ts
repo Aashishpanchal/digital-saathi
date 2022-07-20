@@ -16,6 +16,7 @@ export const brands = baseFunc("shop_brands");
 export const deliveryPartners = baseFunc("shop_deliverypartners");
 // list of all the endpoints of shop_deliveryretailer
 export const deliveryRetailer = baseFunc("shop_deliveryretailer");
+export const shopDeliveryAgent = baseFunc("shop_deliveryagents");
 // list of all the endpoints of shop_products
 export const shopProducts = baseFunc("shop_products");
 // list of all the endpoints of shop_productweightprice

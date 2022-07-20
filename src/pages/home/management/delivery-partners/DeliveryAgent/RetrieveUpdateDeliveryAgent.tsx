@@ -5,13 +5,13 @@ import AdminContainer from "../../../../../components/AdminContainer";
 import MainContainer from "../../../../../components/common/MainContainer";
 import { FormRender } from "../../../../../components/form";
 import useForms from "../../../../../hooks/useForms";
-import { deliveryRetailer } from "../../../../../http";
+import { shopDeliveryAgent } from "../../../../../http";
 import { setFormAlert } from "../../../../../redux/slices/alertSlice";
-import useFormDPRetailer from "./useFormDPRetailer";
+import useFormDeliveryAgent from "./useFormDeliveryAgent";
 
-export default function RetrieveUpdateDPRetailer() {
-  const { del_ret_id } = useParams();
-  const { getFormsFields } = useFormDPRetailer();
+export default function RetrieveUpdateDeliveryAgent() {
+  const { agent_id } = useParams();
+  const { getFormsFields } = useFormDeliveryAgent();
   const { data, setData, errors, onValidate } = useForms({
     fields: getFormsFields,
   });
@@ -19,7 +19,7 @@ export default function RetrieveUpdateDPRetailer() {
 
   const onRetrieve = async () => {
     try {
-      const res = await deliveryRetailer("get", { params: del_ret_id });
+      const res = await shopDeliveryAgent("get", { params: agent_id });
       if (res?.status === 200) {
         const setValues: any = {};
         getFormsFields.forEach((item) => {
@@ -36,8 +36,8 @@ export default function RetrieveUpdateDPRetailer() {
     const isValid = onValidate();
     if (isValid) {
       try {
-        const res = await deliveryRetailer("put", {
-          params: del_ret_id,
+        const res = await shopDeliveryAgent("put", {
+          params: agent_id,
           data: JSON.stringify(data),
         });
         if (res?.status === 200) {
@@ -67,7 +67,7 @@ export default function RetrieveUpdateDPRetailer() {
 
   return (
     <AdminContainer>
-      <MainContainer heading="Delivery Retailer Details">
+      <MainContainer heading="Delivery Agent Details">
         <div className="w-full md:w-[30] lg:w-[30rem]">
           <FormRender
             data={data}

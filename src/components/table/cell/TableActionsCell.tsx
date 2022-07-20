@@ -9,6 +9,7 @@ import {
   FaMapMarkedAlt,
   FaPrint,
   FaRupeeSign,
+  FaUserAlt,
   FaWarehouse,
 } from "react-icons/fa";
 import { CgViewList } from "react-icons/cg";
@@ -48,6 +49,7 @@ export default function TableActionsCell(props: {
   onDashBoard?: onClickType;
   onWarehouse?: onClickType;
   onArea?: onClickType;
+  onUser?: onClickType;
   hoverMessage?: {
     edit?: string;
     delete?: string;
@@ -58,6 +60,7 @@ export default function TableActionsCell(props: {
     wareHouse?: string;
     dashboard?: string;
     area?: string;
+    user?: string;
   };
 }) {
   const [deleteLoading, setDeleteLoading] = React.useState(false);
@@ -147,6 +150,14 @@ export default function TableActionsCell(props: {
           onClick={() => props.onNext && props.onNext(cell.row.original)}
         >
           <FaArrowRight size={18} />
+        </SquareContainer>
+      )}
+      {props.onUser && (
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.user || "User"}
+          onClick={() => props.onUser && props.onUser(cell.row.original)}
+        >
+          <FaUserAlt size={18} />
         </SquareContainer>
       )}
     </div>
