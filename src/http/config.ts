@@ -9,5 +9,3 @@ export const auth0Config = {
   audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   grant_type: process.env.REACT_APP_AUTH0_GRANT_TYPE || "",
 };
-
-console.log(auth0Config);

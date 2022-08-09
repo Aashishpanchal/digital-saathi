@@ -7,11 +7,14 @@ import { useDispatch } from "react-redux";
 import useFormBrands from "./useFormBrands";
 import useForms from "../../../../hooks/useForms";
 import { setFormAlert } from "../../../../redux/slices/alertSlice";
+import useBucket from "../../../../hooks/useBucket";
 
 export default function CreateBrands() {
   const { getFormsFields } = useFormBrands();
 
   const dispatch = useDispatch();
+
+  const { ImageUploader } = useBucket("brand-images");
 
   const { data, setData, onClear, errors, onValidate } = useForms({
     fields: getFormsFields,
@@ -21,11 +24,14 @@ export default function CreateBrands() {
     if (onValidate()) {
       try {
         const { brand_image, ...newData } = data;
-        const res = await brands("post", {
-          data: JSON.stringify(newData),
-        });
-        if (res?.status === 200) {
-          return true;
+        const imageUrl = await ImageUploader(brand_image);
+        if (imageUrl) {
+          const res = await brands("post", {
+            data: JSON.stringify({ ...newData, brand_image: imageUrl }),
+          });
+          if (res?.status === 200) {
+            return true;
+          }
         }
       } catch (err: any) {
         if (err?.response?.status === 400) {

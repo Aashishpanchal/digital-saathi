@@ -183,7 +183,7 @@ export default function Categories() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data ? (
+        ) : data.totalItems ? (
           <Table
             columns={columns}
             data={getData}

@@ -1,6 +1,6 @@
 import React from "react";
 import { useTable } from "react-table";
-import Number2Words from "react-number2words";
+import { NumberToString } from "../../Utils";
 
 export default function OrderDetailTable(props: {
   columns: any;
@@ -119,8 +119,7 @@ export default function OrderDetailTable(props: {
       </td>
       <td className="py-2 px-1">
         <span className="font-bold">
-          Amount in Words-{" "}
-          <Number2Words value={props.orderData?.grand_total || "0"} />
+          Amount in Words- {NumberToString(props.orderData?.grand_total || "0")}
         </span>
       </td>
     </tr>

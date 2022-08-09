@@ -1,6 +1,6 @@
 import moment from "moment";
-import React from "react";
 import { farmers, retailer } from "../http";
+import { ToWords } from "to-words";
 
 export function classNames(...classNames: string[]) {
   return classNames.filter(Boolean).join(" ");
@@ -38,4 +38,21 @@ export async function onRetailerRetrieve(retailer_id: number) {
 
 export function DateFormate(date: string) {
   return moment(date).format("YYYY-MM-DD");
+}
+
+export function NumberToString(value: string): string {
+  const toWords = new ToWords({
+    localeCode: "en-IN",
+    converterOptions: {
+      currency: true,
+      ignoreDecimal: false,
+      ignoreZeroCurrency: false,
+      doNotAddOnly: false,
+    },
+  });
+  const num = Number(value);
+  if (isNaN(num)) {
+    return "cannot translate";
+  }
+  return toWords.convert(num);
 }

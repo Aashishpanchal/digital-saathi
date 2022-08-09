@@ -7,11 +7,14 @@ import useFormCategories from "./useFormCategories";
 import useForms from "../../../../hooks/useForms";
 import { useDispatch } from "react-redux";
 import { setFormAlert } from "../../../../redux/slices/alertSlice";
+import useBucket from "../../../../hooks/useBucket";
 
 export default function CreateFarmers() {
   const { getFormsFields } = useFormCategories();
 
   const dispatch = useDispatch();
+
+  const { ImageUploader } = useBucket("category-images");
 
   const { data, setData, onClear, errors, onValidate } = useForms({
     fields: getFormsFields,
@@ -20,12 +23,16 @@ export default function CreateFarmers() {
   const onSave = async () => {
     if (onValidate()) {
       const { image, ...newData } = data;
+      
       try {
-        const res = await categories("post", {
-          data: JSON.stringify(newData),
-        });
-        if (res?.status === 200) {
-          return true;
+        const imageUrl = await ImageUploader(image);
+        if (imageUrl) {
+          const res = await categories("post", {
+            data: JSON.stringify({image: imageUrl, ...newData}),
+          });
+          if (res?.status === 200) {
+            return true;
+          }
         }
       } catch (err: any) {
         if (err?.response?.status === 400) {
