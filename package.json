@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^1.10.2",
+    "@aws-sdk/client-s3": "^3.145.0",
+    "@aws-sdk/lib-storage": "^3.145.0",
     "@reduxjs/toolkit": "^1.8.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -16,7 +18,6 @@
     "axios": "^0.27.2",
     "chart.js": "^3.8.0",
     "export-from-json": "^1.6.0",
-    "firebase": "^9.9.1",
     "flowbite": "^1.4.7",
     "flowbite-react": "^0.0.25",
     "moment": "^2.29.3",

@@ -118,7 +118,7 @@ export default function Categories() {
           align: "center",
         },
         Cell: (cell: any) => {
-          return <Image src={`category-images/${cell.value}`} alt={""} />;
+          return <Image url={cell.value} alt={""} />;
         },
       },
       {

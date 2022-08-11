@@ -14,7 +14,7 @@ export default function CreateFarmers() {
 
   const dispatch = useDispatch();
 
-  const { ImageUploader } = useBucket("category-images");
+  const { S3ImageUploader } = useBucket("category-images");
 
   const { data, setData, onClear, errors, onValidate } = useForms({
     fields: getFormsFields,
@@ -23,12 +23,12 @@ export default function CreateFarmers() {
   const onSave = async () => {
     if (onValidate()) {
       const { image, ...newData } = data;
-      
+
       try {
-        const imageUrl = await ImageUploader(image);
-        if (imageUrl) {
+        const metaData: any = await S3ImageUploader(image);
+        if (metaData) {
           const res = await categories("post", {
-            data: JSON.stringify({image: imageUrl, ...newData}),
+            data: JSON.stringify({ image: metaData.Location, ...newData }),
           });
           if (res?.status === 200) {
             return true;

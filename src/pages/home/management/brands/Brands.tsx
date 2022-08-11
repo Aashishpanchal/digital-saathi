@@ -111,12 +111,7 @@ export default function Brands() {
           align: "center",
         },
         Cell: (cell: any) => {
-          return (
-            <Image
-              src={`brand-images/${cell.row.original.brand_image}`}
-              alt={""}
-            />
-          );
+          return <Image url={cell.value} alt={""} />;
         },
       },
       {

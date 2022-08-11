@@ -14,7 +14,7 @@ export default function CreateBrands() {
 
   const dispatch = useDispatch();
 
-  const { ImageUploader } = useBucket("brand-images");
+  const { S3ImageUploader } = useBucket("brand-images");
 
   const { data, setData, onClear, errors, onValidate } = useForms({
     fields: getFormsFields,
@@ -24,10 +24,13 @@ export default function CreateBrands() {
     if (onValidate()) {
       try {
         const { brand_image, ...newData } = data;
-        const imageUrl = await ImageUploader(brand_image);
-        if (imageUrl) {
+        const metaData: any = await S3ImageUploader(brand_image);
+        if (metaData) {
           const res = await brands("post", {
-            data: JSON.stringify({ ...newData, brand_image: imageUrl }),
+            data: JSON.stringify({
+              ...newData,
+              brand_image: metaData.Location,
+            }),
           });
           if (res?.status === 200) {
             return true;

@@ -9,3 +9,8 @@ export const auth0Config = {
   audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   grant_type: process.env.REACT_APP_AUTH0_GRANT_TYPE || "",
 };
+
+export const accessKeyId = process.env.REACT_APP_S3_ACCESS_KEY || "";
+export const secretAccessKey = process.env.REACT_APP_S3_SECRET_ACCESS_KEY || "";
+export const region = process.env.REACT_APP_S3_BUCKET_REGION || "";
+export const bucketName = process.env.REACT_APP_S3_BUCKET_NAME || "";
