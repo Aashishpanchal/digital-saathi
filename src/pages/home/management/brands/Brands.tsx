@@ -14,6 +14,7 @@ import {
 import { SelectColumActiveDeactivateFilter } from "../../../../components/filter/SelectColumnFilter";
 import Button from "../../../../components/button/Button";
 import { TbBrandSublimeText, TbDatabaseOff } from "react-icons/tb";
+import useBucket from "../../../../hooks/useBucket";
 
 export default function Brands() {
   const [data, setData] = React.useState({
@@ -24,12 +25,13 @@ export default function Brands() {
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
-    brand_id: string;
+    brand: { [key: string]: any };
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
   const [page, setPage] = React.useState(0);
 
   const navigate = useNavigate();
+  const { S3DeleteImage } = useBucket();
 
   const onBrandsGet = async () => {
     setLoading(true);
@@ -47,19 +49,23 @@ export default function Brands() {
   const onBrandDelete = async () => {
     if (value) {
       setDeleteModalShow(false);
-      const { brand_id, setDeleteLoading } = value;
+      const { brand, setDeleteLoading } = value;
       setValue(undefined);
-      try {
-        setDeleteLoading(true);
-        const res: any = await brands("delete", {
-          params: brand_id,
-        });
-        if (res.status === 200) {
-          await onBrandsGet();
+      setDeleteLoading(true);
+      const metaData = await S3DeleteImage(brand.brand_image);
+      if (metaData?.success) {
+        try {
+          const res: any = await brands("delete", {
+            params: brand.brand_id,
+          });
+          if (res.status === 200) {
+            await onBrandsGet();
+          }
+        } catch (err: any) {
+          console.log(err.response);
         }
-      } catch (err: any) {
-        console.log(err.response);
       }
+
       setDeleteLoading(false);
     }
   };
@@ -132,7 +138,7 @@ export default function Brands() {
             onDelete={async (value, setDeleteLoading) => {
               setDeleteModalShow(true);
               setValue({
-                brand_id: value.brand_id,
+                brand: value,
                 setDeleteLoading,
               });
             }}

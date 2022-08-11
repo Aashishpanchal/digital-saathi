@@ -18,6 +18,7 @@ import {
 import Button from "../../../../components/button/Button";
 import { MdOutlineAccountTree } from "react-icons/md";
 import { TbDatabaseOff } from "react-icons/tb";
+import useBucket from "../../../../hooks/useBucket";
 
 export default function Categories() {
   const [data, setData] = React.useState({
@@ -28,12 +29,13 @@ export default function Categories() {
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
-    category_id: string;
+    category: { [key: string]: any };
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
   const [page, setPage] = React.useState(0);
 
   const navigate = useNavigate();
+  const { S3DeleteImage } = useBucket();
 
   const onCategoriesGet = async () => {
     setLoading(true);
@@ -51,18 +53,21 @@ export default function Categories() {
   const onCategoryDelete = async () => {
     if (value) {
       setDeleteModalShow(false);
-      const { category_id, setDeleteLoading } = value;
+      const { category, setDeleteLoading } = value;
       setValue(undefined);
-      try {
-        setDeleteLoading(true);
-        const res: any = await categories("delete", {
-          params: category_id,
-        });
-        if (res.status === 200) {
-          await onCategoriesGet();
+      setDeleteLoading(true);
+      const metaData = await S3DeleteImage(category.image);
+      if (metaData?.success) {
+        try {
+          const res: any = await categories("delete", {
+            params: category.category_id,
+          });
+          if (res.status === 200) {
+            await onCategoriesGet();
+          }
+        } catch (err: any) {
+          console.log(err.response);
         }
-      } catch (err: any) {
-        console.log(err.response);
       }
       setDeleteLoading(false);
     }
@@ -141,7 +146,7 @@ export default function Categories() {
             onDelete={async (value, setDeleteLoading) => {
               setDeleteModalShow(true);
               setValue({
-                category_id: value.category_id,
+                category: value,
                 setDeleteLoading,
               });
             }}
