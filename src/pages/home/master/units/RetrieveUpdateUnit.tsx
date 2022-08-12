@@ -1,58 +1,66 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AdminContainer from "../../../../components/AdminContainer";
 import MainContainer from "../../../../components/common/MainContainer";
-import UpdateActions from "../../../../components/common/UpdateActions";
-import { Form } from "../../../../components/form";
+import { FormRender } from "../../../../components/form";
 import { shopUnits } from "../../../../http";
-import LabelTextInput from "../../../../components/form/LabelTextInput";
+import { setFormAlert } from "../../../../redux/slices/alertSlice";
+import { useDispatch } from "react-redux";
+import useFormUnits from "./useFormUnits";
+import useForms from "../../../../hooks/useForms";
 
 export default function RetrieveUpdateUnit() {
-  const [data, setData] = React.useState({
-    units: "",
+  const { units_id } = useParams();
+  const { getFormsFields } = useFormUnits();
+
+  const { data, setData, errors, onValidate } = useForms({
+    fields: getFormsFields,
   });
 
-  const [loading, setLoading] = React.useState(false);
-
-  const navigate = useNavigate();
-  const params = useParams();
-
-  const { id: units_id } = params;
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
+  const dispatch = useDispatch();
 
   const onRetrieve = async () => {
     try {
-      const res = await shopUnits("get", {
-        params: units_id,
-      });
+      const res = await shopUnits("get", { params: units_id });
       if (res?.status === 200) {
-        setData({
-          units: res?.data?.units,
+        const setValues: any = {};
+        getFormsFields.forEach((item) => {
+          setValues[item.name] = `${res.data[item.name] || item.defaultValue}`;
         });
+        setData(setValues);
       }
-    } catch (e: any) {
-      console.log(e.response);
+    } catch (err: any) {
+      console.log(err.response);
     }
   };
 
   const onUpdate = async () => {
-    try {
-      setLoading(true);
-      await shopUnits("put", {
-        data: JSON.stringify(data),
-        params: units_id,
-      });
-      await onRetrieve();
-    } catch (e) {
-      console.log(e);
+    const isValid = onValidate();
+    if (isValid) {
+      try {
+        const res = await shopUnits("put", {
+          params: units_id,
+          data: JSON.stringify(data),
+        });
+        if (res?.status === 200) {
+          return true;
+        }
+      } catch (err: any) {
+        if (err?.response?.status === 400) {
+          dispatch(
+            setFormAlert({
+              type: "red",
+              highLight: "Server Validation Error! ",
+              text: err?.response?.data?.message,
+              show: true,
+            })
+          );
+        }
+      }
+      return false;
     }
-    setLoading(false);
+    return isValid;
   };
-
-  const onCancel = () => navigate(-1);
 
   React.useEffect(() => {
     onRetrieve();
@@ -61,24 +69,15 @@ export default function RetrieveUpdateUnit() {
   return (
     <AdminContainer>
       <MainContainer heading="Unit Details">
-        <Form>
-          <div className="w-full md:w-[28rem] lg:w-[28rem]">
-            <LabelTextInput
-              type={"text"}
-              label="Unit Name"
-              name="units"
-              value={data.units}
-              onChange={onChange}
-              hint="Units name is compulsory"
-              hintColor="green"
-            />
-          </div>
-          <UpdateActions
-            startLoading={loading}
-            onSave={onUpdate}
-            onCancel={onCancel}
+        <div className="w-full md:w-[30] lg:w-[30rem]">
+          <FormRender
+            data={data}
+            setData={setData}
+            fields={getFormsFields}
+            errors={errors}
+            onUpdate={onUpdate}
           />
-        </Form>
+        </div>
       </MainContainer>
     </AdminContainer>
   );

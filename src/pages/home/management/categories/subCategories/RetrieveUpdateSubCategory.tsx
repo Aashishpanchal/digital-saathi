@@ -9,6 +9,10 @@ import useFormSubCategories from "./useFormSubCategories";
 import useBucket from "../../../../../hooks/useBucket";
 import { useDispatch } from "react-redux";
 import { setFormAlert } from "../../../../../redux/slices/alertSlice";
+import {
+  closeInformationModal,
+  setInformationModal,
+} from "../../../../../redux/slices/modalSlice";
 
 export default function RetrieveUpdateSubCategory() {
   const { category_name, subcategory_id } = useParams();
@@ -22,6 +26,12 @@ export default function RetrieveUpdateSubCategory() {
   const dispatch = useDispatch();
 
   const onRetrieve = async () => {
+    dispatch(
+      setInformationModal({
+        show: true,
+        showLoading: true,
+      })
+    );
     try {
       const res = await subCategories("get", { params: subcategory_id });
       if (res?.status === 200) {
@@ -33,8 +43,17 @@ export default function RetrieveUpdateSubCategory() {
         setData(setValues);
       }
     } catch (err: any) {
-      console.log(err.response);
+      dispatch(
+        setInformationModal({
+          show: true,
+          runClose: true,
+          heading: "Error/Server Side Error",
+          title: "Extract Data UnComplete",
+          message: err.response || err,
+        })
+      );
     }
+    dispatch(closeInformationModal());
   };
 
   const onUpdate = async () => {
@@ -52,7 +71,6 @@ export default function RetrieveUpdateSubCategory() {
             }),
           });
           if (res?.status === 200) {
-            await onRetrieve();
             return true;
           }
         } catch (err: any) {

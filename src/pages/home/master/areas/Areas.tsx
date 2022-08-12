@@ -19,7 +19,6 @@ export default function Areas() {
   const [data, setData] = React.useState({
     totalItems: 0,
     totalPages: 1,
-    brands: [],
     areas: [],
   });
   const [loading, setLoading] = React.useState(true);

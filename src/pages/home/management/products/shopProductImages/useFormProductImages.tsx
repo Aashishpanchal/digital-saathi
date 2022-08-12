@@ -17,10 +17,13 @@ export default function useFormProductImages() {
           "Drag & Drop Files But Image size should be square (500) x (500).",
         name: "image",
         defaultValue: null,
+        hintText: "Category Image is compulsory",
+        validate: true,
         Field: (props: any) => {
           return (
             <ImageInput
               label={props.label}
+              hintText={props.hint}
               handleChange={(file: any) => {
                 props.setData({ ...props.data, image: file });
               }}

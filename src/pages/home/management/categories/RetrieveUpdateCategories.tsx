@@ -9,6 +9,10 @@ import { useDispatch } from "react-redux";
 import { setFormAlert } from "../../../../redux/slices/alertSlice";
 import { useParams } from "react-router-dom";
 import useBucket from "../../../../hooks/useBucket";
+import {
+  closeInformationModal,
+  setInformationModal,
+} from "../../../../redux/slices/modalSlice";
 
 export default function RetrieveUpdateCategories() {
   const { getFormsFields } = useFormCategories();
@@ -23,6 +27,12 @@ export default function RetrieveUpdateCategories() {
   const { S3UpdateImage } = useBucket("category-images");
 
   const onRetrieve = async () => {
+    dispatch(
+      setInformationModal({
+        show: true,
+        showLoading: true,
+      })
+    );
     try {
       const res = await categories("get", { params: params.id });
       if (res?.status === 200) {
@@ -34,8 +44,17 @@ export default function RetrieveUpdateCategories() {
         setData(setValues);
       }
     } catch (err: any) {
-      console.log(err.response);
+      dispatch(
+        setInformationModal({
+          show: true,
+          runClose: true,
+          heading: "Error/Server Side Error",
+          title: "Extract Data UnComplete",
+          message: err.response || err,
+        })
+      );
     }
+    dispatch(closeInformationModal());
   };
 
   const onUpdate = async () => {
@@ -53,7 +72,6 @@ export default function RetrieveUpdateCategories() {
             }),
           });
           if (res?.status === 200) {
-            await onRetrieve();
             return true;
           }
         } catch (err: any) {

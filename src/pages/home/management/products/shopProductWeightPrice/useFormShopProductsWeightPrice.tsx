@@ -31,6 +31,7 @@ export default function useFormShopProductsWeightPrice() {
     return value;
   };
 
+  // this method depend on packagesData
   const onRetrievePackages = async () => {
     try {
       let options: any = { ...packageOptions };
@@ -45,6 +46,7 @@ export default function useFormShopProductsWeightPrice() {
     }
   };
 
+  // this method depend on unitsData
   const onRetrieveUnits = async () => {
     try {
       let options: any = { ...unitOptions };

@@ -1,58 +1,66 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AdminContainer from "../../../../components/AdminContainer";
 import MainContainer from "../../../../components/common/MainContainer";
-import UpdateActions from "../../../../components/common/UpdateActions";
-import { Form } from "../../../../components/form";
+import { FormRender } from "../../../../components/form";
 import { shopPackages } from "../../../../http";
-import LabelTextInput from "../../../../components/form/LabelTextInput";
+import { useDispatch } from "react-redux";
+import useFormPackages from "./useFormPackages";
+import useForms from "../../../../hooks/useForms";
+import { setFormAlert } from "../../../../redux/slices/alertSlice";
 
 export default function RetrieveUpdatePackage() {
-  const [data, setData] = React.useState({
-    package: "",
+  const { package_id } = useParams();
+  const { getFormsFields } = useFormPackages();
+
+  const { data, setData, errors, onValidate } = useForms({
+    fields: getFormsFields,
   });
 
-  const [loading, setLoading] = React.useState(false);
-
-  const navigate = useNavigate();
-  const params = useParams();
-
-  const { id: package_id } = params;
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
+  const dispatch = useDispatch();
 
   const onRetrieve = async () => {
     try {
-      const res = await shopPackages("get", {
-        params: package_id,
-      });
+      const res = await shopPackages("get", { params: package_id });
       if (res?.status === 200) {
-        setData({
-          package: res?.data?.package,
+        const setValues: any = {};
+        getFormsFields.forEach((item) => {
+          setValues[item.name] = `${res.data[item.name] || item.defaultValue}`;
         });
+        setData(setValues);
       }
-    } catch (e: any) {
-      console.log(e.response);
+    } catch (err: any) {
+      console.log(err.response);
     }
   };
 
   const onUpdate = async () => {
-    try {
-      setLoading(true);
-      await shopPackages("put", {
-        data: JSON.stringify(data),
-        params: package_id,
-      });
-      await onRetrieve();
-    } catch (e) {
-      console.log(e);
+    const isValid = onValidate();
+    if (isValid) {
+      try {
+        const res = await shopPackages("put", {
+          params: package_id,
+          data: JSON.stringify(data),
+        });
+        if (res?.status === 200) {
+          return true;
+        }
+      } catch (err: any) {
+        if (err?.response?.status === 400) {
+          dispatch(
+            setFormAlert({
+              type: "red",
+              highLight: "Server Validation Error! ",
+              text: err?.response?.data?.message,
+              show: true,
+            })
+          );
+        }
+      }
+      return false;
     }
-    setLoading(false);
+    return isValid;
   };
-
-  const onCancel = () => navigate(-1);
 
   React.useEffect(() => {
     onRetrieve();
@@ -61,24 +69,15 @@ export default function RetrieveUpdatePackage() {
   return (
     <AdminContainer>
       <MainContainer heading="Packages Details">
-        <Form>
-          <div className="w-full md:w-[28rem] lg:w-[28rem]">
-            <LabelTextInput
-              type={"text"}
-              label="Package Name"
-              name="package"
-              value={data.package}
-              onChange={onChange}
-              hint="package name is compulsory"
-              hintColor="green"
-            />
-          </div>
-          <UpdateActions
-            startLoading={loading}
-            onSave={onUpdate}
-            onCancel={onCancel}
+        <div className="w-full md:w-[30] lg:w-[30rem]">
+          <FormRender
+            data={data}
+            setData={setData}
+            fields={getFormsFields}
+            errors={errors}
+            onUpdate={onUpdate}
           />
-        </Form>
+        </div>
       </MainContainer>
     </AdminContainer>
   );

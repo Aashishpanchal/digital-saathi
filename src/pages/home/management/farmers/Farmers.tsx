@@ -18,7 +18,6 @@ export default function Farmers() {
   const [data, setData] = React.useState({
     totalItems: 0,
     totalPages: 1,
-    brands: [],
     customers: [],
   });
   const [loading, setLoading] = React.useState(true);

@@ -1,4 +1,5 @@
 import React from "react";
+import useGetData from "../../../../hooks/useGetData";
 import { brands, categories, subCategories } from "../../../../http";
 
 export default function useFormProducts() {
@@ -12,23 +13,27 @@ export default function useFormProducts() {
     [key: string]: any;
   }>({});
 
+  const { data: categoriesData } = useGetData({
+    axiosFunction: categories,
+    extractKey: "categories",
+  });
+
+  const { data: brandsData } = useGetData({
+    axiosFunction: brands,
+    extractKey: "brands",
+  });
+
   const onRetrieveCategory = async () => {
     try {
-      const res = await categories("get");
-      if (res?.status === 200) {
-        const { categories } = res.data;
-        if (categories) {
-          let options: any = { ...categoriesOptions };
-          categories.map((item: any) => {
-            options[item?.category_id?.toString()] = item?.name;
-          });
-          setCategoriesOptions({
-            ...options,
-          });
-        }
-      }
-    } catch (err: any) {
-      console.log(err.response);
+      let options: any = { ...categoriesOptions };
+      categoriesData.map((item: any) => {
+        options[item?.category_id?.toString()] = item?.name;
+      });
+      setCategoriesOptions({
+        ...options,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -56,21 +61,15 @@ export default function useFormProducts() {
 
   const onRetrieveBrand = async () => {
     try {
-      const res = await brands("get");
-      if (res?.status === 200) {
-        const { brands } = res.data;
-        if (brands) {
-          let options: any = {};
-          brands.map((item: any) => {
-            options[item?.brand_id?.toString()] = item?.brand_name;
-          });
-          setBrandsOptions({
-            ...options,
-          });
-        }
-      }
-    } catch (err: any) {
-      console.log(err.response);
+      let options: any = { ...brandsOptions };
+      brandsData.map((item: any) => {
+        options[item?.brand_id?.toString()] = item?.brand_name;
+      });
+      setBrandsOptions({
+        ...options,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -150,8 +149,11 @@ export default function useFormProducts() {
 
   React.useEffect(() => {
     onRetrieveCategory();
+  }, [categoriesData]);
+
+  React.useEffect(() => {
     onRetrieveBrand();
-  }, []);
+  }, [brandsData]);
 
   return { getFormsFields, onRetrieveSubCategory };
 }

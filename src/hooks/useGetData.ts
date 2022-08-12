@@ -1,4 +1,9 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import {
+  closeInformationModal,
+  setInformationModal,
+} from "../redux/slices/modalSlice";
 
 export default function useGetData(props: {
   axiosFunction: any;
@@ -7,6 +12,9 @@ export default function useGetData(props: {
 }) {
   const [data, setData] = React.useState([]);
   const [otherInfo, setOtherInfo] = React.useState({});
+  const [hack, setHack] = React.useState(true);
+
+  const dispatch = useDispatch();
 
   const [localPage, setLocalPage] = React.useState(0);
 
@@ -21,6 +29,7 @@ export default function useGetData(props: {
         const { totalItems, totalPages, currentPage, ...others } = res.data;
         setOtherInfo({ totalItems, totalPages });
         if (totalPages === currentPage) {
+          dispatch(closeInformationModal());
           return;
         }
         if (totalPages !== currentPage) {
@@ -31,13 +40,30 @@ export default function useGetData(props: {
         }
       }
     } catch (error: any) {
-      console.log(error.response);
+      dispatch(
+        setInformationModal({
+          show: true,
+          runClose: true,
+          heading: "Error/Server Side Error",
+          title: "Extract Data UnComplete",
+          message: error.response || error,
+        })
+      );
       return;
     }
   };
 
   React.useEffect(() => {
     onRetrieves();
+    if (hack) {
+      dispatch(
+        setInformationModal({
+          show: true,
+          showLoading: true,
+        })
+      );
+      setHack(false);
+    }
   }, [localPage]);
 
   return { data, otherInfo };

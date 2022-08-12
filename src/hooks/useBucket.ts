@@ -20,8 +20,7 @@ const s3 = new S3Client({
 function useBucket(subDirName?: string) {
   const [progress, setProgress] = React.useState<Progress>();
 
-  const S3ImageUploader = async (files: FileList) => {
-    const file = files[0];
+  const S3ImageUploader = async (file: File) => {
     const uploadS3 = new Upload({
       client: s3,
       params: {

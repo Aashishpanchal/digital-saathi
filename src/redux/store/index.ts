@@ -3,6 +3,7 @@ import authSlice from "../slices/authSlice";
 import sideBarSlice from "../slices/sideBarSlice";
 import alertSlice from "../slices/alertSlice";
 import auth0Slice from "../slices/auth0Slice";
+import modalSlice from "../slices/modalSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     sideBarSlice,
     alertSlice,
     auth0Slice,
+    modalSlice,
   },
 });
 

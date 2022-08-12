@@ -1,123 +1,75 @@
-import { Checkbox, Label } from "flowbite-react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import AdminContainer from "../../../../components/AdminContainer";
-import CreateActions from "../../../../components/common/CreateActions";
 import MainContainer from "../../../../components/common/MainContainer";
-import { Form } from "../../../../components/form";
-import LabelTextInput from "../../../../components/form/LabelTextInput";
+import { FormRender } from "../../../../components/form";
+import useForms from "../../../../hooks/useForms";
 import { shopAreas } from "../../../../http";
+import { setFormAlert } from "../../../../redux/slices/alertSlice";
+import useFormAreas from "./useFormAreas";
 
 export default function CreateArea() {
-  const [data, setData] = React.useState({
-    area: "",
-    city: "",
-    state: "",
-    country: "",
-    pincode: 0,
-    active: 0,
+  const { getFormsFields } = useFormAreas();
+
+  const { data, setData, onClear, errors, onValidate } = useForms({
+    fields: getFormsFields,
   });
 
-  const [loading, setLoading] = React.useState(false);
+  const dispatch = useDispatch();
 
-  const navigate = useNavigate();
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-  const onCreated = async () => {
-    try {
-      setLoading(true);
-      const res = await shopAreas("post", {
-        data: JSON.stringify(data),
-      });
-      if (res?.status === 200) {
-        onReset();
+  const onSave = async () => {
+    if (onValidate()) {
+      try {
+        const res = await shopAreas("post", {
+          data: JSON.stringify(data),
+        });
+        if (res?.status === 200) {
+          return true;
+        }
+      } catch (err: any) {
+        if (err?.response?.status === 400) {
+          dispatch(
+            setFormAlert({
+              type: "red",
+              highLight: "Server Validation Error! ",
+              text: err?.response?.data?.message,
+              show: true,
+            })
+          );
+        }
       }
-    } catch (err: any) {
-      console.log(err.response);
     }
-    setLoading(false);
+    return false;
   };
 
-  const onCancel = () => navigate(-1);
-  const onReset = () => {
-    setData({
-      area: "",
-      city: "",
-      state: "",
-      country: "",
-      pincode: 0,
-      active: 0,
-    });
+  const onSaveStay = async () => {
+    const res = await onSave();
+    if (res) {
+      dispatch(
+        setFormAlert({
+          type: "green",
+          highLight: "Success! ",
+          text: "Data Add Successfully..",
+          show: true,
+        })
+      );
+    }
   };
 
   return (
     <AdminContainer>
       <MainContainer heading="Area Details">
-        <Form>
-          <div className="w-full md:w-[28rem] lg:w-[28rem]">
-            <LabelTextInput
-              type={"text"}
-              label="Area"
-              name="area"
-              value={data.area}
-              onChange={onChange}
-              hint="Area is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="City"
-              name="city"
-              value={data.city}
-              onChange={onChange}
-              hint="City Name is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="State"
-              name="state"
-              value={data.state}
-              onChange={onChange}
-              hint="State Name is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"text"}
-              label="Country"
-              name="country"
-              value={data.country}
-              onChange={onChange}
-              hint="Country Name is compulsory"
-              hintColor="green"
-            />
-            <LabelTextInput
-              type={"number"}
-              label="Pincode"
-              name="pincode"
-              value={data.pincode}
-              onChange={onChange}
-            />
-            <div className="flex space-x-2 items-center">
-              <Checkbox
-                id="active-id"
-                checked={data.active === 1}
-                onChange={(e) => {
-                  setData({ ...data, active: e.target.checked ? 1 : 0 });
-                }}
-              />
-              <Label htmlFor="active-id">Active</Label>
-            </div>
-          </div>
-          <CreateActions
-            startLoading={loading}
-            onSave={onCreated}
-            onCancel={onCancel}
-            onReset={onReset}
+        <div className="w-full md:w-[30] lg:w-[30rem]">
+          <FormRender
+            data={data}
+            setData={setData}
+            onReset={onClear}
+            fields={getFormsFields}
+            errors={errors}
+            onSave={onSave}
+            onSaveStay={onSaveStay}
           />
-        </Form>
+        </div>
       </MainContainer>
     </AdminContainer>
   );

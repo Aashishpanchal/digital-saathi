@@ -25,6 +25,7 @@ interface FieldsType {
   options?: { [key: string]: any };
   defaultOption?: { [key: string]: any };
   onChange?: (e: any) => void;
+  maxLength?: number;
 }
 
 export type onClickType = () => Promise<boolean>;
@@ -112,6 +113,7 @@ export default function FormRender(props: {
               }}
               value={props.data[item.name]}
               hint={props.errors[item.name]?.hintText}
+              maxLength={item.maxLength}
               hintColor={
                 item.validate
                   ? props.errors[item.name]?.error
@@ -203,6 +205,7 @@ export default function FormRender(props: {
             type="reset"
             color="white"
             icon={<BiReset size={20} />}
+            disabled={saveLoading || saveStayLoading || updateLoading}
           >
             Reset
           </Button>

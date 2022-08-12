@@ -1,5 +1,6 @@
 import React from "react";
 import ImageInput from "../../../../components/form/inputs/ImageInput";
+import useGetData from "../../../../hooks/useGetData";
 import { categories } from "../../../../http";
 
 export default function useFormCategories() {
@@ -7,23 +8,22 @@ export default function useFormCategories() {
     [key: string]: any;
   }>({});
 
+  const { data: categoriesData } = useGetData({
+    axiosFunction: categories,
+    extractKey: "categories",
+  });
+
   const onRetrieveCategory = async () => {
     try {
-      const res = await categories("get");
-      if (res?.status === 200) {
-        const { categories } = res.data;
-        if (categories) {
-          let options: any = {};
-          categories.map((item: any) => {
-            options[item?.category_id?.toString()] = item?.name;
-          });
-          setCategoriesOptions({
-            ...options,
-          });
-        }
-      }
-    } catch (err: any) {
-      console.log(err.response);
+      let options: any = { ...categoriesOptions };
+      categoriesData.map((item: any) => {
+        options[item?.category_id?.toString()] = item?.name;
+      });
+      setCategoriesOptions({
+        ...options,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -52,11 +52,13 @@ export default function useFormCategories() {
         label:
           "Drag & Drop Files But Image size should be square (500) x (500).",
         name: "image",
+        hintText: "Category Image is compulsory",
         defaultValue: null,
         Field: (props: any) => {
           return (
             <ImageInput
               label={props.label}
+              hintText={props.hint}
               handleChange={(file: any) => {
                 props.setData({ ...props.data, image: file });
               }}
@@ -77,7 +79,7 @@ export default function useFormCategories() {
 
   React.useEffect(() => {
     onRetrieveCategory();
-  }, []);
+  }, [categoriesData]);
 
   return { getFormsFields };
 }

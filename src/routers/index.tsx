@@ -517,7 +517,7 @@ export default function AppRouter() {
               ),
             },
             {
-              path: ":id",
+              path: ":package_id",
               element: (
                 <AdminProtectedRoute>
                   <RetrieveUpdatePackage />
@@ -546,7 +546,7 @@ export default function AppRouter() {
               ),
             },
             {
-              path: ":id",
+              path: ":units_id",
               element: (
                 <AdminProtectedRoute>
                   <RetrieveUpdateUnit />
@@ -575,7 +575,7 @@ export default function AppRouter() {
               ),
             },
             {
-              path: ":id",
+              path: ":area_id",
               element: (
                 <AdminProtectedRoute>
                   <RetrieveUpdateArea />

@@ -16,11 +16,14 @@ export default function useFormBrands() {
         label:
           "Drag & Drop Files But Image size should be square (500) x (500).",
         name: "brand_image",
+        hintText: "Category Image is compulsory",
+        validate: true,
         defaultValue: null,
         Field: (props: any) => {
           return (
             <ImageInput
               label={props.label}
+              hintText={props.hint}
               handleChange={(file: any) => {
                 props.setData({ ...props.data, brand_image: file });
               }}

@@ -18,7 +18,9 @@ import { MdProductionQuantityLimits } from "react-icons/md";
 import { FaFileImport } from "react-icons/fa";
 
 export default function Products() {
-  const [data, setData] = React.useState<any>({
+  const [data, setData] = React.useState({
+    totalItems: 0,
+    totalPages: 1,
     products: [],
   });
   const navigate = useNavigate();
@@ -206,7 +208,7 @@ export default function Products() {
               Please wait fetch data from server....
             </h2>
           </div>
-        ) : data.products ? (
+        ) : data.totalItems ? (
           <Table
             columns={columns}
             data={getData}

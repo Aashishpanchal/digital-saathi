@@ -7,15 +7,16 @@ export default function ImageInput(props: {
   types?: Array<string>;
   file?: any;
   label?: string;
+  hintText?: string;
 }) {
   const [avatar, setAvatar] = React.useState("");
 
-  const getFileName = (file: string | FileList) => {
+  const getFileName = (file: string | File) => {
     if (typeof file === "string") {
       const url = new URL(file);
       return decodeURI(url.pathname.slice(1));
-    } else if (file instanceof FileList) {
-      return file[0].name;
+    } else if (file instanceof File) {
+      return file.name;
     }
     return "no files uploaded yet";
   };
@@ -24,13 +25,13 @@ export default function ImageInput(props: {
     if (typeof props.file !== "string") {
       const reader = new FileReader();
       if (props.file) {
-        reader.readAsDataURL(props.file[0]);
+        reader.readAsDataURL(props.file);
+        reader.onload = () => {
+          if (typeof reader.result === "string") {
+            setAvatar(reader.result);
+          }
+        };
       }
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          setAvatar(reader.result);
-        }
-      };
     }
     setAvatar(props.file);
   }, [props.file]);
@@ -41,11 +42,14 @@ export default function ImageInput(props: {
         {props.label}
       </Label>
       <FileUploader
-        multiple={true}
+        multiple={false}
         handleChange={props.handleChange}
         name="file"
         types={props.types || ["JPEG", "PNG"]}
       />
+      {props.hintText && (
+        <p className="text-red-500 text-sm my-2">{props.hintText}</p>
+      )}
       <p className="text-sm">
         <strong>File: </strong>
         <small className="font-bold">{getFileName(props.file)}</small>

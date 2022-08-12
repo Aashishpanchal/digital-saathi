@@ -11,7 +11,7 @@ import useFormShopProductsWeightPrice from "./useFormShopProductsWeightPrice";
 
 export default function CreateProductWeightPrice() {
   const { sku_name, sku_id } = useParams();
-  const { getFormsFields } = useFormShopProductsWeightPrice();
+  const { getFormsFields, unitOptions } = useFormShopProductsWeightPrice();
 
   const dispatch = useDispatch();
 
@@ -25,7 +25,7 @@ export default function CreateProductWeightPrice() {
   const onSave = async () => {
     if (onValidate()) {
       let { units, ...saveData } = data;
-      saveData.weight += units;
+      saveData.weight += unitOptions[units];
       try {
         const res = await shopProductWeightPrice("post", {
           data: JSON.stringify({
