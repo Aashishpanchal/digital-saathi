@@ -25,7 +25,6 @@ export default function useFormSubCategories() {
                 props.setData({ ...props.data, image: file });
               }}
               file={props.data.image}
-              imageMiddleUri="category-images"
             />
           );
         },

@@ -135,10 +135,10 @@ export default function Brands() {
         Cell: (cell: any) => (
           <TableActionsCell
             cell={cell}
-            onDelete={async (value, setDeleteLoading) => {
+            onDelete={async (values, setDeleteLoading) => {
               setDeleteModalShow(true);
               setValue({
-                brand: value,
+                brand: values,
                 setDeleteLoading,
               });
             }}

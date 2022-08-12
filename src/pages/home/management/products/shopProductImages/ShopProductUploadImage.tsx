@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import AdminContainer from "../../../../../components/AdminContainer";
 import MainContainer from "../../../../../components/common/MainContainer";
 import { FormRender } from "../../../../../components/form";
+import useBucket from "../../../../../hooks/useBucket";
 import useForms from "../../../../../hooks/useForms";
 import { shopProductImages } from "../../../../../http";
 import { setFormAlert } from "../../../../../redux/slices/alertSlice";
@@ -15,6 +16,7 @@ export default function ShopProductUploadImage() {
   const { getFormsFields } = useFormProductImages();
 
   const dispatch = useDispatch();
+  const { S3ImageUploader } = useBucket("product-images");
 
   const { data, setData, onClear, errors, onValidate } = useForms({
     fields: getFormsFields,
@@ -23,23 +25,30 @@ export default function ShopProductUploadImage() {
   const onSave = async () => {
     if (onValidate()) {
       const { image, ...newData } = data;
-      try {
-        const res = await shopProductImages("post", {
-          data: JSON.stringify({ ...newData, sku_id }),
-        });
-        if (res?.status === 200) {
-          return true;
-        }
-      } catch (err: any) {
-        if (err?.response?.status === 400) {
-          dispatch(
-            setFormAlert({
-              type: "red",
-              highLight: "Server Validation Error! ",
-              text: err?.response?.data?.message,
-              show: true,
-            })
-          );
+      const metaData: any = await S3ImageUploader(image);
+      if (metaData) {
+        try {
+          const res = await shopProductImages("post", {
+            data: JSON.stringify({
+              ...newData,
+              sku_id,
+              image: metaData.Location,
+            }),
+          });
+          if (res?.status === 200) {
+            return true;
+          }
+        } catch (err: any) {
+          if (err?.response?.status === 400) {
+            dispatch(
+              setFormAlert({
+                type: "red",
+                highLight: "Server Validation Error! ",
+                text: err?.response?.data?.message,
+                show: true,
+              })
+            );
+          }
         }
       }
     }

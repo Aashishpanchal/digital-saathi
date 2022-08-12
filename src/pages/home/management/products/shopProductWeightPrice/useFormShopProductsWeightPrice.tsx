@@ -1,5 +1,6 @@
 import React from "react";
 import LabelTextInput from "../../../../../components/form/LabelTextInput";
+import useGetData from "../../../../../hooks/useGetData";
 import { shopPackages, shopUnits } from "../../../../../http";
 
 export default function useFormShopProductsWeightPrice() {
@@ -10,6 +11,15 @@ export default function useFormShopProductsWeightPrice() {
     const reg = /([\d]+(?:\.[\d]+)?(?![\d]))|([a-z.]+)(?![a-z.])/gi;
     return value.match(reg) || ["", ""];
   };
+
+  const { data: packagesData } = useGetData({
+    axiosFunction: shopPackages,
+    extractKey: "packages",
+  });
+  const { data: unitsData } = useGetData({
+    axiosFunction: shopUnits,
+    extractKey: "units",
+  });
 
   const getUnitOptionsId = (weight: string) => {
     const value = removePostFix(weight)[1] || "";
@@ -23,39 +33,29 @@ export default function useFormShopProductsWeightPrice() {
 
   const onRetrievePackages = async () => {
     try {
-      const res = await shopPackages("get");
-      if (res?.status === 200) {
-        if (res.data) {
-          let options: any = {};
-          res.data.map((item: any) => {
-            options[item?.package_id?.toString()] = item?.package;
-          });
-          setPackageOptions({
-            ...options,
-          });
-        }
-      }
-    } catch (err: any) {
-      console.log(err.response);
+      let options: any = { ...packageOptions };
+      packagesData.map((item: any) => {
+        options[item?.package_id?.toString()] = item?.package;
+      });
+      setPackageOptions({
+        ...options,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const onRetrieveUnits = async () => {
     try {
-      const res = await shopUnits("get");
-      if (res?.status === 200) {
-        if (res.data) {
-          let options: any = {};
-          res.data.map((item: any) => {
-            options[item?.units_id?.toString()] = item?.units;
-          });
-          setUnitOptions({
-            ...options,
-          });
-        }
-      }
-    } catch (err: any) {
-      console.log(err.response);
+      let options: any = { ...unitOptions };
+      unitsData.map((item: any) => {
+        options[item?.units_id?.toString()] = item?.units;
+      });
+      setUnitOptions({
+        ...options,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -180,7 +180,7 @@ export default function useFormShopProductsWeightPrice() {
   React.useEffect(() => {
     onRetrievePackages();
     onRetrieveUnits();
-  }, []);
+  }, [packagesData, unitsData]);
 
   return { getFormsFields, getUnitOptionsId, unitOptions, removePostFix };
 }

@@ -25,7 +25,6 @@ export default function useFormProductImages() {
                 props.setData({ ...props.data, image: file });
               }}
               file={props.data.image}
-              imageMiddleUri="product-images/small-images/"
             />
           );
         },

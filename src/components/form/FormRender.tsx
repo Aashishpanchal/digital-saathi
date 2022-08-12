@@ -148,6 +148,7 @@ export default function FormRender(props: {
               )
             }
             color="dark"
+            disabled={saveLoading || saveStayLoading}
           >
             Save
           </Button>
@@ -166,6 +167,7 @@ export default function FormRender(props: {
               saveStayLoading ? <Spinner size="md" /> : <MdSaveAlt size={20} />
             }
             color="dark"
+            disabled={saveLoading || saveStayLoading}
           >
             Save Stay
           </Button>
@@ -187,6 +189,7 @@ export default function FormRender(props: {
               updateLoading ? <Spinner size="md" /> : <MdSaveAlt size={20} />
             }
             color="dark"
+            disabled={updateLoading}
           >
             Update
           </Button>
@@ -212,6 +215,7 @@ export default function FormRender(props: {
             type="button"
             color="white"
             icon={<IoMdClose size={22} />}
+            disabled={saveLoading || saveStayLoading || updateLoading}
           >
             Cancel
           </Button>

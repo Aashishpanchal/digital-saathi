@@ -61,7 +61,18 @@ function useBucket(subDirName?: string) {
     }
   };
 
-  return { S3ImageUploader, progress, S3DeleteImage };
+  const S3UpdateImage = async (prevImageUrl: string, files: any) => {
+    if (prevImageUrl === files) {
+      return { Location: prevImageUrl };
+    } else {
+      const deleteMetaData = await S3DeleteImage(prevImageUrl);
+      if (deleteMetaData.success) {
+        return S3ImageUploader(files);
+      }
+    }
+  };
+
+  return { S3ImageUploader, progress, S3DeleteImage, S3UpdateImage };
 }
 
 export default useBucket;

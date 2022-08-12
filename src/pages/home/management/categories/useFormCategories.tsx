@@ -48,6 +48,7 @@ export default function useFormCategories() {
         defaultValue: "0",
       },
       {
+        validate: true,
         label:
           "Drag & Drop Files But Image size should be square (500) x (500).",
         name: "image",
@@ -60,7 +61,6 @@ export default function useFormCategories() {
                 props.setData({ ...props.data, image: file });
               }}
               file={props.data.image}
-              imageMiddleUri="category-images"
             />
           );
         },

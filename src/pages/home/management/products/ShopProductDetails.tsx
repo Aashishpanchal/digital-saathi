@@ -138,13 +138,7 @@ export default function ShopProductDetails() {
         Label: "Image",
         accessor: "image",
         Cell: (cell: any) => {
-          return (
-            <Image
-              size={85}
-              src={`product-images/small-images/${cell.value}`}
-              alt={""}
-            />
-          );
+          return <Image size={85} url={cell.value} alt={""} />;
         },
       },
     ],

@@ -37,7 +37,7 @@ export default function Button(props: {
   }
   return (
     <button
-      className={"flex justify-center items-center space-x-2 mr-2 text-sm disabled:opacity-50 disabled:cursor-default px-4 py-2 tracking-wide transition-colors duration-300 transform rounded-md focus:outline-none ".concat(
+      className={"flex justify-center items-center space-x-2 mr-2 text-sm px-4 py-2 tracking-wide transition-colors duration-300 transform rounded-md focus:outline-none disabled:cursor-not-allowed  ".concat(
         className
       )}
       type={props.type}

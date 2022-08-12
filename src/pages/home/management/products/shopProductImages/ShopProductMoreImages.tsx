@@ -14,6 +14,7 @@ import {
   TableActionsCell,
 } from "../../../../../components/table";
 import { shopProductImages } from "../../../../../http";
+import useBucket from "../../../../../hooks/useBucket";
 
 export default function ShopProductMoreImages() {
   const [data, setData] = React.useState({
@@ -24,10 +25,11 @@ export default function ShopProductMoreImages() {
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
-    image_id: string;
+    image: { [key: string]: any };
     setInnerLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
   const [page, setPage] = React.useState(0);
+  const { S3DeleteImage } = useBucket();
 
   const navigate = useNavigate();
   const { sku_id, sku_name } = useParams();
@@ -50,18 +52,21 @@ export default function ShopProductMoreImages() {
   const onProductImageDelete = async () => {
     if (value) {
       setDeleteModalShow(false);
-      const { image_id, setInnerLoading } = value;
+      const { image, setInnerLoading } = value;
       setValue(undefined);
-      try {
-        setInnerLoading(true);
-        const res: any = await shopProductImages("delete", {
-          params: image_id,
-        });
-        if (res.status === 200) {
-          await onProductImagesGet();
+      setInnerLoading(true);
+      const metaData = await S3DeleteImage(image.image);
+      if (metaData?.success) {
+        try {
+          const res: any = await shopProductImages("delete", {
+            params: image.image_id,
+          });
+          if (res.status === 200) {
+            await onProductImagesGet();
+          }
+        } catch (err: any) {
+          console.log(err.response);
         }
-      } catch (err: any) {
-        console.log(err.response);
       }
       setInnerLoading(false);
     }
@@ -98,9 +103,7 @@ export default function ShopProductMoreImages() {
           columnStyle: { textAlign: "center" },
         },
         Cell: (cell: any) => {
-          return (
-            <Image src={`product-images/small-images/${cell.value}`} alt={""} />
-          );
+          return <Image url={cell.value} alt={""} />;
         },
       },
       {
@@ -125,7 +128,7 @@ export default function ShopProductMoreImages() {
             onDelete={async (values, setDeleteLoading) => {
               setDeleteModalShow(true);
               setValue({
-                image_id: values.image_id,
+                image: values,
                 setInnerLoading: setDeleteLoading,
               });
             }}

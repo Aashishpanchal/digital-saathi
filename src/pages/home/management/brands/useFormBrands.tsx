@@ -25,7 +25,6 @@ export default function useFormBrands() {
                 props.setData({ ...props.data, brand_image: file });
               }}
               file={props.data.brand_image}
-              imageMiddleUri="brand-images"
             />
           );
         },
