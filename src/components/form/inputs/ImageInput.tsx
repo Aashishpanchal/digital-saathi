@@ -13,8 +13,12 @@ export default function ImageInput(props: {
 
   const getFileName = (file: string | File) => {
     if (typeof file === "string") {
-      const url = new URL(file);
-      return decodeURI(url.pathname.slice(1));
+      try {
+        const url = new URL(file);
+        return decodeURI(url.pathname.slice(1));
+      } catch (error) {
+        return "No Name of Image";
+      }
     } else if (file instanceof File) {
       return file.name;
     }
@@ -22,7 +26,7 @@ export default function ImageInput(props: {
   };
 
   React.useEffect(() => {
-    if (typeof props.file !== "string") {
+    if (props.file instanceof File) {
       const reader = new FileReader();
       if (props.file) {
         reader.readAsDataURL(props.file);
@@ -33,7 +37,9 @@ export default function ImageInput(props: {
         };
       }
     }
-    setAvatar(props.file);
+    if (typeof props.file === "string") {
+      setAvatar(props.file);
+    }
   }, [props.file]);
 
   return (

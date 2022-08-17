@@ -1,32 +1,9 @@
 import React from "react";
+import AsyncSelectInput from "../../../../components/form/inputs/AsyncSelectInput";
 import ImageInput from "../../../../components/form/inputs/ImageInput";
-import useGetData from "../../../../hooks/useGetData";
 import { categories } from "../../../../http";
 
 export default function useFormCategories() {
-  const [categoriesOptions, setCategoriesOptions] = React.useState<{
-    [key: string]: any;
-  }>({});
-
-  const { data: categoriesData } = useGetData({
-    axiosFunction: categories,
-    extractKey: "categories",
-  });
-
-  const onRetrieveCategory = async () => {
-    try {
-      let options: any = { ...categoriesOptions };
-      categoriesData.map((item: any) => {
-        options[item?.category_id?.toString()] = item?.name;
-      });
-      setCategoriesOptions({
-        ...options,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getFormsFields = React.useMemo(
     () => [
       {
@@ -41,11 +18,21 @@ export default function useFormCategories() {
         type: "select",
         label: "Parent Category",
         name: "parent_category_id",
-        options: categoriesOptions,
         defaultOption: {
           "0": "None",
         },
-        defaultValue: "0",
+        defaultValue: "",
+        Field: (props: any) => (
+          <AsyncSelectInput
+            {...props}
+            axiosFunction={categories}
+            extractKey="categories"
+            filterValue={(value) => ({
+              key: `${value.category_id}`,
+              value: value.name,
+            })}
+          />
+        ),
       },
       {
         validate: true,
@@ -53,7 +40,7 @@ export default function useFormCategories() {
           "Drag & Drop Files But Image size should be square (500) x (500).",
         name: "image",
         hintText: "Category Image is compulsory",
-        defaultValue: null,
+        defaultValue: "",
         Field: (props: any) => {
           return (
             <ImageInput
@@ -74,12 +61,8 @@ export default function useFormCategories() {
         defaultValue: "",
       },
     ],
-    [categoriesOptions]
+    []
   );
-
-  React.useEffect(() => {
-    onRetrieveCategory();
-  }, [categoriesData]);
 
   return { getFormsFields };
 }

@@ -11,11 +11,10 @@ export default function OrderInvoicePrint() {
   const { order_id } = useParams();
   const [retailerData, setRetailerData] = React.useState<ResponseType>({});
   const [orderData, setOrderData] = React.useState<ResponseType>({});
-  const { data: orderDetailsData } = useGetData({
-    axiosFunction: shopOrderDetails,
-    extractKey: "order_details",
-    postfix: `order_id=${order_id}`,
-  });
+  const [orderDetails, setOrderDetails] = React.useState<Array<ResponseType>>(
+    []
+  );
+  const { getAllData } = useGetData();
   const disclaimText = [
     "Invoice is raised directly by the seller in favor of Buyer and Digital Saathi has no role in its issuance.",
     "Presence of Digital Saathi logo is for marketing purpose as a facilitator only.",
@@ -159,10 +158,15 @@ export default function OrderInvoicePrint() {
     []
   );
 
-  const getOrderDetails = React.useMemo(
-    () => orderDetailsData,
-    [orderDetailsData]
-  );
+  const getAllOrderDetails = React.useCallback(async () => {
+    const res = await getAllData(
+      shopOrderDetails,
+      "order_details",
+      (value) => value,
+      `order_id=${order_id}`
+    );
+    setOrderDetails([res]);
+  }, [getAllData]);
 
   const onGetOrder = async () => {
     try {
@@ -196,6 +200,7 @@ export default function OrderInvoicePrint() {
 
   React.useEffect(() => {
     onGetOrder();
+    getAllOrderDetails();
   }, []);
 
   React.useEffect(() => {
@@ -239,7 +244,7 @@ export default function OrderInvoicePrint() {
           {/* Order Forth */}
           <PrintInvoice.OrderDetailTable
             columns={orderDetailCol}
-            data={getOrderDetails}
+            data={orderDetails}
             orderData={orderData}
           />
         </PrintInvoice.TableBody>

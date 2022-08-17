@@ -1,23 +1,28 @@
 import React from "react";
 
-interface FieldsType {
+type ObjectDataType = { [key: string]: any };
+
+export interface FieldsType {
   name: string;
-  validation?: (value: any) => { error: boolean; hintText?: string };
+  validation?: (
+    value: any,
+    data?: any
+  ) => { error: boolean; hintText?: string };
   onReset?: (value: any) => any;
-  onAllReset?: (data?: any) => { [key: string]: any };
+  onAllReset?: (data?: any) => ObjectDataType;
   validate?: boolean;
   hintText?: string;
-  defaultValue: any;
+  defaultValue?: any;
 }
 
 export default function useForms(props: {
   fields: Array<FieldsType>;
-  setDefaultValue?: { [key: string]: any };
+  setDefaultValue?: ObjectDataType;
 }) {
   const setValue = () => {
-    let values: any = {};
+    let values: ObjectDataType = {};
     props.fields.forEach((item) => {
-      values[item.name as any] = item.defaultValue;
+      values[item.name] = item.defaultValue;
     });
     if (props.setDefaultValue) {
       return {
@@ -27,13 +32,13 @@ export default function useForms(props: {
     }
     return values;
   };
-  const [data, setData] = React.useState<any>(setValue());
-  const [errors, setErrors] = React.useState<any>({});
+  const [data, setData] = React.useState<ObjectDataType>(setValue());
+  const [errors, setErrors] = React.useState<ObjectDataType>({});
 
   const onClear = () => {
     // than run reset function
-    let resetValue: any = {};
-    props.fields.map((item) => {
+    let resetValue: ObjectDataType = {};
+    props.fields.forEach((item) => {
       if (typeof item.onReset === "function") {
         const result = item.onReset(data[item.name]);
         resetValue[item.name] =
@@ -41,7 +46,7 @@ export default function useForms(props: {
       }
       if (typeof item.onAllReset === "function") {
         const result = item.onAllReset(data);
-        Object.keys(result).map((key) => {
+        Object.keys(result).forEach((key) => {
           resetValue[key] = result[key];
         });
       } else {
@@ -54,7 +59,7 @@ export default function useForms(props: {
     });
 
     // reset errors
-    let validateValue: any = {};
+    let validateValue: ObjectDataType = {};
     Object.keys(errors).forEach((name: any) => {
       validateValue[name] = {
         error: false,
@@ -65,7 +70,7 @@ export default function useForms(props: {
   };
 
   const onValidate = () => {
-    let validateValue: any = {};
+    let validateValue: ObjectDataType = {};
     let isValid = true;
     props.fields.forEach((item) => {
       if (item.validate) {
@@ -84,7 +89,7 @@ export default function useForms(props: {
           return;
         }
         if (typeof item.validation === "function") {
-          const { error, hintText } = item.validation(data[item.name]);
+          const { error, hintText } = item.validation(data[item.name], data);
           if (error) {
             validateValue[item.name] = {
               error,

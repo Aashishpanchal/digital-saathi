@@ -16,7 +16,7 @@ export default function useFormSubCategories() {
         label:
           "Drag & Drop Files But Image size should be square (500) x (500).",
         name: "image",
-        defaultValue: null,
+        defaultValue: "",
         hintText: "Category Image is compulsory",
         validate: true,
         Field: (props: any) => {

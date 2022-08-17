@@ -1,78 +1,73 @@
 import React from "react";
+import AsyncSelectInput from "../../../../components/form/inputs/AsyncSelectInput";
+import LabelTextInput from "../../../../components/form/LabelTextInput";
 import useGetData from "../../../../hooks/useGetData";
 import { brands, categories, subCategories } from "../../../../http";
 
-export default function useFormProducts() {
-  const [categoriesOptions, setCategoriesOptions] = React.useState<{
-    [key: string]: any;
-  }>({});
-  const [subCategoriesOptions, setSubCategoriesOptions] = React.useState<{
-    [key: string]: any;
-  }>({});
-  const [brandsOptions, setBrandsOptions] = React.useState<{
-    [key: string]: any;
-  }>({});
+const CatSubField = (props: {
+  data: { [key: string]: any };
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) => {
+  const { data, onChange } = props;
+  const { getAllData } = useGetData();
+  const [subCategoryOptions, setSubCategoriesOptions] = React.useState({});
 
-  const { data: categoriesData } = useGetData({
-    axiosFunction: categories,
-    extractKey: "categories",
-  });
-
-  const { data: brandsData } = useGetData({
-    axiosFunction: brands,
-    extractKey: "brands",
-  });
-
-  const onRetrieveCategory = async () => {
-    try {
-      let options: any = { ...categoriesOptions };
-      categoriesData.map((item: any) => {
-        options[item?.category_id?.toString()] = item?.name;
-      });
-      setCategoriesOptions({
-        ...options,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const onRetrieveSubCategory = async (id: string) => {
-    try {
-      const res = await subCategories("get", {
-        postfix: `?category_id=${id}`,
-      });
-      if (res?.status === 200) {
-        const { subcategories } = res.data;
-        if (subcategories) {
-          let options: any = {};
-          subcategories.map((item: any) => {
-            options[item?.category_id?.toString()] = item?.name;
-          });
-          setSubCategoriesOptions({
-            ...options,
-          });
-        }
+  const onRetrieveSubCategory = React.useCallback(async () => {
+    await getAllData(
+      subCategories,
+      "subcategories",
+      (value) => ({
+        key: value.category_id,
+        value: value.name,
+      }),
+      `category_id=${data.category_id}`,
+      (value) => {
+        setSubCategoriesOptions(value);
       }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-  };
+    );
+  }, [getAllData, data.category_id]);
 
-  const onRetrieveBrand = async () => {
-    try {
-      let options: any = { ...brandsOptions };
-      brandsData.map((item: any) => {
-        options[item?.brand_id?.toString()] = item?.brand_name;
-      });
-      setBrandsOptions({
-        ...options,
-      });
-    } catch (error) {
-      console.log(error);
+  React.useEffect(() => {
+    if (data.category_id) {
+      onRetrieveSubCategory();
+    } else {
+      setSubCategoriesOptions([]);
     }
-  };
+  }, [data.category_id, onRetrieveSubCategory]);
 
+  return (
+    <>
+      <AsyncSelectInput
+        value={data.category_id}
+        onChange={onChange}
+        name="category_id"
+        label="Category"
+        axiosFunction={categories}
+        extractKey="categories"
+        defaultOption={{
+          "": "Select Category",
+        }}
+        filterValue={(value) => ({
+          key: value.category_id,
+          value: value.name,
+        })}
+      />
+      <LabelTextInput
+        type={"select"}
+        value={data.subcategory_id}
+        onChange={onChange}
+        label="Sub Category"
+        name="subcategory_id"
+        defaultOption={{
+          "": "Select Sub Category",
+        }}
+        options={subCategoryOptions}
+      />
+    </>
+  );
+};
+
+export default function useFormProducts() {
   const getFormsFields = React.useMemo(
     () => [
       {
@@ -103,31 +98,35 @@ export default function useFormProducts() {
         type: "select",
         label: "Category",
         name: "category_id",
-        options: categoriesOptions,
         defaultOption: {
           "": "Select Category",
         },
-        defaultValue: "",
-      },
-      {
-        type: "select",
-        label: "Sub Category",
-        name: "subcategory_id",
-        options: subCategoriesOptions,
-        defaultOption: {
-          "": "Select SubCategory",
-        },
-        defaultValue: "",
+        onAllReset: () => ({
+          subcategory_id: "",
+          category_id: "",
+        }),
+        Field: (props: any) => (
+          <CatSubField data={props.data} onChange={props.onChange} />
+        ),
       },
       {
         type: "select",
         label: "Brand",
         name: "brand_id",
-        options: brandsOptions,
         defaultOption: {
           "": "Select Brand",
         },
-        defaultValue: "",
+        Field: (props: any) => (
+          <AsyncSelectInput
+            {...props}
+            axiosFunction={brands}
+            extractKey="brands"
+            filterValue={(value) => ({
+              key: value.brand_id.toString(),
+              value: value.brand_name,
+            })}
+          />
+        ),
       },
       {
         type: "string",
@@ -144,16 +143,8 @@ export default function useFormProducts() {
         defaultValue: "",
       },
     ],
-    [categoriesOptions, subCategoriesOptions, brandsOptions]
+    []
   );
 
-  React.useEffect(() => {
-    onRetrieveCategory();
-  }, [categoriesData]);
-
-  React.useEffect(() => {
-    onRetrieveBrand();
-  }, [brandsData]);
-
-  return { getFormsFields, onRetrieveSubCategory };
+  return { getFormsFields };
 }

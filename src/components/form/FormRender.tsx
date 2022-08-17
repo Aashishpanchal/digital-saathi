@@ -24,7 +24,7 @@ interface FieldsType {
   hintText?: string;
   options?: { [key: string]: any };
   defaultOption?: { [key: string]: any };
-  onChange?: (e: any) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   maxLength?: number;
 }
 
@@ -85,11 +85,17 @@ export default function FormRender(props: {
             <Field
               key={index.toString()}
               data={props.data}
+              name={item.name}
+              value={props.data[item.name]}
               setData={props.setData}
               label={item.label}
               options={item.options}
               defaultOption={item.defaultOption}
               hint={props.errors[item.name]?.hintText}
+              onChange={(e: any) => {
+                onChange(e);
+                item.onChange && item.onChange(e);
+              }}
               hintColor={
                 item.validate
                   ? props.errors[item.name]?.error

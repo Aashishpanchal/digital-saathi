@@ -1,4 +1,3 @@
-import React from "react";
 import AppRouter from "./routers";
 import { BrowserRouter as Router } from "react-router-dom";
 import InformationModal from "./components/modals/InformationModal";

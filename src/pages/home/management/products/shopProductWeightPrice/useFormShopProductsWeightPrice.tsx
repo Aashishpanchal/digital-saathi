@@ -1,66 +1,10 @@
 import React from "react";
+import AsyncSelectInput from "../../../../../components/form/inputs/AsyncSelectInput";
 import LabelTextInput from "../../../../../components/form/LabelTextInput";
-import useGetData from "../../../../../hooks/useGetData";
+import { removePostFix } from "../../../../../components/Utils";
 import { shopPackages, shopUnits } from "../../../../../http";
 
 export default function useFormShopProductsWeightPrice() {
-  const [packageOptions, setPackageOptions] = React.useState<any>({});
-  const [unitOptions, setUnitOptions] = React.useState<any>({});
-
-  const removePostFix = (value: string): any => {
-    const reg = /([\d]+(?:\.[\d]+)?(?![\d]))|([a-z.]+)(?![a-z.])/gi;
-    return value.match(reg) || ["", ""];
-  };
-
-  const { data: packagesData } = useGetData({
-    axiosFunction: shopPackages,
-    extractKey: "packages",
-  });
-  const { data: unitsData } = useGetData({
-    axiosFunction: shopUnits,
-    extractKey: "units",
-  });
-
-  const getUnitOptionsId = (weight: string) => {
-    const value = removePostFix(weight)[1] || "";
-    for (let key in unitOptions) {
-      if (unitOptions[key] === value) {
-        return key;
-      }
-    }
-    return value;
-  };
-
-  // this method depend on packagesData
-  const onRetrievePackages = async () => {
-    try {
-      let options: any = { ...packageOptions };
-      packagesData.map((item: any) => {
-        options[item?.package_id?.toString()] = item?.package;
-      });
-      setPackageOptions({
-        ...options,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // this method depend on unitsData
-  const onRetrieveUnits = async () => {
-    try {
-      let options: any = { ...unitOptions };
-      unitsData.map((item: any) => {
-        options[item?.units_id?.toString()] = item?.units;
-      });
-      setUnitOptions({
-        ...options,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getFormsFields = React.useMemo(
     () => [
       {
@@ -108,15 +52,23 @@ export default function useFormShopProductsWeightPrice() {
         label: "Weight",
         name: "weight",
         defaultValue: "",
-        options: unitOptions,
-        defaultOption: { "": "Select Units" },
-        onAllReset: () => {
-          return {
-            units: "",
-          };
+        hintText: "Weight & Units both are compulsory",
+        onAllReset: () => ({
+          weight: "",
+          weightUnit: "",
+        }),
+        validation: (value: any, data: any) => {
+          if (!value || !data.weightUnit) {
+            return {
+              error: true,
+              hintText: "Weight & Units both are compulsory",
+            };
+          }
+          return { error: false };
         },
-        Field: (props: any) => {
-          return (
+        validate: true,
+        Field: (props: any) => (
+          <>
             <div className="flex items-center md:justify-between flex-wrap">
               <div className="w-full md:w-fit">
                 <LabelTextInput
@@ -127,35 +79,55 @@ export default function useFormShopProductsWeightPrice() {
                   onChange={(e) => {
                     props.setData({ ...props.data, weight: e.target.value });
                   }}
+                  hintColor={props.hintColor}
                 />
               </div>
-              <div className="mt-5 w-full md:w-1/2">
-                <LabelTextInput
-                  type={"select"}
+              <div className="md:mt-5 w-full md:w-1/2">
+                <AsyncSelectInput
                   name="units"
-                  defaultOption={props.defaultOption}
-                  options={props.options}
-                  value={props.data.units}
+                  value={props.data.weightUnit}
                   onChange={(e) => {
-                    props.setData({ ...props.data, units: e.target.value });
+                    props.setData({
+                      ...props.data,
+                      weightUnit: e.target.value,
+                    });
                   }}
+                  axiosFunction={shopUnits}
+                  extractKey="units"
+                  defaultOption={{ "": "Select Units" }}
+                  filterValue={(value) => ({
+                    key: `${value.units}`,
+                    value: value.units,
+                  })}
+                  hintColor={props.hintColor}
                 />
               </div>
             </div>
-          );
-        },
+            <p className="text-red-500 text-sm">{props.hint}</p>
+          </>
+        ),
       },
       {
         type: "select",
         label: "Package",
         name: "package",
-        options: packageOptions,
         defaultOption: {
           "": "Select Package",
         },
         defaultValue: "",
         validate: true,
         hintText: "Package is compulsory",
+        Field: (props: any) => (
+          <AsyncSelectInput
+            {...props}
+            axiosFunction={shopPackages}
+            extractKey="packages"
+            filterValue={(value) => ({
+              key: value.package_id,
+              value: value.package,
+            })}
+          />
+        ),
       },
       {
         type: "string",
@@ -176,13 +148,8 @@ export default function useFormShopProductsWeightPrice() {
         defaultValue: "",
       },
     ],
-    [packageOptions, unitOptions]
+    []
   );
 
-  React.useEffect(() => {
-    onRetrievePackages();
-    onRetrieveUnits();
-  }, [packagesData, unitsData]);
-
-  return { getFormsFields, getUnitOptionsId, unitOptions, removePostFix };
+  return { getFormsFields };
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { FormRender } from "../../components/form";
-import useForms from "../../hooks/useForms";
+import { useForms } from "../../hooks/forms";
 import { setAuth } from "../../redux/slices/authSlice";
 import useLoginForm from "./useLoginForm";
 

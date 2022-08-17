@@ -18,7 +18,7 @@ export default function useFormBrands() {
         name: "brand_image",
         hintText: "Category Image is compulsory",
         validate: true,
-        defaultValue: null,
+        defaultValue: "",
         Field: (props: any) => {
           return (
             <ImageInput
