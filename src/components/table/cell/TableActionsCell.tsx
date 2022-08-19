@@ -3,7 +3,6 @@ import { Spinner, Tooltip } from "flowbite-react";
 import { RiDeleteBinFill, RiFileEditLine } from "react-icons/ri";
 import {
   FaArrowRight,
-  FaCartPlus,
   FaChevronCircleDown,
   FaImage,
   FaMapMarkedAlt,
@@ -50,6 +49,7 @@ export default function TableActionsCell(props: {
   onWarehouse?: onClickType;
   onArea?: onClickType;
   onUser?: onClickType;
+  onPrint?: onClickType;
   hoverMessage?: {
     edit?: string;
     delete?: string;
@@ -61,6 +61,7 @@ export default function TableActionsCell(props: {
     dashboard?: string;
     area?: string;
     user?: string;
+    print?: string;
   };
 }) {
   const [deleteLoading, setDeleteLoading] = React.useState(false);
@@ -158,6 +159,14 @@ export default function TableActionsCell(props: {
           onClick={() => props.onUser && props.onUser(cell.row.original)}
         >
           <FaUserAlt size={18} />
+        </SquareContainer>
+      )}
+      {props.onPrint && (
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.print || "Print Now"}
+          onClick={() => props.onPrint && props.onPrint(cell.row.original)}
+        >
+          <FaPrint size={18} />
         </SquareContainer>
       )}
     </div>

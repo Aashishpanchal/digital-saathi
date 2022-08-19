@@ -30,6 +30,9 @@ export default function useGetData() {
           if (totalPages === currentPage + 1) {
             break;
           }
+          if (totalPages === 0 && currentPage === 0) {
+            break;
+          }
         }
       } catch (error: any) {
         console.log(error.response);

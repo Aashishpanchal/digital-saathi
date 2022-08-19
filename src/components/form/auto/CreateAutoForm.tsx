@@ -1,3 +1,4 @@
+import React from "react";
 import { useDispatch } from "react-redux";
 import useForms, { FieldsType } from "../../../hooks/forms/useForms";
 import useBucket from "../../../hooks/useBucket";
@@ -20,7 +21,7 @@ interface PropsInterface {
   setDefaultValue?: { [key: string]: any };
 }
 
-export default function CreateAutoForm(props: PropsInterface) {
+function CreateAutoForm(props: PropsInterface) {
   // some Hooks
   const { S3ImageUploader } = useBucket(props.imageOption?.subDirName);
   const dispatch = useDispatch();
@@ -125,3 +126,5 @@ export default function CreateAutoForm(props: PropsInterface) {
     />
   );
 }
+
+export default React.memo(CreateAutoForm);

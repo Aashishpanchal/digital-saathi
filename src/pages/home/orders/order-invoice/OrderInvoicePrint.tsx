@@ -1,9 +1,14 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { PrintInvoice } from "../../../../components/print";
 import Disclaimer from "../../../../components/print/invoice/Disclaimer";
 import useGetData from "../../../../hooks/useGetData";
 import { retailer, shopOrderDetails, shopOrders } from "../../../../http";
+import {
+  closeInformationModal,
+  setInformationModal,
+} from "../../../../redux/slices/modalSlice";
 
 type ResponseType = { [key: string]: any };
 
@@ -15,6 +20,8 @@ export default function OrderInvoicePrint() {
     []
   );
   const { getAllData } = useGetData();
+  const dispatch = useDispatch();
+
   const disclaimText = [
     "Invoice is raised directly by the seller in favor of Buyer and Digital Saathi has no role in its issuance.",
     "Presence of Digital Saathi logo is for marketing purpose as a facilitator only.",
@@ -49,6 +56,10 @@ export default function OrderInvoicePrint() {
         Label: "Billing Address",
         accessor: "billing_address_id",
       },
+      {
+        Label: "Phone",
+        accessor: "billing_phoneno",
+      },
     ],
     []
   );
@@ -58,6 +69,10 @@ export default function OrderInvoicePrint() {
       {
         Label: "Shipping Address",
         accessor: "shipping_address_id",
+      },
+      {
+        Label: "Phone",
+        accessor: "shipping_phoneno",
       },
     ],
     []
@@ -169,16 +184,26 @@ export default function OrderInvoicePrint() {
   }, [getAllData]);
 
   const onGetOrder = async () => {
+    dispatch(
+      setInformationModal({
+        show: true,
+        showLoading: true,
+      })
+    );
     try {
       const res = await shopOrders("get", {
         params: order_id,
       });
       if (res?.status === 200) {
         setOrderData(res.data);
+        if (typeof res.data.retailer_id === "number") {
+          await onGetRetailer(res.data.retailer_id);
+        }
       }
     } catch (error: any) {
       console.log(error.response);
     }
+    dispatch(closeInformationModal());
   };
 
   const onGetRetailer = async (retailerId: number) => {
@@ -201,13 +226,10 @@ export default function OrderInvoicePrint() {
   React.useEffect(() => {
     onGetOrder();
     getAllOrderDetails();
+    return () => {
+      dispatch(closeInformationModal());
+    };
   }, []);
-
-  React.useEffect(() => {
-    if (typeof orderData?.retailer_id !== "undefined") {
-      onGetRetailer(orderData.retailer_id);
-    }
-  }, [orderData]);
 
   return (
     <PrintInvoice.Container>

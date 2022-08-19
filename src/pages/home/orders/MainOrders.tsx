@@ -1,6 +1,7 @@
 import { Spinner } from "flowbite-react";
 import React from "react";
 import { TbDatabaseOff } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 import AdminContainer from "../../../components/AdminContainer";
 import MainContainer from "../../../components/common/MainContainer";
 import {
@@ -27,6 +28,7 @@ export default function MainOrders(props: {
     order_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
+  const navigator = useNavigate();
 
   const [page, setPage] = React.useState(0);
 
@@ -127,6 +129,9 @@ export default function MainOrders(props: {
               });
             }}
             onView={onView}
+            onPrint={(values) => {
+              navigator(`/orders/order-invoice-print/${values.order_id}`);
+            }}
           />
         ),
       },
@@ -164,6 +169,8 @@ export default function MainOrders(props: {
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
             entriesPerPage={10}
+            showExport={true}
+            exportFileName={`shop-order-status-${props.orderId}`}
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
