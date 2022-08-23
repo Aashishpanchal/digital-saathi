@@ -79,6 +79,7 @@ import { InvoiceWiseDelivery } from "../pages/home/reports/invoice-wise-delivery
 import { DsMarginClaims } from "../pages/home/reports/ds-margin-claims";
 import { OrderFulFillment } from "../pages/home/reports/order-fulfillment";
 import { Sale } from "../pages/home/reports/sale";
+import OrderDetails from "../pages/home/orders/OrderDetails";
 
 export default function AppRouter() {
   const Element = useRoutes([
@@ -666,6 +667,10 @@ export default function AppRouter() {
         {
           path: "order-invoice-print/:order_id",
           element: <OrderInvoicePrint />,
+        },
+        {
+          path: "order-details/:order_id",
+          element: <OrderDetails />,
         },
         {
           path: "new-orders",

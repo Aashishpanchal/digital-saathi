@@ -76,10 +76,6 @@ export default function MainOrders(props: {
     }
   };
 
-  const onView = (value: { [key: string]: any }) => {
-    console.log(value);
-  };
-
   const columns = React.useMemo(
     () => [
       {
@@ -128,7 +124,9 @@ export default function MainOrders(props: {
                 setDeleteLoading,
               });
             }}
-            onView={onView}
+            onView={(values) => {
+              navigator(`/orders/order-details/${values.order_id}`);
+            }}
             onPrint={(values) => {
               navigator(`/orders/order-invoice-print/${values.order_id}`);
             }}
