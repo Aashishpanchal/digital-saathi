@@ -4,6 +4,7 @@ import { RiDeleteBinFill, RiFileEditLine } from "react-icons/ri";
 import {
   FaArrowRight,
   FaChevronCircleDown,
+  FaChevronCircleRight,
   FaImage,
   FaMapMarkedAlt,
   FaPrint,
@@ -176,7 +177,8 @@ export default function TableActionsCell(props: {
 export const PrintActionCell = (props: {
   onPrint?: () => void;
   printUrl?: string;
-  onShow?: () => void;
+  show: boolean;
+  onShow: (state: boolean) => void;
 }) => {
   return (
     <div className="flex space-x-2">
@@ -190,9 +192,15 @@ export const PrintActionCell = (props: {
         Print
       </Button>
       <Button
-        onClick={props.onShow}
+        onClick={() => props.onShow(!props.show)}
         color="dark"
-        icon={<FaChevronCircleDown size={18} />}
+        icon={
+          props.show ? (
+            <FaChevronCircleDown size={18} />
+          ) : (
+            <FaChevronCircleRight size={18} />
+          )
+        }
       >
         Action
       </Button>

@@ -97,7 +97,6 @@ export default function RetailerDashboard() {
           ...totals,
           orders: res.data?.totalItems || 0,
         });
-        console.log(totals);
       }
     } catch (err: any) {
       console.log(err?.response);
@@ -110,7 +109,11 @@ export default function RetailerDashboard() {
 
   return (
     <AdminContainer>
-      <MainContainer heading={`${retailer_name} / Retailer Dashboard`}>
+      <MainContainer
+        heading={`${
+          retailer_name === "Null" ? "" : retailer_name
+        } / Retailer Dashboard`}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {layerOne.map((item, index) => (
             <DashboardCard.Container

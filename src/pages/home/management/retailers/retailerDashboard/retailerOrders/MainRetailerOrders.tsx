@@ -7,9 +7,9 @@ import {
   DateTimeFilterMethod,
 } from "../../../../../../components/filter/RangeColumnFilters";
 import { Table } from "../../../../../../components/table";
-import { PrintActionCell } from "../../../../../../components/table/cell/TableActionsCell";
 import { DateFormate } from "../../../../../../components/Utils";
 import { shopOrders } from "../../../../../../http";
+import Action from "./Action";
 
 export default function MainRetailerOrders(props: {
   retailer_id: string;
@@ -20,7 +20,6 @@ export default function MainRetailerOrders(props: {
     totalItems: 0,
     totalPages: 1,
     orders: [],
-    retailers: [],
   });
   const [page, setPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
@@ -65,9 +64,9 @@ export default function MainRetailerOrders(props: {
       {
         Header: "Order Date",
         accessor: "order_date",
-        id: "order_date",
         extraProps: {
           columnStyle: { textAlign: "center" },
+          align: "center",
         },
         filter: DateTimeFilterMethod, // filter add datetime
         Filter: DateColumnFilter, // filter input add datetime
@@ -83,17 +82,10 @@ export default function MainRetailerOrders(props: {
       },
       {
         Header: "Action",
-        Cell: (cell: any) => {
-          const [show, setShow] = React.useState(false);
-          return (
-            <div className="flex items-center justify-center">
-              <PrintActionCell
-                printUrl={`/orders/order-invoice-print/${cell.row.original.order_id}`}
-                onShow={() => setShow(!show)}
-              />
-            </div>
-          );
+        extraProps: {
+          columnStyle: { textAlign: "center", width: "30rem" },
         },
+        Cell: (cell: any) => <Action cell={cell} />,
       },
     ],
     []

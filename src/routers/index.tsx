@@ -75,6 +75,10 @@ import { RetailerOrders } from "../pages/home/management/retailers/retailerDashb
 import { OrderInvoicePrint } from "../pages/home/orders/order-invoice";
 import Auth0ProtectedRoute from "./Auth0ProtectedRoute";
 import { Auth0UserInFormation } from "../pages/auth0";
+import { InvoiceWiseDelivery } from "../pages/home/reports/invoice-wise-delivery-status";
+import { DsMarginClaims } from "../pages/home/reports/ds-margin-claims";
+import { OrderFulFillment } from "../pages/home/reports/order-fulfillment";
+import { Sale } from "../pages/home/reports/sale";
 
 export default function AppRouter() {
   const Element = useRoutes([
@@ -597,6 +601,58 @@ export default function AppRouter() {
               element: (
                 <AdminProtectedRoute>
                   <AmountCollectionReport />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "invoice-wise-delivery-status",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <InvoiceWiseDelivery />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "ds-margin-claims",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <DsMarginClaims />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "order-fulfillment",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <OrderFulFillment />
+                </AdminProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "sale",
+          children: [
+            {
+              path: "",
+              element: (
+                <AdminProtectedRoute>
+                  <Sale />
                 </AdminProtectedRoute>
               ),
             },

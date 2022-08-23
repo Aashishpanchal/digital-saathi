@@ -61,6 +61,11 @@ export default function SideBar() {
   // reports end points
   const onAmountCollectionReport = () =>
     navigate("/reports/amount-collection-report");
+  const onInvoiceWiseDeliveryStatus = () =>
+    navigate("/reports/invoice-wise-delivery-status");
+  const onDsMarginClaims = () => navigate("/reports/ds-margin-claims");
+  const onOrderFulfillment = () => navigate("/reports/order-fulfillment");
+  const onSale = () => navigate("/reports/sale");
   // orders end points
   const onNewOrders = () => navigate("/orders/new-orders");
   const onAcceptedOrders = () => navigate("/orders/orders-accepted");
@@ -188,16 +193,27 @@ export default function SideBar() {
           >
             Amount Collection Report
           </SideBarItem>
-          <SideBarItem icon={<MdSave size={20} />}>
+          <SideBarItem
+            onClick={onInvoiceWiseDeliveryStatus}
+            icon={<MdSave size={20} />}
+          >
             Invoice wise delivery Status
           </SideBarItem>
-          <SideBarItem icon={<BsFileEarmarkCheckFill size={20} />}>
+          <SideBarItem
+            onClick={onDsMarginClaims}
+            icon={<BsFileEarmarkCheckFill size={20} />}
+          >
             DS Margin Claims
           </SideBarItem>
-          <SideBarItem icon={<TbTruckDelivery size={20} />}>
+          <SideBarItem
+            onClick={onOrderFulfillment}
+            icon={<TbTruckDelivery size={20} />}
+          >
             Order Fulfillment
           </SideBarItem>
-          <SideBarItem icon={<BsGraphUp size={20} />}>Sale</SideBarItem>
+          <SideBarItem onClick={onSale} icon={<BsGraphUp size={20} />}>
+            Sale
+          </SideBarItem>
         </Collapse>
         <Collapse
           urlMatchToOpen="/orders"

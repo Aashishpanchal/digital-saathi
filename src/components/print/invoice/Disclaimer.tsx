@@ -5,8 +5,8 @@ export default function Disclaimer(props: { text: Array<string> }) {
     <div className="text-xs">
       <p>Disclaimer</p>
       <ul className="list-disc ml-10">
-        {props.text.map((s) => (
-          <li>{s}</li>
+        {props.text.map((s, index) => (
+          <li key={index.toString()}>{s}</li>
         ))}
       </ul>
     </div>

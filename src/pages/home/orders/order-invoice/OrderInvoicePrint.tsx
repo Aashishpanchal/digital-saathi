@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { PrintInvoice } from "../../../../components/print";
 import Disclaimer from "../../../../components/print/invoice/Disclaimer";
+import { DateFormate } from "../../../../components/Utils";
 import useGetData from "../../../../hooks/useGetData";
 import { retailer, shopOrderDetails, shopOrders } from "../../../../http";
 import {
@@ -237,8 +238,8 @@ export default function OrderInvoicePrint() {
         <PrintInvoice.TableBody>
           {/* Title Part */}
           <PrintInvoice.TableRowHeader
-            invoiceNumber="00044181652780675"
-            invoiceDate="2022-05-17"
+            invoiceNumber={orderData?.order_id}
+            invoiceDate={DateFormate(orderData?.order_date)}
             onPrintClick={onPrint}
           />
           {/* Order Header Part */}

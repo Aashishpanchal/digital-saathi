@@ -70,15 +70,15 @@ export default function Retailers() {
   const onDashBoard = (values: any) =>
     navigate(
       `${values.retailer_id}/retailer-dashboard/${encodeURI(
-        values.retailer_name
+        values.retailer_name || "Null"
       )}`
     );
-  const onOrder = (values: any) =>
-    navigate(`${values.retailer_id}/retailer-orders`);
-  const onArea = (values: any) =>
-    navigate(`${values.retailer_id}/retailer-areas`);
-  const onWarehouse = (values: any) =>
-    navigate(`${values.retailer_id}/retailer-warehouse`);
+  // const onOrder = (values: any) =>
+  //   navigate(`${values.retailer_id}/retailer-orders`);
+  // const onArea = (values: any) =>
+  //   navigate(`${values.retailer_id}/retailer-areas`);
+  // const onWarehouse = (values: any) =>
+  //   navigate(`${values.retailer_id}/retailer-warehouse`);
   const onRetailerEdit = (values: { [key: string]: any }) =>
     navigate(`/management/retailers/${values.retailer_id}`);
 
@@ -142,8 +142,8 @@ export default function Retailers() {
             }}
             onEdit={onRetailerEdit}
             onDashBoard={onDashBoard}
-            onArea={onArea}
-            onWarehouse={onWarehouse}
+            // onArea={onArea}
+            // onWarehouse={onWarehouse}
           />
         ),
       },

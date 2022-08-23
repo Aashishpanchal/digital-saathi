@@ -159,12 +159,12 @@ export default function Table(props: {
               {rows.map((row, i) => {
                 prepareRow(row);
                 return (
-                  <tr {...row.getRowProps()}>
+                  <tr {...row.getRowProps()} key={i.toString()}>
                     {row.cells.map((cell) => {
                       let props = cell.getCellProps();
                       let align = "left";
                       try {
-                        align = (cell.column as any).extraProps.align;
+                        align = (cell.column as any).extraProps.align || "left";
                       } catch (error: any) {}
                       return (
                         <td
