@@ -25,27 +25,22 @@ export default function RetailerDashboard() {
 
   const navigate = useNavigate();
 
-  const navTotalOrders = () => navigate("retailer-orders");
-
   const layerOne = React.useMemo(
     () => [
       {
         Title: "Total Orders",
         Icon: <FaCartPlus size={50} />,
         num: totals.orders,
-        onClick: navTotalOrders,
       },
       {
         Title: "Total SKUs",
         Icon: <FaBoxes size={50} />,
         num: totals.retailers,
-        onClick: () => {},
       },
       {
         Title: "Total Farmer Serviced",
         Icon: <FaTruckLoading size={50} />,
         num: totals.farmers,
-        onClick: () => {},
       },
     ],
     [totals]
@@ -56,32 +51,32 @@ export default function RetailerDashboard() {
       {
         Title: "Orders",
         Icon: <FaShoppingBasket size={50} />,
-        onClick: navTotalOrders,
+        onClick: () => navigate("retailer-orders"),
       },
       {
         Title: "Input Sale Details",
         Icon: <BiStore size={50} />,
-        onClick: () => {},
+        onClick: () => navigate("retailer-input-sale-details"),
       },
       {
         Title: "Cancelled Orders",
         Icon: <FaCalendarTimes size={50} />,
-        onClick: () => {},
+        onClick: () => navigate("retailer-cancelled-orders"),
       },
       {
         Title: "Data SKU Units",
         Icon: <FaBoxes size={50} />,
-        onClick: () => {},
+        onClick: () => navigate("retailer-sku-units"),
       },
       {
         Title: "Data SKU Pricing",
         Icon: <FaRupeeSign size={50} />,
-        onClick: () => {},
+        onClick: () => navigate("retailer-sku-pricing"),
       },
       {
         Title: "Target vs Achievement",
         Icon: <FaRegChartBar size={50} />,
-        onClick: () => {},
+        onClick: () => navigate("retailer-target-achievement"),
       },
     ],
     []
@@ -116,10 +111,7 @@ export default function RetailerDashboard() {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {layerOne.map((item, index) => (
-            <DashboardCard.Container
-              key={index.toString()}
-              onClick={item.onClick}
-            >
+            <DashboardCard.Container key={index.toString()} disabled={true}>
               <DashboardCard.CardNumTitleRender
                 title={item.Title}
                 num={item.num}

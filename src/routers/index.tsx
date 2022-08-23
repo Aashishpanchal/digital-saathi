@@ -71,7 +71,14 @@ import {
   Retailers,
   RetrieveUpdateRetailers,
 } from "../pages/home/management/retailers";
-import { RetailerOrders } from "../pages/home/management/retailers/retailerDashboard";
+import {
+  RetailerOrderCancelled,
+  RetailerOrders,
+  RetailerSaleDetails,
+  RetailerSkuPricing,
+  RetailerSkuUnits,
+  RetailerTargetAchievement,
+} from "../pages/home/management/retailers/retailerDashboard";
 import { OrderInvoicePrint } from "../pages/home/orders/order-invoice";
 import Auth0ProtectedRoute from "./Auth0ProtectedRoute";
 import { Auth0UserInFormation } from "../pages/auth0";
@@ -196,6 +203,71 @@ export default function AppRouter() {
                       element: (
                         <AdminProtectedRoute>
                           <RetailerOrders />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
+                },
+                {
+                  path: "retailer-sku-units",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetailerSkuUnits />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
+                },
+                {
+                  path: "retailer-sku-pricing",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetailerSkuPricing />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
+                },
+                {
+                  path: "retailer-input-sale-details",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetailerSaleDetails />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
+                },
+                {
+                  path: "retailer-cancelled-orders",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetailerOrderCancelled />
+                        </AdminProtectedRoute>
+                      ),
+                    },
+                  ],
+                },
+                {
+                  path: "retailer-target-achievement",
+                  children: [
+                    {
+                      path: "",
+                      element: (
+                        <AdminProtectedRoute>
+                          <RetailerTargetAchievement />
                         </AdminProtectedRoute>
                       ),
                     },
