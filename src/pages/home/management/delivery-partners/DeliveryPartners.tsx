@@ -113,6 +113,7 @@ export default function DeliveryPartners() {
             cell={cell}
             idKey="partner_id"
             axiosFunction={deliveryPartners}
+            setData={setData}
           />
         ),
       },

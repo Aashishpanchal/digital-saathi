@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import AdminContainer from "../../../../../components/AdminContainer";
 import Button from "../../../../../components/button/Button";
 import MainContainer from "../../../../../components/common/MainContainer";
+import { SelectColumActiveDeactivateFilter } from "../../../../../components/filter/SelectColumnFilter";
 import { DeleteModal } from "../../../../../components/modals";
 import {
   ActiveDeactivateCell,
@@ -87,6 +88,8 @@ export default function DeliveryPartnersRetailer() {
       {
         Header: "Status",
         accessor: "active",
+        Filter: SelectColumActiveDeactivateFilter,
+        filter: "equals",
         extraProps: {
           columnStyle: {
             width: "250px",

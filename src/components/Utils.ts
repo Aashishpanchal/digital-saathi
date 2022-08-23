@@ -30,3 +30,9 @@ export const removePostFix = (value: string): any => {
   const reg = /([\d]+(?:\.[\d]+)?(?![\d]))|([a-z.]+)(?![a-z.])/gi;
   return value.match(reg) || ["", ""];
 };
+
+export const globalConsoleLogDisable = () => {
+  if (process.env.REACT_APP_MODE === "PROD") {
+    console.log = () => {};
+  }
+};

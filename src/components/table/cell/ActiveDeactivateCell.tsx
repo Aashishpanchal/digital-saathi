@@ -58,7 +58,7 @@ export default function ActivateDeactivateCell(props: {
                           ...tableAlert,
                           show: true,
                           highLight: "Success ",
-                          text: `s/no. ${id} is ${
+                          text: `S./No ${id} is ${
                             active === 1 ? "Activate" : "Deactivate"
                           } successfully applied.`,
                           type: "green",
@@ -74,7 +74,7 @@ export default function ActivateDeactivateCell(props: {
                       ...tableAlert,
                       show: true,
                       highLight: "Server Error! ",
-                      text: `s/no. ${id} is ${
+                      text: `S./No ${id} is ${
                         isActive === 1 ? "Activate" : "Deactivate"
                       } not applied. ${err?.response?.data?.message}`,
                       type: "red",
