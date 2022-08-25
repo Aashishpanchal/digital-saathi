@@ -5,6 +5,14 @@ export default function useFormRetailer() {
     () => [
       {
         type: "string",
+        label: "Auth0 Code",
+        name: "auth_code",
+        defaultValue: "",
+        validate: true,
+        hintText: "Auth0 Code is compulsory",
+      },
+      {
+        type: "string",
         label: "Retailer Name",
         name: "retailer_name",
         defaultValue: "",

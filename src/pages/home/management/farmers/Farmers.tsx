@@ -12,7 +12,7 @@ import {
 import { farmers } from "../../../../http";
 import { TbDatabaseOff } from "react-icons/tb";
 import { DeleteModal } from "../../../../components/modals";
-import RedirectAuth0UserInformation from "../../../../components/table/cell/RedirectAuth0UserInformation";
+import Auth0UserInformation from "../../../../components/table/cell/Auth0UserInformation";
 
 export default function Farmers() {
   const [data, setData] = React.useState({
@@ -108,7 +108,7 @@ export default function Farmers() {
         extraProps: {
           columnStyle: { textAlign: "center" },
         },
-        Cell: RedirectAuth0UserInformation,
+        Cell: Auth0UserInformation,
       },
       {
         Header: "Customer Name",

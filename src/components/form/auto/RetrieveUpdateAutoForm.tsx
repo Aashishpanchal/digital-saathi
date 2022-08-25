@@ -25,6 +25,7 @@ interface PropsInterface {
   retrieveBeforeCallBack?: (filterData: Data, originalData?: Data) => Data;
   imageOption?: ImageOption;
   setDefaultValue?: { [key: string]: any };
+  onGetError?: (error: { [key: string]: any }) => void;
 }
 
 function RetrieveUpdateAutoForm(props: PropsInterface) {
@@ -76,19 +77,24 @@ function RetrieveUpdateAutoForm(props: PropsInterface) {
           setPreviousImage(res.data[props.imageOption.key]);
         }
         setData(localValues);
+        dispatch(closeInformationModal());
       }
     } catch (err: any) {
-      dispatch(
-        setInformationModal({
-          show: true,
-          runClose: true,
-          heading: "Error/Server Side Error",
-          title: "Extract Data UnComplete",
-          message: err.response || err,
-        })
-      );
+      if (typeof props.onGetError === "function") {
+        dispatch(closeInformationModal());
+        props.onGetError(err);
+      } else {
+        dispatch(
+          setInformationModal({
+            show: true,
+            runClose: true,
+            heading: "Error/Server Side Error",
+            title: "Extract Data UnComplete",
+            message: err.response || err,
+          })
+        );
+      }
     }
-    dispatch(closeInformationModal());
   };
 
   // update method
@@ -155,12 +161,17 @@ function RetrieveUpdateAutoForm(props: PropsInterface) {
     onRetrieve();
   }, []);
 
+  React.useEffect(() => {
+    return () => {
+      dispatch(closeInformationModal());
+    };
+  }, []);
+
   // Return JSX React
   return (
     <FormRender
       data={data}
       setData={setData}
-      onReset={onClear}
       fields={props.fields}
       errors={errors}
       onUpdate={onUpdate}

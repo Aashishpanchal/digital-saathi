@@ -14,12 +14,12 @@ import { TbDatabaseOff } from "react-icons/tb";
 import { DeleteModal } from "../../../../components/modals";
 import Button from "../../../../components/button/Button";
 import { BsShopWindow } from "react-icons/bs";
+import Auth0UserInformation from "../../../../components/table/cell/Auth0UserInformation";
 
 export default function Retailers() {
   const [data, setData] = React.useState({
     totalItems: 0,
     totalPages: 1,
-    brands: [],
     retailers: [],
   });
   const [loading, setLoading] = React.useState(true);
@@ -122,7 +122,9 @@ export default function Retailers() {
         accessor: "auth_code",
         extraProps: {
           columnStyle: { textAlign: "center" },
+          align: "center",
         },
+        Cell: Auth0UserInformation,
       },
       {
         Header: "Retailer Name",

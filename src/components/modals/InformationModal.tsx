@@ -1,6 +1,7 @@
 import { Modal, Spinner } from "flowbite-react";
 import React from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setInformationModal } from "../../redux/slices/modalSlice";
 
 export default function InformationModal(props: {
@@ -10,8 +11,10 @@ export default function InformationModal(props: {
   message?: string;
   runClose?: boolean;
   showLoading?: boolean;
+  closeToBack?: boolean;
 }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <React.Fragment>
@@ -19,9 +22,12 @@ export default function InformationModal(props: {
         show={props.show}
         popup={props.runClose}
         size="lg"
-        onClose={() =>
-          props.runClose && dispatch(setInformationModal({ show: false }))
-        }
+        onClose={() => {
+          props.runClose && dispatch(setInformationModal({ show: false }));
+          if (props.closeToBack) {
+            navigate(-1);
+          }
+        }}
       >
         {props.runClose && <Modal.Header>{props.heading}</Modal.Header>}
         <Modal.Body>
