@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Pagination(props: {
+function Pagination(props: {
   page?: number;
   changePage?: (page: number) => void;
   totalPages?: number;
@@ -12,15 +12,26 @@ export default function Pagination(props: {
     end: 1,
   });
 
+  const calculatePagesCount = (pageSize: number, totalCount: number) => {
+    // we suppose that if we have 0 items we want 1 empty page
+    return totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize);
+  };
+
+  const totalPages = React.useMemo(() => {
+    if (
+      typeof props.totalEntries === "number" &&
+      typeof props.entriesPerPage === "number"
+    ) {
+      return calculatePagesCount(props.entriesPerPage, props.totalEntries);
+    }
+    return 1;
+  }, [props.totalEntries, props.entriesPerPage]);
+
   const onNext = () => {
     // check value is not undefine, ...
-    if (
-      props.changePage &&
-      typeof props.page === "number" &&
-      props.totalPages
-    ) {
+    if (props.changePage && typeof props.page === "number") {
       // check page
-      if (props.page < props.totalPages) {
+      if (props.page < totalPages - 1) {
         props.changePage(props.page + 1);
       }
     }
@@ -37,35 +48,20 @@ export default function Pagination(props: {
   };
 
   React.useEffect(() => {
-    if (typeof props.page === "number") {
-      if (
-        typeof props.totalPages === "number" &&
-        props.entriesPerPage &&
+    if (
+      typeof props.page === "number" &&
+      typeof props.entriesPerPage === "number" &&
+      typeof props.totalEntries === "number"
+    ) {
+      const start = props.page * props.entriesPerPage + 1;
+      const end = Math.min(
+        (props.page + 1) * props.entriesPerPage,
         props.totalEntries
-      ) {
-        // showing default pages entries
-        if (props.page === 0) {
-          setEntries({
-            ...entries,
-            end:
-              props.totalPages === 0
-                ? props.totalEntries
-                : props.entriesPerPage,
-          });
-        } else {
-          // dynamic entries showing
-          const showStart = props.page * props.entriesPerPage + 1;
-          const showEnd =
-            (props.page + 1) * props.entriesPerPage < props.totalEntries
-              ? (props.page + 1) * props.entriesPerPage
-              : props.totalEntries;
-          setEntries({
-            ...entries,
-            start: showStart,
-            end: showEnd,
-          });
-        }
-      }
+      );
+      setEntries({
+        start,
+        end,
+      });
     }
   }, [props.page]);
 
@@ -82,13 +78,13 @@ export default function Pagination(props: {
           </button>
         </li>
         <li className="font-bold">
-          Page {(props.page as any) + 1} of {(props.totalPages as any) + 1}
+          Page {(props.page as any) + 1} of {totalPages}
         </li>
         <li>
           <button
             disabled={
               typeof props.page === "number"
-                ? props.page === props.totalPages
+                ? props.page === totalPages - 1
                 : false
             }
             className="flex items-center px-2.5 py-1 rounded-md border-2 border-blue-light text-blue-light font-bold hover:text-white hover:bg-blue-light hover:shadow-lg transition-colors "
@@ -108,3 +104,5 @@ export default function Pagination(props: {
     </div>
   );
 }
+
+export default React.memo(Pagination);

@@ -4,7 +4,13 @@ import CloseAction from "./CloseAction";
 import SideBarItem from "./SideBarItem";
 import SideBarItemContainer from "./container/SideBarItemContainer";
 import { HiChartPie } from "react-icons/hi";
-import { FaUserPlus, FaTractor, FaUserTie, FaKey } from "react-icons/fa";
+import {
+  FaUserPlus,
+  FaTractor,
+  FaUserTie,
+  FaKey,
+  FaUsers,
+} from "react-icons/fa";
 import {
   TbTruckDelivery,
   TbBrandSublimeText,
@@ -77,6 +83,9 @@ export default function SideBar() {
   const onReturningOrders = () => navigate("/orders/orders-returning");
   const onReturnedOrders = () => navigate("/orders/orders-returned");
 
+  // auth0
+  const onAuth0User = () => navigate("/auth0-users");
+
   React.useEffect(() => {
     if (dimensions.width <= 640) {
       dispatch(setSideBarOpenClose(false));
@@ -106,6 +115,13 @@ export default function SideBar() {
           icon={<HiChartPie size={24} />}
         >
           DashBoard
+        </SideBarItem>
+        <SideBarItem
+          active={location.pathname.includes("/auth0-users")}
+          onClick={onAuth0User}
+          icon={<FaUsers size={20} />}
+        >
+          Auth0 Users
         </SideBarItem>
         <Collapse
           urlMatchToOpen="/management"

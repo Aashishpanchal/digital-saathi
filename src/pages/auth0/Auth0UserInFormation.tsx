@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import AdminContainer from "../../components/AdminContainer";
 import MainContainer from "../../components/common/MainContainer";
 import { RetrieveUpdateAutoForm } from "../../components/form";
-import { getUser, updateUser } from "../../http";
+import { auth0Users } from "../../http";
 import { setInformationModal } from "../../redux/slices/modalSlice";
 import useAuth0Form from "./useAuth0Form";
 
@@ -12,12 +12,11 @@ export default function UserInFormation() {
   const { getFormsFields } = useAuth0Form(auth0_id);
   const dispatch = useDispatch();
 
-  const request = (method: "get" | "put", data: any) => {
-    if (method === "get") {
-      return getUser(encodeURI(auth0_id as string));
-    } else {
-      return updateUser(data.params, data.data);
+  const request = (method: "get" | "put", option: any) => {
+    if (method === "put") {
+      return auth0Users("patch", option);
     }
+    return auth0Users(method, option);
   };
 
   const onGetError = (error: any) => {
@@ -66,7 +65,7 @@ export default function UserInFormation() {
               ...data,
               email_verified: data.email_verified === "1" ? true : false,
             })}
-            params={auth0_id}
+            params={encodeURI(auth0_id as string)}
             onGetError={onGetError}
             imageOption={{
               key: "picture",

@@ -1,12 +1,22 @@
 import { auth0Api } from "./auth0-base";
 
-export const getUser = (auth0Id: string) =>
-  auth0Api.get("users/".concat(auth0Id));
+export const baseFunc = (endURL: string) => {
+  return (
+    method: "get" | "post" | "patch" | "delete",
+    options?: {
+      data?: string;
+      params?: string;
+      postfix?: string;
+    }
+  ) => {
+    const params = options?.params ? "/" + options.params : "";
+    let url = `/${endURL}${params}${options?.postfix ? options.postfix : ""}`;
+    return auth0Api.request({
+      url,
+      method,
+      data: options?.data,
+    });
+  };
+};
 
-export const getUsers = () => auth0Api.get("users");
-
-export const updateUser = (user_id: string, data: { [key: string]: any }) =>
-  auth0Api.patch("users/".concat(user_id), data);
-
-export const deleteUser = (user_id: string) =>
-  auth0Api.delete("users/".concat(user_id));
+export const auth0Users = baseFunc("users");

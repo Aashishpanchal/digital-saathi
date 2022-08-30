@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import moment from "moment";
 import { ToWords } from "to-words";
 
@@ -5,8 +6,10 @@ export function classNames(...classNames: string[]) {
   return classNames.filter(Boolean).join(" ");
 }
 
-export function DateFormate(date: string) {
-  return moment(date).format("YYYY-MM-DD");
+export function DateFormate(date: string, readable?: boolean) {
+  const dateM = moment(date);
+  if (!readable) return dateM.format("YYYY-MM-DD");
+  return dayjs(dateM.toLocaleString()).format("MMMM D, YYYY h:mm A");
 }
 
 export function NumberToString(value: string): string {
@@ -35,4 +38,8 @@ export const globalConsoleLogDisable = () => {
   if (process.env.REACT_APP_MODE === "PROD") {
     console.log = () => {};
   }
+};
+
+export const textReduce = (text: string, len: number) => {
+  return text.length > len ? text.slice(0, len) + "..." : text;
 };

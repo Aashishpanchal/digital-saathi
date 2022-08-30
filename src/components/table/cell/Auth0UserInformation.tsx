@@ -1,9 +1,10 @@
 import { useCallback, memo } from "react";
 import { Link } from "react-router-dom";
+import { textReduce } from "../../Utils";
 
 function Auth0UserInformation(cell: { [key: string]: any }) {
   const reduceText = useCallback((text: string) => {
-    return text.length > 29 ? text.slice(0, 29) + "..." : text;
+    return textReduce(text, 29);
   }, []);
 
   return (

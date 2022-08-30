@@ -1,12 +1,10 @@
-import { Spinner } from "flowbite-react";
 import React from "react";
-import { FaExclamationTriangle } from "react-icons/fa";
 import CollapseDropDown from "../../../../../../components/common/CollapseDropDown";
 import {
   DateColumnFilter,
   DateTimeFilterMethod,
 } from "../../../../../../components/filter/RangeColumnFilters";
-import { Table } from "../../../../../../components/table";
+import ReactTable from "../../../../../../components/table/ReactTable";
 import { DateFormate } from "../../../../../../components/Utils";
 import { shopOrders } from "../../../../../../http";
 import Action from "./Action";
@@ -98,30 +96,17 @@ export default function MainRetailerOrders(props: {
   }, [page]);
   return (
     <CollapseDropDown title={props.title} color="green">
-      {loading ? (
-        <div className="flex flex-col justify-center items-center space-y-3 mt-4">
-          <Spinner color="green" size="xl" className="object-cover w-24 h-24" />
-          <h2 className="dark:text-gray-100">
-            Please wait fetch data from server....
-          </h2>
-        </div>
-      ) : data.totalItems ? (
-        <Table
-          columns={columns}
-          data={getData}
-          showPagination
-          page={page}
-          changePage={(page: number) => setPage(page)}
-          totalEntries={data.totalItems}
-          totalPages={data.totalPages - 1}
-          entriesPerPage={10}
-        />
-      ) : (
-        <div className="flex flex-col justify-center items-center">
-          <FaExclamationTriangle size={50} className="text-gray-500" />
-          <span className="font-bold">No Orders Currently.</span>
-        </div>
-      )}
+      <ReactTable
+        loading={loading}
+        showMessage={data.totalItems === 0}
+        columns={columns}
+        data={getData}
+        page={page}
+        changePage={(page: number) => setPage(page)}
+        totalEntries={data.totalItems}
+        entriesPerPage={10}
+        showPagination
+      />
     </CollapseDropDown>
   );
 }

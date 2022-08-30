@@ -17,9 +17,4 @@ export {
   warehouse,
   shopDeliveryAgent,
 } from "./server-api/server-apis";
-export {
-  getUser,
-  getUsers,
-  updateUser,
-  deleteUser,
-} from "./auth0-api/auth0-apis-endPoints";
+export { auth0Users } from "./auth0-api/auth0-apis-endPoints";

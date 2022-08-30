@@ -52,10 +52,17 @@ export default function useAuth0Form(user_id?: string) {
       },
       {
         type: "string",
+        label: "Name",
+        name: "name",
+        defaultValue: "",
+        placeholder: "ashish, kuldeep, (Optional) etc",
+      },
+      {
+        type: "string",
         label: "Nick Name",
         name: "nickname",
         defaultValue: "",
-        placeholder: "ashish, kuldeep, etc",
+        placeholder: "ashish, kuldeep, (Optional) etc",
       },
     ],
     []

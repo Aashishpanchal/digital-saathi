@@ -13,7 +13,7 @@ import Button from "../button/Button";
 import { FaFileUpload } from "react-icons/fa";
 import DownloadRows from "../csv/button/DownloadRows";
 
-export default function Table(props: {
+export interface TableProps {
   columns: any;
   data: Array<{ [key: string]: any }>;
   showPagination?: boolean;
@@ -25,7 +25,9 @@ export default function Table(props: {
   onUpload?: (data: any) => Promise<void>;
   exportFileName?: string;
   showExport?: boolean;
-}) {
+}
+
+export default function Table(props: TableProps) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -42,7 +44,6 @@ export default function Table(props: {
     useFilters,
     useSortBy
   );
-
   const { tableAlert } = useSelector((state: RootState) => state.alertSlice);
 
   const dispatch = useDispatch();

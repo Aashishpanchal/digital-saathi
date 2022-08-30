@@ -1,10 +1,8 @@
 import React from "react";
-import { Spinner } from "flowbite-react";
-import { FaExclamationTriangle } from "react-icons/fa";
-import { Table } from "../../../../../../components/table";
 import { PrintActionCell } from "../../../../../../components/table/cell/TableActionsCell";
 import { shopOrderDetails } from "../../../../../../http";
 import Image from "../../../../../../components/Image/Index";
+import ReactTable from "../../../../../../components/table/ReactTable";
 
 function Action(props: { cell: { [key: string]: any } }) {
   const [completedGet, setCompletedGet] = React.useState(true);
@@ -93,32 +91,18 @@ function Action(props: { cell: { [key: string]: any } }) {
       />
       {show && (
         <div className="h-3/4 overflow-auto w-full shadow p-2 rounded-lg">
-          {loading ? (
-            <div className="flex flex-col justify-center items-center space-y-3 mt-4">
-              <Spinner
-                color="green"
-                size="xl"
-                className="object-cover w-24 h-24"
-              />
-              <h2 className="dark:text-gray-100">Sorry Data Not Available</h2>
-            </div>
-          ) : data.totalItems ? (
-            <Table
-              columns={columns}
-              data={getData}
-              showPagination
-              page={page}
-              changePage={(page: number) => setPage(page)}
-              totalEntries={data.totalItems}
-              totalPages={data.totalPages - 1}
-              entriesPerPage={10}
-            />
-          ) : (
-            <div className="flex flex-col justify-center items-center">
-              <FaExclamationTriangle size={50} className="text-gray-500" />
-              <span className="font-bold">No Orders Currently.</span>
-            </div>
-          )}
+          <ReactTable
+            loading={loading}
+            showMessage={data.totalItems === 0}
+            columns={columns}
+            data={getData}
+            showPagination
+            page={page}
+            changePage={(page: number) => setPage(page)}
+            totalEntries={data.totalItems}
+            totalPages={data.totalPages - 1}
+            entriesPerPage={10}
+          />
         </div>
       )}
     </div>

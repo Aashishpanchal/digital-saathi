@@ -35,7 +35,7 @@ export default function RetailerOrders() {
 
   return (
     <AdminContainer>
-      <MainContainer heading={`${retailer_name} / Retailer Dashboard`}>
+      <MainContainer heading={`${retailer_name} / Retailer Orders`}>
         <div className="flex flex-col space-y-5">
           {Lists.map((item, index) => (
             <MainRetailerOrders

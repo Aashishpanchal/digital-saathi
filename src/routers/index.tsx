@@ -80,7 +80,7 @@ import {
   RetailerTargetAchievement,
 } from "../pages/home/management/retailers/retailerDashboard";
 import { OrderInvoicePrint } from "../pages/home/orders/order-invoice";
-import { Auth0UserInFormation } from "../pages/auth0";
+import { Auth0UserInFormation, Auth0Users } from "../pages/auth0";
 import { InvoiceWiseDelivery } from "../pages/home/reports/invoice-wise-delivery-status";
 import { DsMarginClaims } from "../pages/home/reports/ds-margin-claims";
 import { OrderFulFillment } from "../pages/home/reports/order-fulfillment";
@@ -116,6 +116,14 @@ export default function AppRouter() {
     {
       path: "/auth0-users",
       children: [
+        {
+          path: "",
+          element: (
+            <AdminProtectedRoute>
+              <Auth0Users />
+            </AdminProtectedRoute>
+          ),
+        },
         {
           path: ":auth0_id",
           element: (
