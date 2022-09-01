@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import AdminContainer from "../../components/AdminContainer";
 import MainContainer from "../../components/common/MainContainer";
+import { SelectColumnVerifyPending } from "../../components/filter/SelectColumnFilter";
 import { DeleteModal } from "../../components/modals";
 import { TableActionsCell } from "../../components/table";
 import ReactTable from "../../components/table/ReactTable";
@@ -93,6 +94,25 @@ export default function Auth0Users() {
       {
         Header: "Name",
         accessor: "name",
+      },
+      {
+        Header: "Verify/Pending",
+        accessor: "email_verified",
+        Filter: SelectColumnVerifyPending,
+        filter: "equals",
+        Cell: (cell: any) =>
+          cell.value ? (
+            <span className="w-fit py-1 px-1.5 rounded-full flex space-x-1 items-center bg-opacity-10 text-green-500 bg-green-500">
+              verified
+            </span>
+          ) : (
+            <span className="w-fit py-1 px-1.5 rounded-full flex space-x-1 items-center bg-opacity-10 text-red-500 bg-red-500">
+              pending
+            </span>
+          ),
+        extraProps: {
+          align: "center",
+        },
       },
       {
         Header: "Signed Up",

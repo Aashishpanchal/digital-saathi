@@ -37,7 +37,9 @@ export const baseFunc = (endURL: string) => {
     } else if (method.toLowerCase() === "put") {
       return api.put(url, options?.data, { headers: header });
     } else if (method.toLowerCase() === "delete") {
-      return api.delete(url);
+      return api.delete(url, {
+        data: JSON.stringify({ deleted: 1 }),
+      });
     }
   };
 };
