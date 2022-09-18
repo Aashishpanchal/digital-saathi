@@ -1,13 +1,10 @@
 import React from "react";
 
-export default function Container(props: {
+function Container(props: {
   onClick?: () => void;
   children: React.ReactNode;
   disabled?: boolean;
 }) {
-  React.useEffect(() => {
-    console.log("Same");
-  }, []);
   return (
     <div
       onClick={props.onClick}
@@ -19,3 +16,5 @@ export default function Container(props: {
     </div>
   );
 }
+
+export default React.memo(Container);

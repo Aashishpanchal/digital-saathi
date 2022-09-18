@@ -13,20 +13,28 @@ export default function DownloadRows(props: {
     }>
   >;
   fileName?: string;
+  axiosFunction?: Function;
 }) {
-  const [exportTypeExt, setExportTypeExt] = React.useState<ExportType>(
-    exportFromJSON.types.csv
-  );
-  const onDownload = () => {
-    let jsonData: Array<{ [key: string]: any }> = [];
-    props.rows.forEach((item) => {
-      jsonData.push(item.original);
-    });
-    exportFromJSON({
-      data: jsonData,
-      fileName: props.fileName || `export-data`,
-      exportType: exportTypeExt,
-    });
+  const [exportTypeExt, setExportTypeExt] = React.useState<
+    ExportType | "export-all-csv" | "export-all-excel"
+  >(exportFromJSON.types.csv);
+  const onDownload = async () => {
+    if (
+      exportTypeExt !== "export-all-excel" &&
+      exportTypeExt !== "export-all-csv"
+    ) {
+      let jsonData: Array<{ [key: string]: any }> = [];
+      props.rows.forEach((item) => {
+        jsonData.push(item.original);
+      });
+      exportFromJSON({
+        data: jsonData,
+        fileName: props.fileName || `export-data`,
+        exportType: exportTypeExt,
+      });
+      return;
+    }
+    return;
   };
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     switch (e.target.value) {
@@ -35,6 +43,12 @@ export default function DownloadRows(props: {
         break;
       case "excel":
         setExportTypeExt(exportFromJSON.types.xls);
+        break;
+      case "export-all-csv":
+        setExportTypeExt("export-all-csv");
+        break;
+      case "export-all-excel":
+        setExportTypeExt("export-all-excel");
         break;
       default:
         break;
@@ -50,9 +64,11 @@ export default function DownloadRows(props: {
       >
         {props.title || "Export Data"}
       </Button>
-      <Select className="w-20" onChange={onChange}>
+      <Select className="w-fit pr-7" onChange={onChange}>
         <option value="csv">CSV</option>
         <option value="excel">Excel</option>
+        <option value="export-all-csv">Export all in CSV</option>
+        <option value="export-all-excel">Export all in Excel</option>
       </Select>
     </div>
   );

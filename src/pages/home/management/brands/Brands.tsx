@@ -28,6 +28,7 @@ export default function Brands() {
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
   const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(10);
 
   const navigate = useNavigate();
   const { S3DeleteImage } = useBucket();
@@ -35,7 +36,9 @@ export default function Brands() {
   const onBrandsGet = async () => {
     setLoading(true);
     try {
-      const res: any = await brands("get", { postfix: `?page=${page}` });
+      const res: any = await brands("get", {
+        postfix: `?page=${page}&size=${pageSize}`,
+      });
       if (res.status === 200) {
         setData(res.data);
       }
@@ -152,7 +155,7 @@ export default function Brands() {
 
   React.useEffect(() => {
     onBrandsGet();
-  }, [page]);
+  }, [page, pageSize]);
   return (
     <AdminContainer>
       <MainContainer heading="Brands">
@@ -170,11 +173,12 @@ export default function Brands() {
           showMessage={data.totalItems === 0}
           columns={columns}
           data={getData}
+          showPagination
           page={page}
           changePage={(page: number) => setPage(page)}
           totalEntries={data.totalItems}
-          entriesPerPage={10}
-          showPagination
+          entriesPerPage={pageSize}
+          changePageSize={(size) => setPageSize(size)}
         />
       </MainContainer>
       <DeleteModal

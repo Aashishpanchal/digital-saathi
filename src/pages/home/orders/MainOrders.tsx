@@ -16,6 +16,9 @@ import { shopOrders } from "../../../http";
 export default function MainOrders(props: {
   orderId: number;
   headerTitle: string;
+  params?: string;
+  postfix?: string;
+  exportOff?: boolean;
 }) {
   const [data, setData] = React.useState({
     totalItems: 0,
@@ -36,7 +39,9 @@ export default function MainOrders(props: {
     setLoading(true);
     try {
       const res = await shopOrders("get", {
-        postfix: `?page=${page}&order_status=${props.orderId}`,
+        params: props.params,
+        postfix:
+          `?page=${page}&order_status=${props.orderId}` + (props.postfix || ""),
       });
       if (res?.status === 200) {
         // formatting date time column
@@ -167,7 +172,7 @@ export default function MainOrders(props: {
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
             entriesPerPage={10}
-            showExport={true}
+            showExport={!props.exportOff}
             exportFileName={`shop-order-status-${props.orderId}`}
           />
         ) : (

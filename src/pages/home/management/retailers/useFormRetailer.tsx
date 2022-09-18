@@ -30,7 +30,7 @@ export default function useFormRetailer() {
       {
         type: "string",
         label: "Phone Number",
-        name: "phone_number",
+        name: "phone_no",
         defaultValue: "",
       },
       {

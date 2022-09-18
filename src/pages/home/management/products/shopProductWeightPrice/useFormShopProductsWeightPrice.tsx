@@ -138,7 +138,7 @@ export default function useFormShopProductsWeightPrice() {
       {
         type: "string",
         label: "Total Weight",
-        name: "total_weight",
+        name: "totalweight",
         defaultValue: "",
       },
       {

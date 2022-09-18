@@ -7,6 +7,7 @@ interface ReactTableProps extends TableProps {
   loading?: boolean;
   showMessage?: boolean;
   message?: string;
+  axiosFunction?: Function;
 }
 
 function ReactTable(props: ReactTableProps) {

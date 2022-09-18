@@ -174,6 +174,26 @@ export default function TableActionsCell(props: {
   );
 }
 
+export const ActionCellButton = (props: {
+  children: string;
+  show: boolean;
+  onShow: (state: boolean) => void;
+}) => (
+  <Button
+    onClick={() => props.onShow(!props.show)}
+    color="dark"
+    icon={
+      props.show ? (
+        <FaChevronCircleDown size={18} />
+      ) : (
+        <FaChevronCircleRight size={18} />
+      )
+    }
+  >
+    {props.children}
+  </Button>
+);
+
 export const PrintActionCell = (props: {
   onPrint?: () => void;
   printUrl?: string;
@@ -191,19 +211,9 @@ export const PrintActionCell = (props: {
       >
         Print
       </Button>
-      <Button
-        onClick={() => props.onShow(!props.show)}
-        color="dark"
-        icon={
-          props.show ? (
-            <FaChevronCircleDown size={18} />
-          ) : (
-            <FaChevronCircleRight size={18} />
-          )
-        }
-      >
+      <ActionCellButton onShow={props.onShow} show={props.show}>
         Action
-      </Button>
+      </ActionCellButton>
     </div>
   );
 };

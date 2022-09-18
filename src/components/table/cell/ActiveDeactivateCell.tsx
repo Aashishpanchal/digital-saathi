@@ -10,6 +10,7 @@ export default function ActivateDeactivateCell(props: {
   axiosFunction?: any;
   setData?: any;
   onUpdate?: any;
+  params?: string;
   postfix?: string;
   payload?: Array<string>;
 }) {
@@ -36,7 +37,7 @@ export default function ActivateDeactivateCell(props: {
       try {
         setLoading(true);
         const res = await props.axiosFunction("put", {
-          params: id,
+          params: props.params ? `${props.params}/${id}` : id,
           data: JSON.stringify({ ...getPayload(), active }),
         });
         if (res?.status === 200) {
@@ -49,6 +50,7 @@ export default function ActivateDeactivateCell(props: {
               try {
                 props
                   .axiosFunction("get", {
+                    params: props.params,
                     postfix: `?page=${prev.currentPage}${props.postfix || ""}`,
                   })
                   .then((res: any) => {

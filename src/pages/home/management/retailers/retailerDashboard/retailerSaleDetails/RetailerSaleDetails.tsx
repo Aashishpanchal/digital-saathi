@@ -1,14 +1,15 @@
-import React from "react";
-import AdminContainer from "../../../../../../components/AdminContainer";
-import ComingSoonPage from "../../../../../../components/ComingSoonPage";
-import MainContainer from "../../../../../../components/common/MainContainer";
+import { useParams } from "react-router-dom";
+import MainOrders from "../../../../orders/MainOrders";
 
 export default function RetailerSaleDetails() {
+  const { retailer_name, retailer_id } = useParams();
   return (
-    <AdminContainer>
-      <MainContainer heading="Input Sale Details">
-        <ComingSoonPage />
-      </MainContainer>
-    </AdminContainer>
+    <MainOrders
+      headerTitle={`${retailer_name} / Input Sale Details`}
+      orderId={5}
+      params="retailerorders"
+      postfix={`&retailer_id=${retailer_id}`}
+      exportOff
+    />
   );
 }

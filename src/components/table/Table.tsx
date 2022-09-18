@@ -25,6 +25,7 @@ export interface TableProps {
   onUpload?: (data: any) => Promise<void>;
   exportFileName?: string;
   showExport?: boolean;
+  changePageSize?: (size: number) => void;
 }
 
 export default function Table(props: TableProps) {
@@ -99,7 +100,9 @@ export default function Table(props: TableProps) {
       <div className="shadow-md rounded-lg overflow-hidden">
         <div
           className="block overflow-y-auto overflow-x-auto"
-          style={{ maxHeight: "35rem" }}
+          style={{
+            maxHeight: "35rem",
+          }}
         >
           <table
             className="border-collapse min-w-full leading-normal"
@@ -191,6 +194,7 @@ export default function Table(props: TableProps) {
               totalEntries={props.totalEntries}
               totalPages={props.totalPages}
               entriesPerPage={props.entriesPerPage}
+              changePageSize={props.changePageSize}
             />
           </div>
         )}

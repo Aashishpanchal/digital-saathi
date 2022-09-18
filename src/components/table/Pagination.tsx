@@ -1,3 +1,4 @@
+import { Select } from "flowbite-react";
 import React from "react";
 
 function Pagination(props: {
@@ -6,6 +7,7 @@ function Pagination(props: {
   totalPages?: number;
   totalEntries?: number;
   entriesPerPage?: number;
+  changePageSize?: (size: number) => void;
 }) {
   const [entries, setEntries] = React.useState({
     start: 1,
@@ -47,6 +49,12 @@ function Pagination(props: {
     }
   };
 
+  const goDirect = (page: number) => {
+    if (props.changePage) {
+      props.changePage(page);
+    }
+  };
+
   React.useEffect(() => {
     if (
       typeof props.page === "number" &&
@@ -77,8 +85,32 @@ function Pagination(props: {
             Prev
           </button>
         </li>
-        <li className="font-bold">
-          Page {(props.page as any) + 1} of {totalPages}
+        <li className="font-bold flex justify-center items-center space-x-2">
+          {(props.page as any) + 1 !== 1 && (
+            <>
+              <span
+                className="hover:cursor-pointer"
+                onClick={() => goDirect(0)}
+              >
+                1
+              </span>
+              <span>...</span>
+            </>
+          )}
+          <span>
+            Page {(props.page as any) + 1} of {totalPages}
+          </span>
+          {(props.page as any) + 1 !== totalPages && (
+            <>
+              <span>...</span>
+              <span
+                className="hover:cursor-pointer"
+                onClick={() => goDirect(totalPages - 1)}
+              >
+                {totalPages}
+              </span>
+            </>
+          )}
         </li>
         <li>
           <button
@@ -92,6 +124,21 @@ function Pagination(props: {
           >
             Next
           </button>
+        </li>
+        <li>
+          <Select
+            className="w-fit pr-7 border-green-300 border-2 text-xs"
+            value={props.entriesPerPage}
+            onChange={(e) => {
+              props.changePageSize &&
+                props.changePageSize(parseInt(e.target.value));
+              props.changePage && props.changePage(0);
+            }}
+          >
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+          </Select>
         </li>
       </ul>
       <div>

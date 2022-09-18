@@ -19,8 +19,8 @@ export default function useFormDeliveryPartners() {
       },
       {
         type: "string",
-        label: "Erp Name",
-        name: "erp_name",
+        label: "Erp Code",
+        name: "erp_code",
         defaultValue: "",
       },
       {
