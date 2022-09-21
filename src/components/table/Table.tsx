@@ -14,6 +14,8 @@ import { FaFileUpload } from "react-icons/fa";
 import DownloadRows from "../csv/button/DownloadRows";
 
 export interface TableProps {
+  filterHidden?: boolean;
+  tableRowNode?: React.ReactNode;
   columns: any;
   data: Array<{ [key: string]: any }>;
   showPagination?: boolean;
@@ -26,6 +28,7 @@ export interface TableProps {
   exportFileName?: string;
   showExport?: boolean;
   changePageSize?: (size: number) => void;
+  children?: React.ReactNode;
 }
 
 export default function Table(props: TableProps) {
@@ -82,21 +85,25 @@ export default function Table(props: TableProps) {
           </Alert>
         )}
       </div>
-      <Filter.FilterContainer>
-        <Filter.FilterForm>
-          <GlobalFilterInput {...(others as any)} />
-          {headerGroups.map((headerGroup) =>
-            headerGroup.headers.map((column) => {
-              return (column as any).Filter ? (
-                <div key={column.id}>
-                  <Label htmlFor={column.id}>{column.render("Header")}: </Label>
-                  {column.render("Filter")}
-                </div>
-              ) : null;
-            })
-          )}
-        </Filter.FilterForm>
-      </Filter.FilterContainer>
+      {!props.filterHidden && (
+        <Filter.FilterContainer>
+          <Filter.FilterForm>
+            <GlobalFilterInput {...(others as any)} />
+            {headerGroups.map((headerGroup) =>
+              headerGroup.headers.map((column) => {
+                return (column as any).Filter ? (
+                  <div key={column.id}>
+                    <Label htmlFor={column.id}>
+                      {column.render("Header")}:{" "}
+                    </Label>
+                    {column.render("Filter")}
+                  </div>
+                ) : null;
+              })
+            )}
+          </Filter.FilterForm>
+        </Filter.FilterContainer>
+      )}
       <div className="shadow-md rounded-lg overflow-hidden">
         <div
           className="block overflow-y-auto overflow-x-auto"
@@ -183,8 +190,10 @@ export default function Table(props: TableProps) {
                   </tr>
                 );
               })}
+              {props.tableRowNode}
             </tbody>
           </table>
+          {props.children}
         </div>
         {props.showPagination && (
           <div className="px-2 py-2">

@@ -9,19 +9,23 @@ import {
   FaShoppingBasket,
   FaTruckLoading,
 } from "react-icons/fa";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminContainer from "../../../../../components/AdminContainer";
 import MainContainer from "../../../../../components/common/MainContainer";
 import { DashboardCard } from "../../../../../components/DashboardCard";
-import { shopOrders } from "../../../../../http";
+import { shopOrders, shopProducts } from "../../../../../http";
+import {
+  closeInformationModal,
+  setInformationModal,
+} from "../../../../../redux/slices/modalSlice";
 
 export default function RetailerDashboard() {
   const { retailer_name, retailer_id } = useParams();
-  const [totals, setTotals] = React.useState({
-    orders: 0,
-    retailers: 0,
-    farmers: 0,
-  });
+  const [totalOrders, setTotalOrders] = React.useState(0);
+  const [totalRetailers, setTotalRetailers] = React.useState(0);
+  const [totalFarmers, setTotalFarmers] = React.useState(0);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -30,20 +34,20 @@ export default function RetailerDashboard() {
       {
         Title: "Total Orders",
         Icon: <FaCartPlus size={50} />,
-        num: totals.orders,
+        num: totalOrders,
       },
       {
         Title: "Total SKUs",
         Icon: <FaBoxes size={50} />,
-        num: totals.retailers,
+        num: totalRetailers,
       },
       {
         Title: "Total Farmer Serviced",
         Icon: <FaTruckLoading size={50} />,
-        num: totals.farmers,
+        num: totalFarmers,
       },
     ],
-    [totals]
+    [totalOrders, totalRetailers, totalFarmers]
   );
 
   const layerTwo = React.useMemo(
@@ -82,24 +86,40 @@ export default function RetailerDashboard() {
     []
   );
 
-  const getTotalOrdersToSet = async () => {
+  const getTotals = async () => {
+    dispatch(
+      setInformationModal({
+        show: true,
+        showLoading: true,
+      })
+    );
     try {
-      const res = await shopOrders("get", {
+      let res = await shopOrders("get", {
         postfix: `?page=0&retailer_id=${retailer_id}`,
       });
       if (res?.status === 200) {
-        setTotals({
-          ...totals,
-          orders: res.data?.totalItems || 0,
-        });
+        setTotalOrders(res.data?.totalItems || 0);
+      }
+
+      res = await shopProducts("get", {
+        params: "retailerproducts",
+        postfix: `?page=0&retailer_id=${retailer_id}`,
+      });
+      if (res?.status === 200) {
+        setTotalRetailers(res.data?.totalItems || 0);
       }
     } catch (err: any) {
       console.log(err?.response);
     }
+    dispatch(closeInformationModal());
   };
 
   React.useEffect(() => {
-    getTotalOrdersToSet();
+    getTotals();
+
+    return () => {
+      dispatch(closeInformationModal());
+    };
   }, []);
 
   return (
