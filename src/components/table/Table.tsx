@@ -106,7 +106,7 @@ export default function Table(props: TableProps) {
       )}
       <div className="shadow-md rounded-lg overflow-hidden">
         <div
-          className="block overflow-y-auto overflow-x-auto"
+          className="block overflow-y-auto overflow-x-auto print:overflow-hidden"
           style={{
             maxHeight: "35rem",
           }}
