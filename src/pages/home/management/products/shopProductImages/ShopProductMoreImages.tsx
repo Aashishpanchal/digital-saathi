@@ -29,6 +29,8 @@ export default function ShopProductMoreImages() {
     setInnerLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }>();
   const [page, setPage] = React.useState(0);
+
+  const [size, setSize] = React.useState(10);
   const { S3DeleteImage } = useBucket();
 
   const navigate = useNavigate();
@@ -115,7 +117,7 @@ export default function ShopProductMoreImages() {
             idKey="image_id"
             payload={["sku_id", "image"]}
             axiosFunction={shopProductImages}
-            postfix={`?page=${page}&sku_id=${sku_id}`}
+            postfix={`?page=${page}&size=${size}&sku_id=${sku_id}`}
             setData={setData}
           />
         ),
@@ -137,14 +139,14 @@ export default function ShopProductMoreImages() {
         ),
       },
     ],
-    [data, page]
+    [data, page, size]
   );
 
   const getData = React.useMemo(() => data.product_images, [data, page]);
 
   React.useEffect(() => {
     onProductImagesGet();
-  }, [page]);
+  }, [page, size]);
 
   return (
     <AdminContainer>
@@ -179,6 +181,7 @@ export default function ShopProductMoreImages() {
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
             entriesPerPage={10}
+            changePageSize={(value) => setSize(value)}
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">

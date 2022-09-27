@@ -125,21 +125,23 @@ function Pagination(props: {
             Next
           </button>
         </li>
-        <li>
-          <Select
-            className="w-fit pr-7 border-green-300 border-2 text-xs"
-            value={props.entriesPerPage}
-            onChange={(e) => {
-              props.changePageSize &&
-                props.changePageSize(parseInt(e.target.value));
-              props.changePage && props.changePage(0);
-            }}
-          >
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-          </Select>
-        </li>
+        {props.changePageSize && (
+          <li>
+            <Select
+              className="w-fit pr-7 border-green-300 border-2 text-xs"
+              value={props.entriesPerPage}
+              onChange={(e) => {
+                props.changePageSize &&
+                  props.changePageSize(parseInt(e.target.value));
+                props.changePage && props.changePage(0);
+              }}
+            >
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+            </Select>
+          </li>
+        )}
       </ul>
       <div>
         <span className="text-sm">

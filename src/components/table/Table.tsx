@@ -104,13 +104,8 @@ export default function Table(props: TableProps) {
           </Filter.FilterForm>
         </Filter.FilterContainer>
       )}
-      <div className="shadow-md rounded-lg overflow-hidden">
-        <div
-          className="block overflow-y-auto overflow-x-auto print:overflow-hidden"
-          style={{
-            maxHeight: "35rem",
-          }}
-        >
+      <div className="shadow-md rounded-lg">
+        <div className="block overflow-y-auto overflow-x-auto print:overflow-hidden">
           <table
             className="border-collapse min-w-full leading-normal"
             {...getTableProps()}

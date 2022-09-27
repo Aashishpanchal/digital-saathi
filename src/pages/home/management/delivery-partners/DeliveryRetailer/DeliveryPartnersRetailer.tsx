@@ -25,6 +25,8 @@ export default function DeliveryPartnersRetailer() {
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [page, setPage] = React.useState(0);
+  const [size, setSize] = React.useState(10);
+
   const [value, setValue] = React.useState<{
     del_ret_id: string;
     setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,7 +39,7 @@ export default function DeliveryPartnersRetailer() {
     setLoading(true);
     try {
       const res: any = await deliveryRetailer("get", {
-        postfix: `?page=${page}&partner_id=${partner_id}`,
+        postfix: `?page=${page}&size=${size}&partner_id=${partner_id}`,
       });
       if (res.status === 200) {
         setData(res.data);
@@ -138,7 +140,7 @@ export default function DeliveryPartnersRetailer() {
 
   React.useEffect(() => {
     onDPRetailerGet();
-  }, [page]);
+  }, [page, size]);
 
   return (
     <AdminContainer>
@@ -172,7 +174,8 @@ export default function DeliveryPartnersRetailer() {
             changePage={(page: number) => setPage(page)}
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
-            entriesPerPage={10}
+            entriesPerPage={size}
+            changePageSize={(value) => setSize(value)}
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">

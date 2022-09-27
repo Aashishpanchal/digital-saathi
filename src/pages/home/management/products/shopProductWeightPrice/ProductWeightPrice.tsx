@@ -18,6 +18,7 @@ export default function ProductWeightPrice() {
     product_prices: [],
   });
   const [page, setPage] = React.useState(0);
+  const [size, setSize] = React.useState(10);
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [value, setValue] = React.useState<{
@@ -126,7 +127,7 @@ export default function ProductWeightPrice() {
             idKey="price_id"
             setData={setData}
             axiosFunction={shopProductWeightPrice}
-            postfix={`?page=${page}&sku_id=${sku_id}`}
+            postfix={`?page=${page}&size=${size}&sku_id=${sku_id}`}
             payload={["sku_id", "mrp", "price", "weight", "package"]}
           />
         ),
@@ -148,14 +149,14 @@ export default function ProductWeightPrice() {
         ),
       },
     ],
-    [page]
+    [page, size]
   );
 
   const getData = React.useMemo(() => data.product_prices, [data, page]);
 
   React.useEffect(() => {
     onGetProductWeightPrice();
-  }, [page]);
+  }, [page, size]);
 
   return (
     <AdminContainer>
@@ -189,7 +190,8 @@ export default function ProductWeightPrice() {
             changePage={(page: number) => setPage(page)}
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
-            entriesPerPage={10}
+            entriesPerPage={size}
+            changePageSize={(value) => setSize(value)}
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">

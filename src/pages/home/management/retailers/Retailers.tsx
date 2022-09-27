@@ -25,6 +25,7 @@ export default function Retailers() {
   const [loading, setLoading] = React.useState(true);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const [page, setPage] = React.useState(0);
+  const [size, setSize] = React.useState(10);
 
   const [value, setValue] = React.useState<{
     retailer_id: string;
@@ -36,7 +37,9 @@ export default function Retailers() {
   const onRetailerGet = async () => {
     setLoading(true);
     try {
-      const res: any = await retailer("get", { postfix: `?page=${page}` });
+      const res: any = await retailer("get", {
+        postfix: `?page=${page}&size=${size}`,
+      });
       if (res.status === 200) {
         setData(res.data);
       }
@@ -157,7 +160,7 @@ export default function Retailers() {
 
   React.useEffect(() => {
     onRetailerGet();
-  }, [page]);
+  }, [page, size]);
   return (
     <AdminContainer>
       <MainContainer heading="Retailer Name">
@@ -186,7 +189,8 @@ export default function Retailers() {
             changePage={(page: number) => setPage(page)}
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
-            entriesPerPage={10}
+            entriesPerPage={size}
+            changePageSize={(value) => setSize(value)}
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">

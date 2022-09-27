@@ -34,6 +34,7 @@ export default function MainOrders(props: {
   const navigator = useNavigate();
 
   const [page, setPage] = React.useState(0);
+  const [size, setSize] = React.useState(10);
 
   const onGet = async () => {
     setLoading(true);
@@ -41,7 +42,8 @@ export default function MainOrders(props: {
       const res = await shopOrders("get", {
         params: props.params,
         postfix:
-          `?page=${page}&order_status=${props.orderId}` + (props.postfix || ""),
+          `?page=${page}&size=${size}&order_status=${props.orderId}` +
+          (props.postfix || ""),
       });
       if (res?.status === 200) {
         // formatting date time column
@@ -139,14 +141,14 @@ export default function MainOrders(props: {
         ),
       },
     ],
-    []
+    [page, size]
   );
 
   const getData = React.useMemo(() => data.orders, [data, page]);
 
   React.useEffect(() => {
     onGet();
-  }, [page]);
+  }, [page, size]);
 
   return (
     <AdminContainer>
@@ -171,7 +173,8 @@ export default function MainOrders(props: {
             changePage={(page: number) => setPage(page)}
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
-            entriesPerPage={10}
+            entriesPerPage={size}
+            changePageSize={(value) => setSize(value)}
             showExport={!props.exportOff}
             exportFileName={`shop-order-status-${props.orderId}`}
           />

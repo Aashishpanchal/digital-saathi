@@ -32,11 +32,14 @@ export default function Products() {
   }>();
 
   const [page, setPage] = React.useState(0);
+  const [size, setSize] = React.useState(10);
 
   const onProductsGet = async () => {
     setLoading(true);
     try {
-      const res = await shopProducts("get", { postfix: `?page=${page}` });
+      const res = await shopProducts("get", {
+        postfix: `?page=${page}&size=${size}`,
+      });
       if (res?.status === 200) {
         setData(res.data);
       }
@@ -169,14 +172,14 @@ export default function Products() {
         ),
       },
     ],
-    [data]
+    [data, page, size]
   );
 
   const getData = React.useMemo(() => data.products, [data, page]);
 
   React.useEffect(() => {
     onProductsGet();
-  }, [page]);
+  }, [page, size]);
 
   return (
     <AdminContainer>
@@ -217,9 +220,10 @@ export default function Products() {
             changePage={(page: number) => setPage(page)}
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
-            entriesPerPage={10}
+            entriesPerPage={size}
             showExport
             exportFileName="Product-Data"
+            changePageSize={(value) => setSize(value)}
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">

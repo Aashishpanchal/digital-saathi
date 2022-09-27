@@ -28,13 +28,16 @@ export default function Farmers() {
   }>();
 
   const [page, setPage] = React.useState(0);
+  const [size, setSize] = React.useState(10);
 
   const navigate = useNavigate();
 
   const onFarmerGet = async () => {
     setLoading(true);
     try {
-      const res: any = await farmers("get", { postfix: `?page=${page}` });
+      const res: any = await farmers("get", {
+        postfix: `?page=${page}&size=${size}`,
+      });
       if (res.status === 200) {
         setData(res.data);
       }
@@ -138,7 +141,7 @@ export default function Farmers() {
 
   React.useEffect(() => {
     onFarmerGet();
-  }, [page]);
+  }, [page, size]);
 
   return (
     <AdminContainer>
@@ -163,7 +166,8 @@ export default function Farmers() {
             changePage={(page: number) => setPage(page)}
             totalEntries={data.totalItems}
             totalPages={data.totalPages - 1}
-            entriesPerPage={10}
+            entriesPerPage={size}
+            changePageSize={(value) => setSize(value)}
           />
         ) : (
           <div className="flex flex-col space-y-4 justify-center items-center font-bold">
