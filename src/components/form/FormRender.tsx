@@ -50,7 +50,17 @@ export default function FormRender(props: {
   const { formAlert } = useSelector((state: RootState) => state.alertSlice);
   const dispatch = useDispatch();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    number?: boolean
+  ) => {
+    if (number) {
+      const value = parseInt(e.target.value);
+      return props.setData({
+        ...props.data,
+        [e.target.name]: isNaN(value) ? "" : value.toString(),
+      });
+    }
     props.setData({ ...props.data, [e.target.name]: e.target.value });
   };
 
@@ -109,12 +119,12 @@ export default function FormRender(props: {
           return (
             <LabelTextInput
               key={index.toString()}
-              type={item.type}
+              type={item.type === "number" ? "string" : item.type}
               label={item.label}
               placeholder={item.placeholder}
               name={item.name}
               onChange={(e) => {
-                onChange(e);
+                onChange(e, item.type === "number");
                 item.onChange && item.onChange(e);
               }}
               value={props.data[item.name]}

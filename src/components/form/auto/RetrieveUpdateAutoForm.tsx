@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import useForms, { FieldsType } from "../../../hooks/forms/useForms";
 import useBucket from "../../../hooks/useBucket";
+import { setPageLoading } from "../../../redux/slices/admin-slice";
 import { setFormAlert } from "../../../redux/slices/alertSlice";
 import {
   closeInformationModal,
@@ -32,7 +33,7 @@ function RetrieveUpdateAutoForm(props: PropsInterface) {
   // some Hooks
   const [previousImage, setPreviousImage] = React.useState<string>("");
   const { S3UpdateImage } = useBucket(props.imageOption?.subDirName);
-  const { data, setData, onClear, errors, onValidate } = useForms({
+  const { data, setData, errors, onValidate } = useForms({
     fields: props.fields,
     setDefaultValue: props.setDefaultValue,
   });
@@ -55,12 +56,7 @@ function RetrieveUpdateAutoForm(props: PropsInterface) {
 
   //   Retrieve Method
   const onRetrieve = async () => {
-    dispatch(
-      setInformationModal({
-        show: true,
-        showLoading: true,
-      })
-    );
+    dispatch(setPageLoading(true));
     try {
       const res = await GetRequest();
       if (res?.status === 200) {
@@ -77,11 +73,11 @@ function RetrieveUpdateAutoForm(props: PropsInterface) {
           setPreviousImage(res.data[props.imageOption.key]);
         }
         setData(localValues);
-        dispatch(closeInformationModal());
+        dispatch(setPageLoading(false));
       }
     } catch (err: any) {
       if (typeof props.onGetError === "function") {
-        dispatch(closeInformationModal());
+        dispatch(setPageLoading(false));
         props.onGetError(err);
       } else {
         dispatch(

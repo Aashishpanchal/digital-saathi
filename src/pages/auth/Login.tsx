@@ -5,6 +5,8 @@ import { useForms } from "../../hooks/forms";
 import { setAuth } from "../../redux/slices/authSlice";
 import useLoginForm from "./useLoginForm";
 
+import logo from "../../assets/logo.png";
+
 export default function Login() {
   const { getFormsFields } = useLoginForm();
   const { data, setData, onValidate, errors } = useForms({
@@ -36,11 +38,7 @@ export default function Login() {
       <div className="w-full md:max-w-sm lg:max-w-sm m-auto bg-white md:rounded-md lg:rounded-md shadow-md dark:bg-gray-800">
         <div className="p-4">
           <div className="flex justify-center">
-            <img
-              className="w-fit h-fit"
-              src="/assets/images/logo.png"
-              alt="Logo"
-            />
+            <img className="w-fit h-fit" src={logo} alt="Logo" />
           </div>
           <div className="w-full flex justify-center items-center">
             <h1 className="text-3xl font-semibold text-center text-gray-700 dark:text-white">

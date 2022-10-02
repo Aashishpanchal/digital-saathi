@@ -34,12 +34,6 @@ export const removePostFix = (value: string): any => {
   return value.match(reg) || ["", ""];
 };
 
-export const globalConsoleLogDisable = () => {
-  if (process.env.REACT_APP_MODE === "PROD") {
-    console.log = () => {};
-  }
-};
-
 export const textReduce = (text: string, len: number) => {
   return text.length > len ? text.slice(0, len) + "..." : text;
 };

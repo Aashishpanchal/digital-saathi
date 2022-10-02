@@ -1,29 +1,27 @@
-import AppRouter from "./routers";
-import { BrowserRouter as Router } from "react-router-dom";
+import AppRouter from "./routers/AppRouter";
 import InformationModal from "./components/modals/InformationModal";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import React from "react";
-import { globalConsoleLogDisable } from "./components/Utils";
-// import useLoadingWithAuth0 from "./hooks/useLoadingWithAuth0";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "./theme";
+import { CssBaseline } from "@mui/material";
+import LoadingDialogBox from "./components/dialog-box/loading-dialog-box";
 
 export default function App() {
-  // const { loading } = useLoadingWithAuth0();
-  const { informationModal } = useSelector(
-    (state: RootState) => state.modalSlice
-  );
-
-  React.useEffect(() => {
-    globalConsoleLogDisable();
-  }, []);
+  const {
+    modalSlice: { informationModal },
+    adminSlice: { pageLoading },
+  } = useSelector((state: RootState) => state);
 
   return (
-    <Router>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <div>
         <AppRouter />
         {/* add information modal */}
         <InformationModal {...informationModal} />
+        <LoadingDialogBox open={pageLoading} />
       </div>
-    </Router>
+    </ThemeProvider>
   );
 }
