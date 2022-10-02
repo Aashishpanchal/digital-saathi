@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 import NotFound from "../pages/errors/404";
 import auth0Routers from "./admin/auth0-routers";
@@ -11,7 +10,7 @@ import PublicRouter from "./PublicRouter";
 import Login from "../pages/auth/Login";
 import ChangePassword from "../pages/admin/user/ChangePassword";
 import { DashboardLayout } from "../components/layout";
-const Dashboard = React.lazy(() => import("../pages/admin/Dashboard"));
+import Dashboard from "../pages/admin/Dashboard";
 
 export default function AppRouter() {
   return useRoutes([
@@ -29,11 +28,7 @@ export default function AppRouter() {
         },
         {
           path: "/dashboard",
-          element: (
-            <React.Suspense fallback="Loading....">
-              <Dashboard />
-            </React.Suspense>
-          ),
+          element: <Dashboard />,
         },
         auth0Routers,
         managementRouters,
