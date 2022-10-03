@@ -25,7 +25,7 @@ export default function useFormDeliveryPartners() {
       },
       {
         type: "string",
-        label: "Phone NO",
+        label: "Phone No",
         name: "phone_no",
         defaultValue: "",
       },

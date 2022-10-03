@@ -7,7 +7,9 @@ import { CheckDataCell, Table } from "../../../../../components/table";
 import { shopProducts } from "../../../../../http";
 
 export default function ImportCsvProducts() {
-  const jsonData = require("../../../../../csv-json-template/products.json");
+  const jsonData = import(
+    "../../../../../assets/csv-json-template/products.json"
+  );
 
   const [uploadModalShow, setUploadModalShow] = React.useState(false);
   const [file, setFile] = React.useState({

@@ -7,7 +7,11 @@ interface LinkRouterProps extends LinkProps {
 }
 
 const LinkRouter = (props: LinkRouterProps) => (
-  <Link {...props} component={RouterLink as any} />
+  <Link
+    {...props}
+    sx={{ textDecoration: "none", color: "inherit" }}
+    component={RouterLink as any}
+  />
 );
 
 export default LinkRouter;

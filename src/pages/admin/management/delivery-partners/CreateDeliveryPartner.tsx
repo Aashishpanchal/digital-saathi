@@ -13,11 +13,12 @@ export default function CreateFarmers() {
           axiosFunction={deliveryPartners}
           fields={getFormsFields}
           saveBeforeCallBack={(data) => {
-            const { pincode, ...others } = data;
+            const { pincode, phone_no, ...others } = data;
             return {
               ...others,
               pincode: parseInt(pincode || "0"),
-              // auth_code: "78787878",
+              phone_no: `+91${phone_no}`,
+              auth_code: "78787878",
             };
           }}
         />

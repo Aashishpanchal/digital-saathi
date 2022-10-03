@@ -6,6 +6,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme";
 import { CssBaseline } from "@mui/material";
 import LoadingDialogBox from "./components/dialog-box/loading-dialog-box";
+import { SnackbarProvider } from "notistack";
 
 export default function App() {
   const {
@@ -17,7 +18,15 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div>
-        <AppRouter />
+        <SnackbarProvider
+          maxSnack={2}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <AppRouter />
+        </SnackbarProvider>
         {/* add information modal */}
         <InformationModal {...informationModal} />
         <LoadingDialogBox open={pageLoading} />
