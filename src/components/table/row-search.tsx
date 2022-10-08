@@ -1,40 +1,35 @@
-import React from "react";
-import { styled } from "@mui/material/styles";
 import {
-  Toolbar,
-  Tooltip,
-  IconButton,
-  Typography,
-  OutlinedInput,
   InputAdornment,
+  TextField,
+  SvgIcon,
+  TextFieldProps,
 } from "@mui/material";
+import { FaSearch } from "react-icons/fa";
 
-import { useAsyncDebounce } from "react-table";
-
-const SearchStyle = styled(OutlinedInput)(({ theme }: any) => ({
-  width: 240,
-  transition: theme.transitions.create(["box-shadow", "width"], {
-    easing: theme.transitions.easing.easeInOut,
-    duration: theme.transitions.duration.shorter,
-  }),
-  "&.Mui-focused": { width: 320, boxShadow: theme.shadows[14] },
-  "& fieldset": {
-    borderWidth: `1px !important`,
-    borderColor: `${theme.palette.neutral[500]} !important`,
-  },
-}));
-
-export default function RowSearch(props: {
-  preGlobalFilteredRows: any;
-  globalFilter: any;
-  setGlobalFilter: any;
-}) {
-  const { preGlobalFilteredRows, globalFilter, setGlobalFilter } = props;
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
-  }, 200);
-
-  return <div></div>;
+export default function RowSearch(props: TextFieldProps) {
+  return (
+    <TextField
+      fullWidth
+      sx={{
+        "& .MuiInputBase-input": {
+          padding: 1,
+        },
+        "& .MuiInputBase-input:focus": {
+          boxShadow: "none",
+        },
+      }}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SvgIcon color="action" fontSize="small">
+              <FaSearch />
+            </SvgIcon>
+          </InputAdornment>
+        ),
+      }}
+      placeholder="Search Products"
+      color="secondary"
+      {...props}
+    />
+  );
 }

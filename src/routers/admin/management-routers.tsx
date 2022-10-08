@@ -1,5 +1,4 @@
 import Farmers from "../../pages/admin/management/farmers/Farmers";
-import RetrieveUpdate from "../../pages/admin/management/farmers/RetrieveUpdate";
 import {
   Categories,
   CreateCategories,
@@ -26,16 +25,10 @@ import {
 } from "../../pages/admin/management/delivery-partners";
 import {
   CreateProducts,
-  CreateProductWeightPrice,
   ImportCsvProducts,
   Products,
-  ProductWeightPrice,
   RetrieveUpdateProduct,
-  RetrieveUpdateProductWeightPrice,
   ShopProductDetails,
-  ShopProductMoreImages,
-  ShopProductRetrieveUpdateImage,
-  ShopProductUploadImage,
 } from "../../pages/admin/management/products";
 import {
   CreateRetailers,
@@ -51,6 +44,7 @@ import {
   RetailerSkuUnits,
   RetailerTargetAchievement,
 } from "../../pages/admin/management/retailers/retailerDashboard";
+import ProductImages from "../../pages/admin/management/products/product-images";
 
 export default {
   path: "/management",
@@ -61,10 +55,6 @@ export default {
         {
           path: "",
           element: <Farmers />,
-        },
-        {
-          path: ":farmer_id",
-          element: <RetrieveUpdate />,
         },
       ],
     },
@@ -284,41 +274,11 @@ export default {
             },
             {
               path: "product-more-images/:sku_name",
-              children: [
-                {
-                  path: "",
-                  element: <ShopProductMoreImages />,
-                },
-                {
-                  path: ":image_id",
-                  element: <ShopProductRetrieveUpdateImage />,
-                },
-                {
-                  path: "upload",
-                  element: <ShopProductUploadImage />,
-                },
-              ],
+              element: <ProductImages />,
             },
             {
               path: "product-details/:sku_name",
               element: <ShopProductDetails />,
-            },
-            {
-              path: "product-weight-price/:sku_name",
-              children: [
-                {
-                  path: "",
-                  element: <ProductWeightPrice />,
-                },
-                {
-                  path: "new",
-                  element: <CreateProductWeightPrice />,
-                },
-                {
-                  path: ":price_id",
-                  element: <RetrieveUpdateProductWeightPrice />,
-                },
-              ],
             },
           ],
         },

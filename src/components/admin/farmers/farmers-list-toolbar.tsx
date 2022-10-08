@@ -4,7 +4,7 @@ import { FaFileCsv } from "react-icons/fa";
 import LinkRouter from "../../../routers/LinkRouter";
 import RowSearch from "../../table/row-search";
 
-export default function ProductsListToolbar(props: {
+export default function FarmersListToolbar(props: {
   onClickExport?: () => void;
   onSearch: (value: string) => void;
 }) {
@@ -29,32 +29,8 @@ export default function ProductsListToolbar(props: {
         }}
       >
         <Typography sx={{ m: 1 }} variant="h5">
-          Products
+          Farmers
         </Typography>
-        <Box sx={{ m: 1 }}>
-          <LinkRouter to={"product-import-export"}>
-            <Button
-              color="error"
-              startIcon={<FaFileCsv fontSize="small" />}
-              sx={{ mr: 1 }}
-            >
-              Import
-            </Button>
-          </LinkRouter>
-          <Button
-            color="warning"
-            startIcon={<FaFileCsv fontSize="small" />}
-            sx={{ mr: 1 }}
-            onClick={onClickExport}
-          >
-            Export
-          </Button>
-          <LinkRouter to={"new"}>
-            <Button color="secondary" variant="contained">
-              Add Product
-            </Button>
-          </LinkRouter>
-        </Box>
       </Box>
       <Box sx={{ mt: 2 }}>
         <Card>

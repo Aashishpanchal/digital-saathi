@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { FaCheck } from "react-icons/fa";
@@ -50,18 +51,22 @@ export default function ActiveDeactive(props: {
   };
 
   return (
-    <ErrorSuccessChip
-      show={value === 0}
-      onClick={clickHandle}
-      values={{
-        error: "Deactive",
-        success: "Active",
-      }}
-      icons={{
-        error: <MdError />,
-        success: <FaCheck size={15} />,
-      }}
-      loading={loading}
-    />
+    <Box
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+    >
+      <ErrorSuccessChip
+        show={value === 0}
+        onClick={clickHandle}
+        values={{
+          error: "Deactive",
+          success: "Active",
+        }}
+        icons={{
+          error: <MdError />,
+          success: <FaCheck size={15} />,
+        }}
+        loading={loading}
+      />
+    </Box>
   );
 }

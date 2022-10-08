@@ -37,3 +37,13 @@ export const removePostFix = (value: string): any => {
 export const textReduce = (text: string, len: number) => {
   return text.length > len ? text.slice(0, len) + "..." : text;
 };
+
+export const numberToString = (data: { [key: string]: any }) => {
+  let obj: any = {};
+  for (const key in data) {
+    if (typeof data[key] === "number") {
+      obj[key] = data[key].toString();
+    }
+  }
+  return { ...data, ...obj };
+};
