@@ -3,154 +3,86 @@ import { BiStore } from "react-icons/bi";
 import {
   FaBoxes,
   FaCalendarTimes,
-  FaCartPlus,
   FaRegChartBar,
   FaRupeeSign,
   FaShoppingBasket,
-  FaTruckLoading,
 } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import MainContainer from "../../../../../components/common/MainContainer";
-import { DashboardCard } from "../../../../../components/DashboardCard";
-import { shopOrders, shopProducts } from "../../../../../http";
-import {
-  closeInformationModal,
-  setInformationModal,
-} from "../../../../../redux/slices/modalSlice";
+import { useParams } from "react-router-dom";
+import RetailerDashboardCards from "../../../../../components/admin/retailers/retailer-dashboard-cards";
+import { MainContainer } from "../../../../../components/layout";
+import RetailerDashboardTwoCards from "../../../../../components/admin/retailers/retailer-deshboard-two-cards";
+import { Box, Grid, Typography } from "@mui/material";
+import LinkRouter from "../../../../../routers/LinkRouter";
 
 export default function RetailerDashboard() {
   const { retailer_name, retailer_id } = useParams();
-  const [totalOrders, setTotalOrders] = React.useState(0);
-  const [totalRetailers, setTotalRetailers] = React.useState(0);
-  const [totalFarmers, setTotalFarmers] = React.useState(0);
-  const dispatch = useDispatch();
-
-  const navigate = useNavigate();
-
-  const layerOne = React.useMemo(
-    () => [
-      {
-        Title: "Total Orders",
-        Icon: <FaCartPlus size={50} />,
-        num: totalOrders,
-      },
-      {
-        Title: "Total SKUs",
-        Icon: <FaBoxes size={50} />,
-        num: totalRetailers,
-      },
-      {
-        Title: "Total Farmer Serviced",
-        Icon: <FaTruckLoading size={50} />,
-        num: totalFarmers,
-      },
-    ],
-    [totalOrders, totalRetailers, totalFarmers]
-  );
 
   const layerTwo = React.useMemo(
     () => [
       {
         Title: "Orders",
-        Icon: <FaShoppingBasket size={50} />,
-        onClick: () => navigate("retailer-orders"),
+        Icon: <FaShoppingBasket />,
+        url: "retailer-orders",
+        color: "#dc2626",
       },
       {
         Title: "Input Sale Details",
-        Icon: <BiStore size={50} />,
-        onClick: () => navigate("retailer-input-sale-details"),
+        Icon: <BiStore />,
+        url: "retailer-input-sale-details",
+        color: "#e81071",
       },
       {
         Title: "Cancelled Orders",
-        Icon: <FaCalendarTimes size={50} />,
-        onClick: () => navigate("retailer-cancelled-orders"),
+        Icon: <FaCalendarTimes />,
+        url: "retailer-cancelled-orders",
+        color: "#f59e0b",
       },
       {
         Title: "Data SKU Units",
-        Icon: <FaBoxes size={50} />,
-        onClick: () => navigate("retailer-sku-units"),
+        Icon: <FaBoxes />,
+        url: "retailer-sku-units",
+        color: "#4f46e5",
       },
       {
         Title: "Data SKU Pricing",
-        Icon: <FaRupeeSign size={50} />,
-        onClick: () => navigate("retailer-sku-pricing"),
+        Icon: <FaRupeeSign />,
+        url: "retailer-sku-pricing",
+        color: "#059669",
       },
       {
         Title: "Target vs Achievement",
-        Icon: <FaRegChartBar size={50} />,
-        onClick: () => navigate("retailer-target-achievement"),
+        Icon: <FaRegChartBar />,
+        url: "retailer-target-achievement",
+        color: "#830596",
       },
     ],
     []
   );
 
-  const getTotals = async () => {
-    dispatch(
-      setInformationModal({
-        show: true,
-        showLoading: true,
-      })
-    );
-    try {
-      let res = await shopOrders("get", {
-        postfix: `?page=0&retailer_id=${retailer_id}`,
-      });
-      if (res?.status === 200) {
-        setTotalOrders(res.data?.totalItems || 0);
-      }
-
-      res = await shopProducts("get", {
-        params: "retailerproducts",
-        postfix: `?page=0&retailer_id=${retailer_id}`,
-      });
-      if (res?.status === 200) {
-        setTotalRetailers(res.data?.totalItems || 0);
-      }
-    } catch (err: any) {
-      console.log(err?.response);
-    }
-    dispatch(closeInformationModal());
-  };
-
-  React.useEffect(() => {
-    getTotals();
-
-    return () => {
-      dispatch(closeInformationModal());
-    };
-  }, []);
-
   return (
-    <MainContainer
-      heading={`${
-        retailer_name === "Null" ? "" : retailer_name
-      } / Retailer Dashboard`}
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {layerOne.map((item, index) => (
-          <DashboardCard.Container key={index.toString()} disabled={true}>
-            <DashboardCard.CardNumTitleRender
-              title={item.Title}
-              num={item.num}
-              Icon={item.Icon}
-            />
-          </DashboardCard.Container>
-        ))}
-      </div>
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <MainContainer>
+      <Box sx={{ my: 1 }}>
+        <Typography variant="h5">
+          Retailer Dashboard / {retailer_name}
+        </Typography>
+      </Box>
+      <RetailerDashboardCards retailerId={retailer_id as string} />
+      <Box sx={{ my: 2 }}>
+        <Typography variant={"h6"}>Retailer Action</Typography>
+      </Box>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
         {layerTwo.map((item, index) => (
-          <DashboardCard.Container
-            key={index.toString()}
-            onClick={item.onClick}
-          >
-            <DashboardCard.FlexCenterTitle
-              title={item.Title}
-              Icon={item.Icon}
-            />
-          </DashboardCard.Container>
+          <Grid item key={index} lg={4} sm={6} xs={12}>
+            <LinkRouter to={item.url}>
+              <RetailerDashboardTwoCards
+                icon={item.Icon}
+                title={item.Title}
+                color={item.color}
+              />
+            </LinkRouter>
+          </Grid>
         ))}
-      </div>
+      </Grid>
     </MainContainer>
   );
 }

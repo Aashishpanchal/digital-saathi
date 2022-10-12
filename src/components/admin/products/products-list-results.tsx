@@ -202,7 +202,7 @@ export default function ProductsListResults(props: { searchText: string }) {
         ),
       },
     ],
-    [page, size]
+    [page, size, postfix]
   );
 
   const getData = React.useMemo(() => data.products, [data]);
@@ -210,6 +210,9 @@ export default function ProductsListResults(props: { searchText: string }) {
   React.useEffect(() => {
     onGet();
   }, [page, size, searchText]);
+  React.useEffect(() => {
+    setPage(0);
+  }, [searchText]);
 
   return (
     <>
@@ -217,6 +220,7 @@ export default function ProductsListResults(props: { searchText: string }) {
         loading={loading}
         columns={columns}
         data={getData}
+        showNotFound={data.totalItems === 0}
         components={{
           pagination: (
             <TablePagination

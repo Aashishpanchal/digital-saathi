@@ -1,17 +1,22 @@
-import { NewOrders } from "../../pages/admin/orders/new";
-import { InProcessOrders } from "../../pages/admin/orders/in-process";
-import { AcceptedOrders } from "../../pages/admin/orders/accepted";
-import { OutForDeliveryOrders } from "../../pages/admin/orders/out-for-delivery";
-import { DeliveredOrders } from "../../pages/admin/orders/delivered";
-import { CancelledOrders } from "../../pages/admin/orders/cancelled";
-import { ReturningOrders } from "../../pages/admin/orders/returning";
-import { ReturnedOrders } from "../../pages/admin/orders/Returned";
-import { OrderInvoicePrint } from "../../pages/admin/orders/order-invoice";
+import NewOrders from "../../pages/admin/orders/new-orders";
+import InProcessOrders from "../../pages/admin/orders/in-process";
+import AcceptedOrders from "../../pages/admin/orders/accepted";
+import OutForDeliveryOrders from "../../pages/admin/orders/out-for-delivery";
+import DeliveredOrders from "../../pages/admin/orders/delivered";
+import CancelledOrders from "../../pages/admin/orders/cancelled";
+import ReturningOrders from "../../pages/admin/orders/returning";
+import ReturnedOrders from "../../pages/admin/orders/returned";
+import OrderInvoicePrint from "../../pages/admin/orders/order-invoice";
 import OrderDetails from "../../pages/admin/orders/OrderDetails";
+import AllOrders from "../../pages/admin/orders/all-orders";
 
 export default {
   path: "/orders",
   children: [
+    {
+      path: "all-orders",
+      element: <AllOrders />,
+    },
     {
       path: "new-orders",
       element: <NewOrders />,

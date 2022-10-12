@@ -1,15 +1,15 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { PrintInvoice } from "../../../../components/print";
-import Disclaimer from "../../../../components/print/invoice/Disclaimer";
-import { DateFormate } from "../../../../components/Utils";
-import useGetData from "../../../../hooks/useGetData";
-import { retailer, shopOrderDetails, shopOrders } from "../../../../http";
+import { PrintInvoice } from "../../../components/print";
+import Disclaimer from "../../../components/print/invoice/Disclaimer";
+import { DateFormate } from "../../../components/Utils";
+import useGetData from "../../../hooks/useGetData";
+import { retailer, shopOrderDetails, shopOrders } from "../../../http";
 import {
   closeInformationModal,
   setInformationModal,
-} from "../../../../redux/slices/modalSlice";
+} from "../../../redux/slices/modalSlice";
 
 type ResponseType = { [key: string]: any };
 

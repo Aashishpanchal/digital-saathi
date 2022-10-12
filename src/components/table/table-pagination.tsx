@@ -63,7 +63,7 @@ function TablePagination(props: {
   const onChangePageSize = (event: SelectChangeEvent) => {
     const value = event.target.value;
     if (onPageSizeSelect !== undefined) onPageSizeSelect(value);
-    if (value) onChangePage && onChangePage(1);
+    if (value) onChangePage && onChangePage(0);
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {

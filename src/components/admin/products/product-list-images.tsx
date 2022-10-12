@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Tooltip, IconButton } from "@mui/material";
-import { shopProductImages, shopProducts } from "../../../http";
+import { shopProductImages } from "../../../http";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
@@ -12,6 +12,7 @@ import ProductAvatar from "../../Image/product-avatar";
 import useBucket from "../../../hooks/useBucket";
 import ProductImageDialog from "./product-image-dialog";
 import { FaRegEdit } from "react-icons/fa";
+import { date } from "yup/lib/locale";
 
 export default function ProductListImages(props: {
   sku_id: string;
@@ -184,6 +185,7 @@ export default function ProductListImages(props: {
         loading={loading}
         columns={columns}
         data={getData}
+        showNotFound={data.totalItems === 0}
         components={{
           pagination: (
             <TablePagination

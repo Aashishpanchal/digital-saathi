@@ -1,14 +1,12 @@
 import React from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import { FaFileCsv } from "react-icons/fa";
 import LinkRouter from "../../../routers/LinkRouter";
 import RowSearch from "../../table/row-search";
 
-export default function ProductsListToolbar(props: {
-  onClickExport?: () => void;
+export default function ProductsToolbar(props: {
   onSearch: (value: string) => void;
 }) {
-  const { onClickExport, onSearch } = props;
+  const { onSearch } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -29,29 +27,12 @@ export default function ProductsListToolbar(props: {
         }}
       >
         <Typography sx={{ m: 1 }} variant="h5">
-          Products
+          Retailers
         </Typography>
         <Box sx={{ m: 1 }}>
-          <LinkRouter to={"product-import-export"}>
-            <Button
-              color="error"
-              startIcon={<FaFileCsv fontSize="small" />}
-              sx={{ mr: 1 }}
-            >
-              Import
-            </Button>
-          </LinkRouter>
-          <Button
-            color="warning"
-            startIcon={<FaFileCsv fontSize="small" />}
-            sx={{ mr: 1 }}
-            onClick={onClickExport}
-          >
-            Export
-          </Button>
           <LinkRouter to={"new"}>
             <Button color="secondary" variant="contained">
-              Add Product
+              Add Retailer
             </Button>
           </LinkRouter>
         </Box>
@@ -70,7 +51,7 @@ export default function ProductsListToolbar(props: {
                 <RowSearch
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="Search Products"
+                  placeholder="Search Retailers"
                 />
               </Box>
               <Box sx={{ display: "flex", gap: 3 }}>

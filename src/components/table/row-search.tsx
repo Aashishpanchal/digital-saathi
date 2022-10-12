@@ -27,7 +27,6 @@ export default function RowSearch(props: TextFieldProps) {
           </InputAdornment>
         ),
       }}
-      placeholder="Search Products"
       color="secondary"
       {...props}
     />

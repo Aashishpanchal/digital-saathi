@@ -11,7 +11,9 @@ import LinkRouter from "../../../routers/LinkRouter";
 import { FaArrowRight, FaRegEdit } from "react-icons/fa";
 import FarmersFormDialog from "./farmers-form-dialog";
 
-export default function FarmersListResults(props: { searchText: string }) {
+export default function FarmersOrdersListResults(props: {
+  searchText: string;
+}) {
   const [data, setData] = React.useState({
     totalItems: 0,
     totalPages: 1,
@@ -168,7 +170,6 @@ export default function FarmersListResults(props: { searchText: string }) {
         loading={loading}
         columns={columns}
         data={getData}
-        showNotFound={data.totalItems === 0}
         components={{
           pagination: (
             <TablePagination

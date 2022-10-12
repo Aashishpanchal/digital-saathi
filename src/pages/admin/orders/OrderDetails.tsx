@@ -216,14 +216,18 @@ export default function OrderDetails() {
   };
 
   const totalPrice = React.useMemo(() => {
-    return orderDetailData.reduce((p, c) => {
-      const i = isNaN(Number(p.total_price)) ? 0 : Number(p.total_price);
-      const j = isNaN(Number(c.total_price)) ? 0 : Number(c.total_price);
-      return {
-        c,
-        total_price: i + j,
-      };
-    });
+    try {
+      return orderDetailData.reduce((p, c) => {
+        const i = isNaN(Number(p.total_price)) ? 0 : Number(p.total_price);
+        const j = isNaN(Number(c.total_price)) ? 0 : Number(c.total_price);
+        return {
+          c,
+          total_price: i + j,
+        };
+      });
+    } catch (error) {
+      return [];
+    }
   }, [orderDetailData]);
 
   const pageStyle = `

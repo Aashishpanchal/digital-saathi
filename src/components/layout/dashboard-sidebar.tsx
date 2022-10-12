@@ -2,6 +2,7 @@ import React from "react";
 import { useMediaQuery, Divider, Drawer, Box, List } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import {
+  FaBorderAll,
   FaKey,
   FaTractor,
   FaUserPlus,
@@ -162,6 +163,11 @@ export default function DashboardSidebar(props: {
         title: "Orders",
         icon: <BsJournalBookmark />,
         child: [
+          {
+            title: "All Orders",
+            href: "/orders/all-orders",
+            icon: <FaBorderAll />,
+          },
           {
             title: "New",
             href: "/orders/new-orders",

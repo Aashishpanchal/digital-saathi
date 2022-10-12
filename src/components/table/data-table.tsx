@@ -21,6 +21,7 @@ import {
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import { styled } from "@mui/material";
 import RowSearch from "./row-search";
+import RawDataNotFound from "../admin/raw-data-not-found";
 
 const TableHeaderCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,10 +42,12 @@ export interface DataTableProps {
   components?: {
     pagination?: React.ReactNode;
   };
+  showNotFound?: boolean;
 }
 
 export default function DataTable(props: DataTableProps) {
-  const { columns, data, components, loading, filtersHidden } = props;
+  const { columns, data, components, loading, filtersHidden, showNotFound } =
+    props;
 
   const {
     getTableProps,
@@ -133,8 +136,9 @@ export default function DataTable(props: DataTableProps) {
                 </TableRow>
               ))}
             </TableHead>
-            {loading ? (
-              <TableBody>
+
+            <TableBody>
+              {loading ? (
                 <TableRow>
                   <TableCell
                     align="center"
@@ -144,10 +148,18 @@ export default function DataTable(props: DataTableProps) {
                     <CircularProgress color="secondary" />
                   </TableCell>
                 </TableRow>
-              </TableBody>
-            ) : (
-              <TableBody>
-                {rows.map((row) => {
+              ) : showNotFound ? (
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    colSpan={columns.length}
+                    sx={{ py: 3 }}
+                  >
+                    <RawDataNotFound />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                rows.map((row) => {
                   prepareRow(row);
                   return (
                     <TableRow
@@ -171,9 +183,9 @@ export default function DataTable(props: DataTableProps) {
                       })}
                     </TableRow>
                   );
-                })}
-              </TableBody>
-            )}
+                })
+              )}
+            </TableBody>
           </Table>
         </TableContainer>
       </Box>
