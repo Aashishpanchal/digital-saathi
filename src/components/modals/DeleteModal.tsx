@@ -4,7 +4,7 @@ export default function DeleteModal(props: {
   show: boolean;
   onClose?: () => void;
   onClickNo?: () => void;
-  onClickYes?: () => void;
+  onClickYes?: () => Promise<void>;
 }) {
   const { show, onClickNo, onClickYes } = props;
   return (
