@@ -1,5 +1,4 @@
 import React from "react";
-import { baseImageUrl } from "../../http/config";
 
 export default function Image(props: {
   src?: string;
@@ -16,10 +15,9 @@ export default function Image(props: {
     >
       <img
         className="w-full h-full"
-        src={props.url || baseImageUrl?.concat(props.src || "")}
-        alt={props.alt.concat(" image")}
+        src={props.url}
         onError={(e) => {
-          (e.target as any).src = "/assets/images/default-image.png";
+          (e.target as any).src = "/images/default-image.png";
         }}
       />
     </div>

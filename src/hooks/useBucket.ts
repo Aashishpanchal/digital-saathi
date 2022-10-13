@@ -21,28 +21,34 @@ function useBucket(subDirName?: string) {
   const [progress, setProgress] = React.useState<Progress>();
 
   const S3ImageUploader = async (file: File) => {
-    const uploadS3 = new Upload({
-      client: s3,
-      params: {
-        Bucket: bucketName,
-        Key: `${subDirName}/${uuid().concat(`-${file.name}`)}`,
-        Body: file,
-      },
-    });
-
-    try {
+    if (file instanceof File) {
+      const uploadS3 = new Upload({
+        client: s3,
+        params: {
+          Bucket: bucketName,
+          Key: `${subDirName}/${uuid().concat(`-${file.name}`)}`,
+          Body: file,
+        },
+      });
       uploadS3.on("httpUploadProgress", (progress) => {
         setProgress(progress as any);
       });
       return uploadS3.done();
-    } catch (error) {
-      console.log(error);
+    } else {
+      return {
+        Location: "",
+        error: "file is not File instance!",
+      };
     }
   };
 
   const getKey = (fileUrl: string) => {
-    const url = new URL(fileUrl);
-    return decodeURI(url.pathname.slice(1));
+    try {
+      const url = new URL(fileUrl);
+      return decodeURI(url.pathname.slice(1));
+    } catch (error) {
+      return "";
+    }
   };
 
   const S3DeleteImage = async (imageUrl: string) => {
@@ -56,7 +62,7 @@ function useBucket(subDirName?: string) {
       return { success: true, data: "File deleted Successfully" };
     } catch (error) {
       console.log(error);
-      return { success: false, data: "cannot deleted image in s3 bucket" };
+      return { success: true, data: "cannot deleted image in s3 bucket" };
     }
   };
 
@@ -64,10 +70,8 @@ function useBucket(subDirName?: string) {
     if (prevImageUrl === files) {
       return { Location: prevImageUrl };
     } else {
-      const deleteMetaData = await S3DeleteImage(prevImageUrl);
-      if (deleteMetaData.success) {
-        return S3ImageUploader(files);
-      }
+      await S3DeleteImage(prevImageUrl);
+      return S3ImageUploader(files);
     }
   };
 

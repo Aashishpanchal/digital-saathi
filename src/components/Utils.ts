@@ -1,43 +1,15 @@
+import dayjs from "dayjs";
 import moment from "moment";
-import { farmers, retailer } from "../http";
 import { ToWords } from "to-words";
 
 export function classNames(...classNames: string[]) {
   return classNames.filter(Boolean).join(" ");
 }
 
-export async function onFarmerRetrieve(customer_id: number) {
-  try {
-    const res = await farmers("get", {
-      params: customer_id.toString(),
-    });
-    if (res?.status === 200) {
-      return res.data.customer_name;
-    }
-  } catch (e: any) {
-    if (e.response?.status === 404) {
-      return "Not Found";
-    }
-  }
-}
-
-export async function onRetailerRetrieve(retailer_id: number) {
-  try {
-    const res = await retailer("get", {
-      params: retailer_id.toString(),
-    });
-    if (res?.status === 200) {
-      return res.data.retailer_name;
-    }
-  } catch (e: any) {
-    if (e.response?.status === 404) {
-      return "Not Found";
-    }
-  }
-}
-
-export function DateFormate(date: string) {
-  return moment(date).format("YYYY-MM-DD");
+export function DateFormate(date: string, readable?: boolean) {
+  const dateM = moment(date);
+  if (!readable) return dateM.format("YYYY-MM-DD");
+  return dayjs(dateM.toLocaleString()).format("MMMM D, YYYY h:mm A");
 }
 
 export function NumberToString(value: string): string {
@@ -56,3 +28,22 @@ export function NumberToString(value: string): string {
   }
   return toWords.convert(num);
 }
+
+export const removePostFix = (value: string): any => {
+  const reg = /([\d]+(?:\.[\d]+)?(?![\d]))|([a-z.]+)(?![a-z.])/gi;
+  return value.match(reg) || ["", ""];
+};
+
+export const textReduce = (text: string, len: number) => {
+  return text.length > len ? text.slice(0, len) + "..." : text;
+};
+
+export const numberToString = (data: { [key: string]: any }) => {
+  let obj: any = {};
+  for (const key in data) {
+    if (typeof data[key] === "number") {
+      obj[key] = data[key].toString();
+    }
+  }
+  return { ...data, ...obj };
+};

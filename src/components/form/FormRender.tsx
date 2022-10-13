@@ -24,7 +24,7 @@ interface FieldsType {
   hintText?: string;
   options?: { [key: string]: any };
   defaultOption?: { [key: string]: any };
-  onChange?: (e: any) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   maxLength?: number;
 }
 
@@ -50,7 +50,17 @@ export default function FormRender(props: {
   const { formAlert } = useSelector((state: RootState) => state.alertSlice);
   const dispatch = useDispatch();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    number?: boolean
+  ) => {
+    if (number) {
+      const value = parseInt(e.target.value);
+      return props.setData({
+        ...props.data,
+        [e.target.name]: isNaN(value) ? "" : value.toString(),
+      });
+    }
     props.setData({ ...props.data, [e.target.name]: e.target.value });
   };
 
@@ -85,11 +95,17 @@ export default function FormRender(props: {
             <Field
               key={index.toString()}
               data={props.data}
+              name={item.name}
+              value={props.data[item.name]}
               setData={props.setData}
               label={item.label}
               options={item.options}
               defaultOption={item.defaultOption}
               hint={props.errors[item.name]?.hintText}
+              onChange={(e: any) => {
+                onChange(e);
+                item.onChange && item.onChange(e);
+              }}
               hintColor={
                 item.validate
                   ? props.errors[item.name]?.error
@@ -103,12 +119,12 @@ export default function FormRender(props: {
           return (
             <LabelTextInput
               key={index.toString()}
-              type={item.type}
+              type={item.type === "number" ? "string" : item.type}
               label={item.label}
               placeholder={item.placeholder}
               name={item.name}
               onChange={(e) => {
-                onChange(e);
+                onChange(e, item.type === "number");
                 item.onChange && item.onChange(e);
               }}
               value={props.data[item.name]}

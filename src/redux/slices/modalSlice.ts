@@ -8,6 +8,7 @@ export interface modalState {
     message?: string;
     runClose?: boolean;
     showLoading?: boolean;
+    closeToBack?: boolean;
   };
 }
 
@@ -19,6 +20,7 @@ const initialState: modalState = {
     message: "",
     runClose: false,
     showLoading: false,
+    closeToBack: false,
   },
 };
 

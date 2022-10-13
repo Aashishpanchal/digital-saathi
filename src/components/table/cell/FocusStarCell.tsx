@@ -5,12 +5,14 @@ import { FaStar } from "react-icons/fa";
 export default function FocusStarCell(props: {
   cell: any;
   idKey: string;
-  postfix: string;
+  postfix?: string;
+  params?: string;
   setData: any;
   axiosFunction?: any;
   payload?: Array<string>;
 }) {
-  const { cell, axiosFunction, idKey, setData, payload, postfix } = props;
+  const { cell, axiosFunction, idKey, setData, payload, postfix, params } =
+    props;
   const { original } = cell.row;
   const [loading, setLoading] = React.useState(false);
 
@@ -38,6 +40,7 @@ export default function FocusStarCell(props: {
         if (res?.status === 200) {
           try {
             const res = await axiosFunction("get", {
+              params: params,
               postfix: postfix,
             });
             if (res?.status === 200) {
@@ -59,7 +62,7 @@ export default function FocusStarCell(props: {
       <button
         disabled={props.axiosFunction ? false : true}
         onClick={onUpdate}
-        className={"hover:cursor-pointer w-fit border-2 px-1 py-1 rounded-lg bg-white shadow-sm ".concat(
+        className={"hover:cursor-pointer w-fit border-2 px-1 py-1 rounded-lg bg-white shadow-sm disabled:cursor-not-allowed ".concat(
           cell.value === 1 ? "border-yellow-300 text-yellow-300" : ""
         )}
       >

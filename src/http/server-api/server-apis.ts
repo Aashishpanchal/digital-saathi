@@ -32,3 +32,10 @@ export const shopAreas = baseFunc("shop_areas");
 // list of all the endpoints of shop_orders
 export const shopOrders = baseFunc("shop_orders");
 export const shopOrderDetails = baseFunc("shop_orderdetails");
+
+// Retailer Dashboard api's
+// only get request use
+// export const shopRetailerProductPrice = baseFunc("shop_retailerproductprice");
+export const shopAssignRetailerProducts = baseFunc(
+  "shop_assignretailerproducts"
+);

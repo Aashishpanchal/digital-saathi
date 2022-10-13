@@ -6,21 +6,21 @@
     "@auth0/auth0-react": "^1.10.2",
     "@aws-sdk/client-s3": "^3.145.0",
     "@aws-sdk/lib-storage": "^3.145.0",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/material": "^5.10.7",
+    "@mui/x-date-pickers": "^5.0.4",
     "@reduxjs/toolkit": "^1.8.2",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.13",
-    "@types/react": "^18.0.0",
-    "@types/react-csv": "^1.1.3",
-    "@types/react-dom": "^18.0.0",
     "axios": "^0.27.2",
     "chart.js": "^3.8.0",
+    "dayjs": "^1.11.5",
     "export-from-json": "^1.6.0",
     "flowbite": "^1.4.7",
     "flowbite-react": "^0.0.25",
+    "formik": "^2.2.9",
+    "jwt-decode": "^3.1.2",
     "moment": "^2.29.3",
+    "notistack": "^2.0.5",
     "react": "^18.1.0",
     "react-chartjs-2": "^4.2.0",
     "react-dom": "^18.1.0",
@@ -30,43 +30,29 @@
     "react-papaparse": "^4.0.2",
     "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
     "react-table": "^7.8.0",
     "react-to-print": "^2.14.7",
     "to-words": "^3.2.0",
-    "typescript": "^4.4.2",
     "uuidv4": "^6.2.13",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.0",
+    "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
     "@types/react-flatpickr": "^3.8.7",
     "@types/react-table": "^7.7.12",
+    "@vitejs/plugin-react": "^2.1.0",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
-    "tailwindcss": "^3.1.2"
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "tailwindcss": "^3.1.2",
+    "typescript": "^4.6.4",
+    "vite": "^3.1.0"
   }
 }

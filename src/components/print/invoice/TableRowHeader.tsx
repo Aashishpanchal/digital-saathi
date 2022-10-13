@@ -2,6 +2,7 @@ import React from "react";
 import { Tooltip } from "flowbite-react";
 import { FaPrint } from "react-icons/fa";
 import TableRow from "./TableRow";
+import logo from "../../../assets/logo.png";
 
 export default function TableRowHeader(props: {
   onPrintClick?: () => void;
@@ -12,11 +13,7 @@ export default function TableRowHeader(props: {
     <TableRow>
       <td>
         <div className="flex justify-center w-36 xl:w-44 h-20">
-          <img
-            className="w-fit h-fit print:h-20"
-            src="/assets/images/logo.png"
-            alt="Logo"
-          />
+          <img className="w-fit h-fit print:h-20" src={logo} alt="Logo" />
         </div>
       </td>
       <td className="font-bold place-self-center text-sm">

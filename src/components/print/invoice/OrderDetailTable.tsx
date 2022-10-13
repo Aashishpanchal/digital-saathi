@@ -41,8 +41,8 @@ export default function OrderDetailTable(props: {
           border={1}
         >
           <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroups.map((headerGroup, index) => (
+              <tr {...headerGroup.getHeaderGroupProps()} key={index.toString()}>
                 {headerGroup.headers.map((column, index) => {
                   // const canSort = (column as any).canSort;
                   let props = {
@@ -63,6 +63,7 @@ export default function OrderDetailTable(props: {
                         "text-left whitespace-nowrap p-2 border border-black text-xs font-bold text-black first-letter:uppercase tracking-wider"
                       }
                       {...props}
+                      key={index.toString()}
                     >
                       <div className="flex items-center justify-center space-x-2">
                         <span>{column.render("Header")}</span>
@@ -77,7 +78,7 @@ export default function OrderDetailTable(props: {
             {rows.map((row, i) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()} key={i.toString()}>
                   {row.cells.map((cell, j) => {
                     let props = cell.getCellProps();
                     let align = "left";
@@ -89,6 +90,7 @@ export default function OrderDetailTable(props: {
                         className="whitespace-nowrap p-3 text-sm border border-black"
                         {...props}
                         align={align as any}
+                        key={j.toString()}
                       >
                         {cell.render("Cell")}
                       </td>

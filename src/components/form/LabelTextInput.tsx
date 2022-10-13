@@ -3,13 +3,14 @@ import React from "react";
 
 export default function LabelTextInput(props: {
   label?: string;
-  type?: React.HTMLInputTypeAttribute;
+  type?: React.HTMLInputTypeAttribute | "select";
   name?: string;
   value?: string | number | readonly string[] | undefined;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   hint?: string;
   hintColor?: "green" | "red" | "base";
   required?: boolean;
+
   maxLength?: number;
   placeholder?: string;
   options?: { [key: string]: any };

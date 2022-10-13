@@ -3,8 +3,8 @@ import { Spinner, Tooltip } from "flowbite-react";
 import { RiDeleteBinFill, RiFileEditLine } from "react-icons/ri";
 import {
   FaArrowRight,
-  FaCartPlus,
   FaChevronCircleDown,
+  FaChevronCircleRight,
   FaImage,
   FaMapMarkedAlt,
   FaPrint,
@@ -50,6 +50,7 @@ export default function TableActionsCell(props: {
   onWarehouse?: onClickType;
   onArea?: onClickType;
   onUser?: onClickType;
+  onPrint?: onClickType;
   hoverMessage?: {
     edit?: string;
     delete?: string;
@@ -61,6 +62,7 @@ export default function TableActionsCell(props: {
     dashboard?: string;
     area?: string;
     user?: string;
+    print?: string;
   };
 }) {
   const [deleteLoading, setDeleteLoading] = React.useState(false);
@@ -160,14 +162,43 @@ export default function TableActionsCell(props: {
           <FaUserAlt size={18} />
         </SquareContainer>
       )}
+      {props.onPrint && (
+        <SquareContainer
+          hoverMessage={props.hoverMessage?.print || "Print Now"}
+          onClick={() => props.onPrint && props.onPrint(cell.row.original)}
+        >
+          <FaPrint size={18} />
+        </SquareContainer>
+      )}
     </div>
   );
 }
 
+export const ActionCellButton = (props: {
+  children: string;
+  show: boolean;
+  onShow: (state: boolean) => void;
+}) => (
+  <Button
+    onClick={() => props.onShow(!props.show)}
+    color="dark"
+    icon={
+      props.show ? (
+        <FaChevronCircleDown size={18} />
+      ) : (
+        <FaChevronCircleRight size={18} />
+      )
+    }
+  >
+    {props.children}
+  </Button>
+);
+
 export const PrintActionCell = (props: {
   onPrint?: () => void;
   printUrl?: string;
-  onShow?: () => void;
+  show: boolean;
+  onShow: (state: boolean) => void;
 }) => {
   return (
     <div className="flex space-x-2">
@@ -180,13 +211,9 @@ export const PrintActionCell = (props: {
       >
         Print
       </Button>
-      <Button
-        onClick={props.onShow}
-        color="dark"
-        icon={<FaChevronCircleDown size={18} />}
-      >
+      <ActionCellButton onShow={props.onShow} show={props.show}>
         Action
-      </Button>
+      </ActionCellButton>
     </div>
   );
 };
