@@ -8,10 +8,10 @@ import {
   FaShoppingBasket,
 } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import { Box, Grid, Typography } from "@mui/material";
 import RetailerDashboardCards from "../../../../../components/admin/retailers/retailer-dashboard-cards";
 import { MainContainer } from "../../../../../components/layout";
 import RetailerDashboardTwoCards from "../../../../../components/admin/retailers/retailer-deshboard-two-cards";
-import { Box, Grid, Typography } from "@mui/material";
 import LinkRouter from "../../../../../routers/LinkRouter";
 
 export default function RetailerDashboard() {

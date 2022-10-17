@@ -13,7 +13,7 @@ export default function Farmers() {
   const dispatch = useDispatch();
 
   const searchHandler = async (value: string) =>
-    value ? setSearchText(`?search_farmers=${value}`) : setSearchText("");
+    value ? setSearchText(`/search?search_farmer=${value}`) : setSearchText("");
 
   const exportHandler = async () => {
     try {

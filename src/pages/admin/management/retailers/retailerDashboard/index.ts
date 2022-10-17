@@ -1,5 +1,5 @@
 export { default as RetailerDashboard } from "./RetailerDashboard";
-export { RetailerOrders } from "./retailerOrders";
+export { default as RetailerOrders } from "./retailer-orders";
 export { RetailerSkuUnits } from "./retailerSkuUnits";
 export { RetailerOrderCancelled } from "./retailerOrdersCancelled";
 export { RetailerSaleDetails } from "./retailerSaleDetails";

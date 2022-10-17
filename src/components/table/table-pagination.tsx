@@ -43,6 +43,7 @@ function TablePagination(props: {
   page: number;
   onChangePage?: (page: number) => void;
   totalItems?: number;
+  hiddenSize?: boolean;
 }) {
   const {
     pageSize,
@@ -52,6 +53,7 @@ function TablePagination(props: {
     sizeArray,
     totalItems,
     count,
+    hiddenSize,
   } = props;
 
   const [goto, setGoto] = React.useState("");
@@ -111,55 +113,59 @@ function TablePagination(props: {
         page={page + 1}
         onChange={handleChangePage}
       />
-      <Select
-        color="secondary"
-        sx={{
-          fontSize: "small",
-          ".MuiSelect-select": {
-            p: 0.8,
-          },
-        }}
-        value={pageSize || sizeArrayValue[0].toString()}
-        onChange={onChangePageSize}
-      >
-        {sizeArrayValue.map((item, index) => (
-          <Option value={item.toString()} key={index}>
-            page / {item}
-          </Option>
-        ))}
-      </Select>
-      <form onSubmit={onSubmit}>
-        <GotoContainer
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <InputLabel htmlFor="goto" sx={{ fontSize: "small" }}>
-            Go to
-          </InputLabel>
-          <InputBase
-            value={parseInt(goto) || ""}
-            onChange={(e) => {
-              const value = parseInt(e.target.value || "");
-              setGoto(isNaN(value) ? "" : value.toString());
+      {!hiddenSize && (
+        <>
+          <Select
+            color="secondary"
+            sx={{
+              fontSize: "small",
+              ".MuiSelect-select": {
+                p: 0.8,
+              },
             }}
-            name="goto"
-            type="text"
-            id="goto"
-          />
-        </GotoContainer>
-      </form>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={snack.open}
-        onClose={() => setSnack({ message: "", open: false })}
-      >
-        <Alert severity="error" sx={{ width: "100%" }}>
-          {snack.message}
-        </Alert>
-      </Snackbar>
+            value={pageSize || sizeArrayValue[0].toString()}
+            onChange={onChangePageSize}
+          >
+            {sizeArrayValue.map((item, index) => (
+              <Option value={item.toString()} key={index}>
+                page / {item}
+              </Option>
+            ))}
+          </Select>
+          <form onSubmit={onSubmit}>
+            <GotoContainer
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <InputLabel htmlFor="goto" sx={{ fontSize: "small" }}>
+                Go to
+              </InputLabel>
+              <InputBase
+                value={parseInt(goto) || ""}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value || "");
+                  setGoto(isNaN(value) ? "" : value.toString());
+                }}
+                name="goto"
+                type="text"
+                id="goto"
+              />
+            </GotoContainer>
+          </form>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={snack.open}
+            onClose={() => setSnack({ message: "", open: false })}
+          >
+            <Alert severity="error" sx={{ width: "100%" }}>
+              {snack.message}
+            </Alert>
+          </Snackbar>
+        </>
+      )}
     </Box>
   );
 }

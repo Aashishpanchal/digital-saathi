@@ -8,7 +8,7 @@ export default function Retailers() {
   const [searchText, setSearchText] = React.useState("");
 
   const searchHandler = (value: string) =>
-    setSearchText(value ? `?search_products=${value}` : "");
+    setSearchText(value ? `/search?search_retailer=${value}` : "");
 
   return (
     <MainContainer>

@@ -6,7 +6,7 @@ import rollupNodePolyFill from "rollup-plugin-node-polyfills";
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5000,
+    port: 5001,
     open: true,
   },
   optimizeDeps: {

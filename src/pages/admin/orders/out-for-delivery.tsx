@@ -18,14 +18,14 @@ export default function OutForDelivery() {
   const searchHandler = (value: string, dates: DatesType) => {
     if (dates.from && dates.to) {
       setSearchText(
-        `?date_from=${dates.from.format(
+        `${
+          value ? `/search?search_orders=${value}` : ""
+        }&date_from=${dates.from.format(
           "YYYY-MM-DD"
-        )}&date_to=${dates.to.format("YYYY-MM-DD")}${
-          value ? `&search_orders=${value}` : ""
-        }`
+        )}&date_to=${dates.to.format("YYYY-MM-DD")}`
       );
     } else {
-      setSearchText(value ? `?search_orders=${value}` : "");
+      setSearchText(value ? `/search?search_orders=${value}` : "");
     }
   };
 
