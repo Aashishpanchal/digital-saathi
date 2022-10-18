@@ -11,9 +11,10 @@ import { RootState } from "../../redux/store";
 import { setTableAlert } from "../../redux/slices/alertSlice";
 import Button from "../button/Button";
 import { FaFileUpload } from "react-icons/fa";
-import DownloadRows from "../csv/button/DownloadRows";
 
-export default function Table(props: {
+export interface TableProps {
+  filterHidden?: boolean;
+  tableRowNode?: React.ReactNode;
   columns: any;
   data: Array<{ [key: string]: any }>;
   showPagination?: boolean;
@@ -25,7 +26,11 @@ export default function Table(props: {
   onUpload?: (data: any) => Promise<void>;
   exportFileName?: string;
   showExport?: boolean;
-}) {
+  changePageSize?: (size: number) => void;
+  children?: React.ReactNode;
+}
+
+export default function Table(props: TableProps) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -42,7 +47,6 @@ export default function Table(props: {
     useFilters,
     useSortBy
   );
-
   const { tableAlert } = useSelector((state: RootState) => state.alertSlice);
 
   const dispatch = useDispatch();
@@ -60,13 +64,6 @@ export default function Table(props: {
   return (
     <div className="text-gray-500">
       <div className="my-2">
-        {props.showExport && (
-          <DownloadRows
-            fileName={props.exportFileName}
-            title="Export"
-            rows={rows}
-          />
-        )}
         {tableAlert.show && (
           <Alert
             color={tableAlert.type as any}
@@ -80,26 +77,27 @@ export default function Table(props: {
           </Alert>
         )}
       </div>
-      <Filter.FilterContainer>
-        <Filter.FilterForm>
-          <GlobalFilterInput {...(others as any)} />
-          {headerGroups.map((headerGroup) =>
-            headerGroup.headers.map((column) => {
-              return (column as any).Filter ? (
-                <div key={column.id}>
-                  <Label htmlFor={column.id}>{column.render("Header")}: </Label>
-                  {column.render("Filter")}
-                </div>
-              ) : null;
-            })
-          )}
-        </Filter.FilterForm>
-      </Filter.FilterContainer>
-      <div className="shadow-md rounded-lg overflow-hidden">
-        <div
-          className="block overflow-y-auto overflow-x-auto"
-          style={{ maxHeight: "35rem" }}
-        >
+      {!props.filterHidden && (
+        <Filter.FilterContainer>
+          <Filter.FilterForm>
+            <GlobalFilterInput {...(others as any)} />
+            {headerGroups.map((headerGroup) =>
+              headerGroup.headers.map((column) => {
+                return (column as any).Filter ? (
+                  <div key={column.id}>
+                    <Label htmlFor={column.id}>
+                      {column.render("Header")}:{" "}
+                    </Label>
+                    {column.render("Filter")}
+                  </div>
+                ) : null;
+              })
+            )}
+          </Filter.FilterForm>
+        </Filter.FilterContainer>
+      )}
+      <div className="shadow-md rounded-lg">
+        <div className="block overflow-y-auto overflow-x-auto print:overflow-hidden">
           <table
             className="border-collapse min-w-full leading-normal"
             {...getTableProps()}
@@ -159,12 +157,12 @@ export default function Table(props: {
               {rows.map((row, i) => {
                 prepareRow(row);
                 return (
-                  <tr {...row.getRowProps()}>
+                  <tr {...row.getRowProps()} key={i.toString()}>
                     {row.cells.map((cell) => {
                       let props = cell.getCellProps();
                       let align = "left";
                       try {
-                        align = (cell.column as any).extraProps.align;
+                        align = (cell.column as any).extraProps.align || "left";
                       } catch (error: any) {}
                       return (
                         <td
@@ -179,8 +177,10 @@ export default function Table(props: {
                   </tr>
                 );
               })}
+              {props.tableRowNode}
             </tbody>
           </table>
+          {props.children}
         </div>
         {props.showPagination && (
           <div className="px-2 py-2">
@@ -190,6 +190,7 @@ export default function Table(props: {
               totalEntries={props.totalEntries}
               totalPages={props.totalPages}
               entriesPerPage={props.entriesPerPage}
+              changePageSize={props.changePageSize}
             />
           </div>
         )}

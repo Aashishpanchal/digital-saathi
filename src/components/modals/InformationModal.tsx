@@ -1,7 +1,9 @@
 import { Modal, Spinner } from "flowbite-react";
 import React from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setInformationModal } from "../../redux/slices/modalSlice";
+import logo from "../../assets/logo.png";
 
 export default function InformationModal(props: {
   show?: boolean;
@@ -10,48 +12,47 @@ export default function InformationModal(props: {
   message?: string;
   runClose?: boolean;
   showLoading?: boolean;
+  closeToBack?: boolean;
 }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
-    <React.Fragment>
-      <Modal
-        show={props.show}
-        popup={props.runClose}
-        size="lg"
-        onClose={() =>
-          props.runClose && dispatch(setInformationModal({ show: false }))
+    <Modal
+      show={props.show}
+      popup={props.runClose}
+      size="lg"
+      onClose={() => {
+        props.runClose && dispatch(setInformationModal({ show: false }));
+        if (props.closeToBack) {
+          navigate(-1);
         }
-      >
-        {props.runClose && <Modal.Header>{props.heading}</Modal.Header>}
-        <Modal.Body>
-          <div className="space-y-2">
-            <div className="flex justify-center">
-              <div className="w-40">
-                <img
-                  className="w-fit h-fit"
-                  src="/assets/images/logo.png"
-                  alt="Logo"
-                />
-              </div>
+      }}
+    >
+      {props.runClose && <Modal.Header>{props.heading}</Modal.Header>}
+      <Modal.Body>
+        <div className="space-y-2">
+          <div className="flex justify-center">
+            <div className="w-40">
+              <img className="w-fit h-fit" src={logo} alt="Logo" />
             </div>
-            {props.showLoading && (
-              <div className="flex items-center justify-center space-x-2">
-                <Spinner color="green" size="lg" />
-                <span className="font-bold text-blue-light">Loading....</span>
-              </div>
-            )}
-            {props.title && (
-              <h1 className="font-bold text-lg md:text-xl">{props.title}</h1>
-            )}
-            {props.message && (
-              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                {props.message}
-              </p>
-            )}
           </div>
-        </Modal.Body>
-      </Modal>
-    </React.Fragment>
+          {props.showLoading && (
+            <div className="flex items-center justify-center space-x-2">
+              <Spinner color="green" size="lg" />
+              <span className="font-bold text-blue-light">Loading....</span>
+            </div>
+          )}
+          {props.title && (
+            <h1 className="font-bold text-lg md:text-xl">{props.title}</h1>
+          )}
+          {props.message && (
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              {props.message}
+            </p>
+          )}
+        </div>
+      </Modal.Body>
+    </Modal>
   );
 }

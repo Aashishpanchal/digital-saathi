@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function TableContainer(props: {
+export default function MainContainer(props: {
   children: React.ReactNode;
   heading: string;
 }) {

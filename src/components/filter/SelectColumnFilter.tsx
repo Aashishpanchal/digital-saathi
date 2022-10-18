@@ -33,6 +33,38 @@ export function SelectColumActiveDeactivateFilter({
   );
 }
 
+export function SelectColumnVerifyPending({
+  column: { filterValue, setFilter, id },
+}: {
+  column: any;
+}) {
+  // Render a multi-select box
+  return (
+    <Select
+      name={id}
+      id={id}
+      value={filterValue}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined);
+      }}
+    >
+      <option value="">All</option>
+      <option
+        value={1}
+        className="w-fit py-1 px-1.5 rounded-full flex space-x-1 items-center bg-opacity-10 text-green-500 bg-green-500"
+      >
+        Verified
+      </option>
+      <option
+        value={0}
+        className="w-fit py-1 px-1.5 rounded-full flex space-x-1 items-center bg-opacity-10 text-red-500 bg-red-500"
+      >
+        Pending
+      </option>
+    </Select>
+  );
+}
+
 export function SelectColumnFilter({
   column: { filterValue, setFilter, preFilteredRows, id },
 }: {

@@ -1,47 +1,65 @@
+import {
+  alpha,
+  Box,
+  FormHelperText,
+  InputBase,
+  InputBaseProps,
+  styled,
+} from "@mui/material";
 import React from "react";
 
-export default function TextInput(props: {
+const CustomInput = styled(InputBase)(({ theme, error, size }) => ({
+  "label + &": {
+    marginTop: theme.spacing(1),
+  },
+  "& .MuiInputBase-input": {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: "#fff",
+    border: `1px solid ${error ? "red" : "#ced4da"}`,
+    fontSize: 16,
+    padding: size === "small" ? "5px 6px" : "10px 12px",
+    transition: theme.transitions.create([
+      "border-color",
+      "background-color",
+      "box-shadow",
+    ]),
+    "&:focus": {
+      boxShadow: `${alpha(
+        error ? theme.palette.error.main : theme.palette.secondary.main,
+        0.25
+      )} 0 0 0 0.2rem`,
+      borderColor: error
+        ? theme.palette.error.main
+        : theme.palette.secondary.main,
+    },
+  },
+}));
+
+const Label = styled("label")(({ theme }) => ({
+  display: "block",
+  color: "#6b7280",
+  fontWeight: 600,
+}));
+
+interface IProps extends InputBaseProps {
   label?: string;
-  placeholder?: string;
-  name?: string;
-  type: React.HTMLInputTypeAttribute;
-  autoComplete?: string;
-  hint?: string;
-  hintColor?: "green" | "red";
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  const random = Math.random().toString(36).substring(7);
-  const id = `${props.type}-${random}`;
+  helperText?: string;
+}
+
+export default function TextInput(props: IProps) {
+  const { label, error, helperText, ...inputProps } = props;
+
+  const idStr = React.useMemo(() => {
+    const random = Math.random().toString(36).substring(7);
+    return `${props.type}-${random}`;
+  }, []);
+
   return (
-    <div>
-      <label
-        className="block text-sm text-gray-800 dark:text-gray-200"
-        htmlFor={id}
-      >
-        {props.label}
-      </label>
-      <div className="flex flex-nowrap items-baseline">
-        <input
-          className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
-          id={id}
-          placeholder={props.placeholder}
-          type={props.type}
-          autoComplete={props.autoComplete}
-          name={props.name}
-          value={props.value}
-          onChange={props.onChange}
-        />
-      </div>
-      {props.hint && (
-        <div
-          className={`${
-            props.hintColor === "green" ? "text-green-600" : "text-red-600"
-          } text-sm mt-2`}
-        >
-          {props.hint}
-        </div>
-      )}
-    </div>
+    <Box sx={{ my: 1, width: "100%" }}>
+      <Label htmlFor={idStr}>{label}</Label>
+      <CustomInput {...inputProps} id={idStr} fullWidth error={error} />
+      <FormHelperText error={error}>{helperText}</FormHelperText>
+    </Box>
   );
 }

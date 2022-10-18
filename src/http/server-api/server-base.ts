@@ -21,6 +21,9 @@ export const baseFunc = (endURL: string) => {
   ) => {
     const params = options?.params ? "/" + options.params : "";
     let url = `/${endURL}${params}`;
+    if (options?.postfix) {
+      url += options.postfix;
+    }
     const header = {
       "Content-Type":
         options?.data instanceof FormData
@@ -28,16 +31,16 @@ export const baseFunc = (endURL: string) => {
           : "application/json",
     };
     if (method.toLowerCase() === "get") {
-      if (options?.postfix) {
-        url += options.postfix;
-      }
       return api.get(url);
     } else if (method.toLowerCase() === "post") {
       return api.post(url, options?.data, { headers: header });
     } else if (method.toLowerCase() === "put") {
       return api.put(url, options?.data, { headers: header });
     } else if (method.toLowerCase() === "delete") {
-      return api.delete(url);
+      return api.delete(url, {
+        headers: header,
+        data: JSON.stringify({ deleted: 1 }),
+      });
     }
   };
 };

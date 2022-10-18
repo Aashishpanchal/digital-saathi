@@ -14,7 +14,6 @@ export function DateColumnFilter({
   return (
     <div className="flex items-center flex-wrap gap-2">
       <TextInput
-        className="hover:cursor-pointer"
         type="date"
         min={minDate.format(DateFormateString)}
         max={maxDate.format(DateFormateString)}
@@ -27,7 +26,6 @@ export function DateColumnFilter({
       />
       <span className="font-bold mx-2">To</span>
       <TextInput
-        className="hover:cursor-pointer"
         type="date"
         value={filterValue[1] || ""}
         max={maxDate.format(DateFormateString)}

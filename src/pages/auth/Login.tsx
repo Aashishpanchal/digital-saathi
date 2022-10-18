@@ -1,9 +1,11 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { FormRender } from "../../components/form";
-import useForms from "../../hooks/useForms";
+import { useForms } from "../../hooks/forms";
 import { setAuth } from "../../redux/slices/authSlice";
 import useLoginForm from "./useLoginForm";
+
+import logo from "../../assets/logo.png";
 
 export default function Login() {
   const { getFormsFields } = useLoginForm();
@@ -36,11 +38,7 @@ export default function Login() {
       <div className="w-full md:max-w-sm lg:max-w-sm m-auto bg-white md:rounded-md lg:rounded-md shadow-md dark:bg-gray-800">
         <div className="p-4">
           <div className="flex justify-center">
-            <img
-              className="w-fit h-fit"
-              src="/assets/images/logo.png"
-              alt="Logo"
-            />
+            <img className="w-fit h-fit" src={logo} alt="Logo" />
           </div>
           <div className="w-full flex justify-center items-center">
             <h1 className="text-3xl font-semibold text-center text-gray-700 dark:text-white">
@@ -56,7 +54,7 @@ export default function Login() {
           >
             <div className="mt-6">
               <button
-                type="button"
+                type="submit"
                 className="disabled:opacity-50 disabled:cursor-default w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-light rounded-md hover:bg-blue-light focus:outline-none"
                 onClick={onLogin}
               >
