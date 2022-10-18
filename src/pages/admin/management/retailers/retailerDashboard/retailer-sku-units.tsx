@@ -1,17 +1,19 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import { Box, Card, CardContent, Container, Typography } from "@mui/material";
-import { RetailerOrdersListResults } from "../../../../../components/admin/retailers/retailer-orders";
-import { RetailerOrdersTab } from "../../../../../components/admin/retailers/retailer-orders";
+import { useParams } from "react-router-dom";
 import { MainContainer } from "../../../../../components/layout";
+import {
+  RetailerSkuListResults,
+  RetailerSkuUnitTab,
+} from "../../../../../components/admin/retailers/retailer-sku-units";
 
-export default function RetailerOrders() {
-  const { retailer_name /* ,retailer_id */ } = useParams();
-  const [orderStatus, setOrderStatus] = React.useState(0);
+export default function RetailerSkuUnits() {
+  const { retailer_name, retailer_id } = useParams();
+  const [value, setValue] = React.useState(0);
 
   return (
     <>
-      <RetailerOrdersTab onSetOrderStatus={setOrderStatus} />
+      <RetailerSkuUnitTab onChange={setValue} value={value} />
       <MainContainer sx={{ pt: 6 }}>
         <Container>
           <Box mb={2}>
@@ -21,7 +23,10 @@ export default function RetailerOrders() {
           </Box>
           <Card>
             <CardContent sx={{ minHeight: 180 }}>
-              <RetailerOrdersListResults orderStatus={orderStatus} />
+              <RetailerSkuListResults
+                tab={value}
+                retailerId={retailer_id as string}
+              />
             </CardContent>
           </Card>
         </Container>

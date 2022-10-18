@@ -4,17 +4,11 @@ import {
   CardContent,
   CardMedia,
   Grid,
-  styled,
   Typography,
 } from "@mui/material";
 import React from "react";
 import usePrintData from "../../../../hooks/usePrintData";
-
-const LabelText = styled(Typography)({
-  color: "GrayText",
-  fontSize: "small",
-  fontStyle: "oblique",
-});
+import { LabelText } from "../styled";
 
 const labels = [
   { title: "SKU Name", accessor: "sku_name" },
@@ -50,7 +44,7 @@ function OrderDetailsCard(props: { orderDetail: { [key: string]: any } }) {
             {obj.map((item, index) => (
               <Grid key={index} item lg={12}>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                  <LabelText>{item.get("title")}:</LabelText>
+                  <LabelText fontSize={"small"}>{item.get("title")}:</LabelText>
                   <Typography fontSize={"small"}>{item.get("Cell")}</Typography>
                 </Box>
               </Grid>

@@ -4,36 +4,18 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
 function RetailerOrdersTab(props: {
-  onSetOrderStatus: (value: number) => void;
+  value: number;
+  onChange: (value: number) => void;
 }) {
-  const [value, setValue] = React.useState(0);
-  const { onSetOrderStatus } = props;
+  const { value, onChange } = props;
 
   const lists = React.useMemo(
     () => [
       {
-        label: "new orders",
-        order_status: 0,
+        label: "assign product",
       },
       {
-        label: "accepted orders",
-        order_status: 1,
-      },
-      {
-        label: "in transit orders",
-        order_status: 2 /*3*/,
-      },
-      {
-        label: "delivered orders",
-        order_status: 5,
-      },
-      {
-        label: "returned orders",
-        order_status: 6,
-      },
-      {
-        label: "cancelled orders",
-        order_status: 7 /*9, 10*/,
+        label: "unassign product",
       },
     ],
     []
@@ -58,7 +40,7 @@ function RetailerOrdersTab(props: {
         indicatorColor="secondary"
         value={value}
         onChange={(event: React.SyntheticEvent, newValue: number) =>
-          setValue(newValue)
+          onChange(newValue)
         }
         centered
       >
@@ -67,7 +49,6 @@ function RetailerOrdersTab(props: {
             key={index}
             label={item.label}
             sx={{ textTransform: "capitalize" }}
-            onClick={() => onSetOrderStatus(item.order_status)}
           />
         ))}
       </Tabs>

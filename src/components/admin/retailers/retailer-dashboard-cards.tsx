@@ -23,8 +23,18 @@ export default function RetailerDashboardCards(props: { retailerId: string }) {
         params: "retailerproducts",
         postfix: `?page=0&retailer_id=${retailerId}`,
       });
+
       if (res?.status === 200) {
         setTotalRetailers(res.data?.totalItems || 0);
+      }
+
+      res = await shopOrders("get", {
+        params: "retailer",
+        postfix: `?retailer_id=${retailerId}&order_status=5&page=0&size=1`,
+      });
+
+      if (res?.status === 200) {
+        setTotalFarmers(res.data?.totalItems);
       }
     } catch (err: any) {
       console.log(err?.response);

@@ -6,17 +6,12 @@ import {
   CardContent,
   Collapse,
   Grid,
-  styled,
   Typography,
 } from "@mui/material";
 import usePrintData from "../../../../hooks/usePrintData";
 import dayjs from "dayjs";
 import OrdersDetailsList from "./orders-details-list";
-
-const LabelText = styled(Typography)({
-  color: "GrayText",
-  fontStyle: "oblique",
-});
+import { LabelText } from "../styled";
 
 const label1 = [
   { title: "farmer name", accessor: "customer_name" },
