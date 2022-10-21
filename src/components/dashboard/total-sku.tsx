@@ -9,7 +9,7 @@ export default function TotalSku(props: { total: number }) {
         <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="overline">
-              TOTAL SKU
+              Warehouse
             </Typography>
             <Typography color="textPrimary" variant="h4">
               {total}

@@ -9,7 +9,7 @@ export default function TotalFarmerServiced(props: { total: number }) {
         <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="overline">
-              TOTAL FARMER SERVICED
+              Retailers
             </Typography>
             <Typography color="textPrimary" variant="h4">
               {total}

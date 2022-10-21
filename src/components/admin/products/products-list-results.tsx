@@ -17,7 +17,7 @@ export default function ProductsListResults(props: { searchText: string }) {
   const [data, setData] = React.useState({
     totalItems: 0,
     totalPages: 1,
-    products: [],
+    product: [],
   });
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
@@ -111,7 +111,7 @@ export default function ProductsListResults(props: { searchText: string }) {
       },
       {
         Header: "Category",
-        accessor: "category_id",
+        accessor: "category_name",
       },
       {
         Header: "Focus SKU",
@@ -205,7 +205,7 @@ export default function ProductsListResults(props: { searchText: string }) {
     [page, size, postfix]
   );
 
-  const getData = React.useMemo(() => data.products, [data]);
+  const getData = React.useMemo(() => data.product, [data]);
 
   React.useEffect(() => {
     onGet();

@@ -84,7 +84,7 @@ export default function RetailerForm(props: {
         name: "pan_no",
       },
       {
-        type: "number",
+        type: "text",
         label: "GST Number",
         name: "gst_number",
       },

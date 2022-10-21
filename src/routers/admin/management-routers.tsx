@@ -1,17 +1,9 @@
 import Farmers from "../../pages/admin/management/farmers/Farmers";
 import {
   Categories,
-  CreateCategories,
-  CreateSubCategories,
-  RetrieveUpdateCategories,
-  RetrieveUpdateSubCategory,
   SubCategories,
 } from "../../pages/admin/management/categories";
-import {
-  Brands,
-  CreateBrands,
-  RetrieveUpdateBrands,
-} from "../../pages/admin/management/brands";
+import { Brands } from "../../pages/admin/management/brands";
 import {
   CreateDeliveryAgent,
   CreateDeliveryPartner,
@@ -146,29 +138,8 @@ export default {
           element: <Categories />,
         },
         {
-          path: "new",
-          element: <CreateCategories />,
-        },
-        {
-          path: ":id",
-          element: <RetrieveUpdateCategories />,
-        },
-        {
-          path: ":parent_category_id/sub-categories/:category_name",
-          children: [
-            {
-              path: "",
-              element: <SubCategories />,
-            },
-            {
-              path: "new",
-              element: <CreateSubCategories />,
-            },
-            {
-              path: ":subcategory_id",
-              element: <RetrieveUpdateSubCategory />,
-            },
-          ],
+          path: ":parent_category_id/sub-categories",
+          element: <SubCategories />,
         },
       ],
     },
@@ -178,14 +149,6 @@ export default {
         {
           path: "",
           element: <Brands />,
-        },
-        {
-          path: "new",
-          element: <CreateBrands />,
-        },
-        {
-          path: ":id",
-          element: <RetrieveUpdateBrands />,
         },
       ],
     },

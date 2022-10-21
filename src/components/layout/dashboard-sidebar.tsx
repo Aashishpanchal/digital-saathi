@@ -68,7 +68,7 @@ export default function DashboardSidebar(props: {
       },
       {
         href: "/auth0-users",
-        title: "Auth0Users",
+        title: "Auth0 Users",
         icon: <FaUsers />,
       },
       {
@@ -108,7 +108,7 @@ export default function DashboardSidebar(props: {
         ],
       },
       {
-        title: "Masters",
+        title: "Master",
         icon: <FaUserTie />,
         child: [
           {

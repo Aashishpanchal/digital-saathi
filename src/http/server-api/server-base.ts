@@ -10,15 +10,15 @@ export const api = axios.create({
   },
 });
 
+export type HttpMethod = "get" | "post" | "put" | "delete";
+export type HttpOption = {
+  data?: string | FormData;
+  params?: string;
+  postfix?: string;
+};
+
 export const baseFunc = (endURL: string) => {
-  return (
-    method: "get" | "post" | "put" | "delete",
-    options?: {
-      data?: string | FormData;
-      params?: string;
-      postfix?: string;
-    }
-  ) => {
+  return (method: HttpMethod, options?: HttpOption) => {
     const params = options?.params ? "/" + options.params : "";
     let url = `/${endURL}${params}`;
     if (options?.postfix) {
