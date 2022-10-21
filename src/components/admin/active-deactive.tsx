@@ -11,7 +11,7 @@ export default function ActiveDeactive(props: {
   idAccessor?: string;
   axiosFunction?: any;
   setData?: any;
-  postfix: string;
+  postfix?: string;
   payload?: Array<string>;
 }) {
   const { cell, axiosFunction, idAccessor, payload, postfix, setData } = props;

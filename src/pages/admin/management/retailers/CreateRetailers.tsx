@@ -16,39 +16,52 @@ import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { retailerSchema } from "../../../../components/admin/retailers/schemas";
+import React from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CreateRetailers() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
+  const [loading, setLoading] = React.useState(false);
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: initialValues,
       validationSchema: retailerSchema,
       async onSubmit(values) {
-        retailer("post", {
-          data: JSON.stringify(values),
-        })
-          ?.then((res) => {
-            if (res.status === 200) {
-              navigate(-1);
-              setTimeout(() => {
-                enqueueSnackbar("Product Save Success-Fully!👍😊", {
-                  variant: "success",
-                });
-              }, 200);
-            }
-          })
-          .catch((err) => {
-            enqueueSnackbar("Product Save Failed!😢", { variant: "error" });
+        try {
+          setLoading(true);
+          const res = await retailer("post", {
+            data: JSON.stringify(values),
           });
+          if (res?.status === 200) {
+            navigate(-1);
+            setTimeout(() => {
+              enqueueSnackbar("Product Save Success-Fully!👍😊", {
+                variant: "success",
+              });
+            }, 200);
+          }
+        } catch (error: any) {
+          const {
+            status,
+            data: { message },
+          } = error.response;
+          if (status === 400) {
+            enqueueSnackbar(message, { variant: "error" });
+          } else {
+            enqueueSnackbar("Product Save Failed!😢", { variant: "error" });
+          }
+          setLoading(false);
+        }
       },
     });
 
   return (
     <MainContainer>
       <Container>
-        <Typography variant="h5">Add New Product</Typography>
+        <Typography variant="h5">Add New Retailer</Typography>
         <Card className="lg:col-span-2">
           <CardContent sx={{ pt: 2 }}>
             <form onSubmit={handleSubmit}>
@@ -66,7 +79,17 @@ export default function CreateRetailers() {
                   flexFlow: "row-reverse",
                 }}
               >
-                <Button type="submit" color="secondary" variant="contained">
+                <Button
+                  disabled={loading}
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  startIcon={
+                    loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : undefined
+                  }
+                >
                   Save
                 </Button>
                 <LinkRouter to={-1}>

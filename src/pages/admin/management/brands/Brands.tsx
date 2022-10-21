@@ -11,8 +11,15 @@ export default function Brands() {
   const onAdd = () => setOpen(true);
   const onClose = () => setOpen(false);
 
-  const searchHandler = (value: string) =>
+  const searchHandler = (value: string) => {
+    value =
+      value.toLowerCase() === "active"
+        ? "1"
+        : value.toLowerCase() === "deactive"
+        ? "0"
+        : value;
     setSearchText(value ? `/search?search_brand=${value}` : "");
+  };
 
   return (
     <MainContainer>

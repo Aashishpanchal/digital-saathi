@@ -205,7 +205,7 @@ export default function ProductsListResults(props: { searchText: string }) {
     [page, size, postfix]
   );
 
-  const getData = React.useMemo(() => data.product, [data]);
+  const getData = React.useMemo(() => data?.product || [], [data]);
 
   React.useEffect(() => {
     onGet();

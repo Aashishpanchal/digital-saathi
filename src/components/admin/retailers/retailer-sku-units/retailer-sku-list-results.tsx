@@ -43,6 +43,7 @@ function RetailerSkuListResults(props: { retailerId: string; tab: number }) {
       const { assign_id, product_price_id } = sku;
       try {
         const res = await shopAssignRetailerProducts("delete", {
+          params: "delete",
           postfix: `?assign_id=${assign_id}&product_price_id=${product_price_id}`,
         });
         if (res?.status === 200) {

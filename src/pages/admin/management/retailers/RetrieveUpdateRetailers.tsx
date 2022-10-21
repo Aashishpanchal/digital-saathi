@@ -18,6 +18,7 @@ import { useSnackbar } from "notistack";
 import { useNavigate, useParams } from "react-router-dom";
 import { retailerSchema } from "../../../../components/admin/retailers/schemas";
 import { margeObj } from "../../../../components/admin/utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CreateRetailers() {
   const [data, setData] = React.useState(initialValues);
@@ -26,29 +27,40 @@ export default function CreateRetailers() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = React.useState(false);
+
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: data,
       validationSchema: retailerSchema,
       enableReinitialize: true,
       async onSubmit(values) {
-        retailer("put", {
-          params: retailer_id,
-          data: JSON.stringify(values),
-        })
-          ?.then((res) => {
-            if (res.status === 200) {
-              navigate(-1);
-              setTimeout(() => {
-                enqueueSnackbar("Retailer Update Success-Fully!👍😊", {
-                  variant: "success",
-                });
-              }, 200);
-            }
-          })
-          .catch((err) => {
-            enqueueSnackbar("Retailer Update Failed!😢", { variant: "error" });
+        try {
+          setLoading(true);
+          const res = await retailer("put", {
+            params: retailer_id,
+            data: JSON.stringify(values),
           });
+          if (res?.status === 200) {
+            navigate(-1);
+            setTimeout(() => {
+              enqueueSnackbar("Retailer Update Success-Fully!👍😊", {
+                variant: "success",
+              });
+            }, 200);
+          }
+        } catch (error: any) {
+          const {
+            status,
+            data: { message },
+          } = error.response;
+          if (status === 400) {
+            enqueueSnackbar(message, { variant: "error" });
+          } else {
+            enqueueSnackbar("Product Save Failed!😢", { variant: "error" });
+          }
+          setLoading(false);
+        }
       },
     });
 
@@ -91,7 +103,17 @@ export default function CreateRetailers() {
                   flexFlow: "row-reverse",
                 }}
               >
-                <Button type="submit" color="secondary" variant="contained">
+                <Button
+                  disabled={loading}
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  startIcon={
+                    loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : undefined
+                  }
+                >
                   Save
                 </Button>
                 <LinkRouter to={-1}>

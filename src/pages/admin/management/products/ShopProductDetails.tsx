@@ -1,172 +1,125 @@
 import React from "react";
-import { FaRupeeSign, FaImage, FaPrint } from "react-icons/fa";
-import { MdProductionQuantityLimits } from "react-icons/md";
+import { FaPrint } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import Button from "../../../../components/button/Button";
-import MainContainer from "../../../../components/common/MainContainer";
-import Image from "../../../../components/Image/Index";
-import { PrintCard } from "../../../../components/print";
+import { MainContainer } from "../../../../components/layout";
 import {
   shopProductImages,
   shopProducts,
   shopProductWeightPrice,
 } from "../../../../http";
 import { useReactToPrint } from "react-to-print";
+import {
+  Typography,
+  Container,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+} from "@mui/material";
+import usePrintData from "../../../../hooks/usePrintData";
+import CardMedia from "@mui/material/CardMedia";
+
+const productLabels = [
+  { label: "SKU Name", accessor: "sku_name" },
+  { label: "SKU Name Kannada", accessor: "sku_name_kannada" },
+  { label: "SKU Code", accessor: "sku_code" },
+  { label: "Category", accessor: "category_id" },
+  { label: "Sub Category", accessor: "subcategory_id" },
+  { label: "Brand", accessor: "brand_id" },
+  { label: "HSN Code", accessor: "hsn_code" },
+  { label: "Description", accessor: "description" },
+];
+
+const productPriceLabels = [
+  {
+    label: "Price",
+    accessor: "price",
+    Cell: (cell: any) => <>₹{cell.value}</>,
+  },
+  { label: "MRP", accessor: "mrp", Cell: (cell: any) => <>₹{cell.value}</> },
+  { label: "GST", accessor: "igst", Cell: (cell: any) => <>{cell.value}%</> },
+  { label: "Weight", accessor: "weight" },
+  { label: "Package", accessor: "package" },
+  { label: "Units Per Case", accessor: "units_per_case" },
+];
 
 export default function ShopProductDetails() {
-  const { sku_id, sku_name } = useParams();
+  const { sku_id } = useParams();
   const [productData, setProductData] = React.useState({});
-  const [productWeightPriceData, setProductWeightPriceData] = React.useState(
+  const [productPriceData, setProductPriceData] = React.useState({});
+  const [productImageData, setProductImageData] = React.useState<Array<any>>(
     []
   );
-  const [productImageData, setProductImageData] = React.useState([]);
   let componentRef = React.useRef<any>(null);
 
-  const onRetrieveProduct = async () => {
+  const { printData: obj1 } = usePrintData({
+    labels: productLabels,
+    data: productData,
+  });
+
+  const { printData: obj2 } = usePrintData({
+    labels: productPriceLabels,
+    data: productPriceData,
+  });
+
+  const getData = async () => {
     try {
-      const res = await shopProducts("get", { params: sku_id });
+      let res = await shopProducts("get", { params: sku_id });
       if (res?.status === 200) {
         setProductData(res.data);
       }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-  };
-
-  const onRetrieveProductWP = async () => {
-    try {
-      const res = await shopProductWeightPrice("get", {
+      res = await shopProductWeightPrice("get", {
         postfix: `?sku_id=${sku_id}`,
       });
-      if (res?.status === 200) {
-        setProductWeightPriceData(res.data.product_prices);
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-  };
 
-  const onRetrieveProductImages = async () => {
-    try {
-      const res = await shopProductImages("get", {
+      if (res?.status === 200) {
+        setProductPriceData(res.data.product_prices[0] || {});
+      }
+
+      res = await shopProductImages("get", {
         postfix: `?sku_id=${sku_id}`,
       });
       if (res?.status === 200) {
         setProductImageData(res.data.product_images);
       }
-    } catch (error: any) {
-      console.log(error.response);
+    } catch (err: any) {
+      console.log(err?.response);
     }
   };
 
-  const productLabels = React.useMemo(
-    () => [
-      {
-        Label: "SKU Name",
-        accessor: "sku_name",
-      },
-      {
-        Label: "SKU Name Kannada",
-        accessor: "sku_name_kannada",
-      },
-      {
-        Label: "SKU Code",
-        accessor: "sku_code",
-      },
-      {
-        Label: "Category",
-        accessor: "category_id",
-      },
-      {
-        Label: "Sub Category",
-        accessor: "subcategory_id",
-      },
-      {
-        Label: "Brand",
-        accessor: "brand_id",
-      },
-      {
-        Label: "HSN Code",
-        accessor: "hsn_code",
-      },
-      {
-        Label: "Description",
-        accessor: "description",
-      },
-    ],
-    []
-  );
-
-  const productWeightPriceLabels = React.useMemo(
-    () => [
-      {
-        Label: "Price",
-        accessor: "price",
-      },
-      {
-        Label: "MRP",
-        accessor: "1litre",
-      },
-      {
-        Label: "GST",
-        accessor: "gst",
-      },
-      {
-        Label: "Weight",
-        accessor: "weight",
-      },
-      {
-        Label: "Package",
-        accessor: "package",
-      },
-      {
-        Label: "Units Per Case",
-        accessor: "units_per_case",
-      },
-    ],
-    []
-  );
-
-  const productImagesLabels = React.useMemo(
-    () => [
-      {
-        Label: "Title",
-        accessor: "sku_id",
-      },
-      {
-        Label: "Image",
-        accessor: "image",
-        Cell: (cell: any) => {
-          return <Image size={85} url={cell.value} alt={""} />;
-        },
-      },
-    ],
-    []
-  );
   const pageStyle = `
-  @media print {
-    @page {
-      size: landscape;
+  @media all {
+    .page-break {
+      display: none;
     }
   }
   
   @media print {
-    html,
-    body {
+    html, body {
       height: initial !important;
       overflow: initial !important;
-      background-color: white !important;
       -webkit-print-color-adjust: exact;
     }
+    body {
+      -webkit-filter: grayscale(100%);
+      -moz-filter: grayscale(100%);
+      -ms-filter: grayscale(100%);
+      filter: grayscale(100%);
+    }
+  }
   
+  @media print {
     .page-break {
-      page-break-after: avoid;
+      margin-top: 1rem;
+      display: block;
+      page-break-before: auto;
     }
   }
   
   @page {
     size: auto;
-    margin: 15mm 10mm;
+    margin: 20mm;
   }
 `;
   const onPrint = useReactToPrint({
@@ -175,53 +128,111 @@ export default function ShopProductDetails() {
   });
 
   React.useEffect(() => {
-    onRetrieveProduct();
-    onRetrieveProductWP();
-    onRetrieveProductImages();
+    getData();
   }, []);
 
   return (
-    <MainContainer heading={`${sku_name} / Price`}>
-      <div className="mb-4">
-        <Button onClick={onPrint} icon={<FaPrint size={18} />} color="dark">
-          Print
-        </Button>
-      </div>
-      <div className="flex flex-col space-y-4" ref={componentRef}>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<MdProductionQuantityLimits size={40} />}
-            title="View Products"
-          />
-          <PrintCard.RenderData labels={productLabels} data={productData} />
-        </PrintCard.Container>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaRupeeSign size={32} />}
-            title="Product Weight & Price"
-          />
-          {productWeightPriceData.map((item, index) => (
-            <PrintCard.RenderData
-              key={index.toString()}
-              labels={productWeightPriceLabels}
-              data={item}
-            />
-          ))}
-        </PrintCard.Container>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaImage size={32} />}
-            title="Product Images"
-          />
-          {productImageData.map((item, index) => (
-            <PrintCard.RenderData
-              key={index.toString()}
-              labels={productImagesLabels}
-              data={item}
-            />
-          ))}
-        </PrintCard.Container>
-      </div>
+    <MainContainer>
+      <Container>
+        <Box
+          sx={{
+            alignItems: "center",
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            my: 1,
+          }}
+        >
+          <Typography variant="h5">Product Details</Typography>
+          <Button
+            color="secondary"
+            variant="contained"
+            startIcon={<FaPrint />}
+            onClick={onPrint}
+          >
+            Print
+          </Button>
+        </Box>
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          gap={2}
+          component="div"
+          ref={componentRef}
+        >
+          {/* Card One */}
+          <Card elevation={5}>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                View Product
+              </Typography>
+              <Grid container>
+                {obj1.map((item, index) => (
+                  <Grid key={index} item xs={12}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      textAlign={"justify"}
+                    >
+                      <strong>{item.get("label")}: </strong>
+                      {item.get("Cell")}
+                    </Typography>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          </Card>
+          {/* Card Two */}
+          <Card elevation={5}>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                Product Price
+              </Typography>
+              <Grid container>
+                {obj2.map((item, index) => (
+                  <Grid key={index} item xs={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      <strong>{item.get("label")}: </strong>
+                      {item.get("Cell")}
+                    </Typography>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          </Card>
+          {/* Card three */}
+          {productImageData.length !== 0 && (
+            <Card elevation={5}>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Product Images
+                </Typography>
+                <Grid container spacing={2}>
+                  {productImageData.map((item, index) => (
+                    <Grid key={index} item xs={4}>
+                      <Card sx={{ maxWidth: 245 }} elevation={5}>
+                        <CardMedia
+                          component={"img"}
+                          image={item?.image}
+                          sx={{ height: 120 }}
+                        />
+                        <Typography
+                          px={1}
+                          gutterBottom
+                          variant="h6"
+                          component="div"
+                        >
+                          {item.title}
+                        </Typography>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </CardContent>
+            </Card>
+          )}
+        </Box>
+      </Container>
     </MainContainer>
   );
 }

@@ -12,8 +12,15 @@ export default function Products() {
   const [searchText, setSearchText] = React.useState("");
   const dispatch = useDispatch();
 
-  const searchHandler = (value: string) =>
+  const searchHandler = (value: string) => {
+    value =
+      value.toLowerCase() === "active"
+        ? "1"
+        : value.toLowerCase() === "deactive"
+        ? "0"
+        : value;
     setSearchText(value ? `/searchproduct?search_products=${value}` : "");
+  };
 
   const exportHandler = async () => {
     try {

@@ -6,15 +6,21 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  Chip,
   Grid,
   Typography,
 } from "@mui/material";
 import { LabelText } from "../styled";
 import usePrintData from "../../../../hooks/usePrintData";
+import { FaCheck, FaRupeeSign, FaStar } from "react-icons/fa";
+import ErrorSuccessChip from "../../../common/error-success-chip";
+import { MdError } from "react-icons/md";
 
 const label1 = [
   { title: "weight", accessor: "weight" },
-  { title: "MRP₹", accessor: "mrp" },
+  { title: "MRP", accessor: "mrp" },
+  { title: "price", accessor: "price" },
+  { title: "Sale Price", accessor: "sale_price" },
 ];
 
 const label2 = [
@@ -22,14 +28,11 @@ const label2 = [
   { title: "category", accessor: "category_name" },
   { title: "subcategory", accessor: "subcategory_name" },
   { title: "brand", accessor: "brand_name" },
+  { title: "sku code", accessor: "sku_code" },
 ];
 
-export default function SkuCard(props: {
-  sku: { [key: string]: any };
-  variant: "assign" | "unassign";
-  onClick: (sku: { [key: string]: any }) => Promise<void>;
-}) {
-  const { sku, variant, onClick } = props;
+export default function SkuPricingCard(props: { sku: { [key: string]: any } }) {
+  const { sku } = props;
 
   const { printData: obj1 } = usePrintData({
     labels: label1,
@@ -80,14 +83,33 @@ export default function SkuCard(props: {
         </Grid>
       </CardContent>
       <CardActions>
-        <Button
-          size="small"
-          color={variant === "assign" ? "secondary" : "error"}
-          variant="outlined"
-          onClick={async () => await onClick(sku)}
-        >
-          {variant === "assign" ? "assign" : "un-assign"}
-        </Button>
+        <Box display={"flex"} gap={2} flexWrap="wrap">
+          <ErrorSuccessChip
+            show={sku.active === 0}
+            values={{
+              error: "Deactive",
+              success: "Active",
+            }}
+            icons={{
+              error: <MdError />,
+              success: <FaCheck size={15} />,
+            }}
+          />
+          <Chip
+            size="small"
+            color={sku.focus_sku === 0 ? "error" : "warning"}
+            label={sku.focus_sku === 0 ? "Off" : "On"}
+            variant="outlined"
+            icon={sku.focus_sku === 0 ? <MdError /> : <FaStar size={15} />}
+          />
+          <Chip
+            icon={<FaRupeeSign size={15} />}
+            label="price"
+            size="small"
+            variant="outlined"
+            color="secondary"
+          />
+        </Box>
       </CardActions>
     </Card>
   );
