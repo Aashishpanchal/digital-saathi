@@ -1,14 +1,68 @@
 import React from "react";
-import { FaCartPlus, FaPrint } from "react-icons/fa";
+import { FaPrint } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import Button from "../../../components/button/Button";
-import MainContainer from "../../../components/common/MainContainer";
-import Image from "../../../components/Image/Index";
-import { PrintCard } from "../../../components/print";
-import { Table } from "../../../components/table";
-import { DateFormate } from "../../../components/Utils";
+import { MainContainer } from "../../../components/layout";
 import { shopOrderDetails, shopOrders } from "../../../http";
+import { Typography, Container, Box, Button, Grid } from "@mui/material";
+import OrderDetailCard from "../../../components/admin/orders/order-detail-card";
+import ProductAvatar from "../../../components/Image/product-avatar";
+import DataTable from "../../../components/table/data-table";
+import dayjs from "dayjs";
+
+const orderLabel = [
+  { label: "Order ID", accessor: "order_id" },
+  {
+    label: "Order Date",
+    accessor: "order_date",
+    Cell: (cell: any) => <>{dayjs(cell.value).format("MMMM D, YYYY")}</>,
+  },
+];
+
+const retailerLabel = [
+  { label: "Retailer Name", accessor: "retailer_name" },
+  { label: "Mobile", accessor: "retailer_phone_no" },
+  { label: "Email", accessor: "retailer_email_id" },
+];
+
+const customerLabel = [
+  { label: "Customer Name", accessor: "customer_name" },
+  { label: "Mobile", accessor: "customer_phone_no" },
+  { label: "Email", accessor: "customer_email_id" },
+];
+
+const partnerLabel = [
+  { label: "Partner Name", accessor: "partner_name" },
+  { label: "Mobile", accessor: "partner_phone_no" },
+  { label: "Email", accessor: "partner_email_id" },
+];
+
+const billingLabel = [
+  { label: "Name", accessor: "billing_name" },
+  { label: "Village", accessor: "billing_village" },
+  { label: "District", accessor: "billing_district" },
+  { label: "Sub District", accessor: "billing_sub_district" },
+  { label: "State", accessor: "billing_state" },
+  { label: "Pincode", accessor: "billing_pincode" },
+];
+
+const shippingLabel = [
+  { label: "Name", accessor: "shipping_name" },
+  { label: "Village", accessor: "shipping_village" },
+  { label: "District", accessor: "shipping_district" },
+  { label: "Sub District", accessor: "shipping_sub_district" },
+  { label: "State", accessor: "shipping_state" },
+  { label: "Pincode", accessor: "shipping_pincode" },
+];
+
+const collectionLabel = [
+  { title: "View Order", labelObj: orderLabel },
+  { title: "Retailer", labelObj: retailerLabel },
+  { title: "Deliver Partner", labelObj: partnerLabel },
+  { title: "Customer", labelObj: customerLabel },
+  { title: "Billing", labelObj: billingLabel },
+  { title: "Shipping", labelObj: shippingLabel },
+];
 
 export default function OrderDetails() {
   const { order_id } = useParams();
@@ -18,151 +72,16 @@ export default function OrderDetails() {
   >([{}]);
   let componentRef = React.useRef<any>(null);
 
-  const orderLabel = React.useMemo(
+  const columns = React.useMemo(
     () => [
-      {
-        Label: "Order ID",
-        accessor: "order_id",
-      },
-      {
-        Label: "Order Date",
-        accessor: "order_date",
-        Cell: (value: any) => DateFormate(value, true),
-      },
-    ],
-    [orderData]
-  );
-
-  const retailerLabel = React.useMemo(
-    () => [
-      {
-        Label: "Name",
-        accessor: "retailer_name",
-      },
-      {
-        Label: "Mobile",
-        accessor: "retailer_phone_no",
-      },
-      {
-        Label: "Email",
-        accessor: "retailer_email_id",
-      },
-    ],
-    [orderData]
-  );
-  const customerLabel = React.useMemo(
-    () => [
-      {
-        Label: "Name",
-        accessor: "customer_name",
-      },
-      {
-        Label: "Mobile",
-        accessor: "customer_phone_no",
-      },
-      {
-        Label: "Email",
-        accessor: "customer_email_id",
-      },
-    ],
-    [orderData]
-  );
-
-  const deliverPartnerLabel = React.useMemo(
-    () => [
-      {
-        Label: "Name",
-        accessor: "partner_name",
-      },
-      {
-        Label: "Mobile",
-        accessor: "partner_phone_no",
-      },
-      {
-        Label: "Email",
-        accessor: "partner_email_id",
-      },
-    ],
-    [orderData]
-  );
-
-  const billingDetailsLabel = React.useMemo(
-    () => [
-      {
-        Label: "Name",
-        accessor: "billing_name",
-      },
-      {
-        Label: "Village",
-        accessor: "billing_village",
-      },
-      {
-        Label: "District",
-        accessor: "billing_district",
-      },
-      {
-        Label: "Sub District",
-        accessor: "billing_sub_district",
-      },
-      {
-        Label: "State",
-        accessor: "billing_state",
-      },
-      {
-        Label: "Pincode",
-        accessor: "billing_pincode",
-      },
-    ],
-    [orderData]
-  );
-
-  const shippingDetailsLabel = React.useMemo(
-    () => [
-      {
-        Label: "Name",
-        accessor: "shipping_name",
-      },
-      {
-        Label: "Village",
-        accessor: "shipping_village",
-      },
-      {
-        Label: "District",
-        accessor: "shipping_district",
-      },
-      {
-        Label: "Sub District",
-        accessor: "shipping_sub_district",
-      },
-      {
-        Label: "State",
-        accessor: "shipping_state",
-      },
-      {
-        Label: "Pincode",
-        accessor: "bshipping_pincode",
-      },
-    ],
-    [orderData]
-  );
-
-  const column = React.useMemo(
-    () => [
-      {
-        Header: "S No.",
-        accessor: "order_detail_id",
-        extraProps: {
-          columnStyle: {
-            width: "0px",
-            textAlign: "center",
-            paddingRight: "0px",
-          },
-        },
-      },
       {
         Header: "Product",
         accessor: "sku_image",
-        Cell: (cell: any) => <Image url={cell.value} alt="" />,
+        Cell: (cell: any) => (
+          <Box display="flex" justifyContent={"center"}>
+            <ProductAvatar src={cell.value} sx={{ width: 50, height: 50 }} />
+          </Box>
+        ),
       },
       {
         Header: "Name",
@@ -180,14 +99,15 @@ export default function OrderDetails() {
         Header: "Price Sub Total",
         accessor: "price",
         Cell: (cell: any) => (
-          <div className="space-y-1 flex-col flex">
-            <span>{cell.value}Rs</span>
-            <span>{cell.row.original?.total_price}Rs</span>
-          </div>
+          <Box display={"flex"} justifyContent="center" alignItems={"center"}>
+            <Typography color="text.secondary">
+              ₹{cell.value} <br /> ₹{cell.row.original?.total_price}
+            </Typography>
+          </Box>
         ),
       },
     ],
-    [orderDetailData]
+    []
   );
 
   const onRetrieveOrder = async () => {
@@ -231,29 +151,37 @@ export default function OrderDetails() {
   }, [orderDetailData]);
 
   const pageStyle = `
-  @media print {
-    @page {
-      size: landscape;
+  @media all {
+    .page-break {
+      display: none;
     }
   }
   
   @media print {
-    html,
-    body {
+    html, body {
       height: initial !important;
       overflow: initial !important;
-      background-color: white !important;
       -webkit-print-color-adjust: exact;
     }
+    body {
+      -webkit-filter: grayscale(100%);
+      -moz-filter: grayscale(100%);
+      -ms-filter: grayscale(100%);
+      filter: grayscale(100%);
+    }
+  }
   
+  @media print {
     .page-break {
-      page-break-after: avoid;
+      margin-top: 1rem;
+      display: block;
+      page-break-before: auto;
     }
   }
   
   @page {
     size: auto;
-    margin: 15mm 10mm;
+    margin: 20mm;
   }
 `;
 
@@ -268,81 +196,63 @@ export default function OrderDetails() {
   }, []);
 
   return (
-    <MainContainer heading="Order Details">
-      <div className="mb-4">
-        <Button onClick={onPrint} icon={<FaPrint size={18} />} color="dark">
-          Print
-        </Button>
-      </div>
-      <div className="flex flex-col space-y-4" ref={componentRef}>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaCartPlus size={40} />}
-            title="View Order"
-          />
-          <PrintCard.RenderData labels={orderLabel} data={orderData} />
-        </PrintCard.Container>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaCartPlus size={40} />}
-            title="Retailer Details"
-          />
-          <PrintCard.RenderData labels={retailerLabel} data={orderData} />
-        </PrintCard.Container>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaCartPlus size={40} />}
-            title="Deliver Partner Details"
-          />
-          <PrintCard.RenderData labels={deliverPartnerLabel} data={orderData} />
-        </PrintCard.Container>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaCartPlus size={40} />}
-            title="Customer Details"
-          />
-          <PrintCard.RenderData labels={customerLabel} data={orderData} />
-        </PrintCard.Container>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaCartPlus size={40} />}
-            title="Billing Details"
-          />
-          <PrintCard.RenderData labels={billingDetailsLabel} data={orderData} />
-        </PrintCard.Container>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaCartPlus size={40} />}
-            title="Shipping Details"
-          />
-          <PrintCard.RenderData
-            labels={shippingDetailsLabel}
-            data={orderData}
-          />
-        </PrintCard.Container>
-        <PrintCard.Container>
-          <PrintCard.Heading
-            icon={<FaCartPlus size={40} />}
-            title="Order Details"
-          />
-          <Table
-            columns={column}
-            data={orderDetailData}
-            filterHidden
-            tableRowNode={
-              <tr>
-                <td
-                  colSpan={6}
-                  className="whitespace-nowrap px-5 py-5 border-b"
+    <MainContainer>
+      <Container>
+        <Box
+          sx={{
+            alignItems: "center",
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            my: 1,
+          }}
+        >
+          <Typography variant="h5">Order Details</Typography>
+          <Button
+            color="secondary"
+            variant="contained"
+            startIcon={<FaPrint />}
+            onClick={onPrint}
+          >
+            Print
+          </Button>
+        </Box>
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          gap={2}
+          component="div"
+          ref={componentRef}
+        >
+          <Grid container spacing={2}>
+            {collectionLabel.map((item, index) => (
+              <Grid key={index} item xs={6}>
+                <OrderDetailCard
+                  title={item.title}
+                  labels={item.labelObj}
+                  data={orderData}
+                />
+              </Grid>
+            ))}
+            <Grid item xs={12}>
+              <DataTable
+                columns={columns}
+                data={orderDetailData}
+                showNotFound={orderDetailData.length === 0}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  textAlign={"justify"}
+                  mx={1}
                 >
-                  <strong>Amount Payable:</strong> {totalPrice?.total_price}
-                  <strong>Rs</strong>
-                </td>
-              </tr>
-            }
-          />
-        </PrintCard.Container>
-      </div>
+                  <strong>Amount Payable: </strong>₹{totalPrice?.total_price}
+                </Typography>
+              </DataTable>
+            </Grid>
+          </Grid>
+        </Box>
+      </Container>
     </MainContainer>
   );
 }

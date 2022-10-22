@@ -43,11 +43,19 @@ export interface DataTableProps {
     pagination?: React.ReactNode;
   };
   showNotFound?: boolean;
+  children?: React.ReactNode;
 }
 
 export default function DataTable(props: DataTableProps) {
-  const { columns, data, components, loading, filtersHidden, showNotFound } =
-    props;
+  const {
+    columns,
+    data,
+    components,
+    loading,
+    filtersHidden,
+    showNotFound,
+    children,
+  } = props;
 
   const {
     getTableProps,
@@ -75,10 +83,10 @@ export default function DataTable(props: DataTableProps) {
         }}
       >
         <TableContainer
-          sx={{
-            minWidth: 800,
-            maxHeight: 800,
-          }}
+        // sx={{
+        //   minWidth: 800,
+        //   maxHeight: 800,
+        // }}
         >
           <Table
             stickyHeader
@@ -187,6 +195,7 @@ export default function DataTable(props: DataTableProps) {
               )}
             </TableBody>
           </Table>
+          {children}
         </TableContainer>
       </Box>
       {components?.pagination}

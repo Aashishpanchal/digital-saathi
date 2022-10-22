@@ -38,7 +38,7 @@ const productPriceLabels = [
     Cell: (cell: any) => <>₹{cell.value}</>,
   },
   { label: "MRP", accessor: "mrp", Cell: (cell: any) => <>₹{cell.value}</> },
-  { label: "GST", accessor: "igst", Cell: (cell: any) => <>{cell.value}%</> },
+  { label: "GST", accessor: "igst" },
   { label: "Weight", accessor: "weight" },
   { label: "Package", accessor: "package" },
   { label: "Units Per Case", accessor: "units_per_case" },
