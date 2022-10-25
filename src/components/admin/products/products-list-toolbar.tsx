@@ -70,7 +70,7 @@ export default function ProductsListToolbar(props: {
                 <RowSearch
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="Search Products"
+                  placeholder="Search"
                 />
               </Box>
               <Box sx={{ display: "flex", gap: 3 }}>

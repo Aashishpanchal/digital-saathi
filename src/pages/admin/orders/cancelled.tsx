@@ -9,6 +9,7 @@ import OrdersToolbar, {
 } from "../../../components/admin/orders/orders-toolbar";
 import { shopOrders } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
+import { queryToStr } from "../../../components/admin/utils";
 
 const orderId = 7;
 
@@ -18,14 +19,14 @@ export default function Cancelled() {
   const searchHandler = (value: string, dates: DatesType) => {
     if (dates.from && dates.to) {
       setSearchText(
-        `${
-          value ? `/search?search_orders=${value}` : ""
-        }&date_from=${dates.from.format(
-          "YYYY-MM-DD"
-        )}&date_to=${dates.to.format("YYYY-MM-DD")}`
+        "?" +
+          queryToStr({
+            date_from: dates.from.format("YYYY-MM-DD"),
+            date_to: dates.to.format("YYYY-MM-DD"),
+          })
       );
     } else {
-      setSearchText(value ? `/search?search_orders=${value}` : "");
+      setSearchText("");
     }
   };
 
@@ -58,7 +59,7 @@ export default function Cancelled() {
         Cancelled-Orders
       </OrdersToolbar>
       <Box sx={{ mt: 3 }}>
-        <OrdersListResults searchText={searchText} orderId={orderId} />
+        <OrdersListResults searchText={searchText} orderStatus={orderId} />
       </Box>
     </MainContainer>
   );

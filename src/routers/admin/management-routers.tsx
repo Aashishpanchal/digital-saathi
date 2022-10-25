@@ -37,6 +37,7 @@ import {
   RetailerTargetAchievement,
 } from "../../pages/admin/management/retailers/retailerDashboard";
 import ProductImages from "../../pages/admin/management/products/product-images";
+import FarmersOrders from "../../pages/admin/management/farmers/farmers-orders";
 
 export default {
   path: "/management",
@@ -47,6 +48,10 @@ export default {
         {
           path: "",
           element: <Farmers />,
+        },
+        {
+          path: ":customer_id",
+          element: <FarmersOrders />,
         },
       ],
     },

@@ -1,61 +1,49 @@
 import React from "react";
-import { Box, Tooltip, IconButton } from "@mui/material";
-import { farmers } from "../../../http";
+import { useSnackbar } from "notistack";
+import { Box, Tooltip, IconButton, Typography } from "@mui/material";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
-import ActiveDeactive from "../active-deactive";
-import { RiDeleteBinFill } from "react-icons/ri";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
-import { useSnackbar } from "notistack";
+import { farmers, shopOrders } from "../../../http";
 import LinkRouter from "../../../routers/LinkRouter";
-import { FaArrowRight, FaRegEdit } from "react-icons/fa";
-import FarmersFormDialog from "./farmers-form-dialog";
+import { FaEye, FaFileInvoice } from "react-icons/fa";
+import OrderStatus from "../orders/order-status";
+import dayjs from "dayjs";
+import usePaginate from "../../../hooks/usePaginate";
+import { useQuery } from "@tanstack/react-query";
 
 export default function FarmersOrdersListResults(props: {
   searchText: string;
+  customerId: string;
 }) {
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    customers: [],
-  });
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
+  const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState({
     id: "",
     open: false,
   });
-  const [edit, setEdit] = React.useState({
-    id: "",
-    open: false,
-  });
-  const { searchText } = props;
+  const { searchText, customerId } = props;
 
   const postfix = React.useMemo(() => {
     return searchText
-      ? `${searchText}&page=${page}&size=${size}`
-      : `?page=${page}&size=${size}`;
+      ? `${searchText}&page=${page}&size=${size}&customer_id=${customerId}`
+      : `?page=${page}&size=${size}&customer_id=${customerId}`;
   }, [searchText, page, size]);
 
   const { enqueueSnackbar } = useSnackbar();
 
   const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await farmers("get", {
+  const { isLoading, refetch, data } = useQuery(
+    ["farmers-orders", postfix],
+    () =>
+      shopOrders("get", {
+        params: "customer",
         postfix: postfix,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
+      }),
+    {
+      refetchOnWindowFocus: false,
     }
-    setLoading(false);
-  };
+  );
 
   const onDelete = async () => {
     try {
@@ -63,7 +51,7 @@ export default function FarmersOrdersListResults(props: {
         params: deleteData?.id,
       });
       if (res.status === 200) {
-        await onGet();
+        await refetch();
         enqueueSnackbar("entry success-full deleted 😊", {
           variant: "success",
         });
@@ -77,77 +65,54 @@ export default function FarmersOrdersListResults(props: {
 
   const columns = React.useMemo(
     () => [
+      { Header: "Order ID", accessor: "order_id" },
       {
-        Header: "S No.",
-        accessor: "customer_id",
-      },
-      {
-        Header: "Status",
-        accessor: "active",
+        Header: "Order Date",
+        accessor: "order_date",
         Cell: (cell: any) => (
-          <ActiveDeactive
-            cell={cell}
-            idAccessor="customer_id"
-            setData={setData}
-            axiosFunction={farmers}
-            postfix={postfix}
-          />
+          <Typography>{dayjs(cell.value).format("MMMM D, YYYY")}</Typography>
         ),
       },
       {
-        Header: "Auth Code",
-        accessor: "auth_code",
+        Header: "Amount",
+        accessor: "grand_total",
+        Cell: (cell: any) => (
+          <Typography fontWeight={"600"}>₹{cell.value}</Typography>
+        ),
       },
       {
-        Header: "Customer Name",
-        accessor: "customer_name",
+        Header: "Order Status",
+        accessor: "order_status",
+        Cell: (cell: any) => <OrderStatus value={cell.value} />,
       },
+      { Header: "Retailer Name", accessor: "retailer_name" },
       {
         Header: "Action",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Tooltip title="Delete">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setDeleteData({
-                    open: true,
-                    id: cell.row.original.customer_id,
-                  })
-                }
-              >
-                <RiDeleteBinFill />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Farmer Edit">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setEdit({
-                    open: true,
-                    id: cell.row.original.customer_id,
-                  })
-                }
-              >
-                <FaRegEdit />
-              </IconButton>
-            </Tooltip>
             <LinkRouter
-              to={`${cell.row.original.customer_id}/product-details/${encodeURI(
-                cell.row.original.sku_name
-              )}`}
+              to={`/orders/order-details/${cell.row.original.order_id}`}
             >
-              <Tooltip title="Farmers Orders">
+              <Tooltip title="View Orders">
                 <IconButton
                   disableRipple={false}
                   size="small"
                   color="secondary"
                 >
-                  <FaArrowRight />
+                  <FaEye />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
+            <LinkRouter
+              to={`/orders/order-invoice-print/${cell.row.original.order_id}`}
+            >
+              <Tooltip title="Order Invoice">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <FaFileInvoice />
                 </IconButton>
               </Tooltip>
             </LinkRouter>
@@ -158,25 +123,29 @@ export default function FarmersOrdersListResults(props: {
     [page, size]
   );
 
-  const getData = React.useMemo(() => data.customers, [data]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) return data.data;
+    return { totalItems: 0, totalPages: 1, orders: [] };
+  }, [data]);
 
   React.useEffect(() => {
-    onGet();
-  }, [page, size, searchText]);
+    if (searchText) setPage(0);
+  }, [searchText]);
 
   return (
     <>
       <DataTable
-        loading={loading}
+        loading={isLoading}
         columns={columns}
-        data={getData}
+        data={getData.orders}
+        showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
             <TablePagination
               page={page}
               pageSize={size}
-              totalItems={data.totalItems}
-              count={data.totalPages}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
               onChangePage={setPage}
               onPageSizeSelect={setSize}
             />
@@ -188,14 +157,6 @@ export default function FarmersOrdersListResults(props: {
         onClickClose={deleteBoxClose}
         onClickOk={onDelete}
       />
-      {edit.open && (
-        <FarmersFormDialog
-          open={edit.open}
-          customerId={edit.id}
-          close={() => setEdit({ open: false, id: "" })}
-          reload={onGet}
-        />
-      )}
     </>
   );
 }

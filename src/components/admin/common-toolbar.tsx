@@ -4,17 +4,13 @@ import RowSearch from "../table/row-search";
 
 export default function CommonToolbar(props: {
   title: string;
-  onAddProps: {
+  onAddProps?: {
     title: string;
     onClick: () => void;
   };
   onSearch: (value: string) => void;
 }) {
-  const {
-    onAddProps: { title: buttonTitle, onClick },
-    title,
-    onSearch,
-  } = props;
+  const { onAddProps, title, onSearch } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -37,11 +33,17 @@ export default function CommonToolbar(props: {
         <Typography sx={{ m: 1 }} variant="h5">
           {title}
         </Typography>
-        <Box sx={{ m: 1 }}>
-          <Button color="secondary" variant="contained" onClick={onClick}>
-            {buttonTitle}
-          </Button>
-        </Box>
+        {onAddProps && (
+          <Box sx={{ m: 1 }}>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={onAddProps.onClick}
+            >
+              {onAddProps.title}
+            </Button>
+          </Box>
+        )}
       </Box>
       <Box sx={{ mt: 2 }}>
         <Card>

@@ -1,8 +1,7 @@
 import React from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import { FaFileCsv } from "react-icons/fa";
-import LinkRouter from "../../../routers/LinkRouter";
 import RowSearch from "../../table/row-search";
+import { FaFileCsv } from "react-icons/fa";
 
 export default function FarmersListToolbar(props: {
   onClickExport?: () => void;
@@ -31,6 +30,16 @@ export default function FarmersListToolbar(props: {
         <Typography sx={{ m: 1 }} variant="h5">
           Farmers
         </Typography>
+        <Box sx={{ m: 1 }}>
+          <Button
+            color="warning"
+            startIcon={<FaFileCsv fontSize="small" />}
+            sx={{ mr: 1 }}
+            onClick={onClickExport}
+          >
+            Export
+          </Button>
+        </Box>
       </Box>
       <Box sx={{ mt: 2 }}>
         <Card>
@@ -46,7 +55,7 @@ export default function FarmersListToolbar(props: {
                 <RowSearch
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="Search Farmers"
+                  placeholder="Search"
                 />
               </Box>
               <Box sx={{ display: "flex", gap: 3 }}>

@@ -18,7 +18,7 @@ import ImageView from "../../Image/image-view";
 export default function BrandAddEditDialog(props: {
   open: boolean;
   close: () => void;
-  reload: () => Promise<void>;
+  reload: Function;
   brand: { [key: string]: any } | null;
   variant: "edit" | "add";
 }) {
@@ -53,7 +53,7 @@ export default function BrandAddEditDialog(props: {
               close();
               setTimeout(
                 () =>
-                  enqueueSnackbar("Brand Update Success-Fully!👍😊", {
+                  enqueueSnackbar("Brand Update  successfully!👍😊", {
                     variant: "success",
                   }),
                 200
@@ -83,7 +83,7 @@ export default function BrandAddEditDialog(props: {
               close();
               setTimeout(
                 () =>
-                  enqueueSnackbar("Brand Add Success-Fully!👍😊", {
+                  enqueueSnackbar("Brand Add  successfully!👍😊", {
                     variant: "success",
                   }),
                 200
@@ -154,7 +154,7 @@ export default function BrandAddEditDialog(props: {
               ) : undefined
             }
           >
-            {variant === "add" ? "Add" : "Edit"}
+            {variant === "add" ? "Save" : "Update"}
           </Button>
           <Button color="secondary" variant="outlined" onClick={close}>
             Close

@@ -1,13 +1,17 @@
-import React from "react";
 import { IoMdTimer } from "react-icons/io";
+import { Box } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 export default function ComingSoonPage() {
   return (
-    <div className="flex items-center justify-center w-full">
-      <div>
-        <IoMdTimer size={120} className="text-blue-light" />
-        <span className="font-bold text-lg">Coming Soon.....</span>
-      </div>
-    </div>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+    >
+      <IoMdTimer size={120} className="text-blue-light" />
+      <Typography variant="h5">Coming Soon.....</Typography>
+    </Box>
   );
 }

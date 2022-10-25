@@ -12,21 +12,15 @@ import ProductAvatar from "../../Image/product-avatar";
 import useBucket from "../../../hooks/useBucket";
 import ProductImageDialog from "./product-image-dialog";
 import { FaRegEdit } from "react-icons/fa";
-import { date } from "yup/lib/locale";
+import usePaginate from "../../../hooks/usePaginate";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ProductListImages(props: {
   sku_id: string;
   uploadOpen: boolean;
   uploadClose: () => void;
 }) {
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    product_images: [],
-  });
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
+  const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
     value: { [key: string]: any };
     open: boolean;
@@ -50,20 +44,16 @@ export default function ProductListImages(props: {
 
   const deleteBoxClose = () => setDeleteData({ open: false, value: {} });
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await shopProductImages("get", {
-        postfix: postfix,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
+  const { isLoading, refetch, data } = useQuery(
+    ["products-images", postfix],
+    () =>
+      shopProductImages("get", {
+        postfix,
+      }),
+    {
+      refetchOnWindowFocus: false,
     }
-    setLoading(false);
-  };
+  );
 
   const onDelete = async () => {
     try {
@@ -74,7 +64,7 @@ export default function ProductListImages(props: {
           params: image_id,
         });
         if (res.status === 200) {
-          await onGet();
+          await refetch();
           enqueueSnackbar("entry success-full deleted 😊", {
             variant: "success",
           });
@@ -118,9 +108,8 @@ export default function ProductListImages(props: {
             cell={cell}
             idAccessor="image_id"
             payload={["sku_id", "image"]}
-            setData={setData}
+            refetch={refetch}
             axiosFunction={shopProductImages}
-            postfix={postfix}
           />
         ),
       },
@@ -132,9 +121,8 @@ export default function ProductListImages(props: {
             cell={cell}
             idAccessor="image_id"
             payload={["sku_id", "image"]}
+            refetch={refetch}
             axiosFunction={shopProductImages}
-            postfix={postfix}
-            setData={setData}
           />
         ),
       },
@@ -173,26 +161,27 @@ export default function ProductListImages(props: {
     [page, size]
   );
 
-  const getData = React.useMemo(() => data.product_images, [data]);
-
-  React.useEffect(() => {
-    onGet();
-  }, [page, size]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) {
+      return data.data;
+    }
+    return { totalItems: 0, totalPages: 1, product_images: [] };
+  }, [data]);
 
   return (
     <>
       <DataTable
-        loading={loading}
+        loading={isLoading}
         columns={columns}
-        data={getData}
-        showNotFound={data.totalItems === 0}
+        data={getData.product_images}
+        showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
             <TablePagination
               page={page}
               pageSize={size}
-              totalItems={data.totalItems}
-              count={data.totalPages}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
               onChangePage={setPage}
               onPageSizeSelect={setSize}
             />
@@ -209,7 +198,7 @@ export default function ProductListImages(props: {
           open={edit.open}
           close={() => setEdit({ open: false, id: "" })}
           imageId={edit.id}
-          reload={onGet}
+          reload={refetch}
           skuId={sku_id}
         />
       )}
@@ -217,7 +206,7 @@ export default function ProductListImages(props: {
         <ProductImageDialog
           open={uploadOpen}
           close={uploadClose}
-          reload={onGet}
+          reload={refetch}
           skuId={sku_id}
         />
       )}

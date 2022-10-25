@@ -49,7 +49,7 @@ export default function ProductImageDialog(props: {
             close();
             setTimeout(
               () =>
-                enqueueSnackbar("Product Image Update Success-Fully!👍😊", {
+                enqueueSnackbar("Product Image Update  successfully!👍😊", {
                   variant: "success",
                 }),
               200
@@ -80,7 +80,7 @@ export default function ProductImageDialog(props: {
             close();
             setTimeout(
               () =>
-                enqueueSnackbar("Product Image Add Success-Fully!👍😊", {
+                enqueueSnackbar("Product Image Add  successfully!👍😊", {
                   variant: "success",
                 }),
               200
@@ -149,7 +149,7 @@ export default function ProductImageDialog(props: {
               ) : undefined
             }
           >
-            Upload
+            Save
           </Button>
           <Button color="secondary" variant="outlined" onClick={close}>
             Close

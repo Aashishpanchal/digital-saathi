@@ -7,16 +7,13 @@ import dayjs from "dayjs";
 import { FaEye, FaFileInvoice } from "react-icons/fa";
 import LinkRouter from "../../../routers/LinkRouter";
 import OrderStatus from "./order-status";
+import { useQuery } from "@tanstack/react-query";
+import usePaginate from "../../../hooks/usePaginate";
 
 export default function AllOrdersListResults(props: { searchText: string }) {
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    orders: [],
-  });
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
+  // const [page, setPage] = React.useState(0);
+  const { page, setPage, size, setSize } = usePaginate();
+  // const [size, setSize] = React.useState("10");
 
   const { searchText } = props;
 
@@ -26,20 +23,16 @@ export default function AllOrdersListResults(props: { searchText: string }) {
       : `?page=${page}&size=${size}`;
   }, [searchText, page, size]);
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await shopOrders("get", {
-        postfix: postfix,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
+  const { isLoading, data } = useQuery(
+    ["all-order", postfix],
+    () =>
+      shopOrders("get", {
+        postfix,
+      }),
+    {
+      refetchOnWindowFocus: false,
     }
-    setLoading(false);
-  };
+  );
 
   const columns = React.useMemo(
     () => [
@@ -63,7 +56,7 @@ export default function AllOrdersListResults(props: { searchText: string }) {
         Header: "Amount",
         accessor: "grand_total",
         Cell: (cell: any) => (
-          <Typography fontWeight={"600"}>Rs {cell.value}</Typography>
+          <Typography fontWeight={"600"}>₹{cell.value}</Typography>
         ),
       },
       {
@@ -111,29 +104,30 @@ export default function AllOrdersListResults(props: { searchText: string }) {
     [page, size]
   );
 
-  const getData = React.useMemo(() => data.orders, [data]);
-
-  React.useEffect(() => {
-    onGet();
-  }, [page, size, searchText]);
-
-  React.useEffect(() => {
-    setPage(0);
-  }, [searchText]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) {
+      return data.data;
+    } else
+      return {
+        totalItems: 0,
+        totalPages: 1,
+        orders: [],
+      };
+  }, [data]);
 
   return (
     <DataTable
-      loading={loading}
+      loading={isLoading}
       columns={columns}
-      data={getData}
-      showNotFound={data.totalItems === 0}
+      data={getData.orders}
+      showNotFound={getData.totalItems === 0}
       components={{
         pagination: (
           <TablePagination
             page={page}
             pageSize={size}
-            totalItems={data.totalItems}
-            count={data.totalPages}
+            totalItems={getData.totalItems}
+            count={getData.totalPages}
             onChangePage={setPage}
             onPageSizeSelect={setSize}
           />

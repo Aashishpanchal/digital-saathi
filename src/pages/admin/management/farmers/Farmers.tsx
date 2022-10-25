@@ -2,7 +2,7 @@ import React from "react";
 import { MainContainer } from "../../../../components/layout";
 import { Box } from "@mui/material";
 import exportFromJSON from "export-from-json";
-import { shopProducts } from "../../../../http";
+import { farmers } from "../../../../http";
 import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import FarmersListResults from "../../../../components/admin/farmers/farmers-list-results";
@@ -25,13 +25,13 @@ export default function Farmers() {
   const exportHandler = async () => {
     try {
       dispatch(setPageLoading(true));
-      const res = await shopProducts("get", {
+      const res = await farmers("get", {
         postfix: searchText,
       });
       if (res?.status === 200) {
         dispatch(setPageLoading(false));
         exportFromJSON({
-          data: res.data.products,
+          data: res.data.customers,
           fileName: `products-csv`,
           exportType: "csv",
         });

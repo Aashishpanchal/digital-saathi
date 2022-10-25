@@ -13,8 +13,17 @@ export default function ActiveDeactive(props: {
   setData?: any;
   postfix?: string;
   payload?: Array<string>;
+  refetch?: Function;
 }) {
-  const { cell, axiosFunction, idAccessor, payload, postfix, setData } = props;
+  const {
+    cell,
+    axiosFunction,
+    idAccessor,
+    payload,
+    postfix,
+    setData,
+    refetch,
+  } = props;
 
   const { value } = cell;
   const { original } = cell.row;
@@ -40,8 +49,11 @@ export default function ActiveDeactive(props: {
               variant: "success",
             }
           );
-          res = await axiosFunction("get", { postfix: postfix });
-          if (res.status === 200) setData(res.data);
+          if (refetch) await refetch();
+          else {
+            res = await axiosFunction("get", { postfix: postfix });
+            if (res.status === 200) setData(res.data);
+          }
         }
       } catch (error) {
         console.log(error);

@@ -10,7 +10,7 @@ import {
 import { useSnackbar } from "notistack";
 import React from "react";
 import useBucket from "../../../hooks/useBucket";
-import { categories, shopProductImages, subCategories } from "../../../http";
+import { categories, subCategories } from "../../../http";
 import { TextInput } from "../../form";
 import FileUploader from "../../form/inputs/file-uploader";
 import ImageView from "../../Image/image-view";
@@ -18,7 +18,7 @@ import ImageView from "../../Image/image-view";
 export default function CategoryAddEditDialog(props: {
   open: boolean;
   close: () => void;
-  reload: () => Promise<void>;
+  reload: () => Promise<any>;
   category: { [key: string]: any } | null;
   variant: "edit" | "add";
   type: "category" | "subcategory";
@@ -70,7 +70,7 @@ export default function CategoryAddEditDialog(props: {
               setTimeout(
                 () =>
                   enqueueSnackbar(
-                    cateLabel.concat(" Update Success-Fully!👍😊"),
+                    cateLabel.concat(" Update  successfully!👍😊"),
                     {
                       variant: "success",
                     }
@@ -104,7 +104,7 @@ export default function CategoryAddEditDialog(props: {
               close();
               setTimeout(
                 () =>
-                  enqueueSnackbar(cateLabel.concat(" Add Success-Fully!👍😊"), {
+                  enqueueSnackbar(cateLabel.concat(" Add  successfully!👍😊"), {
                     variant: "success",
                   }),
                 200
@@ -175,7 +175,7 @@ export default function CategoryAddEditDialog(props: {
               ) : undefined
             }
           >
-            {variant === "add" ? "Add" : "Edit"}
+            {variant === "add" ? "Save" : "Update"}
           </Button>
           <Button color="secondary" variant="outlined" onClick={close}>
             Close

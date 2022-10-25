@@ -12,8 +12,12 @@ import ChangePassword from "../pages/admin/user/ChangePassword";
 import { DashboardLayout } from "../components/layout";
 import Dashboard from "../pages/admin/Dashboard";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
 export default function AppRouter() {
-  return useRoutes([
+  const RouteElement = useRoutes([
     {
       path: "/",
       element: (
@@ -54,4 +58,10 @@ export default function AppRouter() {
       element: <NotFound />,
     },
   ]);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {RouteElement}
+    </QueryClientProvider>
+  );
 }

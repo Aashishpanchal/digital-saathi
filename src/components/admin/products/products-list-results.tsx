@@ -12,16 +12,11 @@ import { TbListDetails } from "react-icons/tb";
 import LinkRouter from "../../../routers/LinkRouter";
 import { FaRegEdit, FaRegFileImage, FaRupeeSign } from "react-icons/fa";
 import ProductPriceDialog from "./product-price-dialog";
+import usePaginate from "../../../hooks/usePaginate";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ProductsListResults(props: { searchText: string }) {
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    product: [],
-  });
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
+  const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
     id: string;
     open: boolean;
@@ -41,24 +36,20 @@ export default function ProductsListResults(props: { searchText: string }) {
       : `?page=${page}&size=${size}`;
   }, [searchText, page, size]);
 
+  const { isLoading, refetch, data } = useQuery(
+    ["products", postfix],
+    () =>
+      shopProducts("get", {
+        postfix,
+      }),
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+
   const { enqueueSnackbar } = useSnackbar();
 
   const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
-
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await shopProducts("get", {
-        postfix: postfix,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
-    }
-    setLoading(false);
-  };
 
   const onDelete = async () => {
     try {
@@ -66,7 +57,7 @@ export default function ProductsListResults(props: { searchText: string }) {
         params: deleteData?.id,
       });
       if (res.status === 200) {
-        await onGet();
+        await refetch();
         enqueueSnackbar("entry success-full deleted 😊", {
           variant: "success",
         });
@@ -91,9 +82,8 @@ export default function ProductsListResults(props: { searchText: string }) {
           <ActiveDeactive
             cell={cell}
             idAccessor="sku_id"
-            setData={setData}
+            refetch={refetch}
             axiosFunction={shopProducts}
-            postfix={postfix}
           />
         ),
       },
@@ -120,9 +110,8 @@ export default function ProductsListResults(props: { searchText: string }) {
           <FocusStar
             cell={cell}
             idAccessor="sku_id"
-            setData={setData}
+            refetch={refetch}
             axiosFunction={shopProducts}
-            postfix={postfix}
           />
         ),
       },
@@ -205,29 +194,35 @@ export default function ProductsListResults(props: { searchText: string }) {
     [page, size, postfix]
   );
 
-  const getData = React.useMemo(() => data?.product || [], [data]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) {
+      return data.data;
+    }
+    return {
+      totalItems: 0,
+      totalPages: 1,
+      product: [],
+    };
+  }, [data]);
 
   React.useEffect(() => {
-    onGet();
-  }, [page, size, searchText]);
-  React.useEffect(() => {
-    setPage(0);
+    if (searchText) setPage(0);
   }, [searchText]);
 
   return (
     <>
       <DataTable
-        loading={loading}
+        loading={isLoading}
         columns={columns}
-        data={getData}
-        showNotFound={data.totalItems === 0}
+        data={getData.product || []}
+        showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
             <TablePagination
               page={page}
               pageSize={size}
-              totalItems={data.totalItems}
-              count={data.totalPages}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
               onChangePage={setPage}
               onPageSizeSelect={setSize}
             />

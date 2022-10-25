@@ -1,49 +1,46 @@
 import React from "react";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import { shopOrders } from "../../../http";
-import DataTable from "../../table/data-table";
-import TablePagination from "../../table/table-pagination";
 import dayjs from "dayjs";
 import { FaEye, FaFileInvoice } from "react-icons/fa";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import { queryToStr } from "../utils";
+import { shopOrders } from "../../../http";
+import DataTable from "../../table/data-table";
 import LinkRouter from "../../../routers/LinkRouter";
+import TablePagination from "../../table/table-pagination";
+import { useQuery } from "@tanstack/react-query";
+import usePaginate from "../../../hooks/usePaginate";
 
 export default function OrdersListResults(props: {
-  orderId: number;
+  params?: string;
+  orderStatus: number | Array<number>;
   searchText: string;
+  otherQuery?: { [key: string]: any };
 }) {
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    orders: [],
-  });
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
-
-  const { searchText, orderId } = props;
+  const { page, setPage, size, setSize } = usePaginate();
+  const { searchText, orderStatus, params, otherQuery } = props;
 
   const postfix = React.useMemo(() => {
-    return (
-      (searchText
-        ? `${searchText}&page=${page}&size=${size}`
-        : `?page=${page}&size=${size}`) + `&order_status=${orderId}`
-    );
+    const x = queryToStr({
+      ...otherQuery,
+      page,
+      size,
+      order_status: orderStatus,
+    });
+    return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [searchText, page, size]);
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await shopOrders("get", {
-        postfix: postfix,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
+  const { isLoading, data } = useQuery(
+    [`order-${orderStatus}`, postfix],
+    () =>
+      shopOrders("get", {
+        params,
+        postfix,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
     }
-    setLoading(false);
-  };
+  );
 
   const columns = React.useMemo(
     () => [
@@ -110,29 +107,34 @@ export default function OrdersListResults(props: {
     [page, size]
   );
 
-  const getData = React.useMemo(() => data.orders, [data]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) {
+      return data.data;
+    }
+    return {
+      totalItems: 0,
+      totalPages: 1,
+      orders: [],
+    };
+  }, [data]);
 
   React.useEffect(() => {
-    onGet();
-  }, [page, size, searchText]);
-
-  React.useEffect(() => {
-    setPage(0);
+    if (searchText) setPage(0);
   }, [searchText]);
 
   return (
     <DataTable
-      loading={loading}
+      loading={isLoading}
       columns={columns}
-      data={getData}
-      showNotFound={data.totalItems === 0}
+      data={getData.orders}
+      showNotFound={getData.totalItems === 0}
       components={{
         pagination: (
           <TablePagination
             page={page}
             pageSize={size}
-            totalItems={data.totalItems}
-            count={data.totalPages}
+            totalItems={getData.totalItems}
+            count={getData.totalPages}
             onChangePage={setPage}
             onPageSizeSelect={setSize}
           />

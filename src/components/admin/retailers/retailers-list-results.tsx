@@ -10,16 +10,11 @@ import { useSnackbar } from "notistack";
 import LinkRouter from "../../../routers/LinkRouter";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDashboardCustomize } from "react-icons/md";
+import usePaginate from "../../../hooks/usePaginate";
+import { useQuery } from "@tanstack/react-query";
 
 export default function RetailerListResults(props: { searchText: string }) {
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    retailers: [],
-  });
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
+  const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
     id: string;
     open: boolean;
@@ -40,20 +35,16 @@ export default function RetailerListResults(props: { searchText: string }) {
 
   const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await retailer("get", {
-        postfix: postfix,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
+  const { isLoading, refetch, data } = useQuery(
+    ["retailer", postfix],
+    () =>
+      retailer("get", {
+        postfix,
+      }),
+    {
+      refetchOnWindowFocus: false,
     }
-    setLoading(false);
-  };
+  );
 
   const onDelete = async () => {
     try {
@@ -61,7 +52,7 @@ export default function RetailerListResults(props: { searchText: string }) {
         params: deleteData?.id,
       });
       if (res.status === 200) {
-        await onGet();
+        await refetch();
         enqueueSnackbar("entry success-full deleted 😊", {
           variant: "success",
         });
@@ -86,9 +77,8 @@ export default function RetailerListResults(props: { searchText: string }) {
           <ActiveDeactive
             cell={cell}
             idAccessor="retailer_id"
-            setData={setData}
+            refetch={refetch}
             axiosFunction={retailer}
-            postfix={postfix}
           />
         ),
       },
@@ -154,30 +144,29 @@ export default function RetailerListResults(props: { searchText: string }) {
     [page, size, postfix]
   );
 
-  const getData = React.useMemo(() => data.retailers, [data]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) return data.data;
+    return { totalItems: 0, totalPages: 1, retailers: [] };
+  }, [data]);
 
   React.useEffect(() => {
-    onGet();
-  }, [page, size, searchText]);
-
-  React.useEffect(() => {
-    setPage(0);
+    if (searchText) setPage(0);
   }, [searchText]);
 
   return (
     <>
       <DataTable
-        loading={loading}
+        loading={isLoading}
         columns={columns}
-        data={getData}
-        showNotFound={data.totalItems === 0}
+        data={getData.retailers}
+        showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
             <TablePagination
               page={page}
               pageSize={size}
-              totalItems={data.totalItems}
-              count={data.totalPages}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
               onChangePage={setPage}
               onPageSizeSelect={setSize}
             />

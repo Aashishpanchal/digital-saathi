@@ -38,7 +38,7 @@ export default function CreateRetailers() {
           if (res?.status === 200) {
             navigate(-1);
             setTimeout(() => {
-              enqueueSnackbar("Product Save Success-Fully!👍😊", {
+              enqueueSnackbar("Product Save  successfully!👍😊", {
                 variant: "success",
               });
             }, 200);

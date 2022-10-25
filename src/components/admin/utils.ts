@@ -24,3 +24,15 @@ export const margeObj = (
   });
   return newObj;
 };
+
+export const queryToStr = (queryObj: { [key: string]: any }) => {
+  const query = [];
+  for (const key in queryObj) {
+    query.push(
+      encodeURIComponent(key)
+        .concat("=")
+        .concat(encodeURIComponent(queryObj[key]))
+    );
+  }
+  return query.length ? query.join("&") : "";
+};

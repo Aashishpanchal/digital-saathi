@@ -44,7 +44,7 @@ export default function ProductPriceDialog(props: {
             if (res?.status === 200) {
               close();
               setTimeout(() => {
-                enqueueSnackbar("Product Price Update Success-Fully!👍😊", {
+                enqueueSnackbar("Product Price Update  successfully!👍😊", {
                   variant: "success",
                 });
               }, 200);
@@ -66,7 +66,7 @@ export default function ProductPriceDialog(props: {
             if (res?.status === 200) {
               close();
               setTimeout(() => {
-                enqueueSnackbar("Product Price Save Success-Fully!👍😊", {
+                enqueueSnackbar("Product Price Save  successfully!👍😊", {
                   variant: "success",
                 });
               }, 200);
@@ -129,7 +129,7 @@ export default function ProductPriceDialog(props: {
             }}
           >
             <Button type="submit" color="secondary" variant="contained">
-              Submit
+              Save
             </Button>
             <Button color="secondary" variant="outlined" onClick={close}>
               Close

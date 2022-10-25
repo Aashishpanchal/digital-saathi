@@ -10,16 +10,11 @@ import { useSnackbar } from "notistack";
 import LinkRouter from "../../../routers/LinkRouter";
 import { FaArrowRight, FaRegEdit } from "react-icons/fa";
 import FarmersFormDialog from "./farmers-form-dialog";
+import usePaginate from "../../../hooks/usePaginate";
+import { useQuery } from "@tanstack/react-query";
 
 export default function FarmersListResults(props: { searchText: string }) {
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    customers: [],
-  });
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
+  const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState({
     id: "",
     open: false,
@@ -40,20 +35,16 @@ export default function FarmersListResults(props: { searchText: string }) {
 
   const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await farmers("get", {
-        postfix: postfix,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
+  const { isLoading, refetch, data } = useQuery(
+    ["farmers", postfix],
+    () =>
+      farmers("get", {
+        postfix,
+      }),
+    {
+      refetchOnWindowFocus: false,
     }
-    setLoading(false);
-  };
+  );
 
   const onDelete = async () => {
     try {
@@ -61,7 +52,7 @@ export default function FarmersListResults(props: { searchText: string }) {
         params: deleteData?.id,
       });
       if (res.status === 200) {
-        await onGet();
+        await refetch();
         enqueueSnackbar("entry success-full deleted 😊", {
           variant: "success",
         });
@@ -86,9 +77,8 @@ export default function FarmersListResults(props: { searchText: string }) {
           <ActiveDeactive
             cell={cell}
             idAccessor="customer_id"
-            setData={setData}
+            refetch={refetch}
             axiosFunction={farmers}
-            postfix={postfix}
           />
         ),
       },
@@ -134,11 +124,7 @@ export default function FarmersListResults(props: { searchText: string }) {
                 <FaRegEdit />
               </IconButton>
             </Tooltip>
-            <LinkRouter
-              to={`${cell.row.original.customer_id}/product-details/${encodeURI(
-                cell.row.original.sku_name
-              )}`}
-            >
+            <LinkRouter to={`${cell.row.original.customer_id}`}>
               <Tooltip title="Farmers Orders">
                 <IconButton
                   disableRipple={false}
@@ -156,26 +142,29 @@ export default function FarmersListResults(props: { searchText: string }) {
     [page, size]
   );
 
-  const getData = React.useMemo(() => data.customers, [data]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) return data.data;
+    return { totalItems: 0, totalPages: 1, customers: [] };
+  }, [data]);
 
   React.useEffect(() => {
-    onGet();
-  }, [page, size, searchText]);
+    if (searchText) setPage(0);
+  }, [searchText]);
 
   return (
     <>
       <DataTable
-        loading={loading}
+        loading={isLoading}
         columns={columns}
-        data={getData}
-        showNotFound={data.totalItems === 0}
+        data={getData.customers}
+        showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
             <TablePagination
               page={page}
               pageSize={size}
-              totalItems={data.totalItems}
-              count={data.totalPages}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
               onChangePage={setPage}
               onPageSizeSelect={setSize}
             />
@@ -192,7 +181,7 @@ export default function FarmersListResults(props: { searchText: string }) {
           open={edit.open}
           customerId={edit.id}
           close={() => setEdit({ open: false, id: "" })}
-          reload={onGet}
+          reload={refetch}
         />
       )}
     </>

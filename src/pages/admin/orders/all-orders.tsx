@@ -9,6 +9,7 @@ import OrdersToolbar, {
 import { shopOrders } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
 import AllOrdersListResults from "../../../components/admin/orders/all-orders-list-results";
+import { queryToStr } from "../../../components/admin/utils";
 
 export default function AllOrders() {
   const [searchText, setSearchText] = React.useState("");
@@ -16,14 +17,14 @@ export default function AllOrders() {
   const searchHandler = (value: string, dates: DatesType) => {
     if (dates.from && dates.to) {
       setSearchText(
-        `${
-          value ? `/search?search_orders=${value}` : ""
-        }&date_from=${dates.from.format(
-          "YYYY-MM-DD"
-        )}&date_to=${dates.to.format("YYYY-MM-DD")}`
+        "?" +
+          queryToStr({
+            date_from: dates.from.format("YYYY-MM-DD"),
+            date_to: dates.to.format("YYYY-MM-DD"),
+          })
       );
     } else {
-      setSearchText(value ? `/search?search_orders=${value}` : "");
+      setSearchText("");
     }
   };
 

@@ -46,7 +46,7 @@ export default function EditProducts() {
             if (res.status === 200) {
               action.resetForm();
               setTimeout(() => {
-                enqueueSnackbar("Product Update Success-Fully!👍😊", {
+                enqueueSnackbar("Product Update  successfully!👍😊", {
                   variant: "success",
                 });
                 navigate(-1);

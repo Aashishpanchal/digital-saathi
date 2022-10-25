@@ -50,7 +50,7 @@ export default function CategoryToolbar(props: {
                 <RowSearch
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="Search Categories"
+                  placeholder="Search"
                 />
               </Box>
               <Box sx={{ display: "flex", gap: 3 }}>

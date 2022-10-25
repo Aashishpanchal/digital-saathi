@@ -47,7 +47,7 @@ function RetailerSkuListResults(props: { retailerId: string; tab: number }) {
           postfix: `?assign_id=${assign_id}&product_price_id=${product_price_id}`,
         });
         if (res?.status === 200) {
-          enqueueSnackbar("Product Un-Assign Success-Fully!👍😊", {
+          enqueueSnackbar("Product Un-Assign  successfully!👍😊", {
             variant: "success",
           });
           await onGet();
@@ -70,7 +70,7 @@ function RetailerSkuListResults(props: { retailerId: string; tab: number }) {
           }),
         });
         if (res?.status === 200) {
-          enqueueSnackbar("Product Assign Success-Fully!👍😊", {
+          enqueueSnackbar("Product Assign  successfully!👍😊", {
             variant: "success",
           });
           await onGet();

@@ -40,7 +40,7 @@ export default function FarmersFormDialog(props: {
             close();
             reload();
             setTimeout(() => {
-              enqueueSnackbar("Farmer Update Success-Fully!👍😊", {
+              enqueueSnackbar("Farmer Update  successfully!👍😊", {
                 variant: "success",
               });
             }, 200);

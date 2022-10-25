@@ -12,6 +12,8 @@ import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
 import CategoryAddEditDialog from "./category-add-edit-dialog";
+import usePaginate from "../../../hooks/usePaginate";
+import { useQuery } from "@tanstack/react-query";
 
 function CategoriesListResults(props: {
   searchText: string;
@@ -19,10 +21,7 @@ function CategoriesListResults(props: {
   addClose: () => void;
   categoryPartnerId?: string;
 }) {
-  const [data, setData] = React.useState<{ [key: string]: any }>({});
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
+  const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
     value: { [key: string]: any };
     open: boolean;
@@ -54,21 +53,17 @@ function CategoriesListResults(props: {
 
   const deleteBoxClose = () => setDeleteData({ open: false, value: {} });
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await (categoryPartnerId ? subCategories : categories)(
-        "get",
-        { postfix: postfix }
-      );
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
+  const { isLoading, refetch, data } = useQuery(
+    ["categories/subcategories", postfix],
+    () =>
+      (categoryPartnerId ? subCategories : categories)("get", {
+        postfix,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
     }
-    setLoading(false);
-  };
+  );
 
   const onDelete = async () => {
     try {
@@ -82,7 +77,7 @@ function CategoriesListResults(props: {
           }
         );
         if (res.status === 200) {
-          await onGet();
+          await refetch();
           enqueueSnackbar("entry success-full deleted 😊", {
             variant: "success",
           });
@@ -108,9 +103,8 @@ function CategoriesListResults(props: {
           <ActiveDeactive
             cell={cell}
             idAccessor="category_id"
-            setData={setData}
             axiosFunction={!categoryPartnerId ? categories : subCategories}
-            postfix={postfix}
+            refetch={refetch}
           />
         ),
       },
@@ -187,33 +181,33 @@ function CategoriesListResults(props: {
     [page, size, postfix]
   );
 
-  const getData = React.useMemo(
-    () => data[!categoryPartnerId ? "categories" : "subcategories"] || [],
-    [data]
-  );
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) {
+      return data.data;
+    }
+    return {};
+  }, [data]);
 
   React.useEffect(() => {
-    onGet();
-  }, [page, size, searchText]);
-
-  React.useEffect(() => {
-    setPage(0);
+    if (searchText) setPage(0);
   }, [searchText]);
 
   return (
     <>
       <DataTable
-        loading={loading}
+        loading={isLoading}
         columns={columns}
-        data={getData}
-        showNotFound={data.totalItems === 0}
+        data={
+          getData[!categoryPartnerId ? "categories" : "subcategories"] || []
+        }
+        showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
             <TablePagination
               page={page}
               pageSize={size}
-              totalItems={data.totalItems}
-              count={data.totalPages}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
               onChangePage={setPage}
               onPageSizeSelect={setSize}
             />
@@ -230,7 +224,7 @@ function CategoriesListResults(props: {
           open={edit.open}
           close={() => setEdit({ open: false, value: null })}
           category={edit.value}
-          reload={onGet}
+          reload={refetch}
           variant="edit"
           type={!categoryPartnerId ? "category" : "subcategory"}
         />
@@ -240,7 +234,7 @@ function CategoriesListResults(props: {
           open={addOpen}
           close={addClose}
           category={null}
-          reload={onGet}
+          reload={refetch}
           variant="add"
           type={!categoryPartnerId ? "category" : "subcategory"}
         />

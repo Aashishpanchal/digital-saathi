@@ -11,16 +11,15 @@ import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
 import BrandAddEditDialog from "./brand-add-edit-dialog";
+import usePaginate from "../../../hooks/usePaginate";
+import { useQuery } from "@tanstack/react-query";
 
 function BrandsListResults(props: {
   searchText: string;
   addOpen: boolean;
   addClose: () => void;
 }) {
-  const [data, setData] = React.useState<{ [key: string]: any }>({});
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("10");
+  const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
     value: { [key: string]: any };
     open: boolean;
@@ -49,18 +48,17 @@ function BrandsListResults(props: {
 
   const deleteBoxClose = () => setDeleteData({ open: false, value: {} });
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await brands("get", { postfix: postfix });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (err: any) {
-      console.log(err.response);
+  const { isLoading, refetch, data } = useQuery(
+    ["brand", postfix],
+    () =>
+      brands("get", {
+        postfix,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
     }
-    setLoading(false);
-  };
+  );
 
   const onDelete = async () => {
     try {
@@ -71,7 +69,7 @@ function BrandsListResults(props: {
           params: brand_id,
         });
         if (res.status === 200) {
-          await onGet();
+          refetch();
           enqueueSnackbar("entry success-full deleted 😊", {
             variant: "success",
           });
@@ -97,9 +95,9 @@ function BrandsListResults(props: {
           <ActiveDeactive
             cell={cell}
             idAccessor="brand_id"
-            setData={setData}
             axiosFunction={brands}
             postfix={postfix}
+            refetch={refetch}
           />
         ),
       },
@@ -157,30 +155,35 @@ function BrandsListResults(props: {
     [page, size, postfix]
   );
 
-  const getData = React.useMemo(() => data?.brands || [], [data]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) {
+      return data.data;
+    }
+    return {
+      totalItems: 0,
+      totalPages: 0,
+      brands: [],
+    };
+  }, [data]);
 
   React.useEffect(() => {
-    onGet();
-  }, [page, size, searchText]);
-
-  React.useEffect(() => {
-    setPage(0);
+    if (searchText) setPage(0);
   }, [searchText]);
 
   return (
     <>
       <DataTable
-        loading={loading}
+        loading={isLoading}
         columns={columns}
-        data={getData}
-        showNotFound={data.totalItems === 0}
+        data={getData.brands}
+        showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
             <TablePagination
               page={page}
               pageSize={size}
-              totalItems={data.totalItems}
-              count={data.totalPages}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
               onChangePage={setPage}
               onPageSizeSelect={setSize}
             />
@@ -197,7 +200,7 @@ function BrandsListResults(props: {
           open={edit.open}
           close={() => setEdit({ open: false, value: null })}
           brand={edit.value}
-          reload={onGet}
+          reload={refetch}
           variant="edit"
         />
       )}
@@ -206,7 +209,7 @@ function BrandsListResults(props: {
           open={addOpen}
           close={addClose}
           brand={null}
-          reload={onGet}
+          reload={refetch}
           variant="add"
         />
       )}
