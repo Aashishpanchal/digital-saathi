@@ -13,6 +13,7 @@ import { DashboardLayout } from "../components/layout";
 import Dashboard from "../pages/admin/Dashboard";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import retailerReport from "./admin/retailer-report";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ export default function AppRouter() {
         masterRouters,
         ordersReportsRouters,
         ordersRouters,
+        retailerReport,
       ],
     },
     {

@@ -3,16 +3,27 @@ import { Box, Card, CardContent, Container, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { MainContainer } from "../../../../../components/layout";
 import RetailerSkuPricingListResults from "../../../../../components/admin/retailers/retailer-sku-pricing/retailer-sku-pricing-list-results";
+import { useQuery } from "@tanstack/react-query";
+import { retailer } from "../../../../../http";
 
 export default function RetailerSkuPricingUnits() {
-  const { retailer_name, retailer_id } = useParams();
+  const { retailer_id } = useParams();
+
+  const { data } = useQuery(["retailer-name"], () =>
+    retailer("get", { params: retailer_id })
+  );
+
+  const retailerName = React.useMemo(() => {
+    if (data?.status) return data.data?.retailer_name;
+    return "no name";
+  }, [data]);
 
   return (
-    <MainContainer sx={{ pt: 6 }}>
+    <MainContainer>
       <Container>
         <Box mb={2}>
           <Typography variant={"h5"}>
-            Data Sku Pricing of / {retailer_name}
+            Data Sku Pricing of {retailerName}
           </Typography>
         </Box>
         <Card>

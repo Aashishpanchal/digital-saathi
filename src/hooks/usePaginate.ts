@@ -18,23 +18,28 @@ const getPrevSize = (defaultSize: string, url: string) => {
   return defaultSize;
 };
 
-export default function usePaginate(defaultPage = 0, defaultSize = "10") {
+export default function usePaginate(
+  defaultPage = 0,
+  defaultSize = "10",
+  pageName = ""
+) {
   const location = useLocation();
 
-  const [page, setPage] = React.useState(
-    getPrevPage(defaultPage, location.pathname)
-  );
-  const [size, setSize] = React.useState(
-    getPrevSize(defaultSize, location.pathname)
+  const url = React.useMemo(
+    () => `${location.pathname}/${pageName}`,
+    [pageName]
   );
 
+  const [page, setPage] = React.useState(getPrevPage(defaultPage, url));
+  const [size, setSize] = React.useState(getPrevSize(defaultSize, url));
+
   const setCurrPage = (value: number) => {
-    cachePage.set(location.pathname, value);
+    cachePage.set(url, value);
     setPage(value);
   };
 
   const setCurrSize = (value: string) => {
-    cacheSize.set(location.pathname, value);
+    cacheSize.set(url, value);
     setSize(value);
   };
 

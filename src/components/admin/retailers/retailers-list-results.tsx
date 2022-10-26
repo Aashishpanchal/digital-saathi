@@ -12,6 +12,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdDashboardCustomize } from "react-icons/md";
 import usePaginate from "../../../hooks/usePaginate";
 import { useQuery } from "@tanstack/react-query";
+import SerialNumber from "../serial-number";
 
 export default function RetailerListResults(props: { searchText: string }) {
   const { page, setPage, size, setSize } = usePaginate();
@@ -68,11 +69,20 @@ export default function RetailerListResults(props: { searchText: string }) {
     () => [
       {
         Header: "S No.",
-        accessor: "retailer_id",
+        accessor: (_row: any, i: number) => i + 1,
+        Cell: (cell: any) => (
+          <SerialNumber cell={cell} page={page} size={size} />
+        ),
+        width: "5%",
       },
+      // {
+      //   Header: "S No.",
+      //   accessor: "retailer_id",
+      // },
       {
         Header: "Status",
         accessor: "active",
+        width: "8%",
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
@@ -85,6 +95,7 @@ export default function RetailerListResults(props: { searchText: string }) {
       {
         Header: "Auth Code",
         accessor: "auth_code",
+        width: "20%",
       },
       {
         Header: "Retailer Name",
@@ -92,6 +103,7 @@ export default function RetailerListResults(props: { searchText: string }) {
       },
       {
         Header: "Action",
+        width: "20%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Tooltip title="Delete">
@@ -121,11 +133,7 @@ export default function RetailerListResults(props: { searchText: string }) {
               </Tooltip>
             </LinkRouter>
             <LinkRouter
-              to={`${
-                cell.row.original.retailer_id
-              }/retailer-dashboard/${encodeURI(
-                cell.row.original.retailer_name || "Null"
-              )}`}
+              to={`${cell.row.original.retailer_id}/retailer-dashboard`}
             >
               <Tooltip title="Retailer Dashboard">
                 <IconButton

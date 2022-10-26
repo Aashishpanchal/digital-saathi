@@ -7,10 +7,21 @@ import OrdersToolbar, {
 import OrdersListResults from "../../../../../components/admin/orders/orders-list-results";
 import { useParams } from "react-router-dom";
 import { queryToStr } from "../../../../../components/admin/utils";
+import { retailer } from "../../../../../http";
+import { useQuery } from "@tanstack/react-query";
 
 export default function retailerSaleDetails() {
   const [searchText, setSearchText] = React.useState("");
   const { retailer_id } = useParams();
+
+  const { data } = useQuery(["retailer-name"], () =>
+    retailer("get", { params: retailer_id })
+  );
+
+  const retailerName = React.useMemo(() => {
+    if (data?.status) return data.data?.retailer_name;
+    return "no name";
+  }, [data]);
 
   const searchHandler = (value: string, dates: DatesType) => {
     if (dates.from && dates.to) {
@@ -28,7 +39,9 @@ export default function retailerSaleDetails() {
 
   return (
     <MainContainer>
-      <OrdersToolbar onSearch={searchHandler}>Input Sale Details</OrdersToolbar>
+      <OrdersToolbar onSearch={searchHandler}>
+        Input Sale Details of {retailerName}
+      </OrdersToolbar>
       <Box sx={{ mt: 3 }}>
         <OrdersListResults
           params="retailer"

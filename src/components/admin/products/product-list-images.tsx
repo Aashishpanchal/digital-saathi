@@ -14,6 +14,7 @@ import ProductImageDialog from "./product-image-dialog";
 import { FaRegEdit } from "react-icons/fa";
 import usePaginate from "../../../hooks/usePaginate";
 import { useQuery } from "@tanstack/react-query";
+import SerialNumber from "../serial-number";
 
 export default function ProductListImages(props: {
   sku_id: string;
@@ -81,28 +82,20 @@ export default function ProductListImages(props: {
     () => [
       {
         Header: "S No.",
-        accessor: "image_id",
+        accessor: (_row: any, i: number) => i + 1,
+        Cell: (cell: any) => (
+          <SerialNumber cell={cell} page={page} size={size} />
+        ),
+        width: "5%",
       },
-      {
-        Header: "Product Image",
-        accessor: "image",
-        Cell: (cell: any) => {
-          return (
-            <ProductAvatar
-              src={cell.value}
-              sx={{ width: 50, height: 50 }}
-              variant="rounded"
-            />
-          );
-        },
-      },
-      {
-        Header: "Title",
-        accessor: "title",
-      },
+      // {
+      //   Header: "S No.",
+      //   accessor: "image_id",
+      // },
       {
         Header: "Status",
         accessor: "active",
+        width: "8%",
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
@@ -114,8 +107,27 @@ export default function ProductListImages(props: {
         ),
       },
       {
+        Header: "Product Image",
+        accessor: "image",
+        width: "20%",
+        Cell: (cell: any) => (
+          <Box display="flex" justifyContent={"center"}>
+            <ProductAvatar
+              src={cell.value}
+              sx={{ width: 50, height: 50 }}
+              variant="rounded"
+            />
+          </Box>
+        ),
+      },
+      {
+        Header: "Title",
+        accessor: "title",
+      },
+      {
         Header: "Focus SKU",
         accessor: "focus_sku",
+        width: "8%",
         Cell: (cell: any) => (
           <FocusStar
             cell={cell}
@@ -128,6 +140,7 @@ export default function ProductListImages(props: {
       },
       {
         Header: "Action",
+        width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Tooltip title="Delete">

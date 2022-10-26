@@ -13,9 +13,15 @@ import RetailerDashboardCards from "../../../../../components/admin/retailers/re
 import { MainContainer } from "../../../../../components/layout";
 import RetailerDashboardTwoCards from "../../../../../components/admin/retailers/retailer-deshboard-two-cards";
 import LinkRouter from "../../../../../routers/LinkRouter";
+import { useQuery } from "@tanstack/react-query";
+import { retailer } from "../../../../../http";
 
 export default function RetailerDashboard() {
-  const { retailer_name, retailer_id } = useParams();
+  const { retailer_id } = useParams();
+
+  const { data } = useQuery(["retailer-name"], () =>
+    retailer("get", { params: retailer_id })
+  );
 
   const layerTwo = React.useMemo(
     () => [
@@ -59,11 +65,16 @@ export default function RetailerDashboard() {
     []
   );
 
+  const retailerName = React.useMemo(() => {
+    if (data?.status) return data.data?.retailer_name;
+    return "no name";
+  }, [data]);
+
   return (
     <MainContainer>
       <Box sx={{ my: 1 }}>
         <Typography variant="h5">
-          Retailer Dashboard / {retailer_name}
+          Retailer Dashboard / {retailerName}
         </Typography>
       </Box>
       <RetailerDashboardCards retailerId={retailer_id as string} />

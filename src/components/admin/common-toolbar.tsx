@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography, Button, Card, CardContent } from "@mui/material";
 import RowSearch from "../table/row-search";
+import { FaFileCsv } from "react-icons/fa";
 
 export default function CommonToolbar(props: {
   title: string;
@@ -9,8 +10,9 @@ export default function CommonToolbar(props: {
     onClick: () => void;
   };
   onSearch: (value: string) => void;
+  onClickExport?: () => void;
 }) {
-  const { onAddProps, title, onSearch } = props;
+  const { onAddProps, title, onSearch, onClickExport } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -33,8 +35,20 @@ export default function CommonToolbar(props: {
         <Typography sx={{ m: 1 }} variant="h5">
           {title}
         </Typography>
-        {onAddProps && (
-          <Box sx={{ m: 1 }}>
+        <Box sx={{ m: 1 }}>
+          {onClickExport && (
+            <Button
+              color="secondary"
+              startIcon={<FaFileCsv fontSize="small" />}
+              sx={{
+                mr: 1,
+              }}
+              onClick={onClickExport}
+            >
+              Export
+            </Button>
+          )}
+          {onAddProps && (
             <Button
               color="secondary"
               variant="contained"
@@ -42,8 +56,8 @@ export default function CommonToolbar(props: {
             >
               {onAddProps.title}
             </Button>
-          </Box>
-        )}
+          )}
+        </Box>
       </Box>
       <Box sx={{ mt: 2 }}>
         <Card>

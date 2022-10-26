@@ -9,6 +9,7 @@ import LinkRouter from "../../../routers/LinkRouter";
 import OrderStatus from "./order-status";
 import { useQuery } from "@tanstack/react-query";
 import usePaginate from "../../../hooks/usePaginate";
+import SerialNumber from "../serial-number";
 
 export default function AllOrdersListResults(props: { searchText: string }) {
   // const [page, setPage] = React.useState(0);
@@ -37,17 +38,27 @@ export default function AllOrdersListResults(props: { searchText: string }) {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Order ID",
-        accessor: "order_id",
+        Header: "S No.",
+        accessor: (_row: any, i: number) => i + 1,
+        Cell: (cell: any) => (
+          <SerialNumber cell={cell} page={page} size={size} />
+        ),
+        width: "5%",
       },
+      // {
+      //   Header: "Order ID",
+      //   accessor: "order_id",
+      // },
       {
         Header: "Order Status",
         accessor: "order_status",
+        width: "10%",
         Cell: (cell: any) => <OrderStatus value={cell.value} />,
       },
       {
         Header: "Order Date",
         accessor: "order_date",
+        width: "10%",
         Cell: (cell: any) => (
           <Typography>{dayjs(cell.value).format("MMMM D, YYYY")}</Typography>
         ),
@@ -55,6 +66,7 @@ export default function AllOrdersListResults(props: { searchText: string }) {
       {
         Header: "Amount",
         accessor: "grand_total",
+        width: "10%",
         Cell: (cell: any) => (
           <Typography fontWeight={"600"}>₹{cell.value}</Typography>
         ),
@@ -69,6 +81,7 @@ export default function AllOrdersListResults(props: { searchText: string }) {
       },
       {
         Header: "Action",
+        width: "10%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter

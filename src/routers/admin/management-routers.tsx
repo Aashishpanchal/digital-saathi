@@ -71,7 +71,7 @@ export default {
           element: <RetrieveUpdateRetailers />,
         },
         {
-          path: ":retailer_id/retailer-dashboard/:retailer_name",
+          path: ":retailer_id/retailer-dashboard",
           children: [
             {
               path: "",
@@ -79,57 +79,27 @@ export default {
             },
             {
               path: "retailer-orders",
-              children: [
-                {
-                  path: "",
-                  element: <RetailerOrders />,
-                },
-              ],
+              element: <RetailerOrders />,
             },
             {
               path: "retailer-sku-units",
-              children: [
-                {
-                  path: "",
-                  element: <RetailerSkuUnits />,
-                },
-              ],
+              element: <RetailerSkuUnits />,
             },
             {
               path: "retailer-sku-pricing",
-              children: [
-                {
-                  path: "",
-                  element: <RetailerSkuPricing />,
-                },
-              ],
+              element: <RetailerSkuPricing />,
             },
             {
               path: "retailer-input-sale-details",
-              children: [
-                {
-                  path: "",
-                  element: <RetailerSaleDetails />,
-                },
-              ],
+              element: <RetailerSaleDetails />,
             },
             {
               path: "retailer-cancelled-orders",
-              children: [
-                {
-                  path: "",
-                  element: <RetailerOrderCancelled />,
-                },
-              ],
+              element: <RetailerOrderCancelled />,
             },
             {
               path: "retailer-target-achievement",
-              children: [
-                {
-                  path: "",
-                  element: <RetailerTargetAchievement />,
-                },
-              ],
+              element: <RetailerTargetAchievement />,
             },
           ],
         },

@@ -6,10 +6,21 @@ import {
   RetailerSkuListResults,
   RetailerSkuUnitTab,
 } from "../../../../../components/admin/retailers/retailer-sku-units";
+import { useQuery } from "@tanstack/react-query";
+import { retailer } from "../../../../../http";
 
 export default function RetailerSkuUnits() {
-  const { retailer_name, retailer_id } = useParams();
+  const { retailer_id } = useParams();
   const [value, setValue] = React.useState(0);
+
+  const { data } = useQuery(["retailer-name"], () =>
+    retailer("get", { params: retailer_id })
+  );
+
+  const retailerName = React.useMemo(() => {
+    if (data?.status) return data.data?.retailer_name;
+    return "no name";
+  }, [data]);
 
   return (
     <>
@@ -18,15 +29,24 @@ export default function RetailerSkuUnits() {
         <Container>
           <Box mb={2}>
             <Typography variant={"h5"}>
-              Retailer Orders / {retailer_name}
+              Retailer Orders of {retailerName}
             </Typography>
           </Box>
           <Card>
             <CardContent sx={{ minHeight: 180 }}>
-              <RetailerSkuListResults
-                tab={value}
-                retailerId={retailer_id as string}
-              />
+              {value === 0 ? (
+                <RetailerSkuListResults
+                  key={value}
+                  variant="assign"
+                  retailerId={retailer_id as string}
+                />
+              ) : (
+                <RetailerSkuListResults
+                  key={value}
+                  variant="unassign"
+                  retailerId={retailer_id as string}
+                />
+              )}
             </CardContent>
           </Card>
         </Container>

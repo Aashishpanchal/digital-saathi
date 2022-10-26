@@ -30,7 +30,9 @@ export default function App() {
           >
             <AppRouter />
           </SnackbarProvider>
-          {/* add information modal */}
+          {/*
+           * ! add information modal
+           */}
           <InformationModal {...informationModal} />
           <LoadingDialogBox open={pageLoading} />
         </div>

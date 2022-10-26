@@ -1,42 +1,41 @@
-import { Box, CircularProgress } from "@mui/material";
 import React from "react";
 import { shopOrders } from "../../../../http";
-import TablePagination from "../../../table/table-pagination";
-import RawDataNotFound from "../../raw-data-not-found";
+import { useQuery } from "@tanstack/react-query";
+import { Box, CircularProgress } from "@mui/material";
+import { queryToStr } from "../../utils";
 import OrderCard from "./order-card";
+import RawDataNotFound from "../../raw-data-not-found";
+import TablePagination from "../../../table/table-pagination";
 
 function RetailerOrdersListResults(props: { orderStatus: number }) {
-  const { orderStatus } = props;
-
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    orders: [],
-  });
-  const [loading, setLoading] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [size, setSize] = React.useState("4");
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await shopOrders("get", {
-        postfix: `?order_status=${orderStatus}&page=${page}&size=${size}`,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (error) {
-      console.log(error);
+  const { orderStatus } = props;
+  const postfix = React.useMemo(
+    () => "?" + queryToStr({ page, size, order_status: orderStatus }),
+    [page, size, orderStatus]
+  );
+
+  const { isLoading, data } = useQuery(
+    [`retailer-orders`, postfix],
+    () =>
+      shopOrders("get", {
+        postfix,
+      }),
+    {
+      keepPreviousData: true,
     }
-    setLoading(false);
-  };
+  );
 
-  const orders = React.useMemo(() => data.orders, [data]);
-
-  React.useEffect(() => {
-    onGet();
-  }, [page, size, orderStatus]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) return data.data;
+    return {
+      totalItems: 0,
+      totalPages: 1,
+      orders: [],
+    };
+  }, [data]);
 
   React.useEffect(() => {
     setPage(0);
@@ -51,20 +50,25 @@ function RetailerOrdersListResults(props: { orderStatus: number }) {
         flexDirection="column"
         gap={2}
       >
-        {loading ? (
+        {isLoading ? (
           <CircularProgress color="secondary" sx={{ alignSelf: "center" }} />
-        ) : data.totalItems === 0 ? (
+        ) : getData.totalItems === 0 ? (
           <RawDataNotFound />
         ) : (
-          orders.map((item, index) => <OrderCard key={index} order={item} />)
+          getData.orders.map(
+            (
+              item: { [key: string]: any } | undefined,
+              index: React.Key | null | undefined
+            ) => <OrderCard key={index} order={item} />
+          )
         )}
       </Box>
       <Box mt={3}>
         <TablePagination
           page={page}
           pageSize={size}
-          totalItems={data.totalItems}
-          count={data.totalPages}
+          totalItems={getData.totalItems}
+          count={getData.totalPages}
           onChangePage={setPage}
           onPageSizeSelect={setSize}
           sizeArray={[4, 8, 12]}

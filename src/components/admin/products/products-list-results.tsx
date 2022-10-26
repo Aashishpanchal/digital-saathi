@@ -14,6 +14,7 @@ import { FaRegEdit, FaRegFileImage, FaRupeeSign } from "react-icons/fa";
 import ProductPriceDialog from "./product-price-dialog";
 import usePaginate from "../../../hooks/usePaginate";
 import { useQuery } from "@tanstack/react-query";
+import SerialNumber from "../serial-number";
 
 export default function ProductsListResults(props: { searchText: string }) {
   const { page, setPage, size, setSize } = usePaginate();
@@ -73,8 +74,16 @@ export default function ProductsListResults(props: { searchText: string }) {
     () => [
       {
         Header: "S No.",
-        accessor: "sku_id",
+        accessor: (_row: any, i: number) => i + 1,
+        Cell: (cell: any) => (
+          <SerialNumber cell={cell} page={page} size={size} />
+        ),
+        width: "5%",
       },
+      // {
+      //   Header: "S No.",
+      //   accessor: "sku_id",
+      // },
       {
         Header: "Status",
         accessor: "active",

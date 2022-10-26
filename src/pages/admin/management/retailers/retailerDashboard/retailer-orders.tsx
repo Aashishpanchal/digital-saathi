@@ -4,10 +4,21 @@ import { Box, Card, CardContent, Container, Typography } from "@mui/material";
 import { RetailerOrdersListResults } from "../../../../../components/admin/retailers/retailer-orders";
 import { RetailerOrdersTab } from "../../../../../components/admin/retailers/retailer-orders";
 import { MainContainer } from "../../../../../components/layout";
+import { useQuery } from "@tanstack/react-query";
+import { retailer } from "../../../../../http";
 
 export default function RetailerOrders() {
-  const { retailer_name /* ,retailer_id */ } = useParams();
+  const { retailer_id } = useParams();
   const [orderStatus, setOrderStatus] = React.useState(0);
+
+  const { data } = useQuery(["retailer-name"], () =>
+    retailer("get", { params: retailer_id })
+  );
+
+  const retailerName = React.useMemo(() => {
+    if (data?.status) return data.data?.retailer_name;
+    return "no name";
+  }, [data]);
 
   return (
     <>
@@ -16,7 +27,7 @@ export default function RetailerOrders() {
         <Container>
           <Box mb={2}>
             <Typography variant={"h5"}>
-              Retailer Orders / {retailer_name}
+              Retailer Orders of {retailerName}
             </Typography>
           </Box>
           <Card>

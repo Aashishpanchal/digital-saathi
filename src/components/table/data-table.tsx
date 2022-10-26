@@ -116,6 +116,7 @@ export default function DataTable(props: DataTableProps) {
                         title={column.render("Header") as string}
                         sx={{
                           padding: 1.2,
+                          minWidth: column.render("width") as string | number,
                         }}
                       >
                         <Box
@@ -181,6 +182,7 @@ export default function DataTable(props: DataTableProps) {
                           <TableCell
                             {...props}
                             sx={{
+                              padding: 1.2,
                               borderBottom: "1px solid",
                               borderColor: "neutral.300",
                             }}

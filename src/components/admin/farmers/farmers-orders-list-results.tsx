@@ -11,6 +11,7 @@ import OrderStatus from "../orders/order-status";
 import dayjs from "dayjs";
 import usePaginate from "../../../hooks/usePaginate";
 import { useQuery } from "@tanstack/react-query";
+import SerialNumber from "../serial-number";
 
 export default function FarmersOrdersListResults(props: {
   searchText: string;
@@ -65,13 +66,22 @@ export default function FarmersOrdersListResults(props: {
 
   const columns = React.useMemo(
     () => [
-      { Header: "Order ID", accessor: "order_id" },
+      {
+        Header: "S No.",
+        accessor: (_row: any, i: number) => i + 1,
+        Cell: (cell: any) => (
+          <SerialNumber cell={cell} page={page} size={size} />
+        ),
+        width: "5%",
+      },
+      // { Header: "Order ID", accessor: "order_id", width: 0 },
       {
         Header: "Order Date",
         accessor: "order_date",
         Cell: (cell: any) => (
           <Typography>{dayjs(cell.value).format("MMMM D, YYYY")}</Typography>
         ),
+        width: "10%",
       },
       {
         Header: "Amount",
@@ -79,15 +89,18 @@ export default function FarmersOrdersListResults(props: {
         Cell: (cell: any) => (
           <Typography fontWeight={"600"}>₹{cell.value}</Typography>
         ),
+        width: "10%",
       },
       {
         Header: "Order Status",
         accessor: "order_status",
         Cell: (cell: any) => <OrderStatus value={cell.value} />,
+        width: "10%",
       },
-      { Header: "Retailer Name", accessor: "retailer_name" },
+      { Header: "Retailer Name", accessor: "retailer_name", width: 250 },
       {
         Header: "Action",
+        width: "10%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter

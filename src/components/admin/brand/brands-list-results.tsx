@@ -13,6 +13,7 @@ import ActiveDeactive from "../active-deactive";
 import BrandAddEditDialog from "./brand-add-edit-dialog";
 import usePaginate from "../../../hooks/usePaginate";
 import { useQuery } from "@tanstack/react-query";
+import SerialNumber from "../serial-number";
 
 function BrandsListResults(props: {
   searchText: string;
@@ -86,11 +87,21 @@ function BrandsListResults(props: {
     () => [
       {
         Header: "S No.",
-        accessor: "brand_id",
+        accessor: (_row: any, i: number) => i + 1,
+        Cell: (cell: any) => (
+          <SerialNumber cell={cell} page={page} size={size} />
+        ),
+        width: "5%",
       },
+      // {
+      //   Header: "Brand Id",
+      //   accessor: "brand_id",
+      //   width: "10%",
+      // },
       {
         Header: "Status",
         accessor: "active",
+        width: "10%",
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
@@ -104,12 +115,13 @@ function BrandsListResults(props: {
       {
         Header: "Brand Image",
         accessor: "brand_image",
+        width: "20%",
         Cell: (cell: any) => {
           return (
             <Box display="flex" justifyContent={"center"}>
               <ProductAvatar
                 src={cell.value}
-                sx={{ width: 100, height: 50 }}
+                sx={{ width: 50, height: 50 }}
                 variant="rounded"
               />
             </Box>
@@ -122,6 +134,7 @@ function BrandsListResults(props: {
       },
       {
         Header: "Action",
+        width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Tooltip title="Delete">

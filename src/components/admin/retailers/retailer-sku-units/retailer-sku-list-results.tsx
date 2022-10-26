@@ -5,52 +5,48 @@ import { shopAssignRetailerProducts } from "../../../../http";
 import TablePagination from "../../../table/table-pagination";
 import RawDataNotFound from "../../raw-data-not-found";
 import SkuCard from "./sku-card";
+import { useQuery } from "@tanstack/react-query";
+import { queryToStr } from "../../utils";
+import usePaginate from "../../../../hooks/usePaginate";
 
-function RetailerSkuListResults(props: { retailerId: string; tab: number }) {
-  const { retailerId, tab } = props;
-
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    products: [],
-  });
-  const [loading, setLoading] = React.useState(false);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("12");
-
+function RetailerSkuListResults(props: {
+  retailerId: string;
+  variant: "assign" | "unassign";
+}) {
+  const { retailerId, variant } = props;
+  const { page, setPage, size, setSize } = usePaginate(0, "12", variant);
   const { enqueueSnackbar } = useSnackbar();
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await shopAssignRetailerProducts("get", {
-        params: tab === 0 ? "" : "unassign",
-        postfix: `?retailer_id=${retailerId}&page=${page}&size=${size}`,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
-  };
+  const postfix = React.useMemo(() => {
+    return "?".concat(queryToStr({ page, size, retailer_id: retailerId }));
+  }, [page, size]);
 
-  const products = React.useMemo(() => data.products, [data]);
+  const { isLoading, refetch, data } = useQuery(
+    [`retailer-sku-unit-${variant}`, postfix],
+    () =>
+      shopAssignRetailerProducts("get", {
+        params: variant === "assign" ? "" : "unassign",
+        postfix,
+      }),
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const onClickHandle = async (sku: { [key: string]: any }) => {
-    if (tab === 0) {
+    if (variant === "assign") {
       const { assign_id, product_price_id } = sku;
       try {
-        const res = await shopAssignRetailerProducts("delete", {
+        const res = await shopAssignRetailerProducts("post", {
           params: "delete",
           postfix: `?assign_id=${assign_id}&product_price_id=${product_price_id}`,
+          data: JSON.stringify({ delete: 1 }),
         });
         if (res?.status === 200) {
           enqueueSnackbar("Product Un-Assign  successfully!👍😊", {
             variant: "success",
           });
-          await onGet();
+          await refetch();
         }
       } catch (error) {
         enqueueSnackbar("Product Un-Assign Failed!😢", {
@@ -73,7 +69,7 @@ function RetailerSkuListResults(props: { retailerId: string; tab: number }) {
           enqueueSnackbar("Product Assign  successfully!👍😊", {
             variant: "success",
           });
-          await onGet();
+          await refetch();
         }
       } catch (error) {
         enqueueSnackbar("Product Assign Failed!😢", {
@@ -84,39 +80,40 @@ function RetailerSkuListResults(props: { retailerId: string; tab: number }) {
     }
   };
 
-  React.useEffect(() => {
-    onGet();
-  }, [page, size, tab]);
-
-  React.useEffect(() => {
-    setPage(0);
-    setSize("12");
-  }, [tab]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) return data.data;
+    return { totalItems: 0, totalPages: 1, products: [] };
+  }, [data]);
 
   return (
     <>
       <Box display={"flex"} justifyContent="center" flexWrap={"wrap"} gap={2}>
-        {loading ? (
+        {isLoading ? (
           <CircularProgress color="secondary" sx={{ alignSelf: "center" }} />
-        ) : data.totalItems === 0 ? (
+        ) : getData.totalItems === 0 ? (
           <RawDataNotFound />
         ) : (
-          products.map((item, index) => (
-            <SkuCard
-              key={index}
-              sku={item}
-              variant={tab !== 0 ? "assign" : "unassign"}
-              onClick={onClickHandle}
-            />
-          ))
+          getData.products.map(
+            (
+              item: { [key: string]: any },
+              index: React.Key | null | undefined
+            ) => (
+              <SkuCard
+                key={index}
+                sku={item}
+                variant={variant === "assign" ? "unassign" : "assign"}
+                onClick={onClickHandle}
+              />
+            )
+          )
         )}
       </Box>
       <Box mt={3}>
         <TablePagination
           page={page}
           pageSize={size}
-          totalItems={data.totalItems}
-          count={data.totalPages}
+          totalItems={getData.totalItems}
+          count={getData.totalPages}
           onChangePage={setPage}
           onPageSizeSelect={setSize}
           sizeArray={[12, 24, 36, 48]}

@@ -77,6 +77,7 @@ export default function OrderDetails() {
       {
         Header: "Product",
         accessor: "sku_image",
+        width: "8%",
         Cell: (cell: any) => (
           <Box display="flex" justifyContent={"center"}>
             <ProductAvatar src={cell.value} sx={{ width: 50, height: 50 }} />
@@ -90,14 +91,17 @@ export default function OrderDetails() {
       {
         Header: "Dimension",
         accessor: "dimension",
+        width: "5%",
       },
       {
         Header: "Weight",
         accessor: "weight",
+        width: "10%",
       },
       {
         Header: "Price Sub Total",
         accessor: "price",
+        width: "20%",
         Cell: (cell: any) => (
           <Box display={"flex"} justifyContent="center" alignItems={"center"}>
             <Typography color="text.secondary">
