@@ -3,41 +3,24 @@ import { useSnackbar } from "notistack";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { FaRegEdit } from "react-icons/fa";
-import { brands } from "../../../http";
-import useBucket from "../../../hooks/useBucket";
+import { FaArrowRight, FaRegEdit, FaUser } from "react-icons/fa";
+import { deliveryPartners } from "../../../http";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
-import ProductAvatar from "../../Image/product-avatar";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
-import BrandAddEditDialog from "./brand-add-edit-dialog";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
+import LinkRouter from "../../../routers/LinkRouter";
 
-function BrandsListResults(props: {
-  searchText: string;
-  addOpen: boolean;
-  addClose: () => void;
-}) {
+export default function DeliveryPartnerList(props: { searchText: string }) {
   const { page, setPage, size, setSize } = usePaginate();
-  const [deleteData, setDeleteData] = React.useState<{
-    value: { [key: string]: any };
-    open: boolean;
-  }>({
-    value: {},
-    open: false,
-  });
-  const [edit, setEdit] = React.useState<{
-    value: { [key: string]: any } | null;
-    open: boolean;
-  }>({
-    value: null,
+  const [deleteData, setDeleteData] = React.useState({
+    id: "",
     open: false,
   });
 
-  const { searchText, addClose, addOpen } = props;
-  const { S3DeleteImage } = useBucket();
+  const { searchText } = props;
 
   const postfix = React.useMemo(() => {
     return searchText
@@ -47,12 +30,12 @@ function BrandsListResults(props: {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const deleteBoxClose = () => setDeleteData({ open: false, value: {} });
+  const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
 
   const { isLoading, refetch, data } = useQuery(
-    ["brand", postfix],
+    ["delivery-partners", postfix],
     () =>
-      brands("get", {
+      deliveryPartners("get", {
         postfix,
       }),
     {
@@ -63,21 +46,17 @@ function BrandsListResults(props: {
 
   const onDelete = async () => {
     try {
-      const { brand_id, image } = deleteData.value;
-      const metaData = await S3DeleteImage(image);
-      if (metaData?.success) {
-        const res: any = await brands("delete", {
-          params: brand_id,
+      const res: any = await deliveryPartners("delete", {
+        params: deleteData?.id,
+      });
+      if (res.status === 200) {
+        await refetch();
+        enqueueSnackbar("entry success-full deleted 😊", {
+          variant: "success",
         });
-        if (res.status === 200) {
-          refetch();
-          enqueueSnackbar("entry success-full deleted 😊", {
-            variant: "success",
-          });
-        }
       }
     } catch (err: any) {
-      console.log(err.response);
+      console.log(err);
       enqueueSnackbar("entry not delete 😢", { variant: "error" });
     }
     deleteBoxClose();
@@ -93,11 +72,6 @@ function BrandsListResults(props: {
         ),
         width: "5%",
       },
-      // {
-      //   Header: "Brand Id",
-      //   accessor: "brand_id",
-      //   width: "10%",
-      // },
       {
         Header: "Status",
         accessor: "active",
@@ -105,36 +79,32 @@ function BrandsListResults(props: {
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
-            idAccessor="brand_id"
-            axiosFunction={brands}
+            idAccessor="partner_id"
+            axiosFunction={deliveryPartners}
             postfix={postfix}
             refetch={refetch}
           />
         ),
       },
       {
-        Header: "Brand Image",
-        accessor: "brand_image",
-        width: "20%",
-        Cell: (cell: any) => {
-          return (
-            <Box display="flex" justifyContent={"center"}>
-              <ProductAvatar
-                src={cell.value}
-                sx={{ width: 50, height: 50 }}
-                variant="rounded"
-              />
-            </Box>
-          );
-        },
+        Header: "Partner Name",
+        accessor: "partner_name",
       },
       {
-        Header: "Brand Name",
-        accessor: "brand_name",
+        Header: "Zone Name",
+        accessor: "zone_name",
+      },
+      {
+        Header: "Email",
+        accessor: "email_id",
+      },
+      {
+        Header: "Phone No.",
+        accessor: "phone_no",
       },
       {
         Header: "Action",
-        width: "15%",
+        width: "20%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Tooltip title="Delete">
@@ -143,24 +113,48 @@ function BrandsListResults(props: {
                 size="small"
                 color="secondary"
                 onClick={() =>
-                  setDeleteData({ open: true, value: cell.row.original })
+                  setDeleteData({
+                    open: true,
+                    id: cell.row.original.partner_id,
+                  })
                 }
               >
                 <RiDeleteBinFill />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Brand Edit">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setEdit({ open: true, value: cell.row.original })
-                }
-              >
-                <FaRegEdit />
-              </IconButton>
-            </Tooltip>
+            <LinkRouter to={`${cell.row.original.partner_id}`}>
+              <Tooltip title="Edit">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <FaRegEdit />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
+            <LinkRouter to={`${cell.row.original.partner_id}/dp-retailer`}>
+              <Tooltip title="Retailer">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <FaArrowRight />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
+            <LinkRouter to={`${cell.row.original.partner_id}/dp-agents`}>
+              <Tooltip title="Delivery-Agent">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <FaUser />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
           </Box>
         ),
       },
@@ -175,7 +169,7 @@ function BrandsListResults(props: {
     return {
       totalItems: 0,
       totalPages: 0,
-      brands: [],
+      partners: [],
     };
   }, [data]);
 
@@ -188,7 +182,7 @@ function BrandsListResults(props: {
       <DataTable
         loading={isLoading}
         columns={columns}
-        data={getData.brands}
+        data={getData.partners}
         showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
@@ -208,26 +202,6 @@ function BrandsListResults(props: {
         onClickClose={deleteBoxClose}
         onClickOk={onDelete}
       />
-      {edit.open && (
-        <BrandAddEditDialog
-          open={edit.open}
-          close={() => setEdit({ open: false, value: null })}
-          brand={edit.value}
-          reload={refetch}
-          variant="edit"
-        />
-      )}
-      {addOpen && (
-        <BrandAddEditDialog
-          open={addOpen}
-          close={addClose}
-          brand={null}
-          reload={refetch}
-          variant="add"
-        />
-      )}
     </>
   );
 }
-
-export default React.memo(BrandsListResults);

@@ -223,7 +223,7 @@ export default function ProductsListResults(props: { searchText: string }) {
       <DataTable
         loading={isLoading}
         columns={columns}
-        data={getData.product || []}
+        data={searchText ? getData?.products || [] : getData.product}
         showNotFound={getData.totalItems === 0}
         components={{
           pagination: (

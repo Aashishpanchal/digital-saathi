@@ -9,7 +9,7 @@ export default function CommonToolbar(props: {
     title: string;
     onClick: () => void;
   };
-  onSearch: (value: string) => void;
+  onSearch?: (value: string) => void;
   onClickExport?: () => void;
 }) {
   const { onAddProps, title, onSearch, onClickExport } = props;
@@ -18,7 +18,7 @@ export default function CommonToolbar(props: {
 
   const onReset = () => {
     setSearchText("");
-    onSearch("");
+    onSearch && onSearch("");
   };
 
   return (
@@ -59,52 +59,54 @@ export default function CommonToolbar(props: {
           )}
         </Box>
       </Box>
-      <Box sx={{ mt: 2 }}>
-        <Card>
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-              }}
-            >
-              <Box sx={{ maxWidth: 250 }}>
-                <RowSearch
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="Search"
-                />
+      {onSearch && (
+        <Box sx={{ mt: 2 }}>
+          <Card>
+            <CardContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                }}
+              >
+                <Box sx={{ maxWidth: 250 }}>
+                  <RowSearch
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="Search"
+                  />
+                </Box>
+                <Box sx={{ display: "flex", gap: 3 }}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    size="small"
+                    onClick={() => onSearch(searchText)}
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    sx={{
+                      borderColor: "neutral.200",
+                      color: "neutral.600",
+                      "&:hover": {
+                        borderColor: "neutral.300",
+                        color: "neutral.800",
+                      },
+                    }}
+                    variant="outlined"
+                    size="small"
+                    onClick={onReset}
+                  >
+                    Reset
+                  </Button>
+                </Box>
               </Box>
-              <Box sx={{ display: "flex", gap: 3 }}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  size="small"
-                  onClick={() => onSearch(searchText)}
-                >
-                  Search
-                </Button>
-                <Button
-                  sx={{
-                    borderColor: "neutral.200",
-                    color: "neutral.600",
-                    "&:hover": {
-                      borderColor: "neutral.300",
-                      color: "neutral.800",
-                    },
-                  }}
-                  variant="outlined"
-                  size="small"
-                  onClick={onReset}
-                >
-                  Reset
-                </Button>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
     </>
   );
 }

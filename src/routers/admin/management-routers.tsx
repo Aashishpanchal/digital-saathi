@@ -5,15 +5,11 @@ import {
 } from "../../pages/admin/management/categories";
 import { Brands } from "../../pages/admin/management/brands";
 import {
-  CreateDeliveryAgent,
   CreateDeliveryPartner,
-  CreateDPRetailer,
   DeliveryAgents,
   DeliveryPartners,
   DeliveryPartnersRetailer,
-  RetrieveUpdateDeliveryAgent,
   RetrieveUpdateDeliveryPartner,
-  RetrieveUpdateDPRetailer,
 } from "../../pages/admin/management/delivery-partners";
 import {
   CreateProducts,
@@ -146,38 +142,12 @@ export default {
               element: <RetrieveUpdateDeliveryPartner />,
             },
             {
-              path: "dp-retailer/:partner_name",
-              children: [
-                {
-                  path: "",
-                  element: <DeliveryPartnersRetailer />,
-                },
-                {
-                  path: "new",
-                  element: <CreateDPRetailer />,
-                },
-                {
-                  path: ":del_ret_id",
-                  element: <RetrieveUpdateDPRetailer />,
-                },
-              ],
+              path: "dp-retailer",
+              element: <DeliveryPartnersRetailer />,
             },
             {
-              path: "dp-agents/:partner_name",
-              children: [
-                {
-                  path: "",
-                  element: <DeliveryAgents />,
-                },
-                {
-                  path: "new",
-                  element: <CreateDeliveryAgent />,
-                },
-                {
-                  path: ":agent_id",
-                  element: <RetrieveUpdateDeliveryAgent />,
-                },
-              ],
+              path: "dp-agents",
+              element: <DeliveryAgents />,
             },
           ],
         },

@@ -1,6 +1,3 @@
-import { categories, subCategories } from "../../http";
-import type { HttpMethod, HttpOption } from "../../http/server-api/server-base";
-
 export const getPayload = (
   original: { [key: string]: any },
   payload?: Array<string>
