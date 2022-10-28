@@ -77,7 +77,7 @@ export default function OrderDetails() {
       {
         Header: "Product",
         accessor: "sku_image",
-        width: "8%",
+        // width: "5%",
         Cell: (cell: any) => (
           <Box display="flex" justifyContent={"center"}>
             <ProductAvatar src={cell.value} sx={{ width: 50, height: 50 }} />
@@ -87,21 +87,22 @@ export default function OrderDetails() {
       {
         Header: "Name",
         accessor: "sku_name",
+        // width: "5%",
       },
       {
         Header: "Dimension",
         accessor: "dimension",
-        width: "5%",
+        // width: "5%",
       },
       {
         Header: "Weight",
         accessor: "weight",
-        width: "10%",
+        // width: "5%",
       },
       {
         Header: "Price Sub Total",
         accessor: "price",
-        width: "20%",
+        // width: "5%",
         Cell: (cell: any) => (
           <Box display={"flex"} justifyContent="center" alignItems={"center"}>
             <Typography color="text.secondary">

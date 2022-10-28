@@ -69,7 +69,7 @@ export default function DataSkuUnitList(props: { searchText: string }) {
     <DataTable
       loading={isLoading}
       columns={columns}
-      data={searchText ? getData?.products || [] : getData.product}
+      data={getData?.product || []}
       showNotFound={getData.totalItems === 0}
       components={{
         pagination: (

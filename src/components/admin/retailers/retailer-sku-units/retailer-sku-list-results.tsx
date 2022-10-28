@@ -40,7 +40,7 @@ function RetailerSkuListResults(props: {
         const res = await shopAssignRetailerProducts("post", {
           params: "delete",
           postfix: `?assign_id=${assign_id}&product_price_id=${product_price_id}`,
-          data: JSON.stringify({ delete: 1 }),
+          data: JSON.stringify({ deleted: 1 }),
         });
         if (res?.status === 200) {
           enqueueSnackbar("Product Un-Assign  successfully!👍😊", {
