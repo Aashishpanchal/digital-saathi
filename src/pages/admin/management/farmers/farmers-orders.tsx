@@ -10,12 +10,6 @@ export default function FarmersOrders() {
   const [searchText, setSearchText] = React.useState("");
 
   const searchHandler = async (value: string) => {
-    value =
-      value.toLowerCase() === "active"
-        ? "1"
-        : value.toLowerCase() === "deactive"
-        ? "0"
-        : value;
     setSearchText(value ? `/search?search_customer=${value}` : "");
   };
 

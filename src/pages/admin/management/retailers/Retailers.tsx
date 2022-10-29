@@ -10,12 +10,6 @@ export default function Retailers() {
   const navigate = useNavigate();
 
   const searchHandler = (value: string) => {
-    value =
-      value.toLowerCase() === "active"
-        ? "1"
-        : value.toLowerCase() === "deactive"
-        ? "0"
-        : value;
     setSearchText(value ? `/search?search_retailer=${value}` : "");
   };
 

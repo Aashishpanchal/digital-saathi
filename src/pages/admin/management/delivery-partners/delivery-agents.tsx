@@ -16,12 +16,6 @@ export default function DeliveryAgents() {
   const onClose = () => setOpen(false);
 
   const searchHandler = (value: string) => {
-    value =
-      value.toLowerCase() === "active"
-        ? "1"
-        : value.toLowerCase() === "deactive"
-        ? "0"
-        : value;
     setSearchText(value ? `/search?search_agent=${value}` : "");
   };
 

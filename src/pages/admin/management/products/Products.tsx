@@ -13,12 +13,6 @@ export default function Products() {
   const dispatch = useDispatch();
 
   const searchHandler = (value: string) => {
-    value =
-      value.toLowerCase() === "active"
-        ? "1"
-        : value.toLowerCase() === "deactive"
-        ? "0"
-        : value;
     setSearchText(value ? `/searchproduct?search_products=${value}` : "");
   };
 
