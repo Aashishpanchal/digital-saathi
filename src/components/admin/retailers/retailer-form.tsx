@@ -1,8 +1,9 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { TextInput } from "../../form";
+import { PatternFormat } from "react-number-format";
 
-export default function RetailerForm(props: {
+function RetailerForm(props: {
   errors?: any;
   values?: any;
   touched?: any;
@@ -32,9 +33,12 @@ export default function RetailerForm(props: {
         name: "company_name",
       },
       {
-        type: "string",
+        type: "numeric",
         label: "Phone Number",
         name: "phone_no",
+        format: "+91 ### ### ####",
+        allowEmptyFormatting: true,
+        mask: "_",
       },
       {
         type: "string",
@@ -111,7 +115,7 @@ export default function RetailerForm(props: {
     ],
     []
   );
-
+  // format="+1 (###) #### ###" allowEmptyFormatting mask="_"
   return (
     <Box>
       <Box sx={{ mb: 2 }}>
@@ -119,17 +123,33 @@ export default function RetailerForm(props: {
           <Typography variant={"h6"}>Basic Information</Typography>
           <Typography>Section to config basic retailer information</Typography>
         </Box>
-        {basicFields.map((item, index) => (
-          <TextInput
-            key={index}
-            {...item}
-            value={values[item.name] || ""}
-            onChange={handleChange}
-            error={errors[item.name] && touched[item.name] ? true : false}
-            helperText={touched[item.name] ? errors[item.name] : ""}
-            onBlur={handleBlur}
-          />
-        ))}
+        {basicFields.map((item, index) => {
+          const { type, format, ...others } = item;
+          return item.type === "numeric" ? (
+            <PatternFormat
+              {...others}
+              type="tel"
+              format={format || ""}
+              customInput={TextInput}
+              key={index}
+              value={values[item.name] || ""}
+              onChange={handleChange}
+              error={errors[item.name] && touched[item.name] ? true : false}
+              helperText={touched[item.name] ? errors[item.name] : ""}
+              onBlur={handleBlur}
+            />
+          ) : (
+            <TextInput
+              key={index}
+              {...item}
+              value={values[item.name] || ""}
+              onChange={handleChange}
+              error={errors[item.name] && touched[item.name] ? true : false}
+              helperText={touched[item.name] ? errors[item.name] : ""}
+              onBlur={handleBlur}
+            />
+          );
+        })}
       </Box>
       <Box sx={{ mb: 2 }}>
         <Box>
@@ -215,11 +235,13 @@ export default function RetailerForm(props: {
   );
 }
 
+export default React.memo(RetailerForm);
+
 export const initialValues = {
   retailer_name: "",
   company_name: "",
   email_id: "",
-  phone_no: "+91 ",
+  phone_no: "",
   zone_name: "",
   erp_code: "",
   address: "",

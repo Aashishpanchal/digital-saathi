@@ -12,6 +12,7 @@ import usePrintData from "../../../../hooks/usePrintData";
 import dayjs from "dayjs";
 import OrdersDetailsList from "./orders-details-list";
 import { LabelText } from "../styled";
+import { useNavigate } from "react-router-dom";
 
 const label1 = [
   { title: "farmer name", accessor: "customer_name" },
@@ -32,8 +33,10 @@ const label2 = [
   { title: "order amount", accessor: "grand_total" },
 ];
 
-export default function OrderCard(props: { order?: { [key: string]: any } }) {
+function OrderCard(props: { order?: { [key: string]: any } }) {
   const { order } = props;
+
+  const navigate = useNavigate();
 
   const [orderDetailShow, setOderDetailShow] = React.useState(false);
 
@@ -45,6 +48,8 @@ export default function OrderCard(props: { order?: { [key: string]: any } }) {
     labels: label1,
     data: order,
   });
+  const onPrint = () =>
+    navigate(`/orders/order-invoice-print/${order?.order_id}`);
 
   return (
     <Card elevation={4}>
@@ -87,16 +92,23 @@ export default function OrderCard(props: { order?: { [key: string]: any } }) {
               >
                 View
               </Button>
-              <Button variant="outlined" size="small" color="secondary">
+              <Button
+                variant="outlined"
+                size="small"
+                color="secondary"
+                onClick={onPrint}
+              >
                 Print
               </Button>
             </Box>
           </Grid>
         </Grid>
         <Collapse in={orderDetailShow}>
-          <OrdersDetailsList orderId={order?.order_id} />
+          <OrdersDetailsList key={order?.order_id} orderId={order?.order_id} />
         </Collapse>
       </CardContent>
     </Card>
   );
 }
+
+export default React.memo(OrderCard);

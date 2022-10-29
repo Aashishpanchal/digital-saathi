@@ -7,18 +7,28 @@ import OrderCard from "./order-card";
 import RawDataNotFound from "../../raw-data-not-found";
 import TablePagination from "../../../table/table-pagination";
 
-function RetailerOrdersListResults(props: { orderStatus: number }) {
+function RetailerOrdersListResults(props: {
+  orderStatus: number;
+  retailerId: string;
+}) {
   const [page, setPage] = React.useState(0);
   const [size, setSize] = React.useState("4");
 
-  const { orderStatus } = props;
+  const { orderStatus, retailerId } = props;
   const postfix = React.useMemo(
-    () => "?" + queryToStr({ page, size, order_status: orderStatus }),
+    () =>
+      "?" +
+      queryToStr({
+        page,
+        size,
+        order_status: orderStatus,
+        retailer_id: retailerId,
+      }),
     [page, size, orderStatus]
   );
 
   const { isLoading, data } = useQuery(
-    [`retailer-orders`, postfix],
+    [`retailer-orders-${orderStatus}`, postfix],
     () =>
       shopOrders("get", {
         postfix,

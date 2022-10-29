@@ -4,64 +4,94 @@ import { shopAssignRetailerProducts } from "../../../../http";
 import TablePagination from "../../../table/table-pagination";
 import RawDataNotFound from "../../raw-data-not-found";
 import SkuPricingCard from "./sku-pricing-card";
+import { queryToStr } from "../../utils";
+import { useQuery } from "@tanstack/react-query";
+import usePaginate from "../../../../hooks/usePaginate";
+import SkuPricingUpdateDialog from "./sku-pricing-update-dialog";
 
 function RetailerSkuPricingListResults(props: { retailerId: string }) {
   const { retailerId } = props;
+  const { page, setPage, size, setSize } = usePaginate(0, "12");
 
-  const [data, setData] = React.useState({
-    totalItems: 0,
-    totalPages: 1,
-    products: [],
+  const [edit, setEdit] = React.useState({
+    value: {},
+    open: false,
   });
-  const [loading, setLoading] = React.useState(false);
-  const [page, setPage] = React.useState(0);
-  const [size, setSize] = React.useState("12");
 
-  const onGet = async () => {
-    try {
-      setLoading(true);
-      const res = await shopAssignRetailerProducts("get", {
-        postfix: `?retailer_id=${retailerId}&page=${page}&size=${size}`,
-      });
-      if (res?.status === 200) {
-        setData(res.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
-  };
+  const postfix = React.useMemo(
+    () =>
+      "?".concat(
+        queryToStr({
+          retailer_id: retailerId,
+          page,
+          size,
+        })
+      ),
+    [page, size]
+  );
 
-  const products = React.useMemo(() => data.products, [data]);
+  const { data, isLoading, refetch } = useQuery(
+    ["shop-assign-retailer-products", postfix],
+    () =>
+      shopAssignRetailerProducts("get", {
+        postfix,
+      })
+  );
 
-  React.useEffect(() => {
-    onGet();
-  }, [page, size]);
+  const getData = React.useMemo(() => {
+    if (data?.status === 200) return data.data;
+    return {
+      totalItems: 0,
+      totalPages: 1,
+      products: [],
+    };
+  }, [data]);
 
   return (
     <>
       <Box display={"flex"} justifyContent="center" flexWrap={"wrap"} gap={2}>
-        {loading ? (
+        {isLoading ? (
           <CircularProgress color="secondary" sx={{ alignSelf: "center" }} />
-        ) : data.totalItems === 0 ? (
+        ) : getData.totalItems === 0 ? (
           <RawDataNotFound />
         ) : (
-          products.map((item, index) => (
-            <SkuPricingCard key={index} sku={item} />
-          ))
+          getData.products.map(
+            (
+              item: { [key: string]: any },
+              index: React.Key | null | undefined
+            ) => (
+              <SkuPricingCard
+                key={index}
+                sku={item}
+                refetch={refetch}
+                onClickPrice={() =>
+                  setEdit({
+                    value: item,
+                    open: true,
+                  })
+                }
+              />
+            )
+          )
         )}
       </Box>
       <Box mt={3}>
         <TablePagination
           page={page}
           pageSize={size}
-          totalItems={data.totalItems}
-          count={data.totalPages}
+          totalItems={getData.totalItems}
+          count={getData.totalPages}
           onChangePage={setPage}
           onPageSizeSelect={setSize}
           sizeArray={[12, 24, 36, 48]}
         />
       </Box>
+      <SkuPricingUpdateDialog
+        open={edit.open}
+        skuPrice={edit.value}
+        close={() => setEdit({ open: false, value: {} })}
+        reload={refetch}
+      />
     </>
   );
 }

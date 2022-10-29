@@ -1,5 +1,4 @@
 import AppRouter from "./routers/AppRouter";
-import InformationModal from "./components/modals/InformationModal";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { ThemeProvider } from "@mui/material/styles";
@@ -30,10 +29,6 @@ export default function App() {
           >
             <AppRouter />
           </SnackbarProvider>
-          {/*
-           * ! add information modal
-           */}
-          <InformationModal {...informationModal} />
           <LoadingDialogBox open={pageLoading} />
         </div>
       </LocalizationProvider>

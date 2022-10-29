@@ -7,6 +7,7 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  CircularProgress,
   Grid,
   Typography,
 } from "@mui/material";
@@ -15,6 +16,8 @@ import usePrintData from "../../../../hooks/usePrintData";
 import { FaCheck, FaRupeeSign, FaStar } from "react-icons/fa";
 import ErrorSuccessChip from "../../../common/error-success-chip";
 import { MdError } from "react-icons/md";
+import { shopProducts } from "../../../../http";
+import { useSnackbar } from "notistack";
 
 const label1 = [
   { title: "weight", accessor: "weight" },
@@ -31,9 +34,15 @@ const label2 = [
   { title: "sku code", accessor: "sku_code" },
 ];
 
-export default function SkuPricingCard(props: { sku: { [key: string]: any } }) {
-  const { sku } = props;
+export default function SkuPricingCard(props: {
+  sku: { [key: string]: any };
+  refetch: Function;
+  onClickPrice: () => void;
+}) {
+  const { sku, refetch, onClickPrice } = props;
+  const { enqueueSnackbar } = useSnackbar();
 
+  const [focusLoading, setFocusLoading] = React.useState(false);
   const { printData: obj1 } = usePrintData({
     labels: label1,
     data: sku,
@@ -42,6 +51,30 @@ export default function SkuPricingCard(props: { sku: { [key: string]: any } }) {
     labels: label2,
     data: sku,
   });
+
+  const focusOnOff = async () => {
+    try {
+      setFocusLoading(true);
+      const res = await shopProducts("put", {
+        params: sku?.sku_id,
+        data: JSON.stringify({
+          focus_sku: !sku.focus_sku ? 1 : 0,
+        }),
+      });
+      if (res?.status === 200) {
+        refetch();
+        enqueueSnackbar((!sku.focus_sku ? "On" : "Off") + " successfully 😊", {
+          variant: "success",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar((sku.focus_sku ? "On" : "Off") + " failed 😢", {
+        variant: "error",
+      });
+    }
+    setFocusLoading(false);
+  };
 
   return (
     <Card sx={{ width: 350 }} elevation={5}>
@@ -97,10 +130,22 @@ export default function SkuPricingCard(props: { sku: { [key: string]: any } }) {
           />
           <Chip
             size="small"
-            color={sku.focus_sku === 0 ? "error" : "warning"}
-            label={sku.focus_sku === 0 ? "Off" : "On"}
+            color={!sku.focus_sku ? "error" : "warning"}
+            label={!sku.focus_sku ? "Off" : "On"}
             variant="outlined"
-            icon={sku.focus_sku === 0 ? <MdError /> : <FaStar size={15} />}
+            icon={
+              focusLoading ? (
+                <CircularProgress
+                  size={15}
+                  color={!sku.focus_sku ? "error" : "warning"}
+                />
+              ) : !sku.focus_sku ? (
+                <MdError />
+              ) : (
+                <FaStar size={15} />
+              )
+            }
+            onClick={focusOnOff}
           />
           <Chip
             icon={<FaRupeeSign size={15} />}
@@ -108,6 +153,7 @@ export default function SkuPricingCard(props: { sku: { [key: string]: any } }) {
             size="small"
             variant="outlined"
             color="secondary"
+            onClick={onClickPrice}
           />
         </Box>
       </CardActions>

@@ -13,6 +13,7 @@ import { TextInput } from "../../../form";
 import { shopDeliveryAgent } from "../../../../http";
 import { deliveryAgentSchema } from "../schemas";
 import { useParams } from "react-router-dom";
+import { PatternFormat } from "react-number-format";
 
 export default function deliveryAgentFormDialog(props: {
   open: boolean;
@@ -31,7 +32,10 @@ export default function deliveryAgentFormDialog(props: {
       initialValues: {
         agent_name: deliveryAgent?.agent_name || "",
         email_id: deliveryAgent?.email_id || "",
-        phone_no: deliveryAgent?.phone_no || "+91 ",
+        phone_no:
+          typeof deliveryAgent?.phone_no === "string"
+            ? deliveryAgent.phone_no.replace(/\s/g, "").replace("+91", "")
+            : "",
       },
       validationSchema: deliveryAgentSchema,
       enableReinitialize: true,
@@ -40,7 +44,11 @@ export default function deliveryAgentFormDialog(props: {
           try {
             const res = await shopDeliveryAgent("put", {
               params: deliveryAgent.agent_id,
-              data: JSON.stringify({ ...values, partner_id }),
+              data: JSON.stringify({
+                ...values,
+                phone_on: values.phone_no.replace(/\s/g, ""),
+                partner_id,
+              }),
             });
             if (res?.status === 200) {
               close();
@@ -60,22 +68,31 @@ export default function deliveryAgentFormDialog(props: {
         } else {
           try {
             const res = await shopDeliveryAgent("post", {
-              data: JSON.stringify({ ...values, partner_id }),
+              data: JSON.stringify({
+                ...values,
+                phone_on: values.phone_no.replace(/\s/g, ""),
+                partner_id,
+              }),
             });
             if (res?.status === 200) {
               close();
               reload();
               setTimeout(() => {
-                enqueueSnackbar("Delivery Agent successfully!👍😊", {
+                enqueueSnackbar("Delivery Agent Save successfully!👍😊", {
                   variant: "success",
                 });
               }, 200);
             }
-          } catch (error) {
-            console.log(error);
-            enqueueSnackbar("Delivery Agent Save Failed!😢", {
-              variant: "error",
-            });
+          } catch (error: any) {
+            const {
+              status,
+              data: { message },
+            } = error.response;
+            if (status === 400) {
+              enqueueSnackbar(message, { variant: "error" });
+            } else {
+              enqueueSnackbar("Delivery Agent Failed!😢", { variant: "error" });
+            }
           }
         }
       },
@@ -96,10 +113,12 @@ export default function deliveryAgentFormDialog(props: {
         placeholder: "email",
       },
       {
-        type: "text",
+        type: "numeric",
         label: "Phone Number",
         name: "phone_no",
-        placeholder: "phone number",
+        format: "+91 ### ### ####",
+        allowEmptyFormatting: true,
+        mask: "_",
       },
     ],
     []
@@ -112,24 +131,47 @@ export default function deliveryAgentFormDialog(props: {
       </DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit}>
-          {basicFields.map((item, index) => (
-            <TextInput
-              key={index}
-              {...item}
-              name={item.name}
-              value={(values as any)[item.name] || ""}
-              onChange={handleChange}
-              error={
-                (errors as any)[item.name] && (touched as any)[item.name]
-                  ? true
-                  : false
-              }
-              helperText={
-                (touched as any)[item.name] ? (errors as any)[item.name] : ""
-              }
-              onBlur={handleBlur}
-            />
-          ))}
+          {basicFields.map((item, index) => {
+            const { type, format, ...others } = item;
+            return item.type === "numeric" ? (
+              <PatternFormat
+                {...others}
+                type="tel"
+                format={format || ""}
+                customInput={TextInput}
+                key={index}
+                name={item.name}
+                value={(values as any)[item.name] || ""}
+                onChange={handleChange}
+                error={
+                  (errors as any)[item.name] && (touched as any)[item.name]
+                    ? true
+                    : false
+                }
+                helperText={
+                  (touched as any)[item.name] ? (errors as any)[item.name] : ""
+                }
+                onBlur={handleBlur}
+              />
+            ) : (
+              <TextInput
+                key={index}
+                {...item}
+                name={item.name}
+                value={(values as any)[item.name] || ""}
+                onChange={handleChange}
+                error={
+                  (errors as any)[item.name] && (touched as any)[item.name]
+                    ? true
+                    : false
+                }
+                helperText={
+                  (touched as any)[item.name] ? (errors as any)[item.name] : ""
+                }
+                onBlur={handleBlur}
+              />
+            );
+          })}
           <Divider sx={{ my: 1 }} />
           <Box
             sx={{

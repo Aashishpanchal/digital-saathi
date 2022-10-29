@@ -40,7 +40,7 @@ export default function FarmersFormDialog(props: {
             close();
             reload();
             setTimeout(() => {
-              enqueueSnackbar("Farmer Update  successfully!👍😊", {
+              enqueueSnackbar("Farmer Update successfully!👍😊", {
                 variant: "success",
               });
             }, 200);
@@ -97,7 +97,7 @@ export default function FarmersFormDialog(props: {
             }}
           >
             <Button type="submit" color="secondary" variant="contained">
-              Change
+              Update
             </Button>
             <Button color="secondary" variant="outlined" onClick={close}>
               Close

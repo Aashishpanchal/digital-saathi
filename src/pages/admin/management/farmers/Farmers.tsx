@@ -13,12 +13,6 @@ export default function Farmers() {
   const dispatch = useDispatch();
 
   const searchHandler = async (value: string) => {
-    value =
-      value.toLowerCase() === "active"
-        ? "1"
-        : value.toLowerCase() === "deactive"
-        ? "0"
-        : value;
     setSearchText(value ? `/search?search_customer=${value}` : "");
   };
 

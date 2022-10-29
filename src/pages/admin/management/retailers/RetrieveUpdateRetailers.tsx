@@ -39,7 +39,10 @@ export default function CreateRetailers() {
           setLoading(true);
           const res = await retailer("put", {
             params: retailer_id,
-            data: JSON.stringify(values),
+            data: JSON.stringify({
+              ...values,
+              phone_no: values.phone_no.replace(/\s/g, ""),
+            }),
           });
           if (res?.status === 200) {
             navigate(-1);
@@ -71,7 +74,15 @@ export default function CreateRetailers() {
       });
       if (res?.status === 200) {
         const { data } = res;
-        setData(margeObj(initialValues, res.data) as typeof data);
+        setData(
+          margeObj(initialValues, {
+            ...res.data,
+            phone_no:
+              typeof data?.phone_no === "string"
+                ? data.phone_no.replace(/\s/g, "").replace("+91", "")
+                : "",
+          }) as typeof data
+        );
       }
     } catch (error) {
       console.log(error);

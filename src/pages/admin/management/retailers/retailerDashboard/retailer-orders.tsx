@@ -32,7 +32,10 @@ export default function RetailerOrders() {
           </Box>
           <Card>
             <CardContent sx={{ minHeight: 180 }}>
-              <RetailerOrdersListResults orderStatus={orderStatus} />
+              <RetailerOrdersListResults
+                orderStatus={orderStatus}
+                retailerId={retailer_id as string}
+              />
             </CardContent>
           </Card>
         </Container>

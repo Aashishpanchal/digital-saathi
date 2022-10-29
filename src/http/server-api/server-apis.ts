@@ -35,7 +35,7 @@ export const shopOrderDetails = baseFunc("shop_orderdetails");
 
 // Retailer Dashboard api's
 // only get request use
-// export const shopRetailerProductPrice = baseFunc("shop_retailerproductprice");
+export const shopRetailerProductPrice = baseFunc("shop_retailerproductprice");
 export const shopAssignRetailerProducts = baseFunc(
   "shop_assignretailerproducts"
 );

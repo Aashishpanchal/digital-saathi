@@ -23,10 +23,11 @@ export default function Accepted() {
           queryToStr({
             date_from: dates.from.format("YYYY-MM-DD"),
             date_to: dates.to.format("YYYY-MM-DD"),
+            ...(value ? { search_orders: value } : {}),
           })
       );
     } else {
-      setSearchText("");
+      setSearchText(value ? `?search_orders=${value}` : "");
     }
   };
 
@@ -44,7 +45,7 @@ export default function Accepted() {
         dispatch(setPageLoading(false));
         exportFromJSON({
           data: res.data.orders,
-          fileName: `new-orders-csv`,
+          fileName: `accepted-orders-csv`,
           exportType: "csv",
         });
       }

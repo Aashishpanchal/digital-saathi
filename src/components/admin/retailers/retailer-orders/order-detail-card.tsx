@@ -1,13 +1,7 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import React from "react";
 import usePrintData from "../../../../hooks/usePrintData";
+import ProductAvatar from "../../../Image/product-avatar";
 import { LabelText } from "../styled";
 
 const labels = [
@@ -52,10 +46,11 @@ function OrderDetailsCard(props: { orderDetail: { [key: string]: any } }) {
           </Grid>
         </CardContent>
       </Box>
-      <CardMedia
-        component="img"
+      <ProductAvatar
+        variant="square"
         sx={{ height: 180, width: 130 }}
-        image={orderDetail?.sku_image}
+        src={orderDetail?.sku_image}
+        {...props}
       />
     </Card>
   );

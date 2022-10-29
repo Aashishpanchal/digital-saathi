@@ -77,7 +77,7 @@ export default function OrderDetails() {
       {
         Header: "Product",
         accessor: "sku_image",
-        // width: "5%",
+        width: "50px",
         Cell: (cell: any) => (
           <Box display="flex" justifyContent={"center"}>
             <ProductAvatar src={cell.value} sx={{ width: 50, height: 50 }} />
@@ -87,22 +87,21 @@ export default function OrderDetails() {
       {
         Header: "Name",
         accessor: "sku_name",
-        // width: "5%",
       },
       {
         Header: "Dimension",
         accessor: "dimension",
-        // width: "5%",
+        width: "5px",
       },
       {
         Header: "Weight",
         accessor: "weight",
-        // width: "5%",
+        width: "5px",
       },
       {
         Header: "Price Sub Total",
         accessor: "price",
-        // width: "5%",
+        width: "5px",
         Cell: (cell: any) => (
           <Box display={"flex"} justifyContent="center" alignItems={"center"}>
             <Typography color="text.secondary">
@@ -186,7 +185,8 @@ export default function OrderDetails() {
   
   @page {
     size: auto;
-    margin: 20mm;
+    margin: 3mm;
+    margin-top: 15mm;
   }
 `;
 

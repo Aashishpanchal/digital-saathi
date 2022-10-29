@@ -10,7 +10,7 @@ export default function FarmersOrders() {
   const [searchText, setSearchText] = React.useState("");
 
   const searchHandler = async (value: string) => {
-    setSearchText(value ? `/search?search_customer=${value}` : "");
+    setSearchText(value ? `/search?search_orders=${value}` : "");
   };
 
   return (

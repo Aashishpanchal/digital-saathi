@@ -8,13 +8,13 @@ import {
   Box,
   Button,
 } from "@mui/material";
+import { useFormik } from "formik";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 import LinkRouter from "../../../../routers/LinkRouter";
 import RetailerForm, {
   initialValues,
 } from "../../../../components/admin/retailers/retailer-form";
-import { useFormik } from "formik";
-import { useSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
 import { retailerSchema } from "../../../../components/admin/retailers/schemas";
 import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -33,12 +33,15 @@ export default function CreateRetailers() {
         try {
           setLoading(true);
           const res = await retailer("post", {
-            data: JSON.stringify(values),
+            data: JSON.stringify({
+              values,
+              phone_no: values.phone_no.replace(/\s/g, ""),
+            }),
           });
           if (res?.status === 200) {
             navigate(-1);
             setTimeout(() => {
-              enqueueSnackbar("Product Save  successfully!👍😊", {
+              enqueueSnackbar("Product Save successfully!👍😊", {
                 variant: "success",
               });
             }, 200);
