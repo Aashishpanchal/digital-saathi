@@ -67,14 +67,14 @@ export default function RetailerDashboard() {
 
   const retailerName = React.useMemo(() => {
     if (data?.status) return data.data?.retailer_name;
-    return "no name";
+    return "";
   }, [data]);
 
   return (
     <MainContainer>
       <Box sx={{ my: 1 }}>
         <Typography variant="h5">
-          Retailer Dashboard / {retailerName}
+          {retailerName} / Retailer Dashboard
         </Typography>
       </Box>
       <RetailerDashboardCards retailerId={retailer_id as string} />

@@ -32,7 +32,7 @@ export default function DeliveryPartnerRetailer() {
     <MainContainer>
       <Container>
         <CommonToolbar
-          title={`Delivery Retailers of ${partnerName}`}
+          title={`${partnerName} / Delivery Retailers`}
           onAddProps={{ title: "Add Delivery Retailer", onClick: onAdd }}
         />
         <Box sx={{ mt: 3 }}>

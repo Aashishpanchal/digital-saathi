@@ -22,8 +22,9 @@ export default function CategoryAddEditDialog(props: {
   category: { [key: string]: any } | null;
   variant: "edit" | "add";
   type: "category" | "subcategory";
+  otherData?: Record<string, any>;
 }) {
-  const { open, close, category, reload, variant, type } = props;
+  const { open, close, category, reload, variant, type, otherData } = props;
   const [file, setFile] = React.useState<File>(category?.image);
   const [data, setData] = React.useState({
     name: category?.name || "",
@@ -43,12 +44,6 @@ export default function CategoryAddEditDialog(props: {
 
   const onUpload = async () => {
     if (file) {
-      const saveData = {
-        ...data,
-        ...(type === "subcategory"
-          ? { parent_category_id: category?.category_id }
-          : {}),
-      };
       if (category) {
         try {
           setLoading(true);
@@ -60,7 +55,8 @@ export default function CategoryAddEditDialog(props: {
               : subCategories)("put", {
               params: category?.category_id,
               data: JSON.stringify({
-                ...saveData,
+                ...data,
+                ...otherData,
                 image: metadata.Location,
               }),
             });
@@ -95,7 +91,8 @@ export default function CategoryAddEditDialog(props: {
               ? categories
               : subCategories)("post", {
               data: JSON.stringify({
-                ...saveData,
+                ...data,
+                ...otherData,
                 image: metadata.Location,
               }),
             });
@@ -128,7 +125,7 @@ export default function CategoryAddEditDialog(props: {
 
   return (
     <Dialog open={open} fullWidth>
-      <DialogTitle>Category</DialogTitle>
+      <DialogTitle>{cateLabel}</DialogTitle>
       <DialogContent>
         <Box sx={{ my: 1 }}>
           <TextInput

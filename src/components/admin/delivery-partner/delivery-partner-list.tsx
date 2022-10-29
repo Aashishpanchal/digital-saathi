@@ -107,21 +107,6 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
         width: "20%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Tooltip title="Delete">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setDeleteData({
-                    open: true,
-                    id: cell.row.original.partner_id,
-                  })
-                }
-              >
-                <RiDeleteBinFill />
-              </IconButton>
-            </Tooltip>
             <LinkRouter to={`${cell.row.original.partner_id}`}>
               <Tooltip title="Edit">
                 <IconButton
@@ -155,6 +140,21 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
                 </IconButton>
               </Tooltip>
             </LinkRouter>
+            <Tooltip title="Delete">
+              <IconButton
+                disableRipple={false}
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  setDeleteData({
+                    open: true,
+                    id: cell.row.original.partner_id,
+                  })
+                }
+              >
+                <RiDeleteBinFill />
+              </IconButton>
+            </Tooltip>
           </Box>
         ),
       },

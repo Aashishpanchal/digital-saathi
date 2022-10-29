@@ -18,29 +18,32 @@ import ImageView from "../../Image/image-view";
 export default function ProductImageDialog(props: {
   open: boolean;
   close: () => void;
-  imageId?: string;
+  productImageData: Record<string, any> | null;
   reload: () => void;
   skuId: string;
 }) {
-  const { open, close, imageId, reload, skuId } = props;
-  const [file, setFile] = React.useState<File>();
-  const [data, setData] = React.useState<{ [key: string]: any }>({});
+  const { open, close, productImageData, reload, skuId } = props;
+  const [file, setFile] = React.useState<File>(productImageData?.image);
+  const [data, setData] = React.useState<{ [key: string]: any }>({
+    title: productImageData?.title || "",
+    image: productImageData?.image || "",
+  });
   const [loading, setLoading] = React.useState(false);
   const { S3UpdateImage, S3ImageUploader } = useBucket("product-images");
   const { enqueueSnackbar } = useSnackbar();
 
   const onUpload = async () => {
-    if (imageId) {
+    if (productImageData) {
       try {
         setLoading(true);
         const metadata: any = await S3UpdateImage(data.image, file);
         if (metadata) {
           // upload data in server
           const res = await shopProductImages("put", {
-            params: imageId,
+            params: productImageData?.image_id,
             data: JSON.stringify({
+              ...data,
               sku_id: skuId,
-              title: data.title,
               image: metadata.Location,
             }),
           });
@@ -70,8 +73,8 @@ export default function ProductImageDialog(props: {
           // upload data in server
           const res = await shopProductImages("post", {
             data: JSON.stringify({
+              ...data,
               sku_id: skuId,
-              title: data.title,
               image: metadata.Location,
             }),
           });
@@ -96,22 +99,6 @@ export default function ProductImageDialog(props: {
     }
     setLoading(false);
   };
-
-  const onRetrieve = async () => {
-    try {
-      const res = await shopProductImages("get", {
-        params: imageId,
-      });
-      if (res?.status === 200) {
-        setFile(res.data.image);
-        setData(res.data);
-      }
-    } catch (error) {}
-  };
-
-  React.useEffect(() => {
-    onRetrieve();
-  }, []);
 
   return (
     <Dialog open={open} fullWidth>

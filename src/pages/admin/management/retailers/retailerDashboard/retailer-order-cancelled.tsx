@@ -20,7 +20,7 @@ export default function RetailerOrderCancelled() {
 
   const retailerName = React.useMemo(() => {
     if (data?.status) return data.data?.retailer_name;
-    return "no name";
+    return "";
   }, [data]);
 
   const searchHandler = (value: string, dates: DatesType) => {
@@ -40,7 +40,7 @@ export default function RetailerOrderCancelled() {
   return (
     <MainContainer>
       <OrdersToolbar onSearch={searchHandler}>
-        Cancelled Orders of {retailerName}
+        {retailerName} / Cancelled Orders
       </OrdersToolbar>
       <Box sx={{ mt: 3 }}>
         <OrdersListResults

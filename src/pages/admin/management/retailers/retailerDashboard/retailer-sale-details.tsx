@@ -20,7 +20,7 @@ export default function retailerSaleDetails() {
 
   const retailerName = React.useMemo(() => {
     if (data?.status) return data.data?.retailer_name;
-    return "no name";
+    return "";
   }, [data]);
 
   const searchHandler = (value: string, dates: DatesType) => {
@@ -40,7 +40,7 @@ export default function retailerSaleDetails() {
   return (
     <MainContainer>
       <OrdersToolbar onSearch={searchHandler}>
-        Input Sale Details of {retailerName}
+        {retailerName} / Input Sale Details
       </OrdersToolbar>
       <Box sx={{ mt: 3 }}>
         <OrdersListResults

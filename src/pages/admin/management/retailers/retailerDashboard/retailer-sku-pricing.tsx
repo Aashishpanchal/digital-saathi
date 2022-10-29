@@ -15,7 +15,7 @@ export default function RetailerSkuPricingUnits() {
 
   const retailerName = React.useMemo(() => {
     if (data?.status) return data.data?.retailer_name;
-    return "no name";
+    return "";
   }, [data]);
 
   return (
@@ -23,7 +23,7 @@ export default function RetailerSkuPricingUnits() {
       <Container>
         <Box mb={2}>
           <Typography variant={"h5"}>
-            Data Sku Pricing of {retailerName}
+            {retailerName} / Data Sku Pricing
           </Typography>
         </Box>
         <Card>

@@ -1,8 +1,8 @@
 import React from "react";
 import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
-import CategoryToolbar from "../../../../components/admin/categories/category-toolbar";
 import CategoriesListResults from "../../../../components/admin/categories/categories-list-results";
+import CommonToolbar from "../../../../components/admin/common-toolbar";
 
 export default function Categories() {
   const [searchText, setSearchText] = React.useState("");
@@ -23,9 +23,12 @@ export default function Categories() {
 
   return (
     <MainContainer>
-      <CategoryToolbar
-        onAdd={onAdd}
-        title="Categories"
+      <CommonToolbar
+        onAddProps={{
+          title: "Add Category",
+          onClick: onAdd,
+        }}
+        title={`Categories`}
         onSearch={searchHandler}
       />
       <Box sx={{ mt: 3 }}>

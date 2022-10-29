@@ -128,18 +128,6 @@ export default function ProductsListResults(props: { searchText: string }) {
         Header: "Action",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Tooltip title="Delete">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setDeleteData({ open: true, id: cell.row.original.sku_id })
-                }
-              >
-                <RiDeleteBinFill />
-              </IconButton>
-            </Tooltip>
             <LinkRouter to={`${cell.row.original.sku_id}`}>
               <Tooltip title="Product Edit">
                 <IconButton
@@ -148,21 +136,6 @@ export default function ProductsListResults(props: { searchText: string }) {
                   color="secondary"
                 >
                   <FaRegEdit />
-                </IconButton>
-              </Tooltip>
-            </LinkRouter>
-            <LinkRouter
-              to={`${cell.row.original.sku_id}/product-details/${encodeURI(
-                cell.row.original.sku_name
-              )}`}
-            >
-              <Tooltip title="Product Details">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                >
-                  <TbListDetails />
                 </IconButton>
               </Tooltip>
             </LinkRouter>
@@ -181,11 +154,7 @@ export default function ProductsListResults(props: { searchText: string }) {
                 <FaRupeeSign />
               </IconButton>
             </Tooltip>
-            <LinkRouter
-              to={`${cell.row.original.sku_id}/product-more-images/${encodeURI(
-                cell.row.original.sku_name
-              )}`}
-            >
+            <LinkRouter to={`${cell.row.original.sku_id}/product-more-images`}>
               <Tooltip title="Product Images">
                 <IconButton
                   disableRipple={false}
@@ -196,6 +165,29 @@ export default function ProductsListResults(props: { searchText: string }) {
                 </IconButton>
               </Tooltip>
             </LinkRouter>
+            <LinkRouter to={`${cell.row.original.sku_id}/product-details`}>
+              <Tooltip title="Product Details">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <TbListDetails />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
+            <Tooltip title="Delete">
+              <IconButton
+                disableRipple={false}
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  setDeleteData({ open: true, id: cell.row.original.sku_id })
+                }
+              >
+                <RiDeleteBinFill />
+              </IconButton>
+            </Tooltip>
           </Box>
         ),
       },

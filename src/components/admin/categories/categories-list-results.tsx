@@ -79,7 +79,7 @@ function CategoriesListResults(props: {
         );
         if (res.status === 200) {
           await refetch();
-          enqueueSnackbar("entry success-full deleted 😊", {
+          enqueueSnackbar("entry successfully deleted 😊", {
             variant: "success",
           });
         }
@@ -143,18 +143,6 @@ function CategoriesListResults(props: {
         width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Tooltip title="Delete">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setDeleteData({ open: true, value: cell.row.original })
-                }
-              >
-                <RiDeleteBinFill />
-              </IconButton>
-            </Tooltip>
             <Tooltip
               title={
                 (!categoryPartnerId ? "Category" : "Subcategory") + " Edit"
@@ -169,6 +157,18 @@ function CategoriesListResults(props: {
                 }
               >
                 <FaRegEdit />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton
+                disableRipple={false}
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  setDeleteData({ open: true, value: cell.row.original })
+                }
+              >
+                <RiDeleteBinFill />
               </IconButton>
             </Tooltip>
             {!categoryPartnerId && (
@@ -239,6 +239,9 @@ function CategoriesListResults(props: {
           reload={refetch}
           variant="edit"
           type={!categoryPartnerId ? "category" : "subcategory"}
+          otherData={
+            categoryPartnerId ? { parent_category_id: categoryPartnerId } : {}
+          }
         />
       )}
       {addOpen && (
@@ -249,6 +252,9 @@ function CategoriesListResults(props: {
           reload={refetch}
           variant="add"
           type={!categoryPartnerId ? "category" : "subcategory"}
+          otherData={
+            categoryPartnerId ? { parent_category_id: categoryPartnerId } : {}
+          }
         />
       )}
     </>

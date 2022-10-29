@@ -110,21 +110,6 @@ export default function AreaList(props: {
         width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Tooltip title="Delete">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setDeleteData({
-                    open: true,
-                    id: cell.row.original.area_id,
-                  })
-                }
-              >
-                <RiDeleteBinFill />
-              </IconButton>
-            </Tooltip>
             <Tooltip title="Edit">
               <IconButton
                 disableRipple={false}
@@ -138,6 +123,21 @@ export default function AreaList(props: {
                 }
               >
                 <FaRegEdit />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton
+                disableRipple={false}
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  setDeleteData({
+                    open: true,
+                    id: cell.row.original.area_id,
+                  })
+                }
+              >
+                <RiDeleteBinFill />
               </IconButton>
             </Tooltip>
           </Box>

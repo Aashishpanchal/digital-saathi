@@ -2,16 +2,16 @@
 import React from "react";
 import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
-import CategoryToolbar from "../../../../components/admin/categories/category-toolbar";
 import CategoriesListResults from "../../../../components/admin/categories/categories-list-results";
 import { categories } from "../../../../http";
 import { useParams } from "react-router-dom";
+import CommonToolbar from "../../../../components/admin/common-toolbar";
+import { useQuery } from "@tanstack/react-query";
 
 export default function SubCategories() {
   const { parent_category_id } = useParams();
   const [searchText, setSearchText] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  const [categoryName, setCategoryName] = React.useState("");
 
   const onAdd = () => setOpen(true);
   const onClose = () => setOpen(false);
@@ -19,26 +19,23 @@ export default function SubCategories() {
   const searchHandler = (value: string) =>
     setSearchText(value ? `/search?search_subcategory=${value}` : "");
 
-  const getName = async () => {
-    try {
-      const res = await categories("get", { params: parent_category_id });
-      if (res?.status === 200) {
-        setCategoryName(res.data?.name);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { data } = useQuery(["category-name"], () =>
+    categories("get", { params: parent_category_id })
+  );
 
-  React.useEffect(() => {
-    getName();
-  }, []);
+  const categoryName = React.useMemo(() => {
+    if (data?.status) return data.data?.name;
+    return "";
+  }, [data]);
 
   return (
     <MainContainer>
-      <CategoryToolbar
-        onAdd={onAdd}
-        title={`Sub-Categories of ${categoryName}`}
+      <CommonToolbar
+        onAddProps={{
+          title: "Add Sub Category",
+          onClick: onAdd,
+        }}
+        title={`${categoryName} / Sub-Categories`}
         onSearch={searchHandler}
       />
       <Box sx={{ mt: 3 }}>

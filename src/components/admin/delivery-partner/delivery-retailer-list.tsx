@@ -38,7 +38,7 @@ export default function DeliveryRetailerList(props: {
   const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
 
   const { isLoading, refetch, data } = useQuery(
-    ["delivery-agent", postfix],
+    ["delivery-retailer", postfix],
     () =>
       deliveryRetailer("get", {
         postfix,
@@ -99,7 +99,7 @@ export default function DeliveryRetailerList(props: {
           ) : (
             <Grid container spacing={2}>
               {(getData?.retailers || []).map((item: any, index: number) => (
-                <Grid key={index} item xs={1} lg={4}>
+                <Grid key={index} item xs={4}>
                   <DeliveryRetailerCard
                     item={item}
                     refetch={refetch}
@@ -109,14 +109,16 @@ export default function DeliveryRetailerList(props: {
               ))}
             </Grid>
           )}
-          <TablePagination
-            page={page}
-            pageSize={size}
-            totalItems={getData.totalItems}
-            count={getData.totalPages}
-            onChangePage={setPage}
-            onPageSizeSelect={setSize}
-          />
+          <Box mt={2}>
+            <TablePagination
+              page={page}
+              pageSize={size}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
+              onChangePage={setPage}
+              onPageSizeSelect={setSize}
+            />
+          </Box>
         </CardContent>
       </Card>
       <DeleteDialogBox

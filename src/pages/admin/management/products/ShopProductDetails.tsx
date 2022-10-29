@@ -46,8 +46,10 @@ const productPriceLabels = [
 
 export default function ShopProductDetails() {
   const { sku_id } = useParams();
-  const [productData, setProductData] = React.useState({});
-  const [productPriceData, setProductPriceData] = React.useState({});
+  const [productData, setProductData] = React.useState<Record<string, any>>({});
+  const [productPriceData, setProductPriceData] = React.useState<
+    Record<string, any>
+  >({});
   const [productImageData, setProductImageData] = React.useState<Array<any>>(
     []
   );
@@ -143,7 +145,9 @@ export default function ShopProductDetails() {
             my: 1,
           }}
         >
-          <Typography variant="h5">Product Details</Typography>
+          <Typography variant="h5">
+            {productData?.sku_name} / Product Details
+          </Typography>
           <Button
             color="secondary"
             variant="contained"

@@ -37,7 +37,7 @@ export default function DeliveryAgents() {
   return (
     <MainContainer>
       <CommonToolbar
-        title={`Delivery Agent of ${partnerName}`}
+        title={`${partnerName} / Delivery Agent`}
         onAddProps={{ title: "Add Delivery Agent", onClick: onAdd }}
         onSearch={searchHandler}
       />

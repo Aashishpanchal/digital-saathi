@@ -1,36 +1,37 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
 import { useParams } from "react-router-dom";
-import ProductListImages from "../../../../components/admin/products/product-list-images";
 import { MainContainer } from "../../../../components/layout";
+import CommonToolbar from "../../../../components/admin/common-toolbar";
+import ProductListImages from "../../../../components/admin/products/product-list-images";
+import { useQuery } from "@tanstack/react-query";
+import { shopProducts } from "../../../../http";
 
 export default function ProductImages() {
-  const { sku_id, sku_name } = useParams();
+  const { sku_id } = useParams();
   const [open, setOpen] = React.useState(false);
 
   const onUpload = () => setOpen(true);
   const onClose = () => setOpen(false);
 
+  const { data } = useQuery(["get-sku-name"], () =>
+    shopProducts("get", { params: sku_id })
+  );
+
+  const skuName = React.useMemo(() => {
+    if (data?.status) return data.data?.sku_name;
+    return "";
+  }, [data]);
+
   return (
     <MainContainer>
-      <Box
-        sx={{
-          alignItems: "center",
-          display: "flex",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          m: -1,
+      <CommonToolbar
+        title={`${skuName} / Product Images `}
+        onAddProps={{
+          title: "Add Product Image",
+          onClick: onUpload,
         }}
-      >
-        <Typography sx={{ m: 1 }} variant="h5">
-          Product Images / {sku_name}
-        </Typography>
-        <Box sx={{ m: 1 }}>
-          <Button color="secondary" variant="contained" onClick={onUpload}>
-            Upload Image
-          </Button>
-        </Box>
-      </Box>
+      />
       <Box sx={{ mt: 3 }}>
         <ProductListImages
           sku_id={sku_id as string}

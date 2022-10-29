@@ -29,8 +29,11 @@ export default function ProductListImages(props: {
     value: {},
     open: false,
   });
-  const [edit, setEdit] = React.useState({
-    id: "",
+  const [edit, setEdit] = React.useState<{
+    value: Record<string, any> | null;
+    open: boolean;
+  }>({
+    value: {},
     open: false,
   });
 
@@ -143,6 +146,18 @@ export default function ProductListImages(props: {
         width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Tooltip title="Product Image Edit">
+              <IconButton
+                disableRipple={false}
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  setEdit({ open: true, value: cell.row.original })
+                }
+              >
+                <FaRegEdit />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Delete">
               <IconButton
                 disableRipple={false}
@@ -153,18 +168,6 @@ export default function ProductListImages(props: {
                 }
               >
                 <RiDeleteBinFill />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Product Image Edit">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setEdit({ open: true, id: cell.row.original.image_id })
-                }
-              >
-                <FaRegEdit />
               </IconButton>
             </Tooltip>
           </Box>
@@ -209,8 +212,8 @@ export default function ProductListImages(props: {
       {edit.open && (
         <ProductImageDialog
           open={edit.open}
-          close={() => setEdit({ open: false, id: "" })}
-          imageId={edit.id}
+          close={() => setEdit({ open: false, value: null })}
+          productImageData={edit.value}
           reload={refetch}
           skuId={sku_id}
         />
@@ -219,6 +222,7 @@ export default function ProductListImages(props: {
         <ProductImageDialog
           open={uploadOpen}
           close={uploadClose}
+          productImageData={null}
           reload={refetch}
           skuId={sku_id}
         />

@@ -53,10 +53,11 @@ export default function OrdersListResults(props: {
         ),
         width: "5%",
       },
-      // {
-      //   Header: "Order ID",
-      //   accessor: "order_id",
-      // },
+      {
+        Header: "Order ID",
+        accessor: "order_id",
+        width: "6%",
+      },
       {
         Header: "Order Date",
         accessor: "order_date",

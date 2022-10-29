@@ -181,11 +181,11 @@ export default {
               element: <RetrieveUpdateProduct />,
             },
             {
-              path: "product-more-images/:sku_name",
+              path: "product-more-images",
               element: <ProductImages />,
             },
             {
-              path: "product-details/:sku_name",
+              path: "product-details",
               element: <ShopProductDetails />,
             },
           ],
