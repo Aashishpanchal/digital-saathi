@@ -17,7 +17,7 @@ export default function Image(props: {
         className="w-full h-full"
         src={props.url}
         onError={(e) => {
-          (e.target as any).src = "/images/default-image.png";
+          (e.target as any).src = "/images/default-image.jpg";
         }}
       />
     </div>
