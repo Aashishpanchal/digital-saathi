@@ -1,0 +1,182 @@
+import React from "react";
+import {
+  Box,
+  Table,
+  TableContainer,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import ProductAvatar from "../../Image/product-avatar";
+import { shopOrderDetails } from "../../../http";
+import { queryToStr } from "../utils";
+import { useTable } from "react-table";
+import { TableCustomCell, TextCenter } from "./styles";
+import { NumericFormat } from "react-number-format";
+
+export default function OrderDetailsList(props: {
+  orderId: string;
+  grandTotal: number;
+}) {
+  const { orderId, grandTotal } = props;
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Product",
+        accessor: "sku_image",
+        width: "10%",
+        Cell: (cell: any) => (
+          <Box display="flex" justifyContent={"center"}>
+            <ProductAvatar src={cell.value} sx={{ width: 50, height: 50 }} />
+          </Box>
+        ),
+      },
+      {
+        Header: "Name",
+        accessor: "sku_name",
+      },
+      {
+        Header: "Dimension",
+        accessor: "dimension",
+        width: "5%",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+      },
+      {
+        Header: "Weight",
+        accessor: "weight",
+        width: "5%",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+      },
+      {
+        Header: "Price",
+        accessor: "price",
+        width: "10%",
+        Cell: (cell: any) => (
+          <Box display={"flex"} justifyContent="center" alignItems={"center"}>
+            <NumericFormat
+              value={cell.value}
+              displayType={"text"}
+              thousandSeparator={true}
+              prefix={"₹ "}
+            />
+          </Box>
+        ),
+      },
+      {
+        Header: "Price Sub Total",
+        accessor: "total_price",
+        width: "10%",
+        Cell: (cell: any) => (
+          <Box display={"flex"} justifyContent="center" alignItems={"center"}>
+            <NumericFormat
+              value={cell.value}
+              displayType={"text"}
+              thousandSeparator={true}
+              prefix={"₹ "}
+            />
+          </Box>
+        ),
+      },
+    ],
+    []
+  );
+
+  const { data } = useQuery(["order-details"], () =>
+    shopOrderDetails("get", {
+      postfix: "?".concat(queryToStr({ order_id: orderId })),
+    })
+  );
+
+  const orderDetails: Array<{ [key: string]: any }> = React.useMemo(() => {
+    if (data?.status === 200) return data.data || [];
+    return [];
+  }, [data]);
+
+  const { headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data: orderDetails,
+  });
+
+  return (
+    <TableContainer sx={{ mt: 2 }}>
+      <Table sx={{ backgroundColor: "#fff" }}>
+        <TableHead>
+          {headerGroups.map((headerGroup, i) => (
+            <TableRow
+              {...headerGroup.getHeaderGroupProps()}
+              key={i}
+              sx={{
+                "&:last-child td": { border: 0 },
+              }}
+            >
+              {headerGroup.headers.map((column) => (
+                <TableCustomCell
+                  {...column.getHeaderProps()}
+                  title={column.render("Header") as string}
+                  sx={{
+                    padding: 1.2,
+                    width: column.render("width") as string | number,
+                  }}
+                  align="center"
+                >
+                  {column.render("Header")}
+                </TableCustomCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => {
+            prepareRow(row);
+            return (
+              <TableRow {...row.getRowProps()} hover>
+                {row.cells.map((cell) => {
+                  let props = cell.getCellProps();
+                  return (
+                    <TableCell
+                      {...props}
+                      sx={{
+                        padding: 1.2,
+                        border: "1px solid",
+                      }}
+                    >
+                      {cell.render("Cell")}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
+          <TableRow>
+            <TableCell
+              colSpan={5}
+              sx={{
+                padding: 1.2,
+                border: "1px solid",
+              }}
+            >
+              <strong>Amount Payable </strong>
+            </TableCell>
+            <TableCell
+              sx={{
+                padding: 1.2,
+                border: "1px solid",
+                textAlign: "center",
+              }}
+            >
+              <NumericFormat
+                value={grandTotal}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"₹ "}
+              />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}

@@ -2,17 +2,19 @@ import React from "react";
 import { Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-// import { FaSave as SaveIcon } from "react-icons/fa";
+import { FaSave as SaveIcon } from "react-icons/fa";
 import { AiFillPrinter as PrintIcon } from "react-icons/ai";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import { MainContainer } from "../../../components/layout";
 import {
   InvoiceHead,
   InvoiceBody,
-  SpeedDialTooltipAction,
 } from "../../../components/admin/orders/invoice";
 import { shopOrders } from "../../../http";
 import { useReactToPrint } from "react-to-print";
+import SpeedDialTooltipAction from "../../../components/admin/speed-dial-tooltip-action";
+import InvoiceFooter from "../../../components/admin/orders/invoice/invoice-footer";
+import { reactToPdf } from "../../../components/admin/utils";
 
 const pageStyle = `
     @media all {
@@ -52,6 +54,7 @@ const pageStyle = `
 export default function OrderInvoice() {
   const { order_id } = useParams();
   let componentRef = React.useRef<any>(null);
+  const pefComponentRef = React.useRef<any>(null);
 
   const onPrint = useReactToPrint({
     content: () => componentRef.current,
@@ -69,7 +72,11 @@ export default function OrderInvoice() {
 
   const actions = React.useMemo(
     () => [
-      // { icon: <SaveIcon size={20} />, name: "Save", onClick: () => {} },
+      {
+        icon: <SaveIcon size={20} />,
+        name: "Save",
+        onClick: () => reactToPdf(pefComponentRef.current, "invoice-pdf.pdf"),
+      },
       { icon: <PrintIcon size={20} />, name: "Print", onClick: onPrint },
     ],
     []
@@ -77,17 +84,12 @@ export default function OrderInvoice() {
 
   return (
     <>
-      <MainContainer>
+      <MainContainer ref={pefComponentRef}>
         <CommonToolbar title={`${order?.retailer_name} / Order Invoice`} />
-        <Box
-          mt={1}
-          ref={componentRef}
-          component="div"
-          border="1px solid"
-          className="print:mx-2"
-        >
+        <Box mt={1} ref={componentRef} component="div" className="print:mx-2">
           <InvoiceHead order={order} />
           <InvoiceBody order={order} orderId={order_id as string} />
+          <InvoiceFooter order={order} />
         </Box>
       </MainContainer>
       <SpeedDialTooltipAction actions={actions} />

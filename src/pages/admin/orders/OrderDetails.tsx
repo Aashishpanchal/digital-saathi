@@ -1,14 +1,18 @@
 import React from "react";
-import { FaPrint } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
+import { FaSave as SaveIcon } from "react-icons/fa";
+import { AiFillPrinter as PrintIcon } from "react-icons/ai";
 import { MainContainer } from "../../../components/layout";
-import { shopOrderDetails, shopOrders } from "../../../http";
-import { Typography, Container, Box, Button, Grid } from "@mui/material";
+import { shopOrders } from "../../../http";
+import { Container, Box, Grid } from "@mui/material";
 import OrderDetailCard from "../../../components/admin/orders/order-detail-card";
-import ProductAvatar from "../../../components/Image/product-avatar";
-import DataTable from "../../../components/table/data-table";
 import dayjs from "dayjs";
+import { reactToPdf } from "../../../components/admin/utils";
+import CommonToolbar from "../../../components/admin/common-toolbar";
+import OrderDetailsList from "../../../components/admin/orders/order-detail-list";
+import { useQuery } from "@tanstack/react-query";
+import SpeedDialTooltipAction from "../../../components/admin/speed-dial-tooltip-action";
 
 const orderLabel = [
   { label: "Order ID", accessor: "order_id" },
@@ -66,93 +70,16 @@ const collectionLabel = [
 
 export default function OrderDetails() {
   const { order_id } = useParams();
-  const [orderData, setOrderData] = React.useState([]);
-  const [orderDetailData, setOrderDetailData] = React.useState<
-    Array<{ [key: string]: any }>
-  >([{}]);
   let componentRef = React.useRef<any>(null);
 
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Product",
-        accessor: "sku_image",
-        width: "50px",
-        Cell: (cell: any) => (
-          <Box display="flex" justifyContent={"center"}>
-            <ProductAvatar src={cell.value} sx={{ width: 50, height: 50 }} />
-          </Box>
-        ),
-      },
-      {
-        Header: "Name",
-        accessor: "sku_name",
-      },
-      {
-        Header: "Dimension",
-        accessor: "dimension",
-        width: "5px",
-      },
-      {
-        Header: "Weight",
-        accessor: "weight",
-        width: "5px",
-      },
-      {
-        Header: "Price Sub Total",
-        accessor: "price",
-        width: "5px",
-        Cell: (cell: any) => (
-          <Box display={"flex"} justifyContent="center" alignItems={"center"}>
-            <Typography color="text.secondary">
-              ₹{cell.value} <br /> ₹{cell.row.original?.total_price}
-            </Typography>
-          </Box>
-        ),
-      },
-    ],
-    []
+  const { data } = useQuery([`order-orderDetail-${order_id}`], () =>
+    shopOrders("get", { params: order_id })
   );
 
-  const onRetrieveOrder = async () => {
-    try {
-      const res = await shopOrders("get", {
-        params: order_id,
-      });
-      if (res?.status === 200) {
-        setOrderData(res.data.orders[0]);
-      }
-    } catch (error: any) {
-      console.log(error);
-    }
-  };
-  const onOrderDetails = async () => {
-    try {
-      const res = await shopOrderDetails("get", {
-        postfix: `?order_id=${order_id}`,
-      });
-      if (res?.status === 200) {
-        setOrderDetailData(res.data);
-      }
-    } catch (error: any) {
-      console.log(error);
-    }
-  };
-
-  const totalPrice = React.useMemo(() => {
-    try {
-      return orderDetailData.reduce((p, c) => {
-        const i = isNaN(Number(p.total_price)) ? 0 : Number(p.total_price);
-        const j = isNaN(Number(c.total_price)) ? 0 : Number(c.total_price);
-        return {
-          c,
-          total_price: i + j,
-        };
-      });
-    } catch (error) {
-      return [];
-    }
-  }, [orderDetailData]);
+  const order = React.useMemo(() => {
+    if (data?.status === 200) return data.data?.orders[0];
+    return {};
+  }, [data]);
 
   const pageStyle = `
   @media all {
@@ -195,69 +122,52 @@ export default function OrderDetails() {
     pageStyle: pageStyle,
   });
 
-  React.useEffect(() => {
-    onRetrieveOrder();
-    onOrderDetails();
-  }, []);
+  const actions = React.useMemo(
+    () => [
+      {
+        icon: <SaveIcon size={20} />,
+        name: "Save",
+        onClick: () =>
+          reactToPdf(componentRef.current, "order-details-pdf.pdf"),
+      },
+      { icon: <PrintIcon size={20} />, name: "Print", onClick: onPrint },
+    ],
+    []
+  );
 
   return (
-    <MainContainer>
-      <Container>
-        <Box
-          sx={{
-            alignItems: "center",
-            display: "flex",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            my: 1,
-          }}
-        >
-          <Typography variant="h5">Order Details</Typography>
-          <Button
-            color="secondary"
-            variant="contained"
-            startIcon={<FaPrint />}
-            onClick={onPrint}
+    <>
+      <MainContainer>
+        <Container>
+          <CommonToolbar title={`${order?.retailer_name} / Order Details`} />
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            gap={2}
+            component="div"
+            ref={componentRef}
           >
-            Print
-          </Button>
-        </Box>
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          gap={2}
-          component="div"
-          ref={componentRef}
-        >
-          <Grid container spacing={2}>
-            {collectionLabel.map((item, index) => (
-              <Grid key={index} item xs={6}>
-                <OrderDetailCard
-                  title={item.title}
-                  labels={item.labelObj}
-                  data={orderData}
+            <Grid container spacing={2}>
+              {collectionLabel.map((item, index) => (
+                <Grid key={index} item xs={6}>
+                  <OrderDetailCard
+                    title={item.title}
+                    labels={item.labelObj}
+                    data={order}
+                  />
+                </Grid>
+              ))}
+              <Grid item xs={12}>
+                <OrderDetailsList
+                  orderId={order_id as string}
+                  grandTotal={order?.grand_total || 0}
                 />
               </Grid>
-            ))}
-            <Grid item xs={12}>
-              <DataTable
-                columns={columns}
-                data={orderDetailData}
-                showNotFound={orderDetailData.length === 0}
-              >
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  textAlign={"justify"}
-                  mx={1}
-                >
-                  <strong>Amount Payable: </strong>₹{totalPrice?.total_price}
-                </Typography>
-              </DataTable>
             </Grid>
-          </Grid>
-        </Box>
-      </Container>
-    </MainContainer>
+          </Box>
+        </Container>
+      </MainContainer>
+      <SpeedDialTooltipAction actions={actions} />
+    </>
   );
 }

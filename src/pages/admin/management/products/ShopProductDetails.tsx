@@ -1,12 +1,6 @@
 import React from "react";
 import { FaPrint } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import { MainContainer } from "../../../../components/layout";
-import {
-  shopProductImages,
-  shopProducts,
-  shopProductWeightPrice,
-} from "../../../../http";
 import { useReactToPrint } from "react-to-print";
 import {
   Typography,
@@ -17,8 +11,19 @@ import {
   CardContent,
   Grid,
 } from "@mui/material";
+import { FaSave as SaveIcon } from "react-icons/fa";
+import { AiFillPrinter as PrintIcon } from "react-icons/ai";
+import { MainContainer } from "../../../../components/layout";
+import {
+  shopProductImages,
+  shopProducts,
+  shopProductWeightPrice,
+} from "../../../../http";
 import usePrintData from "../../../../hooks/usePrintData";
 import CardMedia from "@mui/material/CardMedia";
+import SpeedDialTooltipAction from "../../../../components/admin/speed-dial-tooltip-action";
+import { reactToPdf } from "../../../../components/admin/utils";
+import CommonToolbar from "../../../../components/admin/common-toolbar";
 
 const productLabels = [
   { label: "SKU Name", accessor: "sku_name" },
@@ -129,114 +134,110 @@ export default function ShopProductDetails() {
     pageStyle: pageStyle,
   });
 
+  const actions = React.useMemo(
+    () => [
+      {
+        icon: <SaveIcon size={20} />,
+        name: "Save",
+        onClick: () =>
+          reactToPdf(componentRef.current, "product-details-pdf.pdf"),
+      },
+      { icon: <PrintIcon size={20} />, name: "Print", onClick: onPrint },
+    ],
+    []
+  );
+
   React.useEffect(() => {
     getData();
   }, []);
 
   return (
-    <MainContainer>
-      <Container>
-        <Box
-          sx={{
-            alignItems: "center",
-            display: "flex",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            my: 1,
-          }}
-        >
-          <Typography variant="h5">
-            {productData?.sku_name} / Product Details
-          </Typography>
-          <Button
-            color="secondary"
-            variant="contained"
-            startIcon={<FaPrint />}
-            onClick={onPrint}
+    <>
+      <MainContainer>
+        <Container>
+          <CommonToolbar title={`${productData?.sku_name} / Product Details`} />
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            gap={2}
+            component="div"
+            ref={componentRef}
           >
-            Print
-          </Button>
-        </Box>
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          gap={2}
-          component="div"
-          ref={componentRef}
-        >
-          {/* Card One */}
-          <Card elevation={5}>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                View Product
-              </Typography>
-              <Grid container>
-                {obj1.map((item, index) => (
-                  <Grid key={index} item xs={12}>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      textAlign={"justify"}
-                    >
-                      <strong>{item.get("label")}: </strong>
-                      {item.get("Cell")}
-                    </Typography>
-                  </Grid>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
-          {/* Card Two */}
-          <Card elevation={5}>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Product Price
-              </Typography>
-              <Grid container>
-                {obj2.map((item, index) => (
-                  <Grid key={index} item xs={6}>
-                    <Typography variant="body2" color="text.secondary">
-                      <strong>{item.get("label")}: </strong>
-                      {item.get("Cell")}
-                    </Typography>
-                  </Grid>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
-          {/* Card three */}
-          {productImageData.length !== 0 && (
-            <Card elevation={5}>
+            {/* Card One */}
+            <Card>
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  Product Images
+                  View Product
                 </Typography>
-                <Grid container spacing={2}>
-                  {productImageData.map((item, index) => (
-                    <Grid key={index} item xs={4}>
-                      <Card sx={{ maxWidth: 245 }} elevation={5}>
-                        <CardMedia
-                          component={"img"}
-                          image={item?.image}
-                          sx={{ height: 120 }}
-                        />
-                        <Typography
-                          px={1}
-                          gutterBottom
-                          variant="h6"
-                          component="div"
-                        >
-                          {item.title}
-                        </Typography>
-                      </Card>
+                <Grid container>
+                  {obj1.map((item, index) => (
+                    <Grid key={index} item xs={12}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        textAlign={"justify"}
+                      >
+                        <strong>{item.get("label")}: </strong>
+                        {item.get("Cell")}
+                      </Typography>
                     </Grid>
                   ))}
                 </Grid>
               </CardContent>
             </Card>
-          )}
-        </Box>
-      </Container>
-    </MainContainer>
+            {/* Card Two */}
+            <Card>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Product Price
+                </Typography>
+                <Grid container>
+                  {obj2.map((item, index) => (
+                    <Grid key={index} item xs={6}>
+                      <Typography variant="body2" color="text.secondary">
+                        <strong>{item.get("label")}: </strong>
+                        {item.get("Cell")}
+                      </Typography>
+                    </Grid>
+                  ))}
+                </Grid>
+              </CardContent>
+            </Card>
+            {/* Card three */}
+            {productImageData.length !== 0 && (
+              <Card>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    Product Images
+                  </Typography>
+                  <Grid container spacing={2}>
+                    {productImageData.map((item, index) => (
+                      <Grid key={index} item xs={4}>
+                        <Card sx={{ maxWidth: 245 }} elevation={5}>
+                          <CardMedia
+                            component={"img"}
+                            image={item?.image}
+                            sx={{ height: 120 }}
+                          />
+                          <Typography
+                            px={1}
+                            gutterBottom
+                            variant="h6"
+                            component="div"
+                          >
+                            {item.title}
+                          </Typography>
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
+            )}
+          </Box>
+        </Container>
+      </MainContainer>
+      <SpeedDialTooltipAction actions={actions} />
+    </>
   );
 }

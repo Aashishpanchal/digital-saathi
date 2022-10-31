@@ -6,20 +6,16 @@ import {
   TableHead,
   TableCell,
   TableRow,
-  tableCellClasses,
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { shopOrderDetails } from "../../../../http";
-import { queryToStr } from "../../utils";
+import { nullFree, numberToEnIn, queryToStr } from "../../utils";
 import { useTable } from "react-table";
-import { styled } from "@mui/material/styles";
 import { NumericFormat } from "react-number-format";
-
-const nullFree = (value: number) => {
-  if (value === undefined || value === null) return 0;
-  return value;
-};
+import { TableCustomCell, TextCenter } from "../styles";
+import TaxAmount from "./cell/tax-amount";
+import NetAmount from "./cell/net-amount";
 
 const TableRowWithColSpan = (props: { title: string; value: number }) => {
   const { title, value } = props;
@@ -60,29 +56,13 @@ const TableRowWithColSpan = (props: { title: string; value: number }) => {
   );
 };
 
-const TextCenter = styled(Typography)(() => ({
-  textAlign: "center",
-  fontSize: "small",
-}));
-
-const TableCustomCell = styled(TableCell)(() => ({
-  [`&.${tableCellClasses.head}`]: {
-    border: "1px solid",
-    // textTransform: "capitalize",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontStyle: "bold",
-    fontSize: 16,
-  },
-}));
-
 export default function InvoiceBody(props: {
   order: Record<string, any>;
   orderId: string;
 }) {
   const { order, orderId } = props;
 
-  const { data } = useQuery(["order-details-invoice"], () =>
+  const { data } = useQuery(["order-details"], () =>
     shopOrderDetails("get", {
       postfix: "?".concat(
         queryToStr({
@@ -97,6 +77,11 @@ export default function InvoiceBody(props: {
     return [];
   }, [data]);
 
+  const bothGst = React.useMemo(
+    () => order?.retailer_state !== order?.billing_state,
+    [order]
+  );
+
   const columns = React.useMemo(
     () => [
       {
@@ -105,7 +90,19 @@ export default function InvoiceBody(props: {
         Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
         width: "4%",
       },
-      { Header: "Description", accessor: "sku_description" },
+      {
+        Header: "Description",
+        accessor: "sku_description",
+        Cell: (cell: any) => (
+          <Typography fontSize="small">
+            {cell.row.original?.sku_name}
+            <br />
+            {cell.row.original?.sku_name_kannada}
+            <br />
+            {cell.row.original?.sku_code}
+          </Typography>
+        ),
+      },
       {
         Header: "Weight",
         accessor: "weight",
@@ -133,8 +130,8 @@ export default function InvoiceBody(props: {
       },
       {
         Header: "Net Amount",
-        accessor: "",
         width: "8%",
+        Cell: (cell: any) => <NetAmount cell={cell} />,
       },
       {
         Header: "Tax Type",
@@ -144,7 +141,7 @@ export default function InvoiceBody(props: {
           const { igst, cgst, sgst } = cell.row.original;
           return (
             <TextCenter>
-              {order?.retailer_state === order?.billing_state ? (
+              {bothGst ? (
                 <>
                   {`CGST (${nullFree(cgst)})`}
                   <br />
@@ -157,7 +154,11 @@ export default function InvoiceBody(props: {
           );
         },
       },
-      { Header: "Tax Amount", accessor: "", width: "8%" },
+      {
+        Header: "Tax Amount",
+        width: "8%",
+        Cell: (cell: any) => <TaxAmount cell={cell} bothGst={bothGst} />,
+      },
       {
         Header: "Total Amount",
         accessor: "total_price",
@@ -174,7 +175,7 @@ export default function InvoiceBody(props: {
         ),
       },
     ],
-    []
+    [bothGst]
   );
 
   const { headerGroups, rows, prepareRow } = useTable({
@@ -245,6 +246,17 @@ export default function InvoiceBody(props: {
             title="Amount Payable"
             value={order?.grand_total || 0}
           />
+          <TableRow>
+            <TableCell
+              colSpan={9}
+              sx={{
+                padding: 1.2,
+                border: "1px solid",
+              }}
+            >
+              Amount in Words- <b>{numberToEnIn(order?.grand_total)}</b>
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>

@@ -1,3 +1,7 @@
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { ToWords } from "to-words";
+
 export const getPayload = (
   original: { [key: string]: any },
   payload?: Array<string>
@@ -33,3 +37,47 @@ export const queryToStr = (queryObj: { [key: string]: any }) => {
   }
   return query.length ? query.join("&") : "";
 };
+
+export const nullFree = (value: any) => {
+  if (value === undefined || value === null) return 0;
+  return value;
+};
+
+export const reactToPdf = async (ref: any, saveName: string) => {
+  const canvas = await html2canvas(ref);
+  const data = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF("p", "pt", "a4", false);
+  const imgProperties = pdf.getImageProperties(data);
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+
+  pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save(saveName);
+};
+
+export const totalGst = (totalAmount: number, igst: string) => {
+  const i = parseFloat(igst);
+  const igstNum = isNaN(i) ? 1 : i;
+  // console.log((totalAmount * 100) / (100 + igstNum));
+  return (totalAmount * 100) / (100 + igstNum);
+};
+
+export function numberToEnIn(value: string): string {
+  const toWords = new ToWords({
+    localeCode: "en-IN",
+    converterOptions: {
+      currency: true,
+      ignoreDecimal: false,
+      ignoreZeroCurrency: false,
+      doNotAddOnly: false,
+    },
+  });
+  const num = Number(value);
+  if (isNaN(num)) {
+    return "Zero";
+  }
+  return toWords.convert(num, {
+    doNotAddOnly: true,
+  });
+}

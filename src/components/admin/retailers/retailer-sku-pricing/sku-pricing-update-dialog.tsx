@@ -25,36 +25,42 @@ export default function SkuPricingUpdateDialog(props: {
       validationSchema: skuPricingSchema,
       enableReinitialize: true,
       async onSubmit(values) {
-        try {
-          setLoading(true);
-          const res = await shopRetailerProductPrice("put", {
-            params: skuPrice.product_price_id,
-            data: JSON.stringify({
-              sale_price:
-                typeof values.sale_price === "string"
-                  ? Number(values.sale_price)
-                  : values.sale_price,
-              retailer_id: skuPrice.retailer_id,
-              sku_id: skuPrice.sku_id,
-              price_id: skuPrice.price_id,
-            }),
-          });
-          if (res?.status === 200) {
-            close();
-            reload();
-            setTimeout(() => {
-              enqueueSnackbar("SKU Price Update successfully!👍😊", {
-                variant: "success",
-              });
-            }, 200);
+        if (Number(values.sale_price) <= skuPrice.price) {
+          try {
+            setLoading(true);
+            const res = await shopRetailerProductPrice("put", {
+              params: skuPrice.product_price_id,
+              data: JSON.stringify({
+                sale_price:
+                  typeof values.sale_price === "string"
+                    ? Number(values.sale_price)
+                    : values.sale_price,
+                retailer_id: skuPrice.retailer_id,
+                sku_id: skuPrice.sku_id,
+                price_id: skuPrice.price_id,
+              }),
+            });
+            if (res?.status === 200) {
+              close();
+              reload();
+              setTimeout(() => {
+                enqueueSnackbar("SKU Price Update successfully!👍😊", {
+                  variant: "success",
+                });
+              }, 200);
+            }
+          } catch (error) {
+            console.log(error);
+            enqueueSnackbar("SKU Price Update Failed!😢", {
+              variant: "error",
+            });
           }
-        } catch (error) {
-          console.log(error);
-          enqueueSnackbar("SKU Price Update Failed!😢", {
+          setLoading(false);
+        } else {
+          enqueueSnackbar("SKU Sale Price not above Price", {
             variant: "error",
           });
         }
-        setLoading(false);
       },
     });
 

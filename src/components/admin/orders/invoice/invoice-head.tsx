@@ -44,17 +44,21 @@ export default function InvoiceHead(props: { order: Record<any, string> }) {
       </Grid>
       <Grid item xs={4}>
         <Typography variant="body2" color="text.primary">
-          <b>Sold by</b>
+          <b>Sold by:</b>&nbsp;&nbsp;
+          {order?.retailer_company_name}
           <br />
-          {order?.retailer_name}
         </Typography>
         <Typography variant="body2" color="text.primary">
           {order?.retailer_city}, {order?.retailer_state},{" "}
           {order?.retailer_pincode}
         </Typography>
         <Typography variant="body2" color="text.primary">
-          <b>GST Registration No </b>
-          &nbsp;&nbsp;&nbsp;: {order?.retailer_gst_number}
+          <b>GST Registration No: </b>
+          &nbsp;{order?.retailer_gst_number}
+        </Typography>
+        <Typography variant="body2" color="text.primary">
+          <b>Pan No: </b>
+          &nbsp;{order?.retailer_pan_no}
         </Typography>
       </Grid>
       <Grid item xs={4}>

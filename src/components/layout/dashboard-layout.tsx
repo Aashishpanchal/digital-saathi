@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import { Outlet } from "react-router-dom";
 import DashboardNavbar from "./dashboard-navbar";
 import DashboardSidebar from "./dashboard-sidebar";
-// import PageBreadcrumbs from "./page-breadcrumbs";
+import PageBack from "./page-back";
 
 const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
@@ -19,9 +19,6 @@ const DashboardLayoutRoot = styled("div")(({ theme }) => ({
 export default function DashboardLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
-  // const location = useLocation();
-  // const pathnames = location.pathname.split("/").filter((x) => x);
-
   return (
     <>
       <DashboardLayoutRoot>
@@ -33,7 +30,7 @@ export default function DashboardLayout() {
             width: "100%",
           }}
         >
-          {/* {pathnames.length !== 0 && <PageBreadcrumbs pathnames={pathnames} />} */}
+          <PageBack />
           <Outlet />
         </Box>
       </DashboardLayoutRoot>

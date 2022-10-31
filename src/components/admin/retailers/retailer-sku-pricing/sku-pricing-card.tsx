@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -16,7 +15,7 @@ import usePrintData from "../../../../hooks/usePrintData";
 import { FaCheck, FaRupeeSign, FaStar } from "react-icons/fa";
 import ErrorSuccessChip from "../../../common/error-success-chip";
 import { MdError } from "react-icons/md";
-import { shopProducts } from "../../../../http";
+// import { shopProducts } from "../../../../http";
 import { useSnackbar } from "notistack";
 
 const label1 = [
@@ -52,29 +51,29 @@ export default function SkuPricingCard(props: {
     data: sku,
   });
 
-  const focusOnOff = async () => {
-    try {
-      setFocusLoading(true);
-      const res = await shopProducts("put", {
-        params: sku?.sku_id,
-        data: JSON.stringify({
-          focus_sku: !sku.focus_sku ? 1 : 0,
-        }),
-      });
-      if (res?.status === 200) {
-        refetch();
-        enqueueSnackbar((!sku.focus_sku ? "On" : "Off") + " successfully 😊", {
-          variant: "success",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar((sku.focus_sku ? "On" : "Off") + " failed 😢", {
-        variant: "error",
-      });
-    }
-    setFocusLoading(false);
-  };
+  // const focusOnOff = async () => {
+  //   try {
+  //     setFocusLoading(true);
+  //     const res = await shopProducts("put", {
+  //       params: sku?.sku_id,
+  //       data: JSON.stringify({
+  //         focus_sku: !sku.focus_sku ? 1 : 0,
+  //       }),
+  //     });
+  //     if (res?.status === 200) {
+  //       refetch();
+  //       enqueueSnackbar((!sku.focus_sku ? "On" : "Off") + " successfully 😊", {
+  //         variant: "success",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     enqueueSnackbar((sku.focus_sku ? "On" : "Off") + " failed 😢", {
+  //       variant: "error",
+  //     });
+  //   }
+  //   setFocusLoading(false);
+  // };
 
   return (
     <Card sx={{ width: 350 }} elevation={5}>
@@ -145,7 +144,7 @@ export default function SkuPricingCard(props: {
                 <FaStar size={15} />
               )
             }
-            onClick={focusOnOff}
+            // onClick={focusOnOff}
           />
           <Chip
             icon={<FaRupeeSign size={15} />}

@@ -17,7 +17,7 @@ export default function SubCategories() {
   const onClose = () => setOpen(false);
 
   const searchHandler = (value: string) =>
-    setSearchText(value ? `/search?search_subcategory=${value}` : "");
+    setSearchText(value ? `/search?search_category=${value}` : "");
 
   const { data } = useQuery(["category-name"], () =>
     categories("get", { params: parent_category_id })
