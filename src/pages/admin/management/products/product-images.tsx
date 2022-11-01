@@ -19,7 +19,7 @@ export default function ProductImages() {
   );
 
   const skuName = React.useMemo(() => {
-    if (data?.status) return data.data?.sku_name;
+    if (data?.status) return data.data[0]?.sku_name;
     return "";
   }, [data]);
 

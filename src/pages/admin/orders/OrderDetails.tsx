@@ -1,14 +1,14 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import { FaSave as SaveIcon } from "react-icons/fa";
+// import { FaSave as SaveIcon } from "react-icons/fa";
 import { AiFillPrinter as PrintIcon } from "react-icons/ai";
 import { MainContainer } from "../../../components/layout";
 import { shopOrders } from "../../../http";
 import { Container, Box, Grid } from "@mui/material";
 import OrderDetailCard from "../../../components/admin/orders/order-detail-card";
 import dayjs from "dayjs";
-import { reactToPdf } from "../../../components/admin/utils";
+// import { reactToPdf } from "../../../components/admin/utils";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import OrderDetailsList from "../../../components/admin/orders/order-detail-list";
 import { useQuery } from "@tanstack/react-query";
@@ -124,12 +124,12 @@ export default function OrderDetails() {
 
   const actions = React.useMemo(
     () => [
-      {
-        icon: <SaveIcon size={20} />,
-        name: "Save",
-        onClick: () =>
-          reactToPdf(componentRef.current, "order-details-pdf.pdf"),
-      },
+      // {
+      // icon: <SaveIcon size={20} />,
+      // name: "Save",
+      // onClick: () =>
+      //   reactToPdf(componentRef.current, "order-details-pdf.pdf"),
+      // },
       { icon: <PrintIcon size={20} />, name: "Print", onClick: onPrint },
     ],
     []

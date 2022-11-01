@@ -7,6 +7,7 @@ import {
   brands as brandsHttp,
 } from "../../../http";
 import { FormikErrors } from "formik";
+import AsyncAutocomplete from "../../form/async-autocomplete";
 
 export default function ProductBasicForm(props: {
   errors?: any;
@@ -195,115 +196,46 @@ export default function ProductBasicForm(props: {
         </Box>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <Box sx={{ my: 1 }}>
-            <Typography
-              component={"label"}
-              sx={{ display: "block", color: "#6b7280", fontWeight: 600 }}
-            >
-              Category
-            </Typography>
-            <Select
-              fullWidth
-              color="secondary"
-              sx={{
-                fontSize: "small",
-                ".MuiSelect-select": {
-                  p: 1,
-                },
+            <AsyncAutocomplete
+              id="sub-category-option"
+              label="Category"
+              options={categories || []}
+              objFilter={{
+                title: "name",
+                value: "category_id",
               }}
-              name="category_id"
-              value={values.category_id}
-              onChange={(e) => {
+              value={values?.category_id}
+              onChangeOption={(value) => {
+                setFieldValue("category_id", value);
                 setFieldValue("subcategory_id", "");
-                handleChange && handleChange(e as any);
               }}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-            >
-              <MenuItem sx={{ fontSize: "small" }} value="">
-                <em>None</em>
-              </MenuItem>
-              {categories.map((item, index) => (
-                <MenuItem
-                  key={index}
-                  sx={{ fontSize: "small" }}
-                  value={item.category_id.toString()}
-                >
-                  {item.name}
-                </MenuItem>
-              ))}
-            </Select>
+            />
           </Box>
           <Box sx={{ my: 1 }}>
-            <Typography
-              component={"label"}
-              sx={{ display: "block", color: "#6b7280", fontWeight: 600 }}
-            >
-              Sub Category
-            </Typography>
-            <Select
-              fullWidth
-              color="secondary"
-              sx={{
-                fontSize: "small",
-                ".MuiSelect-select": {
-                  p: 1,
-                },
+            <AsyncAutocomplete
+              id="sub-category-option"
+              label="Sub Category"
+              options={subCategories || []}
+              objFilter={{
+                title: "name",
+                value: "category_id",
               }}
-              name="subcategory_id"
-              value={subCategories.length !== 0 ? values.subcategory_id : ""}
-              onChange={handleChange as any}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-            >
-              <MenuItem sx={{ fontSize: "small" }} value="">
-                <em>None</em>
-              </MenuItem>
-              {subCategories.map((item, index) => (
-                <MenuItem
-                  key={index}
-                  sx={{ fontSize: "small" }}
-                  value={item.category_id.toString()}
-                >
-                  {item.name}
-                </MenuItem>
-              ))}
-            </Select>
+              value={values?.subcategory_id}
+              onChangeOption={(value) => setFieldValue("subcategory_id", value)}
+            />
           </Box>
           <Box sx={{ my: 1 }}>
-            <Typography
-              component={"label"}
-              sx={{ display: "block", color: "#6b7280", fontWeight: 600 }}
-            >
-              Brand
-            </Typography>
-            <Select
-              fullWidth
-              color="secondary"
-              sx={{
-                fontSize: "small",
-                ".MuiSelect-select": {
-                  p: 1,
-                },
+            <AsyncAutocomplete
+              id="brand-option"
+              label="Brand"
+              options={brands || []}
+              objFilter={{
+                title: "brand_name",
+                value: "brand_id",
               }}
-              name="brand_id"
-              value={values.brand_id}
-              onChange={handleChange as any}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-            >
-              <MenuItem sx={{ fontSize: "small" }} value="">
-                <em>None</em>
-              </MenuItem>
-              {brands.map((item, index) => (
-                <MenuItem
-                  key={index}
-                  sx={{ fontSize: "small" }}
-                  value={item.brand_id.toString()}
-                >
-                  {item.brand_name}
-                </MenuItem>
-              ))}
-            </Select>
+              value={values?.brand_id}
+              onChangeOption={(value) => setFieldValue("brand_id", value)}
+            />
           </Box>
         </div>
       </Box>

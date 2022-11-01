@@ -39,14 +39,19 @@ function PageBreadcrumbs() {
   );
 
   return backOff.has(pathname) ? null : (
-    <Box mx={1}>
+    <Box my={1} mr={5} alignSelf="end">
       <Button
-        variant="text"
+        variant="outlined"
         startIcon={<BiArrowBack size={20} />}
-        color="inherit"
         sx={{
-          alignItems: "center",
-          justifyContent: "center",
+          p: 0,
+          px: 0.5,
+          borderColor: "neutral.200",
+          color: "neutral.600",
+          "&:hover": {
+            borderColor: "neutral.300",
+            color: "neutral.800",
+          },
         }}
         onClick={onBack}
       >

@@ -96,7 +96,7 @@ export default function CreateRetailers() {
                 </Button>
                 <LinkRouter to={-1}>
                   <Button color="secondary" variant="outlined">
-                    Discard
+                    Close
                   </Button>
                 </LinkRouter>
               </Box>

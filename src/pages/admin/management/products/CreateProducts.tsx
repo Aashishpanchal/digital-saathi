@@ -79,7 +79,7 @@ export default function CreateProducts() {
                 </Button>
                 <LinkRouter to={-1}>
                   <Button color="secondary" variant="outlined">
-                    Discard
+                    Close
                   </Button>
                 </LinkRouter>
               </Box>

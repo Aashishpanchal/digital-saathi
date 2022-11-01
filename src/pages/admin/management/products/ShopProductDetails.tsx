@@ -1,17 +1,15 @@
 import React from "react";
-import { FaPrint } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import {
   Typography,
   Container,
   Box,
-  Button,
   Card,
   CardContent,
   Grid,
 } from "@mui/material";
-import { FaSave as SaveIcon } from "react-icons/fa";
+// import { FaSave as SaveIcon } from "react-icons/fa";
 import { AiFillPrinter as PrintIcon } from "react-icons/ai";
 import { MainContainer } from "../../../../components/layout";
 import {
@@ -22,7 +20,7 @@ import {
 import usePrintData from "../../../../hooks/usePrintData";
 import CardMedia from "@mui/material/CardMedia";
 import SpeedDialTooltipAction from "../../../../components/admin/speed-dial-tooltip-action";
-import { reactToPdf } from "../../../../components/admin/utils";
+// import { reactToPdf } from "../../../../components/admin/utils";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 
 const productLabels = [
@@ -136,12 +134,12 @@ export default function ShopProductDetails() {
 
   const actions = React.useMemo(
     () => [
-      {
-        icon: <SaveIcon size={20} />,
-        name: "Save",
-        onClick: () =>
-          reactToPdf(componentRef.current, "product-details-pdf.pdf"),
-      },
+      // {
+      //   icon: <SaveIcon size={20} />,
+      //   name: "Save",
+      //   onClick: () =>
+      //     reactToPdf(componentRef.current, "product-details-pdf.pdf"),
+      // },
       { icon: <PrintIcon size={20} />, name: "Print", onClick: onPrint },
     ],
     []

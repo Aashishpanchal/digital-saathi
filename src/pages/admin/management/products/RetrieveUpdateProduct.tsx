@@ -67,17 +67,15 @@ export default function EditProducts() {
       });
       if (res?.status === 200) {
         const {
-          data: {
-            sku_name,
-            sku_name_kannada,
-            sku_code,
-            hsn_code,
-            description,
-            category_id,
-            subcategory_id,
-            brand_id,
-          },
-        } = res;
+          sku_name,
+          sku_name_kannada,
+          sku_code,
+          hsn_code,
+          description,
+          category_id,
+          subcategory_id,
+          brand_id,
+        } = res.data[0];
         setData({
           sku_name,
           sku_name_kannada,
@@ -125,7 +123,7 @@ export default function EditProducts() {
                 </Button>
                 <LinkRouter to={-1}>
                   <Button color="secondary" variant="outlined">
-                    Discard
+                    Close
                   </Button>
                 </LinkRouter>
               </Box>

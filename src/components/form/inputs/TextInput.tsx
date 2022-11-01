@@ -36,7 +36,7 @@ const CustomInput = styled(InputBase)(({ theme, error, size }) => ({
   },
 }));
 
-const Label = styled("label")(({ theme }) => ({
+const Label = styled("label")(() => ({
   display: "block",
   color: "#6b7280",
   fontWeight: 600,
