@@ -40,11 +40,34 @@ export default function Cancelled() {
         postfix: searchText
           ? `${searchText}&order_status=${orderId}`
           : `?order_status=${orderId}`,
+        params: "csv",
       });
       if (res?.status === 200) {
+        let csvData = res.data.orders;
+        csvData = csvData.map((row: Record<string, any>, index: number) => ({
+          ...row,
+          s_no: index + 1,
+        }));
+        csvData = csvData.map((row: Record<string, any>) => ({
+          ...row,
+          order_status2:
+            row.order_status === 0
+              ? "New"
+              : row.order_status === 1
+              ? "Accepted"
+              : row.order_status === 3
+              ? "Picked-up "
+              : row.order_status === 5
+              ? "Delivered"
+              : row.order_status === 7
+              ? "Reject By Farmer"
+              : row.order_status === 9
+              ? "Rejected"
+              : null,
+        }));
         dispatch(setPageLoading(false));
         exportFromJSON({
-          data: res.data.orders,
+          data: csvData,
           fileName: `cancelled-orders-csv`,
           exportType: "csv",
         });

@@ -12,6 +12,7 @@ import ActiveDeactive from "../active-deactive";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
 import LinkRouter from "../../../routers/LinkRouter";
+import { queryToStr } from "../utils";
 
 export default function DeliveryPartnerList(props: { searchText: string }) {
   const { page, setPage, size, setSize } = usePaginate();
@@ -23,9 +24,11 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
   const { searchText } = props;
 
   const postfix = React.useMemo(() => {
-    return searchText
-      ? `${searchText}&page=${page}&size=${size}`
-      : `?page=${page}&size=${size}`;
+    const x = queryToStr({
+      page,
+      size,
+    });
+    return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [searchText, page, size]);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -40,7 +43,6 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
       }),
     {
       keepPreviousData: true,
-      refetchOnWindowFocus: false,
     }
   );
 
@@ -70,12 +72,12 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: "5%",
+        width: 2,
       },
       {
         Header: "Status",
         accessor: "active",
-        width: "10%",
+        width: 2,
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}

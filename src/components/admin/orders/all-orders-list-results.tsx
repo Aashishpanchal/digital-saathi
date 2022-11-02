@@ -43,23 +43,23 @@ export default function AllOrdersListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: "5%",
+        width: 2,
       },
       {
         Header: "Order ID",
         accessor: "order_id",
-        width: "6%",
+        width: 2,
       },
       {
         Header: "Order Status",
         accessor: "order_status",
-        width: "10%",
+        width: 2,
         Cell: (cell: any) => <OrderStatus value={cell.value} />,
       },
       {
         Header: "Order Date",
         accessor: "order_date",
-        width: "10%",
+        width: 2,
         Cell: (cell: any) => (
           <Typography>{dayjs(cell.value).format("MMMM D, YYYY")}</Typography>
         ),
@@ -67,7 +67,7 @@ export default function AllOrdersListResults(props: { searchText: string }) {
       {
         Header: "Amount",
         accessor: "grand_total",
-        width: "10%",
+        width: 2,
         Cell: (cell: any) => (
           <Typography fontWeight={"600"}>₹{cell.value}</Typography>
         ),
@@ -82,7 +82,6 @@ export default function AllOrdersListResults(props: { searchText: string }) {
       },
       {
         Header: "Action",
-        width: "10%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter

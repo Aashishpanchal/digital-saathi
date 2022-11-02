@@ -73,16 +73,12 @@ export default function FarmersListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: "5%",
+        width: 2,
       },
-      // {
-      //   Header: "S No.",
-      //   accessor: "customer_id",
-      // },
       {
         Header: "Status",
         accessor: "active",
-        width: "8%",
+        width: 2,
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
@@ -95,7 +91,6 @@ export default function FarmersListResults(props: { searchText: string }) {
       {
         Header: "Auth Code",
         accessor: "auth_code",
-        width: "20%",
       },
       {
         Header: "Customer Name",
@@ -103,7 +98,6 @@ export default function FarmersListResults(props: { searchText: string }) {
       },
       {
         Header: "Action",
-        width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Tooltip title="Farmer Edit">

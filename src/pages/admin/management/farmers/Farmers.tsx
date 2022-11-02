@@ -6,7 +6,7 @@ import { farmers } from "../../../../http";
 import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import FarmersListResults from "../../../../components/admin/farmers/farmers-list-results";
-import FarmersListToolbar from "../../../../components/admin/farmers/farmers-list-toolbar";
+import CommonToolbar from "../../../../components/admin/common-toolbar";
 
 export default function Farmers() {
   const [searchText, setSearchText] = React.useState("");
@@ -25,7 +25,7 @@ export default function Farmers() {
       if (res?.status === 200) {
         dispatch(setPageLoading(false));
         exportFromJSON({
-          data: res.data.customers,
+          data: res.data,
           fileName: `products-csv`,
           exportType: "csv",
         });
@@ -37,7 +37,8 @@ export default function Farmers() {
 
   return (
     <MainContainer>
-      <FarmersListToolbar
+      <CommonToolbar
+        title="Farmers"
         onSearch={searchHandler}
         onClickExport={exportHandler}
       />

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { TextInput } from "../../form";
-import { PatternFormat } from "react-number-format";
+import { NumericFormat, PatternFormat } from "react-number-format";
 
 function RetailerForm(props: {
   errors?: any;
@@ -36,7 +36,7 @@ function RetailerForm(props: {
         type: "numeric",
         label: "Phone Number",
         name: "phone_no",
-        format: "+91 ### ### ####",
+        format: "+91 ##########",
         allowEmptyFormatting: true,
         mask: "_",
       },
@@ -60,21 +60,25 @@ function RetailerForm(props: {
         type: "string",
         label: "City",
         name: "city",
+        placeholder: "city name",
       },
       {
         type: "string",
         label: "State",
         name: "state",
+        placeholder: "state name",
       },
       {
         type: "string",
         label: "District",
         name: "district",
+        placeholder: "district name",
       },
       {
-        type: "number",
+        type: "numeric",
         label: "Pin-Code",
         name: "pincode",
+        placeholder: "pincode",
       },
     ],
     []
@@ -115,7 +119,6 @@ function RetailerForm(props: {
     ],
     []
   );
-  // format="+1 (###) #### ###" allowEmptyFormatting mask="_"
   return (
     <Box>
       <Box sx={{ mb: 2 }}>
@@ -204,17 +207,31 @@ function RetailerForm(props: {
           </Typography>
         </Box>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {otherFields.map((item, index) => (
-            <TextInput
-              key={index}
-              {...item}
-              value={values[item.name] || ""}
-              onChange={handleChange}
-              error={errors[item.name] && touched[item.name] ? true : false}
-              helperText={touched[item.name] ? errors[item.name] : ""}
-              onBlur={handleBlur}
-            />
-          ))}
+          {otherFields.map((item, index) => {
+            const { type, ...others } = item;
+            return item.type === "numeric" ? (
+              <NumericFormat
+                {...others}
+                customInput={TextInput}
+                key={index}
+                value={values[item.name] || ""}
+                onChange={handleChange}
+                error={errors[item.name] && touched[item.name] ? true : false}
+                helperText={touched[item.name] ? errors[item.name] : ""}
+                onBlur={handleBlur}
+              />
+            ) : (
+              <TextInput
+                key={index}
+                {...item}
+                value={values[item.name] || ""}
+                onChange={handleChange}
+                error={errors[item.name] && touched[item.name] ? true : false}
+                helperText={touched[item.name] ? errors[item.name] : ""}
+                onBlur={handleBlur}
+              />
+            );
+          })}
         </div>
         <TextInput
           type="text"

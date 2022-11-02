@@ -18,6 +18,7 @@ import RetailerForm, {
 import { retailerSchema } from "../../../../components/admin/retailers/schemas";
 import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
+import { filterPhoneNo } from "../../../../components/admin/utils";
 
 export default function CreateRetailers() {
   const { enqueueSnackbar } = useSnackbar();
@@ -34,8 +35,8 @@ export default function CreateRetailers() {
           setLoading(true);
           const res = await retailer("post", {
             data: JSON.stringify({
-              values,
-              phone_no: values.phone_no.replace(/\s/g, ""),
+              ...values,
+              phone_no: filterPhoneNo(values.phone_no),
             }),
           });
           if (res?.status === 200) {

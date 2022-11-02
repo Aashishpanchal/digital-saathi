@@ -78,12 +78,8 @@ export default function ProductsListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: "5%",
+        width: 5,
       },
-      // {
-      //   Header: "S No.",
-      //   accessor: "sku_id",
-      // },
       {
         Header: "Status",
         accessor: "active",

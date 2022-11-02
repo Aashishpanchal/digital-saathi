@@ -34,6 +34,10 @@ function PageBreadcrumbs() {
         "/orders/orders-returning",
         "/orders/orders-returned",
         "/orders/orders-cancelled",
+        "/retailer-report/data-sku-unit",
+        "/retailer-report/data-sku-pricing",
+        "/retailer-report/cancelled-orders",
+        "/retailer-report/input-sale-details",
       ]),
     []
   );

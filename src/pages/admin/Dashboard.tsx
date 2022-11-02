@@ -21,7 +21,7 @@ export default function Home() {
     try {
       const res: any = await farmers("get");
       if (res.status === 200) {
-        setTotalFarmers(res.data.totalItems);
+        setTotalFarmers(res.data?.length || 0);
       }
     } catch (err: any) {
       console.log(err);
@@ -32,7 +32,7 @@ export default function Home() {
     try {
       const res: any = await warehouse("get");
       if (res.status === 200) {
-        setTotalWarehouses(res.data.totalItems);
+        setTotalWarehouses(res.data?.totalItems || 0);
       }
     } catch (err: any) {
       console.log(err);
@@ -43,7 +43,7 @@ export default function Home() {
     try {
       const res: any = await retailer("get");
       if (res.status === 200) {
-        setTotalRetailers(res.data.totalItems);
+        setTotalRetailers(res.data?.length || 0);
       }
     } catch (err: any) {
       console.log(err);

@@ -73,7 +73,7 @@ export default function RetailerListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: "5%",
+        width: "0px",
       },
       // {
       //   Header: "S No.",
@@ -82,7 +82,7 @@ export default function RetailerListResults(props: { searchText: string }) {
       {
         Header: "Status",
         accessor: "active",
-        width: "8%",
+        width: 2,
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
@@ -95,7 +95,7 @@ export default function RetailerListResults(props: { searchText: string }) {
       {
         Header: "Auth Code",
         accessor: "auth_code",
-        width: "20%",
+        width: 10,
       },
       {
         Header: "Retailer Name",
@@ -103,7 +103,6 @@ export default function RetailerListResults(props: { searchText: string }) {
       },
       {
         Header: "Action",
-        width: "20%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter to={`${cell.row.original.retailer_id}`}>

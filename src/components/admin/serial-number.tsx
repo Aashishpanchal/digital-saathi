@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import React from "react";
 import { Cell } from "react-table";
 
@@ -14,7 +15,11 @@ const SerialNumberColumn = (props: {
       return (page * Number(size) + value).toString();
     }
   }, []);
-  return <>{srNo}</>;
+  return (
+    <Typography textAlign="center" variant="subtitle2">
+      {srNo}
+    </Typography>
+  );
 };
 
 export default React.memo(SerialNumberColumn);

@@ -53,6 +53,7 @@ function OrdersDetailsList(props: { orderId: string }) {
           my: 2,
           flexWrap: "wrap",
           minHeight: 180,
+          gap: 2,
         }}
       >
         {loading ? (

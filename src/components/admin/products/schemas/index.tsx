@@ -2,25 +2,21 @@ import * as Yup from "yup";
 
 export const productSchema = Yup.object({
   sku_name: Yup.string()
-    .min(2)
+    .min(2, "product name must be at least 2 characters")
     .max(255)
-    .required("Please enter product sku name"),
+    .required("product name is not allowed to be empty"),
   sku_name_kannada: Yup.string()
-    .min(2)
+    .min(2, "product kannada name must be at least 2 characters")
     .max(255)
-    .required("Please enter product sku name kannada"),
-  sku_code: Yup.string().required("Please enter product sku code"),
-  hsn_code: Yup.string().required("Please enter product hsn code"),
+    .required("product kannada name is not allowed to be empty"),
 });
 
 export const productPriceSchema = Yup.object({
-  mrp: Yup.number().positive().required("Please enter product mrp"),
-  igst: Yup.number().positive().required("Please enter product igst"),
-  cgst: Yup.number().positive().required("Please enter product cgst"),
-  sgst: Yup.number().positive().required("Please enter product sgst"),
-  price: Yup.number().positive().required("Please enter product price"),
-  weight: Yup.number().positive(),
-  dimension: Yup.number().positive(),
-  totalweight: Yup.number().positive(),
-  units_per_case: Yup.number().positive(),
+  mrp: Yup.string().required("product mrp is not allowed to be empty"),
+  gst: Yup.string().required("product gst is not allowed to be empty"),
+  price: Yup.string().required("product price is not allowed to be empty"),
+  weight: Yup.string(),
+  dimension: Yup.string(),
+  totalweight: Yup.string(),
+  units_per_case: Yup.string(),
 });

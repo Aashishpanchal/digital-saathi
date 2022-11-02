@@ -18,7 +18,7 @@ import DeliveryPartnerForm, {
   initialValues,
 } from "../../../../components/admin/delivery-partner/delivery-partner-form";
 import { deliveryPartnerSchema } from "../../../../components/admin/delivery-partner/schemas";
-import { margeObj } from "../../../../components/admin/utils";
+import { filterPhoneNo, margeObj } from "../../../../components/admin/utils";
 
 export default function CreateRetailers() {
   const [data, setData] = React.useState(initialValues);
@@ -39,7 +39,10 @@ export default function CreateRetailers() {
           setLoading(true);
           const res = await deliveryPartners("put", {
             params: partner_id,
-            data: JSON.stringify(values),
+            data: JSON.stringify({
+              ...values,
+              phone_no: filterPhoneNo(values.phone_no),
+            }),
           });
           if (res?.status === 200) {
             navigate(-1);
@@ -71,7 +74,12 @@ export default function CreateRetailers() {
       });
       if (res?.status === 200) {
         const { data } = res;
-        setData(margeObj(initialValues, res.data) as typeof data);
+        setData(
+          margeObj(initialValues, {
+            ...data,
+            phone_no: filterPhoneNo(data?.phone_no, true),
+          }) as typeof data
+        );
       }
     } catch (error) {
       console.log(error);

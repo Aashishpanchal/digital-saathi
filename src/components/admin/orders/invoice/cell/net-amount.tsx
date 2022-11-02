@@ -11,12 +11,13 @@ export default function NetAmount(props: { cell: Cell }) {
     },
   }: Record<string, any> = props;
 
-  const netAmount = React.useMemo(
-    () =>
-      nullFree(original?.total_price) -
-      totalGst(nullFree(original?.total_price), nullFree(original?.igst)),
-    []
-  );
+  const netAmount = React.useMemo(() => {
+    const { gst, igstNum } = totalGst(
+      nullFree(original?.total_price),
+      nullFree(original?.igst)
+    );
+    return igstNum === 0 ? 0 : nullFree(original?.total_price) - gst;
+  }, []);
   return (
     <TextCenter>
       <NumericFormat

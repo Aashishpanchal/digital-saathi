@@ -14,6 +14,7 @@ import { shopDeliveryAgent } from "../../../../http";
 import { deliveryAgentSchema } from "../schemas";
 import { useParams } from "react-router-dom";
 import { PatternFormat } from "react-number-format";
+import { filterPhoneNo } from "../../utils";
 
 export default function deliveryAgentFormDialog(props: {
   open: boolean;
@@ -32,10 +33,7 @@ export default function deliveryAgentFormDialog(props: {
       initialValues: {
         agent_name: deliveryAgent?.agent_name || "",
         email_id: deliveryAgent?.email_id || "",
-        phone_no:
-          typeof deliveryAgent?.phone_no === "string"
-            ? deliveryAgent.phone_no.replace(/\s/g, "").replace("+91", "")
-            : "",
+        phone_no: filterPhoneNo(deliveryAgent?.phone_no, true),
       },
       validationSchema: deliveryAgentSchema,
       enableReinitialize: true,
@@ -46,8 +44,8 @@ export default function deliveryAgentFormDialog(props: {
               params: deliveryAgent.agent_id,
               data: JSON.stringify({
                 ...values,
-                phone_on: values.phone_no.replace(/\s/g, ""),
                 partner_id,
+                phone_no: filterPhoneNo(values?.phone_no),
               }),
             });
             if (res?.status === 200) {
@@ -59,19 +57,26 @@ export default function deliveryAgentFormDialog(props: {
                 });
               }, 200);
             }
-          } catch (error) {
-            console.log(error);
-            enqueueSnackbar("Delivery Agent Update Failed!😢", {
-              variant: "error",
-            });
+          } catch (error: any) {
+            const {
+              status,
+              data: { message },
+            } = error.response;
+            if (status === 400) {
+              enqueueSnackbar(message, { variant: "error" });
+            } else {
+              enqueueSnackbar("Delivery Agent Update Failed!😢", {
+                variant: "error",
+              });
+            }
           }
         } else {
           try {
             const res = await shopDeliveryAgent("post", {
               data: JSON.stringify({
                 ...values,
-                phone_on: values.phone_no.replace(/\s/g, ""),
                 partner_id,
+                phone_no: filterPhoneNo(values?.phone_no),
               }),
             });
             if (res?.status === 200) {
@@ -91,7 +96,9 @@ export default function deliveryAgentFormDialog(props: {
             if (status === 400) {
               enqueueSnackbar(message, { variant: "error" });
             } else {
-              enqueueSnackbar("Delivery Agent Failed!😢", { variant: "error" });
+              enqueueSnackbar("Delivery Agent Save Failed!😢", {
+                variant: "error",
+              });
             }
           }
         }
@@ -116,7 +123,7 @@ export default function deliveryAgentFormDialog(props: {
         type: "numeric",
         label: "Phone Number",
         name: "phone_no",
-        format: "+91 ### ### ####",
+        format: "+91 ##########",
         allowEmptyFormatting: true,
         mask: "_",
       },

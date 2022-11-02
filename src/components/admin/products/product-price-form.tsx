@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Typography, Select, MenuItem } from "@mui/material";
 import { TextInput } from "../../form";
 import { shopPackages, shopUnits } from "../../../http";
+import { NumericFormat } from "react-number-format";
+import AsyncAutocomplete from "../../form/async-autocomplete";
 
 export default function ProductPriceForm(props: {
   errors?: any;
@@ -13,8 +15,10 @@ export default function ProductPriceForm(props: {
   handleBlur?:
     | React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>
     | undefined;
+  setFieldValue: Function;
 }) {
-  const { values, handleChange, errors, handleBlur, touched } = props;
+  const { values, handleChange, errors, handleBlur, touched, setFieldValue } =
+    props;
   const [packages, setPackages] = React.useState<Array<{ [key: string]: any }>>(
     []
   );
@@ -23,47 +27,46 @@ export default function ProductPriceForm(props: {
   const priceFields = React.useMemo(
     () => [
       {
-        type: "number",
         label: "MRP",
         name: "mrp",
       },
       {
-        type: "number",
-        label: "IGST(%)",
-        name: "igst",
+        label: "GST(%)",
+        name: "gst",
+        suffix: "%",
       },
+      // {
+      //   type: "number",
+      //   label: "IGST(%)",
+      //   name: "igst",
+      // },
+      // {
+      //   type: "number",
+      //   label: "CGST(%)",
+      //   name: "cgst",
+      // },
+      // {
+      //   type: "number",
+      //   label: "SGST(%)",
+      //   name: "sgst",
+      // },
       {
-        type: "number",
-        label: "CGST(%)",
-        name: "cgst",
-      },
-      {
-        type: "number",
-        label: "SGST(%)",
-        name: "sgst",
-      },
-      {
-        type: "number",
         label: "Price",
         name: "price",
       },
       {
-        type: "number",
         label: "Dimension",
         name: "dimension",
       },
       {
-        type: "number",
         label: "Total Weight",
         name: "totalweight",
       },
       {
-        type: "number",
         label: "Units Per Case",
         name: "units_per_case",
       },
       {
-        type: "number",
         label: "Weight",
         name: "weight",
       },
@@ -128,7 +131,7 @@ export default function ProductPriceForm(props: {
       </Box>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {priceFields.map((item, index) => (
-          <TextInput
+          <NumericFormat
             {...item}
             size="small"
             key={index}
@@ -137,6 +140,7 @@ export default function ProductPriceForm(props: {
             error={errors[item.name] && touched[item.name] ? true : false}
             helperText={touched[item.name] ? errors[item.name] : ""}
             onBlur={handleBlur}
+            customInput={TextInput}
           />
         ))}
         <Box sx={{ my: 2 }}>
@@ -174,42 +178,23 @@ export default function ProductPriceForm(props: {
             ))}
           </Select>
         </Box>
-        <Box>
-          <Typography
-            component={"label"}
-            sx={{ display: "block", color: "#6b7280", fontWeight: 600 }}
-          >
-            Package
-          </Typography>
-          <Select
-            fullWidth
-            color="secondary"
-            sx={{
-              fontSize: "small",
-              ".MuiSelect-select": {
-                p: 1,
-              },
-            }}
-            name="package"
-            value={values.package}
-            onChange={handleChange as any}
-            displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-          >
-            <MenuItem sx={{ fontSize: "small" }} value="">
-              <em>None</em>
-            </MenuItem>
-            {packages.map((item, index) => (
-              <MenuItem
-                key={index}
-                sx={{ fontSize: "small" }}
-                value={item.package_id.toString()}
-              >
-                {item.package}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
+        <AsyncAutocomplete
+          id="package-option"
+          label="Packages"
+          options={packages || []}
+          value={
+            values?.package
+              ? !isNaN(Number(values?.package))
+                ? Number(values?.package)
+                : undefined
+              : undefined
+          }
+          objFilter={{
+            title: "package",
+            value: "package_id",
+          }}
+          onChangeOption={(value) => setFieldValue("package", value.toString())}
+        />
       </div>
     </Box>
   );
@@ -218,16 +203,12 @@ export default function ProductPriceForm(props: {
 export const initialValues = {
   //   product price
   mrp: "",
-  igst: "",
-  cgst: "",
-  sgst: "",
+  gst: "",
   price: "",
   weight: "",
-  package: "",
   dimension: "",
   totalweight: "",
   units_per_case: "",
+  package: "",
   unit: "",
-  //   organization
-  brand_id: "",
 };

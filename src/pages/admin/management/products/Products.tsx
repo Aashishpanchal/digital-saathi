@@ -1,11 +1,11 @@
 import React from "react";
+import exportFromJSON from "export-from-json";
+import { useDispatch } from "react-redux";
+import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
 import ProductsListResults from "../../../../components/admin/products/products-list-results";
 import ProductsListToolbar from "../../../../components/admin/products/products-list-toolbar";
-import { Box } from "@mui/material";
-import exportFromJSON from "export-from-json";
 import { shopProducts } from "../../../../http";
-import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 
 export default function Products() {
@@ -25,7 +25,7 @@ export default function Products() {
       if (res?.status === 200) {
         dispatch(setPageLoading(false));
         exportFromJSON({
-          data: res.data.products,
+          data: res.data.product,
           fileName: `products-csv`,
           exportType: "csv",
         });

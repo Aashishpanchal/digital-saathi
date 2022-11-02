@@ -5,10 +5,13 @@ export const deliveryPartnerSchema = Yup.object({
     .min(2)
     .max(255)
     .required("Please enter partner name"),
-  phone_no: Yup.string().matches(/(\+91\ )[6-9]{1}[0-9 ]{4}[0-9 ]{4}[0-9]{3}/, {
-    message: "Invalid Indian number, follow(+91 915 689 4565)",
-    excludeEmptyString: false,
-  }),
+  phone_no: Yup.string().matches(
+    /^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[789]\d{9}|(\d[ -]?){10}\d$/,
+    {
+      message: "Invalid Phone number",
+      excludeEmptyString: false,
+    }
+  ),
   email_id: Yup.string().email().required("Please enter partner email id"),
   pincode: Yup.number()
     .positive("wrong pincode")
@@ -19,9 +22,12 @@ export const deliveryAgentSchema = Yup.object({
   agent_name: Yup.string().min(2).max(255).required("Please enter agent name"),
   email_id: Yup.string().email().required("Please enter agent email id"),
   phone_no: Yup.string()
-    .matches(/(\+91\ )[6-9]{1}[0-9 ]{4}[0-9 ]{4}[0-9]{3}/, {
-      message: "Invalid Indian number, follow(+91 915 689 4565)",
-      excludeEmptyString: false,
-    })
+    .matches(
+      /^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[789]\d{9}|(\d[ -]?){10}\d$/,
+      {
+        message: "Invalid Phone number",
+        excludeEmptyString: false,
+      }
+    )
     .required("Please enter phone number"),
 });

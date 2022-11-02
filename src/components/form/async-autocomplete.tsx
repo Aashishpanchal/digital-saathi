@@ -25,7 +25,7 @@ export default function AsyncAutocomplete(props: {
   label: string;
   value?: number;
   id: string;
-  onChangeOption: (value: any) => void;
+  onChangeOption: (value: any, values?: Record<string, any>) => void;
 }) {
   const {
     options,

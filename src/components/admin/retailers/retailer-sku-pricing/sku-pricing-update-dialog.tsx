@@ -25,7 +25,7 @@ export default function SkuPricingUpdateDialog(props: {
       validationSchema: skuPricingSchema,
       enableReinitialize: true,
       async onSubmit(values) {
-        if (Number(values.sale_price) <= skuPrice.price) {
+        if (Number(values.sale_price) <= skuPrice.mrp) {
           try {
             setLoading(true);
             const res = await shopRetailerProductPrice("put", {
@@ -57,7 +57,7 @@ export default function SkuPricingUpdateDialog(props: {
           }
           setLoading(false);
         } else {
-          enqueueSnackbar("SKU Sale Price not above Price", {
+          enqueueSnackbar(`SKU Sale Price not above MRP ₹${skuPrice.mrp}`, {
             variant: "error",
           });
         }

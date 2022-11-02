@@ -72,7 +72,7 @@ export default function ShopProductDetails() {
     try {
       let res = await shopProducts("get", { params: sku_id });
       if (res?.status === 200) {
-        setProductData(res.data);
+        setProductData(res.data[0]);
       }
       res = await shopProductWeightPrice("get", {
         postfix: `?sku_id=${sku_id}`,

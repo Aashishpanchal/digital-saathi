@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Divider, Select, MenuItem } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { TextInput } from "../../form";
 import {
   categories as categoriesHttp,
@@ -8,6 +8,8 @@ import {
 } from "../../../http";
 import { FormikErrors } from "formik";
 import AsyncAutocomplete from "../../form/async-autocomplete";
+import { useQuery } from "@tanstack/react-query";
+import { NumericFormat } from "react-number-format";
 
 export default function ProductBasicForm(props: {
   errors?: any;
@@ -39,7 +41,6 @@ export default function ProductBasicForm(props: {
   const [subCategories, setSubCategories] = React.useState<
     Array<{ [key: string]: any }>
   >([]);
-  const [brands, setBrands] = React.useState<Array<{ [key: string]: any }>>([]);
 
   const basicFields = React.useMemo(
     () => [
@@ -62,7 +63,7 @@ export default function ProductBasicForm(props: {
         placeholder: "SKU Code",
       },
       {
-        type: "number",
+        type: "numeric",
         label: "HSN Code",
         name: "hsn_code",
         placeholder: "HSN Code",
@@ -78,6 +79,14 @@ export default function ProductBasicForm(props: {
     ],
     []
   );
+  const { data: brands, isLoading: brandsLoading } = useQuery(
+    ["get-brands"],
+    () => brandsHttp("get")
+  );
+  const getBrandData = React.useMemo(() => {
+    if (brands?.status === 200) return brands.data || [];
+    return [];
+  }, [brands]);
 
   const categoriesGet = React.useCallback(async () => {
     try {
@@ -137,36 +146,9 @@ export default function ProductBasicForm(props: {
     }
   }, []);
 
-  const brandsGet = React.useCallback(async () => {
-    try {
-      let res = await brandsHttp("get");
-      if (res?.status === 200) {
-        let {
-          data: { totalItems, brands, totalPages },
-        } = res;
-
-        if (totalPages > 1) {
-          res = await brandsHttp("get", {
-            postfix: `?page=0&size=${totalItems}`,
-          });
-          if (res?.status === 200) {
-            let {
-              data: { brands },
-            } = res;
-            return setBrands(brands);
-          }
-        }
-        return setBrands(brands);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
   React.useEffect(() => {
     categoriesGet();
     subCategoriesGet(values.category_id);
-    brandsGet();
   }, [values.category_id]);
 
   return (
@@ -176,17 +158,31 @@ export default function ProductBasicForm(props: {
           <Typography variant={"h6"}>Basic Information</Typography>
           <Typography>Section to config basic product information</Typography>
         </Box>
-        {basicFields.map((item, index) => (
-          <TextInput
-            key={index}
-            {...item}
-            value={values[item.name] || ""}
-            onChange={handleChange}
-            error={errors[item.name] && touched[item.name] ? true : false}
-            helperText={touched[item.name] ? errors[item.name] : ""}
-            onBlur={handleBlur}
-          />
-        ))}
+        {basicFields.map((item, index) => {
+          const { type, ...others } = item;
+          return type === "numeric" ? (
+            <NumericFormat
+              key={index}
+              {...others}
+              value={values[item.name]}
+              onChange={handleChange}
+              error={errors[item.name] && touched[item.name] ? true : false}
+              helperText={touched[item.name] ? errors[item.name] : ""}
+              onBlur={handleBlur}
+              customInput={TextInput}
+            />
+          ) : (
+            <TextInput
+              key={index}
+              {...item}
+              value={values[item.name] || ""}
+              onChange={handleChange}
+              error={errors[item.name] && touched[item.name] ? true : false}
+              helperText={touched[item.name] ? errors[item.name] : ""}
+              onBlur={handleBlur}
+            />
+          );
+        })}
       </Box>
       <Divider />
       <Box sx={{ my: 2 }}>
@@ -227,8 +223,9 @@ export default function ProductBasicForm(props: {
           <Box sx={{ my: 1 }}>
             <AsyncAutocomplete
               id="brand-option"
+              loading={brandsLoading}
               label="Brand"
-              options={brands || []}
+              options={getBrandData}
               objFilter={{
                 title: "brand_name",
                 value: "brand_id",

@@ -58,9 +58,11 @@ export const reactToPdf = async (ref: any, saveName: string) => {
 
 export const totalGst = (totalAmount: number, igst: string) => {
   const i = parseFloat(igst);
-  const igstNum = isNaN(i) ? 1 : i;
-  // console.log((totalAmount * 100) / (100 + igstNum));
-  return (totalAmount * 100) / (100 + igstNum);
+  const igstNum = isNaN(i) ? 0 : i;
+  return {
+    gst: totalAmount / (1 + igstNum / 100),
+    igstNum,
+  };
 };
 
 export function numberToEnIn(value: string): string {
@@ -81,3 +83,15 @@ export function numberToEnIn(value: string): string {
     doNotAddOnly: true,
   });
 }
+
+export const filterPhoneNo = (phone: string, r91?: boolean) => {
+  if (phone) {
+    const spaceFree = phone.replace(/\s/g, "");
+    return r91
+      ? spaceFree.replace("+91", "")
+      : spaceFree.includes("+91")
+      ? spaceFree
+      : "+91" + spaceFree;
+  }
+  return "";
+};

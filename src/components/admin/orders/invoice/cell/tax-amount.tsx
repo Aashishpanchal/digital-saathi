@@ -13,11 +13,17 @@ export default function TaxAmount(props: { cell: Cell; bothGst: boolean }) {
   }: Record<string, any> = props;
 
   const gst = React.useMemo(() => {
-    const tGst = totalGst(
+    const { gst: tGst, igstNum } = totalGst(
       nullFree(original?.total_price),
       nullFree(original?.igst)
     );
-    return bothGst ? [tGst / 2, tGst / 2] : [tGst];
+    return igstNum !== 0
+      ? bothGst
+        ? [tGst / 2, tGst / 2]
+        : [tGst]
+      : bothGst
+      ? [0, 0]
+      : [0];
   }, []);
 
   return (

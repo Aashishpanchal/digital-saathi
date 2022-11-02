@@ -12,7 +12,7 @@ import ProductPriceForm, { initialValues } from "./product-price-form";
 import { productPriceSchema } from "./schemas";
 import { shopProductWeightPrice } from "../../../http";
 import { useSnackbar } from "notistack";
-import { numberToString, removePostFix } from "../../Utils";
+import { removePostFix } from "../../Utils";
 
 export default function ProductPriceDialog(props: {
   open: boolean;
@@ -24,61 +24,92 @@ export default function ProductPriceDialog(props: {
   const [priceId, setPriceId] = React.useState("");
   const { enqueueSnackbar } = useSnackbar();
 
-  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
-    useFormik({
-      initialValues: data,
-      enableReinitialize: true,
-      validationSchema: productPriceSchema,
-      async onSubmit(values) {
-        const { weight, unit, ...other } = values;
-        if (priceId) {
-          try {
-            const res = await shopProductWeightPrice("put", {
-              params: priceId,
-              data: JSON.stringify({
-                sku_id: priceId,
-                weight: `${weight}${unit}`,
-                ...numberToString(other),
-              }),
-            });
-            if (res?.status === 200) {
-              close();
-              setTimeout(() => {
-                enqueueSnackbar("Product Price Update  successfully!👍😊", {
-                  variant: "success",
-                });
-              }, 200);
-            }
-          } catch (error) {
-            enqueueSnackbar("Product Price Save Failed!😢", {
-              variant: "error",
-            });
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+  } = useFormik({
+    initialValues: data,
+    enableReinitialize: true,
+    validationSchema: productPriceSchema,
+    async onSubmit(values) {
+      let { weight, unit, gst, ...others }: any = values;
+      gst = gst ? parseFloat(gst) : 0;
+      const [igst, cgst, sgst] = [`${gst}%`, `${gst / 2}%`, `${gst / 2}%`];
+
+      if (priceId) {
+        try {
+          const res = await shopProductWeightPrice("put", {
+            params: priceId,
+            data: JSON.stringify({
+              ...others,
+              igst,
+              cgst,
+              sgst,
+              weight: `${weight}${unit}`,
+            }),
+          });
+          if (res?.status === 200) {
+            close();
+            setTimeout(() => {
+              enqueueSnackbar("Product Price Update  successfully!👍😊", {
+                variant: "success",
+              });
+            }, 200);
           }
-        } else {
-          try {
-            const res = await shopProductWeightPrice("post", {
-              data: JSON.stringify({
-                sku_id: id,
-                weight: `${weight}${unit}`,
-                ...numberToString(other),
-              }),
-            });
-            if (res?.status === 200) {
-              close();
-              setTimeout(() => {
-                enqueueSnackbar("Product Price Save  successfully!👍😊", {
-                  variant: "success",
-                });
-              }, 200);
-            }
-          } catch (error) {
+        } catch (error: any) {
+          const {
+            status,
+            data: { message },
+          } = error?.response;
+          if (status === 400) {
+            enqueueSnackbar(message, { variant: "error" });
+          } else {
             enqueueSnackbar("Product Price Save Failed!😢", {
               variant: "error",
             });
           }
         }
-      },
-    });
+      } else {
+        try {
+          const res = await shopProductWeightPrice("post", {
+            data: JSON.stringify({
+              sku_id: id,
+              ...others,
+              igst,
+              cgst,
+              sgst,
+              weight: `${weight}${unit}`,
+            }),
+          });
+          if (res?.status === 200) {
+            close();
+            setTimeout(() => {
+              enqueueSnackbar("Product Price Save  successfully!👍😊", {
+                variant: "success",
+              });
+            }, 200);
+          }
+        } catch (error: any) {
+          const {
+            status,
+            data: { message },
+          } = error?.response;
+          if (status === 400) {
+            enqueueSnackbar(message, { variant: "error" });
+          } else {
+            enqueueSnackbar("Product Price Save Failed!😢", {
+              variant: "error",
+            });
+          }
+        }
+      }
+    },
+  });
 
   const onRetrieve = async () => {
     try {
@@ -93,6 +124,7 @@ export default function ProductPriceDialog(props: {
           const [weight, unit] = removePostFix(product_prices[0].weight || "");
           setData({
             ...product_prices[0],
+            gst: product_prices[0]?.igst,
             weight,
             unit,
           });
@@ -119,6 +151,7 @@ export default function ProductPriceDialog(props: {
             errors={errors}
             handleBlur={handleBlur}
             touched={touched}
+            setFieldValue={setFieldValue}
           />
           <Divider sx={{ my: 1 }} />
           <Box

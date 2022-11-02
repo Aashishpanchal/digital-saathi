@@ -17,7 +17,7 @@ import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { useNavigate, useParams } from "react-router-dom";
 import { retailerSchema } from "../../../../components/admin/retailers/schemas";
-import { margeObj } from "../../../../components/admin/utils";
+import { filterPhoneNo, margeObj } from "../../../../components/admin/utils";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CreateRetailers() {
@@ -41,7 +41,7 @@ export default function CreateRetailers() {
             params: retailer_id,
             data: JSON.stringify({
               ...values,
-              phone_no: values.phone_no.replace(/\s/g, ""),
+              phone_no: filterPhoneNo(values.phone_no),
             }),
           });
           if (res?.status === 200) {
@@ -77,10 +77,7 @@ export default function CreateRetailers() {
         setData(
           margeObj(initialValues, {
             ...res.data,
-            phone_no:
-              typeof data?.phone_no === "string"
-                ? data.phone_no.replace(/\s/g, "").replace("+91", "")
-                : "",
+            phone_no: filterPhoneNo(data?.phone_no, true),
           }) as typeof data
         );
       }

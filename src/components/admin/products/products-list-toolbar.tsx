@@ -42,7 +42,7 @@ export default function ProductsListToolbar(props: {
             </Button>
           </LinkRouter>
           <Button
-            color="warning"
+            color="secondary"
             startIcon={<FaFileCsv fontSize="small" />}
             sx={{ mr: 1 }}
             onClick={onClickExport}

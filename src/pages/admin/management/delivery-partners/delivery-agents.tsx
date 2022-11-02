@@ -1,5 +1,5 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 import DeliveryAgentList from "../../../../components/admin/delivery-partner/delivery-agent-list";

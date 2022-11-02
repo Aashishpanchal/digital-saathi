@@ -18,6 +18,7 @@ import DeliveryPartnerForm, {
   initialValues,
 } from "../../../../components/admin/delivery-partner/delivery-partner-form";
 import { deliveryPartnerSchema } from "../../../../components/admin/delivery-partner/schemas";
+import { filterPhoneNo } from "../../../../components/admin/utils";
 
 export default function CreateRetailers() {
   const { enqueueSnackbar } = useSnackbar();
@@ -33,7 +34,10 @@ export default function CreateRetailers() {
         try {
           setLoading(true);
           const res = await deliveryPartners("post", {
-            data: JSON.stringify(values),
+            data: JSON.stringify({
+              ...values,
+              phone_no: filterPhoneNo(values.phone_no),
+            }),
           });
           if (res?.status === 200) {
             navigate(-1);

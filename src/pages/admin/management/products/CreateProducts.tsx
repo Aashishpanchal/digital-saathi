@@ -40,7 +40,7 @@ export default function CreateProducts() {
           if (res.status === 200) {
             navigate(-1);
             setTimeout(() => {
-              enqueueSnackbar("Product Save  successfully!👍😊", {
+              enqueueSnackbar("Product Save successfully!👍😊", {
                 variant: "success",
               });
             }, 200);

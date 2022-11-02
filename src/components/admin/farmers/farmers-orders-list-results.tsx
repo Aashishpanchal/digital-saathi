@@ -72,7 +72,7 @@ export default function FarmersOrdersListResults(props: {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: "5%",
+        width: 2,
       },
       // { Header: "Order ID", accessor: "order_id", width: 0 },
       {
@@ -81,7 +81,7 @@ export default function FarmersOrdersListResults(props: {
         Cell: (cell: any) => (
           <Typography>{dayjs(cell.value).format("MMMM D, YYYY")}</Typography>
         ),
-        width: "10%",
+        width: 2,
       },
       {
         Header: "Amount",
@@ -89,18 +89,26 @@ export default function FarmersOrdersListResults(props: {
         Cell: (cell: any) => (
           <Typography fontWeight={"600"}>₹{cell.value}</Typography>
         ),
-        width: "10%",
+        width: 2,
       },
       {
         Header: "Order Status",
         accessor: "order_status",
         Cell: (cell: any) => <OrderStatus value={cell.value} />,
-        width: "10%",
+        width: 20,
       },
-      { Header: "Retailer Name", accessor: "retailer_name", width: 250 },
+      {
+        Header: "Retailer Name",
+        accessor: "retailer_name",
+        width: 350,
+        Cell: (cell: any) => (
+          <Typography m="auto" width="70%">
+            {cell.value}
+          </Typography>
+        ),
+      },
       {
         Header: "Action",
-        width: "10%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter

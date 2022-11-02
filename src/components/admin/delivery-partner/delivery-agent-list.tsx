@@ -86,12 +86,12 @@ export default function DeliveryAgentList(props: {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: "5.5%",
+        width: 5,
       },
       {
         Header: "Status",
         accessor: "active",
-        width: "10%",
+        width: 5,
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
@@ -106,7 +106,6 @@ export default function DeliveryAgentList(props: {
       { Header: "Phone Number", accessor: "phone_no" },
       {
         Header: "Action",
-        width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Tooltip title="Edit">

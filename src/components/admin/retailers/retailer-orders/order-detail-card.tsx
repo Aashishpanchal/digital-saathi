@@ -24,11 +24,7 @@ function OrderDetailsCard(props: { orderDetail: { [key: string]: any } }) {
     <Card
       sx={{
         display: "flex",
-        width: {
-          sm: 230,
-          md: 230,
-          lg: 340,
-        },
+        maxWidth: 600,
       }}
       elevation={5}
     >
@@ -48,7 +44,7 @@ function OrderDetailsCard(props: { orderDetail: { [key: string]: any } }) {
       </Box>
       <ProductAvatar
         variant="square"
-        sx={{ height: 180, width: 130 }}
+        sx={{ height: 180, width: 150 }}
         src={orderDetail?.sku_image}
         {...props}
       />
