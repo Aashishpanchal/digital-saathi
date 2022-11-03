@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Typography, Button, Card, CardContent } from "@mui/material";
 import RowSearch from "../table/row-search";
 import { FaFileCsv } from "react-icons/fa";
+import { Data, Headers } from "react-csv/components/CommonPropTypes";
+import { CSVLink } from "react-csv";
 
 export default function CommonToolbar(props: {
   title: string;
@@ -11,8 +13,15 @@ export default function CommonToolbar(props: {
   };
   onSearch?: (value: string) => void;
   onClickExport?: () => void;
+  exportProps?: {
+    ref?: any;
+    headers?: Headers;
+    onClick?: () => void;
+    data: string | Data | (() => string | Data);
+    filename?: string;
+  };
 }) {
-  const { onAddProps, title, onSearch, onClickExport } = props;
+  const { onAddProps, title, onSearch, exportProps } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -36,17 +45,24 @@ export default function CommonToolbar(props: {
           {title}
         </Typography>
         <Box sx={{ m: 1 }}>
-          {onClickExport && (
-            <Button
-              color="secondary"
-              startIcon={<FaFileCsv fontSize="small" />}
-              sx={{
-                mr: 1,
-              }}
-              onClick={onClickExport}
-            >
-              Export
-            </Button>
+          {exportProps && (
+            <>
+              <CSVLink
+                data={exportProps.data}
+                headers={exportProps.headers}
+                filename={exportProps?.filename}
+                target="_blank"
+                ref={exportProps.ref}
+              />
+              <Button
+                sx={{ mr: 1 }}
+                color="secondary"
+                onClick={exportProps?.onClick}
+                startIcon={<FaFileCsv fontSize="small" />}
+              >
+                Export
+              </Button>
+            </>
           )}
           {onAddProps && (
             <Button

@@ -73,12 +73,12 @@ export default function FarmersListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: 2,
+        width: "5%",
       },
       {
         Header: "Status",
         accessor: "active",
-        width: 2,
+        width: "10%",
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
@@ -98,6 +98,7 @@ export default function FarmersListResults(props: { searchText: string }) {
       },
       {
         Header: "Action",
+        width: "20%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Tooltip title="Farmer Edit">

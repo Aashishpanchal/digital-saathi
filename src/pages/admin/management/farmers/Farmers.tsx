@@ -7,31 +7,41 @@ import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import FarmersListResults from "../../../../components/admin/farmers/farmers-list-results";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
+import useStateWithCallback from "../../../../hooks/useStateWithCallback";
+import { addSno } from "../../../../components/admin/utils";
+import { farmersFields } from "../../../../constants/farmers-fields";
 
 export default function Farmers() {
   const [searchText, setSearchText] = React.useState("");
+  const { state: csvData, updateState: setCsvData } = useStateWithCallback<
+    Array<Record<string, any>>
+  >([]);
+  const ref = React.useRef<any>(null);
   const dispatch = useDispatch();
 
   const searchHandler = async (value: string) => {
     setSearchText(value ? `/search?search_customer=${value}` : "");
   };
 
-  const exportHandler = async () => {
+  const exportHandle = async () => {
     try {
       dispatch(setPageLoading(true));
       const res = await farmers("get", {
         postfix: searchText,
       });
       if (res?.status === 200) {
-        dispatch(setPageLoading(false));
-        exportFromJSON({
-          data: res.data,
-          fileName: `products-csv`,
-          exportType: "csv",
+        let csvData = res.data || [];
+        // indexing
+        csvData = addSno(csvData);
+
+        setCsvData(csvData, () => {
+          ref.current.link.click();
+          dispatch(setPageLoading(false));
         });
       }
     } catch (error) {
       console.log(error);
+      dispatch(setPageLoading(false));
     }
   };
 
@@ -40,7 +50,13 @@ export default function Farmers() {
       <CommonToolbar
         title="Farmers"
         onSearch={searchHandler}
-        onClickExport={exportHandler}
+        exportProps={{
+          ref,
+          data: csvData,
+          filename: `farmers-csv`,
+          onClick: exportHandle,
+          headers: farmersFields,
+        }}
       />
       <Box sx={{ mt: 3 }}>
         <FarmersListResults searchText={searchText} />
