@@ -1,30 +1,33 @@
 import React from "react";
-import { MainContainer } from "../../../components/layout";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
+import { MainContainer } from "../../../components/layout";
+import OrdersListResults from "../../../components/admin/orders/orders-list-results";
 import OrdersToolbar, {
   type DatesType,
 } from "../../../components/admin/orders/orders-toolbar";
 import { shopOrders } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
-import AllOrdersListResults from "../../../components/admin/orders/all-orders-list-results";
 import {
   addSno,
   dateTimeFormatTable,
   margeRowTable,
-  orderStatusReadable,
   queryToStr,
 } from "../../../components/admin/utils";
-import { allOrdersFields } from "../../../constants/orders-fields";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
+import { ordersFields } from "../../../constants/orders-fields";
 
-export default function AllOrders() {
+export default function MainOrders(props: {
+  orderStatus: number;
+  title: string;
+  filename: string;
+}) {
+  const { orderStatus, title, filename } = props;
   const [searchText, setSearchText] = React.useState("");
   const { state: csvData, updateState: setCsvData } = useStateWithCallback<
     Array<Record<string, any>>
   >([]);
   const ref = React.useRef<any>(null);
-  const dispatch = useDispatch();
 
   const searchHandler = (value: string, dates: DatesType) => {
     if (dates.from && dates.to) {
@@ -41,12 +44,16 @@ export default function AllOrders() {
     }
   };
 
-  const exportHandle = async () => {
+  const dispatch = useDispatch();
+
+  const exportHandler = async () => {
     try {
       dispatch(setPageLoading(true));
       const res = await shopOrders("get", {
-        postfix: searchText ? `${searchText}` : ``,
         params: "csv",
+        postfix: searchText
+          ? `${searchText}&order_status=${orderStatus}`
+          : `?order_status=${orderStatus}`,
       });
       if (res?.status === 200) {
         let csvData = res.data.orders || [];
@@ -66,8 +73,6 @@ export default function AllOrders() {
           ["retailer_company_name", "retailer_name"],
           "selected_retailer"
         );
-        // order readable from
-        csvData = orderStatusReadable(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();
@@ -87,15 +92,15 @@ export default function AllOrders() {
         exportProps={{
           ref,
           data: csvData,
-          headers: allOrdersFields,
-          filename: `all-orders-csv`,
-          onClick: exportHandle,
+          headers: ordersFields,
+          filename,
+          onClick: exportHandler,
         }}
       >
-        All Orders
+        {title}
       </OrdersToolbar>
       <Box sx={{ mt: 3 }}>
-        <AllOrdersListResults searchText={searchText} />
+        <OrdersListResults searchText={searchText} orderStatus={orderStatus} />
       </Box>
     </MainContainer>
   );

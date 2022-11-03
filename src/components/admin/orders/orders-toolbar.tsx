@@ -12,6 +12,8 @@ import { FaFileCsv } from "react-icons/fa";
 import RowSearch from "../../table/row-search";
 import { Dayjs } from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Data, Headers } from "react-csv/components/CommonPropTypes";
+import { CSVLink } from "react-csv";
 
 export type DatesType = {
   from: Dayjs | null;
@@ -19,11 +21,17 @@ export type DatesType = {
 };
 
 export default function OrdersToolbar(props: {
-  onClickExport?: () => void;
   onSearch?: (value: string, dates: DatesType) => void;
   children?: React.ReactNode;
+  exportProps?: {
+    ref?: any;
+    headers?: Headers;
+    onClick?: () => void;
+    data: string | Data | (() => string | Data);
+    filename?: string;
+  };
 }) {
-  const { onClickExport, onSearch, children } = props;
+  const { onSearch, children, exportProps } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -60,19 +68,24 @@ export default function OrdersToolbar(props: {
         <Typography sx={{ m: 1 }} variant="h5">
           {children}
         </Typography>
-        {onClickExport && (
-          <Box sx={{ m: 1 }}>
+        {exportProps && (
+          <>
+            <CSVLink
+              data={exportProps.data}
+              headers={exportProps.headers}
+              filename={exportProps?.filename}
+              target="_blank"
+              ref={exportProps.ref}
+            />
             <Button
+              sx={{ mr: 1 }}
               color="secondary"
+              onClick={exportProps?.onClick}
               startIcon={<FaFileCsv fontSize="small" />}
-              sx={{
-                mr: 1,
-              }}
-              onClick={onClickExport}
             >
               Export
             </Button>
-          </Box>
+          </>
         )}
       </Box>
       {onSearch && (

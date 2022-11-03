@@ -7,6 +7,10 @@ import { shopProducts } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import DataSkuUnitList from "../../../components/admin/retailer-report/data-sku-unit-list";
+import {
+  addSno,
+  beforeTableNullFreeEncoder,
+} from "../../../components/admin/utils";
 
 export default function DataSkuUnit() {
   const [searchText, setSearchText] = React.useState("");
@@ -32,9 +36,15 @@ export default function DataSkuUnit() {
       if (res?.status === 200) {
         dispatch(setPageLoading(false));
         exportFromJSON({
-          data: searchText ? res.data || [] : res.data.product,
+          data: addSno(searchText ? res.data || [] : res.data.product),
           fileName: `data-sku-unit-csv`,
           exportType: "csv",
+          beforeTableEncode(entries) {
+            return beforeTableNullFreeEncoder(entries);
+          },
+          replacer(key, value) {
+            console.log(key, value);
+          },
         });
       }
     } catch (error) {

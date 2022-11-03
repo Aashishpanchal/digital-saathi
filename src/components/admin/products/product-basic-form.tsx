@@ -41,6 +41,8 @@ export default function ProductBasicForm(props: {
   const [subCategories, setSubCategories] = React.useState<
     Array<{ [key: string]: any }>
   >([]);
+  const [categoryLoading, setCategoryLoading] = React.useState(false);
+  const [subcategoryLoading, setSubcategoryLoading] = React.useState(false);
 
   const basicFields = React.useMemo(
     () => [
@@ -90,6 +92,7 @@ export default function ProductBasicForm(props: {
 
   const categoriesGet = React.useCallback(async () => {
     try {
+      setCategoryLoading(true);
       let res = await categoriesHttp("get");
       if (res?.status === 200) {
         let {
@@ -104,19 +107,23 @@ export default function ProductBasicForm(props: {
             let {
               data: { categories },
             } = res;
+            setCategoryLoading(false);
             return setCategories(categories);
           }
         }
+        setCategoryLoading(false);
         return setCategories(categories);
       }
     } catch (error) {
       console.log(error);
     }
+    setCategoryLoading(false);
   }, []);
 
   const subCategoriesGet = React.useCallback(async (category_id: string) => {
     if (category_id) {
       try {
+        setSubcategoryLoading(true);
         let res = await subCategoriesHttp("get", {
           postfix: `?category_id=${category_id}`,
         });
@@ -133,21 +140,28 @@ export default function ProductBasicForm(props: {
               let {
                 data: { subcategories },
               } = res;
+              setSubcategoryLoading(false);
               return setSubCategories(subcategories);
             }
           }
+          setSubcategoryLoading(false);
           return setSubCategories(subcategories);
         }
       } catch (error) {
         console.log(error);
       }
     } else {
+      setSubcategoryLoading(false);
       return setSubCategories([]);
     }
+    setSubcategoryLoading(false);
   }, []);
 
   React.useEffect(() => {
     categoriesGet();
+  }, []);
+
+  React.useEffect(() => {
     subCategoriesGet(values.category_id);
   }, [values.category_id]);
 
@@ -194,6 +208,7 @@ export default function ProductBasicForm(props: {
           <Box sx={{ my: 1 }}>
             <AsyncAutocomplete
               id="sub-category-option"
+              loading={categoryLoading}
               label="Category"
               options={categories || []}
               objFilter={{
@@ -210,6 +225,7 @@ export default function ProductBasicForm(props: {
           <Box sx={{ my: 1 }}>
             <AsyncAutocomplete
               id="sub-category-option"
+              loading={subcategoryLoading}
               label="Sub Category"
               options={subCategories || []}
               objFilter={{

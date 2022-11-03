@@ -59,16 +59,16 @@ export default function ProductPriceForm(props: {
         name: "dimension",
       },
       {
-        label: "Total Weight",
+        label: "Weight",
+        name: "weight",
+      },
+      {
+        label: "Actual Weight",
         name: "totalweight",
       },
       {
         label: "Units Per Case",
         name: "units_per_case",
-      },
-      {
-        label: "Weight",
-        name: "weight",
       },
     ],
     []
@@ -130,54 +130,71 @@ export default function ProductPriceForm(props: {
         <Typography>Section to config product sales information</Typography>
       </Box>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {priceFields.map((item, index) => (
-          <NumericFormat
-            {...item}
-            size="small"
-            key={index}
-            value={values[item.name]}
-            onChange={handleChange}
-            error={errors[item.name] && touched[item.name] ? true : false}
-            helperText={touched[item.name] ? errors[item.name] : ""}
-            onBlur={handleBlur}
-            customInput={TextInput}
-          />
-        ))}
-        <Box sx={{ my: 2 }}>
-          <Typography
-            component={"label"}
-            sx={{ display: "block", color: "#6b7280", fontWeight: 600 }}
-          >
-            Unit
-          </Typography>
-          <Select
-            fullWidth
-            color="secondary"
-            sx={{
-              ".MuiSelect-select": {
-                p: 1,
-              },
-            }}
-            name="unit"
-            value={values.unit}
-            onChange={handleChange as any}
-            displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-          >
-            <MenuItem sx={{ fontSize: "small" }} value="">
-              <em>None</em>
-            </MenuItem>
-            {units.map((item, index) => (
-              <MenuItem
+        {priceFields.map((item, index) =>
+          item.name === "weight" ? (
+            <>
+              <NumericFormat
+                {...item}
+                size="small"
                 key={index}
-                sx={{ fontSize: "small" }}
-                value={item.units}
-              >
-                {item.units}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
+                value={values[item.name]}
+                onChange={handleChange}
+                error={errors[item.name] && touched[item.name] ? true : false}
+                helperText={touched[item.name] ? errors[item.name] : ""}
+                onBlur={handleBlur}
+                customInput={TextInput}
+              />
+              <Box sx={{ my: 2 }}>
+                <Typography
+                  component={"label"}
+                  sx={{ display: "block", color: "#6b7280", fontWeight: 600 }}
+                >
+                  Unit
+                </Typography>
+                <Select
+                  fullWidth
+                  color="secondary"
+                  sx={{
+                    ".MuiSelect-select": {
+                      p: 1,
+                    },
+                  }}
+                  name="unit"
+                  value={values.unit}
+                  onChange={handleChange as any}
+                  displayEmpty
+                  inputProps={{ "aria-label": "Without label" }}
+                >
+                  <MenuItem sx={{ fontSize: "small" }} value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {units.map((item, index) => (
+                    <MenuItem
+                      key={index}
+                      sx={{ fontSize: "small" }}
+                      value={item.units}
+                    >
+                      {item.units}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Box>
+            </>
+          ) : (
+            <NumericFormat
+              {...item}
+              size="small"
+              key={index}
+              value={values[item.name]}
+              onChange={handleChange}
+              error={errors[item.name] && touched[item.name] ? true : false}
+              helperText={touched[item.name] ? errors[item.name] : ""}
+              onBlur={handleBlur}
+              customInput={TextInput}
+            />
+          )
+        )}
+
         <AsyncAutocomplete
           id="package-option"
           label="Packages"

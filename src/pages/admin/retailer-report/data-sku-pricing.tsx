@@ -7,6 +7,10 @@ import { shopOrders } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import DataSkuPricingList from "../../../components/admin/retailer-report/data-sku-pricing-list";
+import {
+  addSno,
+  beforeTableNullFreeEncoder,
+} from "../../../components/admin/utils";
 
 export default function DataSkuPricing() {
   const [searchText, setSearchText] = React.useState("");
@@ -26,32 +30,14 @@ export default function DataSkuPricing() {
       });
       if (res?.status === 200) {
         let csvData = res.data.orders;
-        csvData = csvData.map((row: Record<string, any>, index: number) => ({
-          ...row,
-          s_no: index + 1,
-        }));
-        csvData = csvData.map((row: Record<string, any>) => ({
-          ...row,
-          order_status2:
-            row.order_status === 0
-              ? "New"
-              : row.order_status === 1
-              ? "Accepted"
-              : row.order_status === 3
-              ? "Picked-up "
-              : row.order_status === 5
-              ? "Delivered"
-              : row.order_status === 7
-              ? "Reject By Farmer"
-              : row.order_status === 9
-              ? "Rejected"
-              : null,
-        }));
         dispatch(setPageLoading(false));
         exportFromJSON({
-          data: csvData,
+          data: addSno(csvData),
           fileName: `data-sku-pricing-csv`,
           exportType: "csv",
+          beforeTableEncode(entries) {
+            return beforeTableNullFreeEncoder(entries);
+          },
         });
       }
     } catch (error) {

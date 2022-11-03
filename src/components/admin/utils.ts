@@ -1,6 +1,7 @@
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { ToWords } from "to-words";
+import dayjs from "dayjs";
 
 export const getPayload = (
   original: { [key: string]: any },
@@ -95,3 +96,110 @@ export const filterPhoneNo = (phone: string, r91?: boolean) => {
   }
   return "";
 };
+
+// !Table Units Start
+export const beforeTableNullFreeEncoder = (
+  entries: {
+    fieldName: string;
+    fieldValues: string[];
+  }[]
+) =>
+  entries.map((values) => {
+    values.fieldValues = values.fieldValues.map((value) =>
+      value === "null" ? "" : value
+    );
+    return values;
+  });
+
+export const addSno = (
+  data: Array<Record<string, any>>,
+  keyName: string = "s_no"
+) =>
+  data.map((row, index) => ({
+    [keyName]: index + 1,
+    ...row,
+  }));
+
+export const beforeTableOrderStatusEncoder = (
+  entries: {
+    fieldName: string;
+    fieldValues: string[];
+  }[],
+  fieldName: string = "order_status"
+) =>
+  entries.map((values) => {
+    if (values.fieldName === fieldName) {
+      values.fieldValues = values.fieldValues.map((value) =>
+        value === "0"
+          ? "New"
+          : value === "1"
+          ? "Accepted"
+          : value === "3"
+          ? "Picked-up"
+          : value === "5"
+          ? "Delivered"
+          : value === "7"
+          ? "Reject By Farmer"
+          : value === "9"
+          ? "Rejected"
+          : ""
+      );
+    }
+    return values;
+  });
+
+export const orderStatusReadable = (
+  data: Array<Record<string, any>>,
+  extractName: string = "order_status",
+  addKeyName: string = "order_status"
+) =>
+  data.map((row) => ({
+    ...row,
+    [addKeyName]:
+      row[extractName] === 0
+        ? "New"
+        : row[extractName] === 1
+        ? "Accepted"
+        : row[extractName] === 3
+        ? "Picked-up "
+        : row[extractName] === 5
+        ? "Delivered"
+        : row[extractName] === 7
+        ? "Reject By Farmer"
+        : row[extractName] === 9
+        ? "Rejected"
+        : null,
+  }));
+
+export const dateTimeFormatTable = (
+  data: Array<Record<string, any>>,
+  dateExtractKeyName: string,
+  addTimeKeyName: string
+) =>
+  data.map((row) =>
+    row[dateExtractKeyName]
+      ? {
+          ...row,
+          [dateExtractKeyName]: dayjs(row[dateExtractKeyName]).format(
+            "MMMM D, YYYY"
+          ),
+          [addTimeKeyName]: dayjs(row[dateExtractKeyName]).format("h:mm A"),
+        }
+      : row
+  );
+
+export const margeRowTable = (
+  data: Array<Record<string, any>>,
+  whoMarge: Array<string>,
+  nameOfCol: string
+) =>
+  data.map((row) => ({
+    ...row,
+    [nameOfCol]: whoMarge.reduce((p, c) =>
+      whoMarge[0] === p && whoMarge[1] === c
+        ? `${row[p] ? row[p] : ""} (${row[c] ? row[c] : ""})`
+        : `${p ? p : ""} (${row[c] ? row[c] : ""})`
+    ),
+  }));
+
+// !Table Units End

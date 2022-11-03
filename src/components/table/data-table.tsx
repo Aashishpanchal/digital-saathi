@@ -88,13 +88,7 @@ export default function DataTable(props: DataTableProps) {
         //   maxHeight: 800,
         // }}
         >
-          <Table
-            stickyHeader
-            aria-label="sticky table"
-            sx={{
-              minWidth: "max-content",
-            }}
-          >
+          <Table>
             <TableHead>
               {headerGroups.map((headerGroup, i) => (
                 <TableRow

@@ -43,33 +43,42 @@ export default function AllOrdersListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: 2,
+        width: "5%",
       },
       {
         Header: "Order ID",
         accessor: "order_id",
-        width: 2,
+        width: "8%",
+        Cell: (cell: any) => (
+          <Typography fontWeight={"600"} textAlign="center" fontSize={"small"}>
+            {cell.value}
+          </Typography>
+        ),
       },
       {
         Header: "Order Status",
         accessor: "order_status",
-        width: 2,
+        width: "8%",
         Cell: (cell: any) => <OrderStatus value={cell.value} />,
       },
       {
         Header: "Order Date",
         accessor: "order_date",
-        width: 2,
+        width: "15%",
         Cell: (cell: any) => (
-          <Typography>{dayjs(cell.value).format("MMMM D, YYYY")}</Typography>
+          <Typography textAlign={"center"}>
+            {dayjs(cell.value).format("MMMM D, YYYY")}
+          </Typography>
         ),
       },
       {
         Header: "Amount",
         accessor: "grand_total",
-        width: 2,
+        width: "8%",
         Cell: (cell: any) => (
-          <Typography fontWeight={"600"}>₹{cell.value}</Typography>
+          <Typography fontWeight={"600"} textAlign="center">
+            ₹{cell.value}
+          </Typography>
         ),
       },
       {
@@ -79,9 +88,15 @@ export default function AllOrdersListResults(props: { searchText: string }) {
       {
         Header: "Retailer Name",
         accessor: "retailer_name",
+        Cell: (cell: any) => (
+          <Typography fontWeight={"600"} fontSize="small">
+            {cell.row.original.retailer_company_name} ( {cell.value} )
+          </Typography>
+        ),
       },
       {
         Header: "Action",
+        width: "10%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter
