@@ -12,7 +12,7 @@ export const farmersFields = [
     key: "customer_name",
   },
   {
-    label: "farmer name",
+    label: "email_id",
     key: "email_id",
   },
   {
@@ -20,5 +20,3 @@ export const farmersFields = [
     key: "phone_no",
   },
 ];
-
-export const farmersOrdersFields = [{}];

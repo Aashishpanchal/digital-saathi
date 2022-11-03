@@ -69,7 +69,7 @@ export default function OrdersListResults(props: {
         width: "15%",
         Cell: (cell: any) => (
           <Typography textAlign={"center"}>
-            {dayjs(cell.value).format("MMMM D, YYYY")}
+            {dayjs(cell.value).format("D-MMM-YYYY")}
           </Typography>
         ),
       },

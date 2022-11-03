@@ -15,6 +15,7 @@ import {
   FaUserPlus,
   FaUsers,
   FaUserTie,
+  FaBoxes,
 } from "react-icons/fa";
 import {
   BsBookmarkCheckFill,
@@ -96,7 +97,7 @@ const sideBarMainList = [
       {
         href: "/masters/units",
         title: "Units",
-        icon: <MdAcUnit />,
+        icon: <FaBoxes />,
       },
       {
         href: "/masters/areas",

@@ -79,7 +79,7 @@ export default function FarmersOrdersListResults(props: {
         Header: "Order Date",
         accessor: "order_date",
         Cell: (cell: any) => (
-          <Typography>{dayjs(cell.value).format("MMMM D, YYYY")}</Typography>
+          <Typography>{dayjs(cell.value).format("D-MMM-YYYY")}</Typography>
         ),
         width: 2,
       },

@@ -15,7 +15,7 @@ import {
   orderStatusReadable,
   queryToStr,
 } from "../../../components/admin/utils";
-import { allOrdersFields } from "../../../constants/orders-fields";
+import { allOrdersFields } from "../../../constants";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
 
 export default function AllOrders() {

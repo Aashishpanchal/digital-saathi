@@ -72,7 +72,7 @@ export default function DeliveryPartnerForm(props: {
         name: "pincode",
       },
       {
-        type: "number",
+        type: "text",
         label: "Sub-zone ID",
         name: "subzone_id",
       },

@@ -73,7 +73,7 @@ export default function Auth0List(props: { searchText: string }) {
         width: "8%",
         Cell: (cell: any) => (
           <Typography fontSize={"small"}>
-            {dayjs(cell.value).format("MMMM D, YYYY")}
+            {dayjs(cell.value).format("D-MMM-YYYY")}
           </Typography>
         ),
       },
@@ -83,7 +83,7 @@ export default function Auth0List(props: { searchText: string }) {
         width: "8%",
         Cell: (cell: any) => (
           <Typography fontSize={"small"}>
-            {dayjs(cell.value).format("MMMM D, YYYY")}
+            {dayjs(cell.value).format("D-MMM-YYYY")}
           </Typography>
         ),
       },

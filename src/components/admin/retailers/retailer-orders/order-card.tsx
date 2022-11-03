@@ -27,7 +27,7 @@ const label2 = [
     title: "order date",
     accessor: "order_date",
     Cell: (cell: any) => (
-      <Typography>{dayjs(cell.value).format("MMMM D, YYYY")}</Typography>
+      <Typography>{dayjs(cell.value).format("D-MMM-YYYY")}</Typography>
     ),
   },
   { title: "order amount", accessor: "grand_total" },

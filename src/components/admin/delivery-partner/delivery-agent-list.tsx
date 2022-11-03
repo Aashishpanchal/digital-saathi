@@ -13,6 +13,7 @@ import usePaginate from "../../../hooks/usePaginate";
 import TablePagination from "../../table/table-pagination";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 import DeliveryAgentFormDialog from "./form-dialog/delivery-agent-form-dialog";
+import DeliveryAgentExport from "./cell/delivery-agent-export";
 
 export default function DeliveryAgentList(props: {
   searchText: string;
@@ -138,6 +139,7 @@ export default function DeliveryAgentList(props: {
                 <RiDeleteBinFill />
               </IconButton>
             </Tooltip>
+            <DeliveryAgentExport cell={cell} />
           </Box>
         ),
       },

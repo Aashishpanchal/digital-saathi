@@ -1,18 +1,13 @@
-import {
-  Box,
-  MenuItem,
-  Select,
-  Typography,
-  Button,
-  Divider,
-} from "@mui/material";
+import { Box, Button } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useParams } from "react-router-dom";
 import { deliveryRetailer, retailer as retailerHttp } from "../../../../http";
+import AsyncAutocomplete from "../../../form/async-autocomplete";
 
 function DeliveryRetailerFormDialog(props: {
   open: boolean;
@@ -22,37 +17,18 @@ function DeliveryRetailerFormDialog(props: {
   const { partner_id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const { open, close, reload } = props;
+  const [retailerId, setRetailerId] = React.useState<number | undefined>(
+    undefined
+  );
 
-  const [retailers, setRetailers] = React.useState<
-    Array<{ [key: string]: any }>
-  >([]);
-  const [retailerId, setRetailerId] = React.useState("");
+  const { isLoading, data } = useQuery(["get-all-retails"], () =>
+    retailerHttp("get")
+  );
 
-  const retailersGet = React.useCallback(async () => {
-    try {
-      let res = await retailerHttp("get");
-      if (res?.status === 200) {
-        let {
-          data: { totalItems, retailers, totalPages },
-        } = res;
-
-        if (totalPages > 1) {
-          res = await retailerHttp("get", {
-            postfix: `?page=0&size=${totalItems}`,
-          });
-          if (res?.status === 200) {
-            let {
-              data: { retailers },
-            } = res;
-            return setRetailers(retailers);
-          }
-        }
-        return setRetailers(retailers);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  const retailers = React.useMemo(() => {
+    if (data?.status === 200) return data.data || [];
+    return [];
+  }, [data]);
 
   const onSave = async () => {
     if (!retailerId) {
@@ -85,53 +61,25 @@ function DeliveryRetailerFormDialog(props: {
     }
   };
 
-  React.useEffect(() => {
-    retailersGet();
-  }, []);
-
   return (
     <Dialog open={open} fullWidth>
       <DialogTitle>Delivery Retailer</DialogTitle>
       <DialogContent>
         <Box sx={{ my: 1 }}>
-          <Typography
-            component={"label"}
-            sx={{ display: "block", color: "#6b7280", fontWeight: 600 }}
-          >
-            Retailers
-          </Typography>
-          <Select
-            fullWidth
-            color="secondary"
-            sx={{
-              fontSize: "small",
-              ".MuiSelect-select": {
-                p: 1,
-              },
+          <AsyncAutocomplete
+            id="retailer-options"
+            label="Retailers"
+            objFilter={{
+              title: "retailer_name",
+              value: "retailer_id",
             }}
-            name="retailer_id"
+            options={retailers}
+            loading={isLoading}
             value={retailerId}
-            onChange={(e) => {
-              setRetailerId(e.target.value);
-            }}
-            displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-          >
-            <MenuItem sx={{ fontSize: "small" }} value="">
-              <em>None</em>
-            </MenuItem>
-            {retailers.map((item, index) => (
-              <MenuItem
-                key={index}
-                sx={{ fontSize: "small" }}
-                value={item.retailer_id.toString()}
-              >
-                {item.retailer_name}
-              </MenuItem>
-            ))}
-          </Select>
+            onChangeOption={(value) => setRetailerId(value)}
+          />
         </Box>
-        <Divider sx={{ my: 1 }} />
+
         <Box
           sx={{
             display: "flex",

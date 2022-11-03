@@ -9,7 +9,7 @@ export function classNames(...classNames: string[]) {
 export function DateFormate(date: string, readable?: boolean) {
   const dateM = moment(date);
   if (!readable) return dateM.format("YYYY-MM-DD");
-  return dayjs(dateM.toLocaleString()).format("MMMM D, YYYY h:mm A");
+  return dayjs(dateM.toLocaleString()).format("D-MMM-YYYY h:mm A");
 }
 
 export function NumberToString(value: string): string {

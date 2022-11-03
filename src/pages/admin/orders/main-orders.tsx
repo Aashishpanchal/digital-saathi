@@ -15,7 +15,7 @@ import {
   queryToStr,
 } from "../../../components/admin/utils";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
-import { ordersFields } from "../../../constants/orders-fields";
+import { ordersFields } from "../../../constants";
 
 export default function MainOrders(props: {
   orderStatus: number;

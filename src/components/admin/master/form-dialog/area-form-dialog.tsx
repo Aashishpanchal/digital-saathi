@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import { TextInput } from "../../../form";
 import { shopAreas } from "../../../../http";
 import { areaSchema } from "./schemas";
+import { NumericFormat } from "react-number-format";
 
 export default function AreaFormDialog(props: {
   open: boolean;
@@ -107,7 +108,7 @@ export default function AreaFormDialog(props: {
         placeholder: "country",
       },
       {
-        type: "number",
+        type: "numeric",
         label: "Pincode",
         name: "pincode",
         placeholder: "pincode",
@@ -121,24 +122,44 @@ export default function AreaFormDialog(props: {
       <DialogTitle>Area {variant === "edit" ? "Edit" : "Add"}</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit}>
-          {basicFields.map((item, index) => (
-            <TextInput
-              key={index}
-              {...item}
-              name={item.name}
-              value={(values as any)[item.name] || ""}
-              onChange={handleChange}
-              error={
-                (errors as any)[item.name] && (touched as any)[item.name]
-                  ? true
-                  : false
-              }
-              helperText={
-                (touched as any)[item.name] ? (errors as any)[item.name] : ""
-              }
-              onBlur={handleBlur}
-            />
-          ))}
+          {basicFields.map((item, index) => {
+            const { type, ...others } = item;
+            return type === "numeric" ? (
+              <NumericFormat
+                {...others}
+                size="small"
+                key={index}
+                value={(values as any)[item.name] || ""}
+                onChange={handleChange}
+                error={
+                  (errors as any)[item.name] && (touched as any)[item.name]
+                    ? true
+                    : false
+                }
+                helperText={
+                  (touched as any)[item.name] ? (errors as any)[item.name] : ""
+                }
+                onBlur={handleBlur}
+                customInput={TextInput}
+              />
+            ) : (
+              <TextInput
+                key={index}
+                {...item}
+                value={(values as any)[item.name] || ""}
+                onChange={handleChange}
+                error={
+                  (errors as any)[item.name] && (touched as any)[item.name]
+                    ? true
+                    : false
+                }
+                helperText={
+                  (touched as any)[item.name] ? (errors as any)[item.name] : ""
+                }
+                onBlur={handleBlur}
+              />
+            );
+          })}
           <Divider sx={{ my: 1 }} />
           <Box
             sx={{
@@ -148,7 +169,9 @@ export default function AreaFormDialog(props: {
             }}
           >
             <Button type="submit" color="secondary" variant="contained">
-              <span className="first-letter:uppercase">{variant}</span>
+              <span className="first-letter:uppercase">
+                {variant === "edit" ? "update" : variant}
+              </span>
             </Button>
             <Button color="secondary" variant="outlined" onClick={close}>
               Close

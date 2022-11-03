@@ -181,7 +181,7 @@ export const dateTimeFormatTable = (
       ? {
           ...row,
           [dateExtractKeyName]: dayjs(row[dateExtractKeyName]).format(
-            "MMMM D, YYYY"
+            "D-MMM-YYYY"
           ),
           [addTimeKeyName]: dayjs(row[dateExtractKeyName]).format("h:mm A"),
         }

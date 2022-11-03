@@ -98,7 +98,9 @@ export default function UnitFormDialog(props: {
             }}
           >
             <Button type="submit" color="secondary" variant="contained">
-              <span className="first-letter:uppercase">{variant}</span>
+              <span className="first-letter:uppercase">
+                {variant === "edit" ? "update" : variant}
+              </span>
             </Button>
             <Button color="secondary" variant="outlined" onClick={close}>
               Close

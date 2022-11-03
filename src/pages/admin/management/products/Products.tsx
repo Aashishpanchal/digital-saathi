@@ -1,5 +1,4 @@
 import React from "react";
-import exportFromJSON from "export-from-json";
 import { useDispatch } from "react-redux";
 import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
@@ -7,31 +6,42 @@ import ProductsListResults from "../../../../components/admin/products/products-
 import ProductsListToolbar from "../../../../components/admin/products/products-list-toolbar";
 import { shopProducts } from "../../../../http";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
+import useStateWithCallback from "../../../../hooks/useStateWithCallback";
+import { addSno } from "../../../../components/admin/utils";
+import { productFields } from "../../../../constants";
 
 export default function Products() {
   const [searchText, setSearchText] = React.useState("");
+  const { state: csvData, updateState: setCsvData } = useStateWithCallback<
+    Array<Record<string, any>>
+  >([]);
+  const ref = React.useRef<any>(null);
+
   const dispatch = useDispatch();
 
   const searchHandler = (value: string) => {
     setSearchText(value ? `/searchproduct?search_products=${value}` : "");
   };
 
-  const exportHandler = async () => {
+  const exportHandle = async () => {
     try {
       dispatch(setPageLoading(true));
       const res = await shopProducts("get", {
         postfix: searchText,
       });
       if (res?.status === 200) {
-        dispatch(setPageLoading(false));
-        exportFromJSON({
-          data: res.data.product,
-          fileName: `products-csv`,
-          exportType: "csv",
+        let csvData = res.data.product || [];
+        // indexing
+        csvData = addSno(csvData);
+
+        setCsvData(csvData, () => {
+          ref.current.link.click();
+          dispatch(setPageLoading(false));
         });
       }
     } catch (error) {
       console.log(error);
+      dispatch(setPageLoading(false));
     }
   };
 
@@ -39,7 +49,13 @@ export default function Products() {
     <MainContainer>
       <ProductsListToolbar
         onSearch={searchHandler}
-        onClickExport={exportHandler}
+        exportProps={{
+          ref,
+          data: csvData,
+          filename: `products-csv`,
+          onClick: exportHandle,
+          headers: productFields,
+        }}
       />
       <Box sx={{ mt: 3 }}>
         <ProductsListResults searchText={searchText} />

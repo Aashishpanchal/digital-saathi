@@ -40,6 +40,11 @@ export default function InvoiceHead(props: { order: Record<any, string> }) {
             <b>Order Number </b>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {order?.order_id}
           </Typography>
+          <Typography variant="body2" color="text.primary">
+            <b>Order Date </b>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{" "}
+            {dayjs(order?.order_date).format("DD MMMM YYYY")}
+          </Typography>
         </Box>
       </Grid>
       <Grid item xs={4}>

@@ -1,54 +1,46 @@
 import React from "react";
 import { MainContainer } from "../../../components/layout";
-import exportFromJSON from "export-from-json";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { shopProducts } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import DataSkuUnitList from "../../../components/admin/retailer-report/data-sku-unit-list";
-import {
-  addSno,
-  beforeTableNullFreeEncoder,
-} from "../../../components/admin/utils";
+import { addSno } from "../../../components/admin/utils";
+import useStateWithCallback from "../../../hooks/useStateWithCallback";
+import { dataSkuFields } from "../../../constants";
 
 export default function DataSkuUnit() {
   const [searchText, setSearchText] = React.useState("");
+  const { state: csvData, updateState: setCsvData } = useStateWithCallback<
+    Array<Record<string, any>>
+  >([]);
+  const ref = React.useRef<any>(null);
 
-  const searchHandler = async (value: string) => {
-    value =
-      value.toLowerCase() === "active"
-        ? "1"
-        : value.toLowerCase() === "deactive"
-        ? "0"
-        : value;
+  const searchHandler = async (value: string) =>
     setSearchText(value ? `/searchproduct?search_products=${value}` : "");
-  };
 
   const dispatch = useDispatch();
 
-  const exportHandler = async () => {
+  const exportHandle = async () => {
     try {
       dispatch(setPageLoading(true));
       const res = await shopProducts("get", {
         postfix: searchText,
       });
       if (res?.status === 200) {
-        dispatch(setPageLoading(false));
-        exportFromJSON({
-          data: addSno(searchText ? res.data || [] : res.data.product),
-          fileName: `data-sku-unit-csv`,
-          exportType: "csv",
-          beforeTableEncode(entries) {
-            return beforeTableNullFreeEncoder(entries);
-          },
-          replacer(key, value) {
-            console.log(key, value);
-          },
+        let csvData = searchText ? res.data || [] : res.data.product;
+        // indexing
+        csvData = addSno(csvData);
+
+        setCsvData(csvData, () => {
+          ref.current.link.click();
+          dispatch(setPageLoading(false));
         });
       }
     } catch (error) {
       console.log(error);
+      dispatch(setPageLoading(false));
     }
   };
 
@@ -57,7 +49,13 @@ export default function DataSkuUnit() {
       <CommonToolbar
         title="Data SKU Unit"
         onSearch={searchHandler}
-        onClickExport={exportHandler}
+        exportProps={{
+          ref,
+          data: csvData,
+          filename: `data-sku-unit-csv`,
+          onClick: exportHandle,
+          headers: dataSkuFields,
+        }}
       />
       <Box sx={{ mt: 3 }}>
         <DataSkuUnitList searchText={searchText} />

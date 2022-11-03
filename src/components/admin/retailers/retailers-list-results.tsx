@@ -1,21 +1,19 @@
 import React from "react";
-import { Box, Tooltip, IconButton, Button } from "@mui/material";
+import { Box, Tooltip, IconButton } from "@mui/material";
+import { RiDeleteBinFill } from "react-icons/ri";
+import { useQuery } from "@tanstack/react-query";
+import { FaRegEdit } from "react-icons/fa";
+import { useSnackbar } from "notistack";
 import { retailer } from "../../../http";
+import { MdDashboardCustomize } from "react-icons/md";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
-import { RiDeleteBinFill } from "react-icons/ri";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
-import { useSnackbar } from "notistack";
 import LinkRouter from "../../../routers/LinkRouter";
-import { FaFileCsv, FaRegEdit } from "react-icons/fa";
-import { MdDashboardCustomize } from "react-icons/md";
 import usePaginate from "../../../hooks/usePaginate";
-import { useQuery } from "@tanstack/react-query";
 import SerialNumber from "../serial-number";
-import exportFromJSON from "export-from-json";
-import { beforeTableNullFreeEncoder } from "../utils";
-import { retailerReportFields } from "../../../constants/retailer-fields";
+import RetailerReportExport from "./cell/retailer-report-export";
 
 export default function RetailerListResults(props: { searchText: string }) {
   const { page, setPage, size, setSize } = usePaginate();
@@ -66,18 +64,6 @@ export default function RetailerListResults(props: { searchText: string }) {
       enqueueSnackbar("entry not delete 😢", { variant: "error" });
     }
     deleteBoxClose();
-  };
-
-  const onExport = (csvData: Array<Record<string, any>> = []) => {
-    exportFromJSON({
-      data: csvData,
-      fields: retailerReportFields,
-      fileName: `csvretailerareasreports`,
-      exportType: "csv",
-      beforeTableEncode(entries) {
-        return beforeTableNullFreeEncoder(entries);
-      },
-    });
   };
 
   const columns = React.useMemo(
@@ -161,27 +147,7 @@ export default function RetailerListResults(props: { searchText: string }) {
                 <RiDeleteBinFill />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Export from CSV">
-              <Button
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                startIcon={<FaFileCsv fontSize="small" />}
-                sx={{
-                  mr: 1,
-                }}
-                onClick={() =>
-                  onExport([
-                    {
-                      s_no: cell.row.values["S No."],
-                      ...cell.row.original,
-                    },
-                  ])
-                }
-              >
-                Export
-              </Button>
-            </Tooltip>
+            <RetailerReportExport cell={cell} />
           </Box>
         ),
       },

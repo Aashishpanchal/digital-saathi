@@ -3,12 +3,20 @@ import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { FaFileCsv } from "react-icons/fa";
 import LinkRouter from "../../../routers/LinkRouter";
 import RowSearch from "../../table/row-search";
+import { Data, Headers } from "react-csv/components/CommonPropTypes";
+import { CSVLink } from "react-csv";
 
 export default function ProductsListToolbar(props: {
-  onClickExport?: () => void;
   onSearch: (value: string) => void;
+  exportProps: {
+    ref?: any;
+    headers?: Headers;
+    onClick?: () => void;
+    data: string | Data | (() => string | Data);
+    filename?: string;
+  };
 }) {
-  const { onClickExport, onSearch } = props;
+  const { onSearch, exportProps } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -41,11 +49,18 @@ export default function ProductsListToolbar(props: {
               Import
             </Button>
           </LinkRouter>
+          <CSVLink
+            data={exportProps.data}
+            headers={exportProps.headers}
+            filename={exportProps?.filename}
+            target="_blank"
+            ref={exportProps.ref}
+          />
           <Button
-            color="secondary"
-            startIcon={<FaFileCsv fontSize="small" />}
             sx={{ mr: 1 }}
-            onClick={onClickExport}
+            color="secondary"
+            onClick={exportProps?.onClick}
+            startIcon={<FaFileCsv fontSize="small" />}
           >
             Export
           </Button>

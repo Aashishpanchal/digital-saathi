@@ -1,7 +1,6 @@
 import React from "react";
 import { MainContainer } from "../../../../components/layout";
 import { Box } from "@mui/material";
-import exportFromJSON from "export-from-json";
 import { farmers } from "../../../../http";
 import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
@@ -9,7 +8,7 @@ import FarmersListResults from "../../../../components/admin/farmers/farmers-lis
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { addSno } from "../../../../components/admin/utils";
-import { farmersFields } from "../../../../constants/farmers-fields";
+import { farmersFields } from "../../../../constants";
 
 export default function Farmers() {
   const [searchText, setSearchText] = React.useState("");

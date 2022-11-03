@@ -19,7 +19,7 @@ const orderLabel = [
   {
     label: "Order Date",
     accessor: "order_date",
-    Cell: (cell: any) => <>{dayjs(cell.value).format("MMMM D, YYYY")}</>,
+    Cell: (cell: any) => <>{dayjs(cell.value).format("D-MMM-YYYY")}</>,
   },
 ];
 
