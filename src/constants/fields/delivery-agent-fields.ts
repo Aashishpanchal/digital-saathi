@@ -1,47 +1,31 @@
 export const deliveryAgentFields = [
   { label: "S.No", key: "s_no" },
   {
-    label: "Order Id",
-    key: "",
+    label: "agent_id",
+    key: "agent_id",
   },
   {
-    label: "Invoice generaled date",
-    key: "",
+    label: "partner_id",
+    key: "partner_id",
   },
   {
-    label: "Delivery Date",
-    key: "",
+    label: "auth_code",
+    key: "auth_code",
   },
   {
-    label: "Retailer",
-    key: "",
+    label: "agent_name",
+    key: "agent_name",
   },
   {
-    label: "Farmer name",
-    key: "",
+    label: "email_id",
+    key: "email_id",
   },
   {
-    label: "Delivery Address",
-    key: "",
+    label: "phone_no",
+    key: "phone_no",
   },
   {
-    label: "Mobile number",
-    key: "",
-  },
-  {
-    label: "Total Value",
-    key: "",
-  },
-  {
-    label: "Agent ID",
-    key: "",
-  },
-  {
-    label: "Agent Name",
-    key: "",
-  },
-  {
-    label: "Vechiel type",
-    key: "",
+    label: "active",
+    key: "active",
   },
 ];

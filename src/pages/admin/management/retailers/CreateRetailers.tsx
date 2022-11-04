@@ -42,7 +42,7 @@ export default function CreateRetailers() {
           if (res?.status === 200) {
             navigate(-1);
             setTimeout(() => {
-              enqueueSnackbar("Product Save successfully!👍😊", {
+              enqueueSnackbar("Retailer Save successfully!👍😊", {
                 variant: "success",
               });
             }, 200);
@@ -55,7 +55,7 @@ export default function CreateRetailers() {
           if (status === 400) {
             enqueueSnackbar(message, { variant: "error" });
           } else {
-            enqueueSnackbar("Product Save Failed!😢", { variant: "error" });
+            enqueueSnackbar("Retailer Save Failed!😢", { variant: "error" });
           }
           setLoading(false);
         }
