@@ -8,24 +8,23 @@ import RawDataNotFound from "../../raw-data-not-found";
 import TablePagination from "../../../table/table-pagination";
 
 function RetailerOrdersListResults(props: {
+  searchText: string;
   orderStatus: number;
   retailerId: string;
 }) {
   const [page, setPage] = React.useState(0);
   const [size, setSize] = React.useState("4");
 
-  const { orderStatus, retailerId } = props;
-  const postfix = React.useMemo(
-    () =>
-      "?" +
-      queryToStr({
-        page,
-        size,
-        order_status: orderStatus,
-        retailer_id: retailerId,
-      }),
-    [page, size, orderStatus]
-  );
+  const { orderStatus, retailerId, searchText } = props;
+  const postfix = React.useMemo(() => {
+    const x = queryToStr({
+      page,
+      size,
+      order_status: orderStatus,
+      retailer_id: retailerId,
+    });
+    return searchText ? `${searchText}&${x}` : `?${x}`;
+  }, [page, size, orderStatus, searchText]);
 
   const { isLoading, data } = useQuery(
     [`retailer-orders-${orderStatus}`, postfix],
@@ -51,6 +50,13 @@ function RetailerOrdersListResults(props: {
     setPage(0);
     setSize("4");
   }, [orderStatus]);
+
+  React.useEffect(() => {
+    if (searchText) {
+      setPage(0);
+      setSize("4");
+    }
+  }, [searchText]);
 
   return (
     <>

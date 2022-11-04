@@ -12,6 +12,7 @@ export default function CommonToolbar(props: {
     onClick: () => void;
   };
   onSearch?: (value: string) => void;
+  placeholder?: string;
   onClickExport?: () => void;
   exportProps?: {
     ref?: any;
@@ -21,7 +22,7 @@ export default function CommonToolbar(props: {
     filename?: string;
   };
 }) {
-  const { onAddProps, title, onSearch, exportProps } = props;
+  const { onAddProps, title, onSearch, exportProps, placeholder } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -38,7 +39,7 @@ export default function CommonToolbar(props: {
           display: "flex",
           justifyContent: "space-between",
           flexWrap: "wrap",
-          m: -1,
+          m: -0.5,
         }}
       >
         <Typography sx={{ m: 1 }} variant="h5">
@@ -90,7 +91,7 @@ export default function CommonToolbar(props: {
                   <RowSearch
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    placeholder="Search"
+                    placeholder={placeholder ? placeholder : "Search"}
                   />
                 </Box>
                 <Box sx={{ display: "flex", gap: 3 }}>
