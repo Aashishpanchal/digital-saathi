@@ -128,7 +128,7 @@ function TablePagination(props: {
           >
             {sizeArrayValue.map((item, index) => (
               <Option value={item.toString()} key={index}>
-                page / {item}
+                show {item} entries
               </Option>
             ))}
           </Select>

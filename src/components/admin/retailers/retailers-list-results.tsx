@@ -13,7 +13,7 @@ import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 import LinkRouter from "../../../routers/LinkRouter";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
-import RetailerReportExport from "./cell/retailer-report-export";
+// import RetailerReportExport from "./cell/retailer-report-export";
 
 export default function RetailerListResults(props: { searchText: string }) {
   const { page, setPage, size, setSize } = usePaginate();
@@ -147,7 +147,7 @@ export default function RetailerListResults(props: { searchText: string }) {
                 <RiDeleteBinFill />
               </IconButton>
             </Tooltip>
-            <RetailerReportExport cell={cell} />
+            {/* <RetailerReportExport cell={cell} /> */}
           </Box>
         ),
       },
