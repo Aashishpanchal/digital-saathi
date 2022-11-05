@@ -29,7 +29,7 @@ export default function DataSkuUnit() {
         postfix: searchText,
       });
       if (res?.status === 200) {
-        let csvData = searchText ? res.data || [] : res.data.product;
+        let csvData = res.data;
         // indexing
         csvData = addSno(csvData);
 

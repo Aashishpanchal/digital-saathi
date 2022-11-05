@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno } from "../../../../components/admin/utils";
 import { retailer } from "../../../../http";
+import { retailerFields } from "../../../../constants";
 
 export default function Retailers() {
   const [searchText, setSearchText] = React.useState("");
@@ -62,6 +63,7 @@ export default function Retailers() {
           data: csvData,
           filename: `retailer-csv`,
           onClick: exportHandle,
+          headers: retailerFields,
         }}
       />
       <Box sx={{ mt: 2 }}>

@@ -43,7 +43,7 @@ const productPriceLabels = [
   { label: "MRP", accessor: "mrp", Cell: (cell: any) => <>₹{cell.value}</> },
   { label: "GST", accessor: "igst" },
   { label: "Weight", accessor: "weight" },
-  { label: "Package", accessor: "package_name" },
+  { label: "Package", accessor: "package" },
   { label: "Units Per Case", accessor: "units_per_case" },
 ];
 
@@ -79,7 +79,7 @@ export default function ShopProductDetails() {
       });
 
       if (res?.status === 200) {
-        setProductPriceData(res.data.product_prices[0] || {});
+        setProductPriceData(res.data[0] || {});
       }
 
       res = await shopProductImages("get", {

@@ -10,7 +10,9 @@ import { setPageLoading } from "../../../redux/slices/admin-slice";
 import AllOrdersListResults from "../../../components/admin/orders/all-orders-list-results";
 import {
   addSno,
+  addTaxNetAmount,
   dateTimeFormatTable,
+  margeAsList,
   margeRowTable,
   orderStatusReadable,
   queryToStr,
@@ -68,6 +70,32 @@ export default function AllOrders() {
         );
         // order readable from
         csvData = orderStatusReadable(csvData);
+        // marge list as a farmer shipping address
+        csvData = margeAsList(
+          csvData,
+          [
+            "shipping_village",
+            "shipping_sub_district",
+            "shipping_district",
+            "shipping_state",
+            "shipping_pincode",
+          ],
+          "farmer_shipping_address"
+        );
+        // marge list as a farmer billing address
+        csvData = margeAsList(
+          csvData,
+          [
+            "billing_village",
+            "billing_sub_district",
+            "billing_district",
+            "billing_state",
+            "billing_pincode",
+          ],
+          "farmer_billing_address"
+        );
+        // add tax and net amount
+        csvData = addTaxNetAmount(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

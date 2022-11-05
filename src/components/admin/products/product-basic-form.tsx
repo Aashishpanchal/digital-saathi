@@ -220,6 +220,14 @@ export default function ProductBasicForm(props: {
                 setFieldValue("category_id", value);
                 setFieldValue("subcategory_id", "");
               }}
+              TextInputProps={{
+                error:
+                  errors["category_id"] && touched["category_id"]
+                    ? true
+                    : false,
+                helperText: touched["category_id"] ? errors["category_id"] : "",
+                onBlur: handleBlur,
+              }}
             />
           </Box>
           <Box sx={{ my: 1 }}>
@@ -234,6 +242,16 @@ export default function ProductBasicForm(props: {
               }}
               value={values?.subcategory_id}
               onChangeOption={(value) => setFieldValue("subcategory_id", value)}
+              TextInputProps={{
+                error:
+                  errors["subcategory_id"] && touched["subcategory_id"]
+                    ? true
+                    : false,
+                helperText: touched["subcategory_id"]
+                  ? errors["subcategory_id"]
+                  : "",
+                onBlur: handleBlur,
+              }}
             />
           </Box>
           <Box sx={{ my: 1 }}>
@@ -248,6 +266,11 @@ export default function ProductBasicForm(props: {
               }}
               value={values?.brand_id}
               onChangeOption={(value) => setFieldValue("brand_id", value)}
+              TextInputProps={{
+                error: errors["brand_id"] && touched["brand_id"] ? true : false,
+                helperText: touched["brand_id"] ? errors["brand_id"] : "",
+                onBlur: handleBlur,
+              }}
             />
           </Box>
         </div>

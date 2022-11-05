@@ -98,18 +98,6 @@ export const filterPhoneNo = (phone: string, r91?: boolean) => {
 };
 
 // !Table Units Start
-export const beforeTableNullFreeEncoder = (
-  entries: {
-    fieldName: string;
-    fieldValues: string[];
-  }[]
-) =>
-  entries.map((values) => {
-    values.fieldValues = values.fieldValues.map((value) =>
-      value === "null" ? "" : value
-    );
-    return values;
-  });
 
 export const addSno = (
   data: Array<Record<string, any>>,
@@ -119,34 +107,6 @@ export const addSno = (
     [keyName]: index + 1,
     ...row,
   }));
-
-export const beforeTableOrderStatusEncoder = (
-  entries: {
-    fieldName: string;
-    fieldValues: string[];
-  }[],
-  fieldName: string = "order_status"
-) =>
-  entries.map((values) => {
-    if (values.fieldName === fieldName) {
-      values.fieldValues = values.fieldValues.map((value) =>
-        value === "0"
-          ? "New"
-          : value === "1"
-          ? "Accepted"
-          : value === "3"
-          ? "Picked-up"
-          : value === "5"
-          ? "Delivered"
-          : value === "7"
-          ? "Reject By Farmer"
-          : value === "9"
-          ? "Rejected"
-          : ""
-      );
-    }
-    return values;
-  });
 
 export const orderStatusReadable = (
   data: Array<Record<string, any>>,
@@ -200,6 +160,36 @@ export const margeRowTable = (
         ? `${row[p] ? row[p] : ""} (${row[c] ? row[c] : ""})`
         : `${p ? p : ""} (${row[c] ? row[c] : ""})`
     ),
+  }));
+
+export const addTaxNetAmount = (
+  data: Array<Record<string, any>>,
+  taxKeyName: string = "tax_amount",
+  netKeyName: string = "net_amount"
+) =>
+  data.map((row) => {
+    const { gst, igstNum } = totalGst(
+      nullFree(row?.order_total_price),
+      nullFree(row?.order_igst)
+    );
+    const netAmount = igstNum === 0 ? 0 : gst;
+    const taxAmount =
+      igstNum === 0 ? 0 : nullFree(row?.order_total_price) - gst;
+    return {
+      ...row,
+      [taxKeyName]: taxAmount.toFixed(2),
+      [netKeyName]: netAmount.toFixed(2),
+    };
+  });
+
+export const margeAsList = (
+  data: Array<Record<string, any>>,
+  whoMarge: Array<string>,
+  nameOfCol: string
+) =>
+  data.map((row) => ({
+    ...row,
+    [nameOfCol]: whoMarge.map((value) => row[value] || ""),
   }));
 
 // !Table Units End

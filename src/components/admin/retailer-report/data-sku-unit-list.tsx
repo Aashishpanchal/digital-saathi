@@ -6,6 +6,7 @@ import TablePagination from "../../table/table-pagination";
 import { useQuery } from "@tanstack/react-query";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
+import { TextCenter } from "../orders/styles";
 
 export default function DataSkuUnitList(props: { searchText: string }) {
   const { page, setPage, size, setSize } = usePaginate();
@@ -41,11 +42,32 @@ export default function DataSkuUnitList(props: { searchText: string }) {
         width: "5%",
       },
       // { Header: "S No.", accessor: "sku_id" },
-      { Header: "SKU Name", accessor: "sku_name" },
-      { Header: "SKU Name Kannada", accessor: "sku_name_kannada" },
-      { Header: "SKU Code", accessor: "sku_code", width: "10%" },
-      { Header: "Subcategory Name", accessor: "subcategory_name" },
-      { Header: "Category Name", accessor: "category_name" },
+      {
+        Header: "SKU Name",
+        accessor: "sku_name",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+      },
+      {
+        Header: "SKU Name Kannada",
+        accessor: "sku_name_kannada",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+      },
+      {
+        Header: "SKU Code",
+        accessor: "sku_code",
+        width: "10%",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+      },
+      {
+        Header: "Subcategory Name",
+        accessor: "subcategory_name",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+      },
+      {
+        Header: "Category Name",
+        accessor: "category_name",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+      },
     ],
     [page, size]
   );

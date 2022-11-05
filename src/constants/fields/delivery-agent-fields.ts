@@ -24,8 +24,4 @@ export const deliveryAgentFields = [
     label: "phone_no",
     key: "phone_no",
   },
-  {
-    label: "active",
-    key: "active",
-  },
 ];

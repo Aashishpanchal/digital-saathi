@@ -132,6 +132,7 @@ export default function CategoryAddEditDialog(props: {
             type="text"
             label={cateLabel.concat(" Name")}
             name="name"
+            placeholder="category name"
             value={data.name}
             onChange={(e) =>
               setData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -141,6 +142,7 @@ export default function CategoryAddEditDialog(props: {
             type="text"
             label="Description"
             name="description"
+            placeholder="description"
             value={data.description}
             onChange={(e) =>
               setData((prev) => ({ ...prev, [e.target.name]: e.target.value }))

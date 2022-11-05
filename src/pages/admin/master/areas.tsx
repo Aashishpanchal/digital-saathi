@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
 import { addSno } from "../../../components/admin/utils";
 import { shopAreas } from "../../../http";
+import { areasFields } from "../../../constants";
 
 export default function Units() {
   const [open, setOpen] = React.useState(false);
@@ -58,6 +59,7 @@ export default function Units() {
           data: csvData,
           filename: `area-csv`,
           onClick: exportHandle,
+          headers: areasFields,
         }}
       />
       <Box sx={{ mt: 3 }}>

@@ -21,16 +21,19 @@ function RetailerForm(props: {
         type: "string",
         label: "Retailer Name",
         name: "retailer_name",
+        placeholder: "retailer name",
       },
       {
         type: "email",
         label: "Email",
         name: "email_id",
+        placeholder: "email",
       },
       {
         type: "text",
         label: "Company Name",
         name: "company_name",
+        placeholder: "company name",
       },
       {
         type: "numeric",
@@ -44,11 +47,13 @@ function RetailerForm(props: {
         type: "string",
         label: "Zone Name",
         name: "zone_name",
+        placeholder: "zone name",
       },
       {
         type: "string",
         label: "ERP Name",
         name: "erp_code",
+        placeholder: "erp code",
       },
     ],
     []
@@ -90,31 +95,37 @@ function RetailerForm(props: {
         type: "text",
         label: "Pan No",
         name: "pan_no",
+        placeholder: "pan no",
       },
       {
         type: "text",
         label: "GST Number",
         name: "gst_number",
+        placeholder: "gst number",
       },
       {
         type: "string",
         label: "Default Credit Limit",
         name: "default_credit_limit",
+        placeholder: "default credit limit",
       },
       {
         type: "string",
         label: "Default Credit Period",
         name: "default_credit_period",
+        placeholder: "default credit period",
       },
       {
         type: "string",
         label: "Distributor Level",
         name: "distributor_level",
+        placeholder: "distributer level",
       },
       {
         type: "string",
         label: "Subzone ID",
         name: "subzone_id",
+        placeholder: "subzone id",
       },
     ],
     []
@@ -178,6 +189,7 @@ function RetailerForm(props: {
           type="text"
           label="Jurisdiction"
           name="jurisdiction"
+          placeholder="jurisdiction"
           value={values.jurisdiction}
           onChange={handleChange}
           error={errors.jurisdiction && touched.jurisdiction ? true : false}
@@ -188,6 +200,7 @@ function RetailerForm(props: {
           type="text"
           label="Address"
           name="address"
+          placeholder="address"
           value={values.address}
           onChange={handleChange}
           error={errors.address && touched.address ? true : false}
@@ -237,6 +250,7 @@ function RetailerForm(props: {
           type="text"
           label="Terms & Conditions"
           name="terms_conditions"
+          placeholder="terms conditions"
           value={values.terms_conditions}
           onChange={handleChange}
           error={

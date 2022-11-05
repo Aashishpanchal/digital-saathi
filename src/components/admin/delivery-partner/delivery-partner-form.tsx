@@ -21,11 +21,13 @@ export default function DeliveryPartnerForm(props: {
         type: "text",
         label: "Partner Name",
         name: "partner_name",
+        placeholder: "partner name",
       },
       {
         type: "email",
         label: "Email",
         name: "email_id",
+        placeholder: "email id",
       },
       {
         type: "numeric",
@@ -39,11 +41,13 @@ export default function DeliveryPartnerForm(props: {
         type: "text",
         label: "Zone Name",
         name: "zone_name",
+        placeholder: "zone name",
       },
       {
         type: "text",
         label: "ERP Name",
         name: "erp_code",
+        placeholder: "erp code",
       },
     ],
     []
@@ -55,26 +59,31 @@ export default function DeliveryPartnerForm(props: {
         type: "text",
         label: "City",
         name: "city",
+        placeholder: "city",
       },
       {
         type: "text",
         label: "State",
         name: "state",
+        placeholder: "state",
       },
       {
         type: "text",
         label: "District",
         name: "district",
+        placeholder: "district",
       },
       {
         type: "numeric",
         label: "Pin-Code",
         name: "pincode",
+        placeholder: "pincode",
       },
       {
         type: "text",
         label: "Sub-zone ID",
         name: "subzone_id",
+        placeholder: "subzone id",
       },
     ],
     []
@@ -155,6 +164,7 @@ export default function DeliveryPartnerForm(props: {
           type="text"
           label="Address"
           name="address"
+          placeholder="address"
           value={values.address}
           onChange={handleChange}
           error={errors.address && touched.address ? true : false}

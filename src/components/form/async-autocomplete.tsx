@@ -26,6 +26,11 @@ export default function AsyncAutocomplete(props: {
   value?: number;
   id: string;
   onChangeOption: (value: any, values?: Record<string, any>) => void;
+  TextInputProps?: {
+    error?: boolean;
+    helperText?: string;
+    onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  };
 }) {
   const {
     options,
@@ -35,6 +40,7 @@ export default function AsyncAutocomplete(props: {
     value: valueOption,
     onChangeOption,
     id,
+    TextInputProps,
   } = props;
 
   const v = React.useMemo(() => {
@@ -62,6 +68,7 @@ export default function AsyncAutocomplete(props: {
       renderInput={(params) => (
         <CustomInput
           {...params}
+          {...TextInputProps}
           color="secondary"
           label={label}
           InputLabelProps={{

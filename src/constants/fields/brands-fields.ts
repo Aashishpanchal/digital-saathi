@@ -23,12 +23,4 @@ export const brandsFields = [
     label: "Sequence Number",
     key: "seq_no",
   },
-  {
-    label: "Active",
-    key: "active",
-  },
-  {
-    label: "Deleted",
-    key: "deleted",
-  },
 ];

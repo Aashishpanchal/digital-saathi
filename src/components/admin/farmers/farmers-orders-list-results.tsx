@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import usePaginate from "../../../hooks/usePaginate";
 import { useQuery } from "@tanstack/react-query";
 import SerialNumber from "../serial-number";
+import { queryToStr } from "../utils";
 
 export default function FarmersOrdersListResults(props: {
   searchText: string;
@@ -25,9 +26,12 @@ export default function FarmersOrdersListResults(props: {
   const { searchText, customerId } = props;
 
   const postfix = React.useMemo(() => {
-    return searchText
-      ? `${searchText}&page=${page}&size=${size}&customer_id=${customerId}`
-      : `?page=${page}&size=${size}&customer_id=${customerId}`;
+    const x = queryToStr({
+      page,
+      size,
+      customer_id: customerId,
+    });
+    return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [searchText, page, size]);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -38,7 +42,7 @@ export default function FarmersOrdersListResults(props: {
     ["farmers-orders", postfix],
     () =>
       shopOrders("get", {
-        params: "customer",
+        params: searchText ? "" : "customer",
         postfix: postfix,
       }),
     {
@@ -72,43 +76,47 @@ export default function FarmersOrdersListResults(props: {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: 2,
+        width: "5%",
       },
       // { Header: "Order ID", accessor: "order_id", width: 0 },
       {
         Header: "Order Date",
         accessor: "order_date",
         Cell: (cell: any) => (
-          <Typography>{dayjs(cell.value).format("D-MMM-YYYY")}</Typography>
+          <Typography textAlign="center">
+            {dayjs(cell.value).format("D-MMM-YYYY")}
+          </Typography>
         ),
-        width: 2,
+        width: "10%",
       },
       {
         Header: "Amount",
         accessor: "grand_total",
         Cell: (cell: any) => (
-          <Typography fontWeight={"600"}>₹{cell.value}</Typography>
+          <Typography fontWeight={"600"} textAlign="center">
+            ₹{cell.value}
+          </Typography>
         ),
-        width: 2,
+        width: "10%",
       },
       {
         Header: "Order Status",
         accessor: "order_status",
         Cell: (cell: any) => <OrderStatus value={cell.value} />,
-        width: 20,
+        width: "20%",
       },
       {
         Header: "Retailer Name",
         accessor: "retailer_name",
-        width: 350,
         Cell: (cell: any) => (
-          <Typography m="auto" width="70%">
-            {cell.value}
+          <Typography textAlign="center" fontWeight={"600"}>
+            {cell.value} ( {cell.row.original.retailer_company_name} )
           </Typography>
         ),
       },
       {
         Header: "Action",
+        width: "20%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter

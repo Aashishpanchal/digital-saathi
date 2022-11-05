@@ -145,6 +145,7 @@ function TablePagination(props: {
               </InputLabel>
               <InputBase
                 value={parseInt(goto) || ""}
+                placeholder="page"
                 onChange={(e) => {
                   const value = parseInt(e.target.value || "");
                   setGoto(isNaN(value) ? "" : value.toString());

@@ -114,6 +114,7 @@ export default function BrandAddEditDialog(props: {
             type="text"
             label="Brand Name"
             name="brand_name"
+            placeholder="brand name"
             value={data.brand_name}
             onChange={(e) =>
               setData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -123,6 +124,7 @@ export default function BrandAddEditDialog(props: {
             type="text"
             label="Description"
             name="description"
+            placeholder="description"
             value={data.description}
             onChange={(e) =>
               setData((prev) => ({ ...prev, [e.target.name]: e.target.value }))

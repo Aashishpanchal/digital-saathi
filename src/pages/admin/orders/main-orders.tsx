@@ -10,7 +10,9 @@ import { shopOrders } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
 import {
   addSno,
+  addTaxNetAmount,
   dateTimeFormatTable,
+  margeAsList,
   margeRowTable,
   queryToStr,
 } from "../../../components/admin/utils";
@@ -73,6 +75,32 @@ export default function MainOrders(props: {
           ["retailer_company_name", "retailer_name"],
           "selected_retailer"
         );
+        // marge list as a farmer shipping address
+        csvData = margeAsList(
+          csvData,
+          [
+            "shipping_village",
+            "shipping_sub_district",
+            "shipping_district",
+            "shipping_state",
+            "shipping_pincode",
+          ],
+          "farmer_shipping_address"
+        );
+        // marge list as a farmer billing address
+        csvData = margeAsList(
+          csvData,
+          [
+            "billing_village",
+            "billing_sub_district",
+            "billing_district",
+            "billing_state",
+            "billing_pincode",
+          ],
+          "farmer_billing_address"
+        );
+        // add tax and net amount
+        csvData = addTaxNetAmount(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

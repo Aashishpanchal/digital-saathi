@@ -22,6 +22,7 @@ export default function ProductPriceForm(props: {
   const [packages, setPackages] = React.useState<Array<{ [key: string]: any }>>(
     []
   );
+  const [packageLoading, setPackageLoading] = React.useState(false);
   const [units, setUnits] = React.useState<Array<{ [key: string]: any }>>([]);
 
   const priceFields = React.useMemo(
@@ -29,10 +30,12 @@ export default function ProductPriceForm(props: {
       {
         label: "MRP",
         name: "mrp",
+        placeholder: "mrp",
       },
       {
         label: "GST(%)",
         name: "gst",
+        placeholder: "gst",
         suffix: "%",
       },
       // {
@@ -53,22 +56,27 @@ export default function ProductPriceForm(props: {
       {
         label: "Price",
         name: "price",
+        placeholder: "price",
       },
       {
         label: "Dimension",
         name: "dimension",
+        placeholder: "dimension",
       },
       {
         label: "Weight",
         name: "weight",
+        placeholder: "weight",
       },
       {
         label: "Actual Weight",
         name: "totalweight",
+        placeholder: "actual weight",
       },
       {
         label: "Units Per Case",
         name: "units_per_case",
+        placeholder: "units per case",
       },
     ],
     []
@@ -76,6 +84,7 @@ export default function ProductPriceForm(props: {
 
   const packagesGet = React.useCallback(async () => {
     try {
+      setPackageLoading(true);
       let res = await shopPackages("get");
       if (res?.status === 200) {
         let { data } = res;
@@ -86,12 +95,15 @@ export default function ProductPriceForm(props: {
           });
           if (res?.status === 200) {
             let { data } = res;
+            setPackageLoading(false);
             return setPackages(data.packages);
           }
         }
+        setPackageLoading(false);
         return setPackages(data.packages);
       }
     } catch (error) {
+      setPackageLoading(false);
       console.log(error);
     }
   }, []);
@@ -198,11 +210,12 @@ export default function ProductPriceForm(props: {
         <AsyncAutocomplete
           id="package-option"
           label="Packages"
+          loading={packageLoading}
           options={packages || []}
           value={
-            values?.package
-              ? !isNaN(Number(values?.package))
-                ? Number(values?.package)
+            values?.package_id
+              ? !isNaN(Number(values?.package_id))
+                ? Number(values?.package_id)
                 : undefined
               : undefined
           }
@@ -210,7 +223,12 @@ export default function ProductPriceForm(props: {
             title: "package",
             value: "package_id",
           }}
-          onChangeOption={(value) => setFieldValue("package", value.toString())}
+          onChangeOption={(value) => setFieldValue("package_id", value)}
+          TextInputProps={{
+            error: errors["package_id"] && touched["package_id"] ? true : false,
+            helperText: touched["package_id"] ? errors["package_id"] : "",
+            onBlur: handleBlur,
+          }}
         />
       </div>
     </Box>
@@ -226,6 +244,6 @@ export const initialValues = {
   dimension: "",
   totalweight: "",
   units_per_case: "",
-  package: "",
+  package_id: "",
   unit: "",
 };
