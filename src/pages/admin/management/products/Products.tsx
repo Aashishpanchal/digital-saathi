@@ -30,7 +30,7 @@ export default function Products() {
         postfix: searchText,
       });
       if (res?.status === 200) {
-        let csvData = res.data.product || [];
+        let csvData = res.data || [];
         // indexing
         csvData = addSno(csvData);
 
