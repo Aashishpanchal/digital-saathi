@@ -1,13 +1,25 @@
 import React from "react";
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { CSVLink } from "react-csv";
 import { FaFileCsv } from "react-icons/fa";
+import { Data, Headers } from "react-csv/components/CommonPropTypes";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+} from "@mui/material";
+import {
+  categories as categoriesHttp,
+  subCategories as subCategoriesHttp,
+} from "../../../http";
 import LinkRouter from "../../../routers/LinkRouter";
 import RowSearch from "../../table/row-search";
-import { Data, Headers } from "react-csv/components/CommonPropTypes";
-import { CSVLink } from "react-csv";
+import AsyncAutocomplete from "../../form/async-autocomplete";
 
 export default function ProductsListToolbar(props: {
-  onSearch: (value: string) => void;
+  onSearch: (value: string, category?: number, subcategory?: number) => void;
   exportProps: {
     ref?: any;
     headers?: Headers;
@@ -19,11 +31,125 @@ export default function ProductsListToolbar(props: {
   const { onSearch, exportProps } = props;
 
   const [searchText, setSearchText] = React.useState("");
+  const [categoryId, setCategoryId] = React.useState<undefined | number>();
+  const [subcategoryId, setSubcategoryId] = React.useState<
+    undefined | number
+  >();
+
+  const [category, setCategory] = React.useState({
+    categories: [],
+    isLoading: false,
+  });
+  const [subcategory, setSubcategory] = React.useState({
+    subcategories: [],
+    isLoading: false,
+  });
+
+  const categoriesGet = React.useCallback(async () => {
+    try {
+      setCategory({
+        categories: [],
+        isLoading: true,
+      });
+      let res = await categoriesHttp("get");
+      if (res?.status === 200) {
+        let {
+          data: { totalItems, categories, totalPages },
+        } = res;
+
+        if (totalPages > 1) {
+          res = await categoriesHttp("get", {
+            postfix: `?page=0&size=${totalItems}`,
+          });
+          if (res?.status === 200) {
+            let {
+              data: { categories },
+            } = res;
+            return setCategory({
+              categories: categories,
+              isLoading: false,
+            });
+          }
+        }
+        return setCategory({
+          categories: categories,
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setCategory({
+      categories: [],
+      isLoading: false,
+    });
+  }, []);
+
+  const subCategoriesGet = React.useCallback(async (category_id: number) => {
+    if (category_id) {
+      try {
+        setSubcategory({
+          subcategories: [],
+          isLoading: false,
+        });
+        let res = await subCategoriesHttp("get", {
+          postfix: `?category_id=${category_id}`,
+        });
+        if (res?.status === 200) {
+          let {
+            data: { totalItems, subcategories, totalPages },
+          } = res;
+
+          if (totalPages > 1) {
+            res = await subCategoriesHttp("get", {
+              postfix: `?category_id=${category_id}&page=0&size=${totalItems}`,
+            });
+            if (res?.status === 200) {
+              let {
+                data: { subcategories },
+              } = res;
+              return setSubcategory({
+                subcategories: subcategories,
+                isLoading: false,
+              });
+            }
+          }
+          return setSubcategory({
+            subcategories: subcategories,
+            isLoading: false,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      return setSubcategory({
+        subcategories: [],
+        isLoading: false,
+      });
+    }
+    setSubcategory({
+      subcategories: [],
+      isLoading: false,
+    });
+  }, []);
 
   const onReset = () => {
     setSearchText("");
     onSearch("");
+    setCategoryId(undefined);
+    setSubcategoryId(undefined);
   };
+
+  React.useEffect(() => {
+    categoriesGet();
+  }, []);
+
+  React.useEffect(() => {
+    if (categoryId) {
+      subCategoriesGet(categoryId);
+    }
+  }, [categoryId]);
 
   return (
     <Box>
@@ -74,45 +200,85 @@ export default function ProductsListToolbar(props: {
       <Box sx={{ mt: 2 }}>
         <Card>
           <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-              }}
+            <Grid
+              container
+              rowSpacing={1}
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              <Box sx={{ maxWidth: 250 }}>
+              <Grid item>
                 <RowSearch
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   placeholder="Search"
                 />
-              </Box>
-              <Box sx={{ display: "flex", gap: 3 }}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  size="small"
-                  onClick={() => onSearch(searchText)}
-                >
-                  Search
-                </Button>
-                <Button
-                  sx={{
-                    borderColor: "neutral.200",
-                    color: "neutral.600",
-                    "&:hover": {
-                      borderColor: "neutral.300",
-                      color: "neutral.800",
-                    },
-                  }}
-                  variant="outlined"
-                  size="small"
-                  onClick={onReset}
-                >
-                  Reset
-                </Button>
-              </Box>
+              </Grid>
+              <Grid item>
+                <Box sx={{ minWidth: 220 }}>
+                  <AsyncAutocomplete
+                    id="category-option"
+                    loading={category.isLoading}
+                    label="Category"
+                    options={category.categories || []}
+                    objFilter={{
+                      title: "name",
+                      value: "category_id",
+                    }}
+                    value={categoryId}
+                    onChangeOption={(value) => {
+                      setCategoryId(value);
+                      setSubcategoryId(undefined);
+                    }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box sx={{ minWidth: 220 }}>
+                  <AsyncAutocomplete
+                    id="sub-category-option"
+                    loading={subcategory.isLoading}
+                    label="Sub Category"
+                    options={subcategory.subcategories || []}
+                    objFilter={{
+                      title: "name",
+                      value: "category_id",
+                    }}
+                    value={subcategoryId}
+                    onChangeOption={(value) => setSubcategoryId(value)}
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 3,
+                marginTop: 0.5,
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                color="secondary"
+                variant="contained"
+                size="small"
+                onClick={() => onSearch(searchText, categoryId, subcategoryId)}
+              >
+                Search
+              </Button>
+              <Button
+                sx={{
+                  borderColor: "neutral.200",
+                  color: "neutral.600",
+                  "&:hover": {
+                    borderColor: "neutral.300",
+                    color: "neutral.800",
+                  },
+                }}
+                variant="outlined"
+                size="small"
+                onClick={onReset}
+              >
+                Reset
+              </Button>
             </Box>
           </CardContent>
         </Card>

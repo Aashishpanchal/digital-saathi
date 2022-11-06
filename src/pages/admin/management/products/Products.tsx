@@ -7,7 +7,7 @@ import ProductsListToolbar from "../../../../components/admin/products/products-
 import { shopProducts } from "../../../../http";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
-import { addSno } from "../../../../components/admin/utils";
+import { addSno, queryToStr } from "../../../../components/admin/utils";
 import { productFields } from "../../../../constants";
 
 export default function Products() {
@@ -19,8 +19,28 @@ export default function Products() {
 
   const dispatch = useDispatch();
 
-  const searchHandler = (value: string) => {
-    setSearchText(value ? `/searchproduct?search_products=${value}` : "");
+  const searchHandler = (
+    value: string,
+    category_id?: number,
+    subcategory_id?: number
+  ) => {
+    if (
+      typeof category_id !== "undefined" &&
+      typeof subcategory_id !== "undefined"
+    ) {
+      setSearchText(
+        "?" +
+          queryToStr({
+            category_id,
+            subcategory_id,
+            // ...(value ? { search_products: value } : {}),
+          })
+      );
+    } else {
+      setSearchText(value ? `/searchproduct?search_products=${value}` : "");
+    }
+    // console.log(category, subcategory);
+    // setSearchText(value ? `/searchproduct?search_products=${value}` : "");
   };
 
   const exportHandle = async () => {

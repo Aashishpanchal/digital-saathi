@@ -14,6 +14,7 @@ import {
   margeAsList,
   margeRowTable,
   queryToStr,
+  setExtraValue,
 } from "../../../components/admin/utils";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { ordersFields } from "../../../constants";
@@ -99,6 +100,8 @@ export default function CancelledOrders() {
         );
         // add tax and net amount
         csvData = addTaxNetAmount(csvData);
+        // set Order Status
+        csvData = setExtraValue(csvData, "order_status", "Cancelled Orders");
 
         setCsvData(csvData, () => {
           ref.current.link.click();

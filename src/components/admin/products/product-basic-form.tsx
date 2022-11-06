@@ -207,7 +207,7 @@ export default function ProductBasicForm(props: {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <Box sx={{ my: 1 }}>
             <AsyncAutocomplete
-              id="sub-category-option"
+              id="category-option"
               loading={categoryLoading}
               label="Category"
               options={categories || []}

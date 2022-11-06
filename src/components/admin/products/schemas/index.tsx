@@ -21,7 +21,7 @@ export const productPriceSchema = Yup.object({
   mrp: Yup.string().required("product mrp is not allowed to be empty"),
   gst: Yup.string().required("product gst is not allowed to be empty"),
   price: Yup.string().required("product price is not allowed to be empty"),
-  package_id: Yup.string().required("package is not allowed to be empty"),
+  package: Yup.string().required("package is not allowed to be empty"),
   weight: Yup.string(),
   dimension: Yup.string(),
   totalweight: Yup.string(),

@@ -7,11 +7,12 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import ProductAvatar from "../../Image/product-avatar";
 import { shopOrderDetails } from "../../../http";
-import { queryToStr } from "../utils";
+import { queryToStr, round2 } from "../utils";
 import { useTable } from "react-table";
 import { TableCustomCell, TextCenter } from "./styles";
 import { NumericFormat } from "react-number-format";
@@ -37,6 +38,22 @@ export default function OrderDetailsList(props: {
       {
         Header: "Name",
         accessor: "sku_name",
+        Cell: (cell: any) => (
+          <Typography>
+            {cell.row.original.sku_code}
+            <br />
+            {cell.value}
+            <br />
+            {cell.row.original.sku_name_kannada}
+            <br />
+          </Typography>
+        ),
+      },
+      {
+        Header: "Quantity",
+        accessor: "quantity",
+        width: "5%",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
       },
       {
         Header: "Dimension",
@@ -57,7 +74,7 @@ export default function OrderDetailsList(props: {
         Cell: (cell: any) => (
           <Box display={"flex"} justifyContent="center" alignItems={"center"}>
             <NumericFormat
-              value={cell.value}
+              value={round2(cell.value)}
               displayType={"text"}
               thousandSeparator={true}
               prefix={"₹ "}
@@ -72,9 +89,10 @@ export default function OrderDetailsList(props: {
         Cell: (cell: any) => (
           <Box display={"flex"} justifyContent="center" alignItems={"center"}>
             <NumericFormat
-              value={cell.value}
+              value={round2(cell.value)}
               displayType={"text"}
               thousandSeparator={true}
+              decimalScale={2}
               prefix={"₹ "}
             />
           </Box>
@@ -152,7 +170,7 @@ export default function OrderDetailsList(props: {
           })}
           <TableRow>
             <TableCell
-              colSpan={5}
+              colSpan={6}
               sx={{
                 padding: 1.2,
                 border: "1px solid",
@@ -168,7 +186,7 @@ export default function OrderDetailsList(props: {
               }}
             >
               <NumericFormat
-                value={grandTotal}
+                value={round2(grandTotal)}
                 displayType={"text"}
                 thousandSeparator={true}
                 prefix={"₹ "}

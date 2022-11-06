@@ -1,7 +1,7 @@
 import React from "react";
 import { NumericFormat } from "react-number-format";
 import { Cell } from "react-table";
-import { nullFree, totalGst } from "../../../utils";
+import { nullFree, round2, totalGst } from "../../../utils";
 import { TextCenter } from "../../styles";
 
 export default function NetAmount(props: { cell: Cell }) {
@@ -21,7 +21,7 @@ export default function NetAmount(props: { cell: Cell }) {
   return (
     <TextCenter>
       <NumericFormat
-        value={netAmount}
+        value={round2(netAmount)}
         displayType={"text"}
         decimalScale={2}
         thousandSeparator={true}

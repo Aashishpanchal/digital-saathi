@@ -8,8 +8,6 @@ export const retailerReportFields = [
 
 export const retailerFields = [
   { label: "S.No", key: "s_no" },
-  { label: "Retailer Id", key: "retailer_id" },
-  { label: "auth code", key: "auth_code" },
   { label: "Company Name", key: "company_name" },
   { label: "Retailer Name", key: "retailer_name" },
   { label: "Type", key: "type" },

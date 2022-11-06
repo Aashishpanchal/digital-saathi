@@ -14,7 +14,7 @@ export default function OrderDetailCard(props: {
   });
 
   return (
-    <Card elevation={0} sx={{ minHeight: 170 }}>
+    <Card elevation={0} sx={{ minHeight: 250 }}>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {title}

@@ -42,7 +42,6 @@ export default function DeliveryAgentList(props: {
       size,
       partner_id,
     });
-    console.log(searchText);
     return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [searchText, page, size]);
 

@@ -97,6 +97,14 @@ export const filterPhoneNo = (phone: string, r91?: boolean) => {
   return "";
 };
 
+export const round2 = (value: number | string | null | undefined) => {
+  if (typeof value === "string") {
+    const conNm = parseFloat(value);
+    return !isNaN(conNm) ? conNm.toFixed(2) : 0.0;
+  } else if (typeof value === "number") return value.toFixed(2);
+  return 0.0;
+};
+
 // !Table Units Start
 
 export const addSno = (
@@ -168,18 +176,54 @@ export const addTaxNetAmount = (
   netKeyName: string = "net_amount"
 ) =>
   data.map((row) => {
+    const both = row?.retailer_state !== row?.billing_state;
     const { gst, igstNum } = totalGst(
       nullFree(row?.order_total_price),
       nullFree(row?.order_igst)
     );
-    const netAmount = igstNum === 0 ? 0 : gst;
-    const taxAmount =
-      igstNum === 0 ? 0 : nullFree(row?.order_total_price) - gst;
-    return {
-      ...row,
-      [taxKeyName]: taxAmount.toFixed(2),
-      [netKeyName]: netAmount.toFixed(2),
-    };
+    if (igstNum !== 0) {
+      const netAmount = gst;
+      const taxAmount = nullFree(row?.order_total_price) - gst;
+      return {
+        ...row,
+        [taxKeyName]: taxAmount.toFixed(2),
+        [netKeyName]: netAmount.toFixed(2),
+        ...(both
+          ? {
+              sgst_amt: (taxAmount / 2).toFixed(2),
+              cgst_amt: (taxAmount / 2).toFixed(2),
+              igst_amt: "",
+              order_igst: "",
+            }
+          : {
+              order_sgst: "",
+              order_cgst: "",
+              sgst_amt: "",
+              cgst_amt: "",
+              igst_amt: taxAmount.toFixed(2),
+            }),
+      };
+    } else {
+      return {
+        ...row,
+        [taxKeyName]: 0,
+        [netKeyName]: row?.order_total_price,
+        ...(both
+          ? {
+              sgst_amt: 0,
+              cgst_amt: 0,
+              igst_amt: "",
+              order_igst: "",
+            }
+          : {
+              order_sgst: "",
+              order_cgst: "",
+              sgst_amt: "",
+              cgst_amt: "",
+              igst_amt: 0,
+            }),
+      };
+    }
   });
 
 export const margeAsList = (
@@ -190,6 +234,44 @@ export const margeAsList = (
   data.map((row) => ({
     ...row,
     [nameOfCol]: whoMarge.map((value) => row[value] || ""),
+  }));
+
+export const setExtraValue = (
+  data: Array<Record<string, any>>,
+  keyName: string,
+  setName: string
+) =>
+  data.map((row) => ({
+    ...row,
+    [keyName]: setName,
+  }));
+
+export const setOrderStatus = (
+  data: Array<Record<string, any>>,
+  orderStatus: number
+) =>
+  data.map((row) => ({
+    ...row,
+    order_status:
+      orderStatus === 0
+        ? "New"
+        : orderStatus === 1
+        ? "Accepted"
+        : orderStatus === 3
+        ? "In Process "
+        : orderStatus === 4
+        ? "Out For Delivery"
+        : orderStatus === 5
+        ? "Delivered"
+        : orderStatus === 6
+        ? "Returned"
+        : orderStatus === 7
+        ? "Cancelled"
+        : orderStatus === 8
+        ? "Returning"
+        : orderStatus === 9
+        ? "Rejected"
+        : null,
   }));
 
 // !Table Units End

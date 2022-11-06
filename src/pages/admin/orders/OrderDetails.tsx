@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 // import { FaSave as SaveIcon } from "react-icons/fa";
 import { AiFillPrinter as PrintIcon } from "react-icons/ai";
@@ -60,7 +60,31 @@ const shippingLabel = [
 ];
 
 const collectionLabel = [
-  { title: "View Order", labelObj: orderLabel },
+  {
+    title: "View Order",
+    labelObj: (orderStatus: string) => {
+      if (orderStatus === "7")
+        return [
+          ...orderLabel,
+          { label: "Reason Name", accessor: "reason_name" },
+          { label: "Reason Type", accessor: "reason_type" },
+          { label: "Reason Method", accessor: "reason_method" },
+        ];
+      else if (orderStatus === "5")
+        return [
+          ...orderLabel,
+          {
+            label: "Delivery Date",
+            accessor: "delivered_date",
+            Cell: (cell: any) => <>{dayjs(cell.value).format("D-MMM-YYYY")}</>,
+          },
+          { label: "Payment Method", accessor: "payment_method" },
+          { label: "Amount Recieve", accessor: "amount_recieve" },
+          { label: "Payment To", accessor: "payment_to" },
+        ];
+      return orderLabel;
+    },
+  },
   { title: "Retailer", labelObj: retailerLabel },
   { title: "Deliver Partner", labelObj: partnerLabel },
   { title: "Customer", labelObj: customerLabel },
@@ -71,6 +95,12 @@ const collectionLabel = [
 export default function OrderDetails() {
   const { order_id } = useParams();
   let componentRef = React.useRef<any>(null);
+  const location = useLocation();
+
+  const orderStatus = React.useMemo(
+    () => new URLSearchParams(location.search).get("order_status"),
+    [location]
+  );
 
   const { data } = useQuery([`order-orderDetail-${order_id}`], () =>
     shopOrders("get", { params: order_id })
@@ -152,7 +182,11 @@ export default function OrderDetails() {
                 <Grid key={index} item xs={6}>
                   <OrderDetailCard
                     title={item.title}
-                    labels={item.labelObj}
+                    labels={
+                      typeof item.labelObj === "function"
+                        ? item.labelObj(orderStatus as string)
+                        : item.labelObj
+                    }
                     data={order}
                   />
                 </Grid>

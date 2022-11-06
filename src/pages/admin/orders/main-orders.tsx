@@ -15,6 +15,7 @@ import {
   margeAsList,
   margeRowTable,
   queryToStr,
+  setOrderStatus,
 } from "../../../components/admin/utils";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { ordersFields } from "../../../constants";
@@ -101,6 +102,8 @@ export default function MainOrders(props: {
         );
         // add tax and net amount
         csvData = addTaxNetAmount(csvData);
+        // set Order Status
+        csvData = setOrderStatus(csvData, orderStatus);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

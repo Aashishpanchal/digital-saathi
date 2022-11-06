@@ -102,7 +102,7 @@ export default function OrdersListResults(props: {
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter
-              to={`/orders/order-details/${cell.row.original.order_id}`}
+              to={`/orders/order-details/${cell.row.original.order_id}?order_status=${orderStatus}`}
             >
               <Tooltip title="View Orders">
                 <IconButton

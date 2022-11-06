@@ -1,10 +1,5 @@
 import React from "react";
 
-export default function DnDList(props: {
-  options: Array<{
-    id: number;
-    text: string;
-  }>;
-}) {
+export default function DnDList() {
   return <div>DnDList</div>;
 }

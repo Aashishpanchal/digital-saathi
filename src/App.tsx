@@ -11,7 +11,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 export default function App() {
   const {
-    modalSlice: { informationModal },
     adminSlice: { pageLoading },
   } = useSelector((state: RootState) => state);
 

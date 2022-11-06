@@ -223,10 +223,10 @@ export default function ProductPriceForm(props: {
             title: "package",
             value: "package_id",
           }}
-          onChangeOption={(value) => setFieldValue("package_id", value)}
+          onChangeOption={(value) => setFieldValue("package", value)}
           TextInputProps={{
-            error: errors["package_id"] && touched["package_id"] ? true : false,
-            helperText: touched["package_id"] ? errors["package_id"] : "",
+            error: errors["package"] && touched["package"] ? true : false,
+            helperText: touched["package"] ? errors["package"] : "",
             onBlur: handleBlur,
           }}
         />
@@ -244,6 +244,6 @@ export const initialValues = {
   dimension: "",
   totalweight: "",
   units_per_case: "",
-  package_id: "",
+  package: "",
   unit: "",
 };

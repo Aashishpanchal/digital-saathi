@@ -57,9 +57,13 @@ export default function SkuPricingUpdateDialog(props: {
           }
           setLoading(false);
         } else {
-          enqueueSnackbar(`SKU Sale Price not above MRP ₹${skuPrice.mrp}`, {
-            variant: "error",
-          });
+          skuPrice.mrp
+            ? enqueueSnackbar(`SKU Sale Price not above MRP ₹${skuPrice.mrp}`, {
+                variant: "error",
+              })
+            : enqueueSnackbar(`please set sku sku mrp`, {
+                variant: "error",
+              });
         }
       },
     });

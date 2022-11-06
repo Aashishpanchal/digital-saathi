@@ -10,15 +10,19 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { shopOrderDetails } from "../../../../http";
-import { nullFree, numberToEnIn, queryToStr } from "../../utils";
+import { nullFree, numberToEnIn, queryToStr, round2 } from "../../utils";
 import { useTable } from "react-table";
 import { NumericFormat } from "react-number-format";
 import { TableCustomCell, TextCenter } from "../styles";
 import TaxAmount from "./cell/tax-amount";
 import NetAmount from "./cell/net-amount";
 
-const TableRowWithColSpan = (props: { title: string; value: number }) => {
-  const { title, value } = props;
+const TableRowWithColSpan = (props: {
+  title: string;
+  value: number | string;
+  onlyText?: boolean;
+}) => {
+  const { title, value, onlyText } = props;
   return (
     <TableRow>
       <TableCell
@@ -44,12 +48,16 @@ const TableRowWithColSpan = (props: { title: string; value: number }) => {
         }}
       >
         <TextCenter fontWeight={"bold"}>
-          <NumericFormat
-            value={value}
-            displayType={"text"}
-            thousandSeparator={true}
-            prefix={"₹ "}
-          />
+          {onlyText ? (
+            value
+          ) : (
+            <NumericFormat
+              value={round2(value)}
+              displayType={"text"}
+              thousandSeparator={true}
+              prefix={"₹ "}
+            />
+          )}
         </TextCenter>
       </TableCell>
     </TableRow>
@@ -59,6 +67,7 @@ const TableRowWithColSpan = (props: { title: string; value: number }) => {
 export default function InvoiceBody(props: {
   order: Record<string, any>;
   orderId: string;
+  text?: boolean;
 }) {
   const { order, orderId } = props;
 
@@ -115,7 +124,7 @@ export default function InvoiceBody(props: {
         width: "5%",
         Cell: (cell: any) => (
           <NumericFormat
-            value={cell.value}
+            value={round2(cell.value)}
             displayType={"text"}
             thousandSeparator={true}
             prefix={"₹ "}
@@ -166,7 +175,7 @@ export default function InvoiceBody(props: {
         Cell: (cell: any) => (
           <TextCenter>
             <NumericFormat
-              value={cell.value}
+              value={round2(cell.value)}
               displayType={"text"}
               thousandSeparator={true}
               prefix={"₹ "}
@@ -234,14 +243,25 @@ export default function InvoiceBody(props: {
             );
           })}
           <TableRowWithColSpan title="Total" value={order?.grand_total || 0} />
-          <TableRowWithColSpan
-            title="Delivery Charges"
-            value={order?.delivery_charge || 0}
-          />
-          <TableRowWithColSpan
-            title="Discount"
-            value={order?.delivery_discount || 0}
-          />
+          {order?.delivery_charge ? (
+            <TableRowWithColSpan
+              title="Delivery Charges"
+              value={order?.delivery_charge}
+            />
+          ) : (
+            <TableRowWithColSpan
+              onlyText
+              title="Delivery Charges"
+              value={"Free"}
+            />
+          )}
+
+          {order?.delivery_discount && (
+            <TableRowWithColSpan
+              title="Discount"
+              value={order?.delivery_discount || 0}
+            />
+          )}
           <TableRowWithColSpan
             title="Amount Payable"
             value={order?.grand_total || 0}

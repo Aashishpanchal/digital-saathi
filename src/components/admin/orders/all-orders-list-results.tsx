@@ -12,10 +12,7 @@ import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
 
 export default function AllOrdersListResults(props: { searchText: string }) {
-  // const [page, setPage] = React.useState(0);
   const { page, setPage, size, setSize } = usePaginate();
-  // const [size, setSize] = React.useState("10");
-
   const { searchText } = props;
 
   const postfix = React.useMemo(() => {
@@ -100,7 +97,7 @@ export default function AllOrdersListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkRouter
-              to={`/orders/order-details/${cell.row.original.order_id}`}
+              to={`/orders/order-details/${cell.row.original.order_id}?order_status=${cell.row.original.order_status}`}
             >
               <Tooltip title="View Orders">
                 <IconButton
