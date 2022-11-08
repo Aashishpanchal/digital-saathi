@@ -19,8 +19,9 @@ import RowSearch from "../../table/row-search";
 import AsyncAutocomplete from "../../form/async-autocomplete";
 
 export default function ProductsListToolbar(props: {
+  title?: string;
   onSearch: (value: string, category?: number, subcategory?: number) => void;
-  exportProps: {
+  exportProps?: {
     ref?: any;
     headers?: Headers;
     onClick?: () => void;
@@ -28,7 +29,7 @@ export default function ProductsListToolbar(props: {
     filename?: string;
   };
 }) {
-  const { onSearch, exportProps } = props;
+  const { onSearch, exportProps, title } = props;
 
   const [searchText, setSearchText] = React.useState("");
   const [categoryId, setCategoryId] = React.useState<undefined | number>();
@@ -163,39 +164,41 @@ export default function ProductsListToolbar(props: {
         }}
       >
         <Typography sx={{ m: 1 }} variant="h5">
-          Products
+          {title ? title : "Products"}
         </Typography>
-        <Box sx={{ m: 1 }}>
-          <LinkRouter to={"product-import-export"}>
+        {exportProps ? (
+          <Box sx={{ m: 1 }}>
+            <LinkRouter to={"product-import-export"}>
+              <Button
+                color="error"
+                startIcon={<FaFileCsv fontSize="small" />}
+                sx={{ mr: 1 }}
+              >
+                Import
+              </Button>
+            </LinkRouter>
+            <CSVLink
+              data={exportProps.data}
+              headers={exportProps.headers}
+              filename={exportProps?.filename}
+              target="_blank"
+              ref={exportProps.ref}
+            />
             <Button
-              color="error"
-              startIcon={<FaFileCsv fontSize="small" />}
               sx={{ mr: 1 }}
+              color="secondary"
+              onClick={exportProps?.onClick}
+              startIcon={<FaFileCsv fontSize="small" />}
             >
-              Import
+              Export
             </Button>
-          </LinkRouter>
-          <CSVLink
-            data={exportProps.data}
-            headers={exportProps.headers}
-            filename={exportProps?.filename}
-            target="_blank"
-            ref={exportProps.ref}
-          />
-          <Button
-            sx={{ mr: 1 }}
-            color="secondary"
-            onClick={exportProps?.onClick}
-            startIcon={<FaFileCsv fontSize="small" />}
-          >
-            Export
-          </Button>
-          <LinkRouter to={"new"}>
-            <Button color="secondary" variant="contained">
-              Add Product
-            </Button>
-          </LinkRouter>
-        </Box>
+            <LinkRouter to={"new"}>
+              <Button color="secondary" variant="contained">
+                Add Product
+              </Button>
+            </LinkRouter>
+          </Box>
+        ) : null}
       </Box>
       <Box sx={{ mt: 2 }}>
         <Card>

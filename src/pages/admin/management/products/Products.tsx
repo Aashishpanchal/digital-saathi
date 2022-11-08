@@ -1,14 +1,14 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { Box } from "@mui/material";
-import { MainContainer } from "../../../../components/layout";
+import { useDispatch } from "react-redux";
 import ProductsListResults from "../../../../components/admin/products/products-list-results";
 import ProductsListToolbar from "../../../../components/admin/products/products-list-toolbar";
-import { shopProducts } from "../../../../http";
-import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
+import { MainContainer } from "../../../../components/layout";
+import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno, queryToStr } from "../../../../components/admin/utils";
 import { productFields } from "../../../../constants";
+import { shopProducts } from "../../../../http";
 
 export default function Products() {
   const [searchText, setSearchText] = React.useState("");
@@ -24,22 +24,15 @@ export default function Products() {
     category_id?: number,
     subcategory_id?: number
   ) => {
-    if (
-      typeof category_id !== "undefined" &&
-      typeof subcategory_id !== "undefined"
-    ) {
-      setSearchText(
-        "?" +
-          queryToStr({
-            category_id,
-            subcategory_id,
-            // ...(value ? { search_products: value } : {}),
-          })
-      );
-    } else {
-      setSearchText(value ? `/searchproduct?search_products=${value}` : "");
-    }
-    // console.log(category, subcategory);
+    setSearchText(
+      "?" +
+        queryToStr({
+          category_id: typeof category_id !== "undefined" ? category_id : 0,
+          subcategory_id:
+            typeof subcategory_id !== "undefined" ? subcategory_id : 0,
+          ...(value ? { search_products: value } : {}),
+        })
+    );
     // setSearchText(value ? `/searchproduct?search_products=${value}` : "");
   };
 

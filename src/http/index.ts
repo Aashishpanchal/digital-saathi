@@ -18,5 +18,7 @@ export {
   shopDeliveryAgent,
   shopAssignRetailerProducts,
   shopRetailerProductPrice,
+  shopBanner,
+  shopDeliveryCharge,
 } from "./server-api/server-apis";
 export { auth0Users } from "./auth0-api/auth0-apis-endPoints";

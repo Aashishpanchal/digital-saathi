@@ -1,20 +1,16 @@
 import React from "react";
 import { Box, styled } from "@mui/material";
+import ProductAvatar from "./product-avatar";
 
-const Img = styled("img")`
-  border-radius: inherit;
+const Img = styled(ProductAvatar)`
   max-height: 100%;
   width: 100%;
   height: auto;
   display: block;
-  position: relative;
 `;
 
-export default function ImageView(props: {
-  src: string | File;
-  onClickDelete?: () => void;
-}) {
-  const { src, onClickDelete } = props;
+export default function ImageView(props: { src: string | File }) {
+  const { src } = props;
 
   const [imgStr, setImgStr] = React.useState("");
 
@@ -41,7 +37,7 @@ export default function ImageView(props: {
         position: "relative",
       }}
     >
-      <Img src={imgStr} alt="" />
+      <Img src={imgStr} alt="" variant="square" />
       <Box
         sx={{
           position: "absolute",

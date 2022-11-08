@@ -16,12 +16,14 @@ import {
   FaUsers,
   FaUserTie,
   FaBoxes,
+  FaPeopleCarry,
 } from "react-icons/fa";
 import {
   BsBookmarkCheckFill,
   BsFileEarmarkCheckFill,
   BsGraphUp,
   BsJournalBookmark,
+  BsMailbox,
   BsShopWindow,
 } from "react-icons/bs";
 import {
@@ -37,6 +39,7 @@ import { TiTicket } from "react-icons/ti";
 import { FcProcess } from "react-icons/fc";
 import { GiStorkDelivery } from "react-icons/gi";
 import { HiChartPie } from "react-icons/hi";
+import { SiReason } from "react-icons/si";
 
 const sideBarMainList = [
   {
@@ -81,6 +84,16 @@ const sideBarMainList = [
       {
         href: "/management/delivery-partners",
         title: "Delivery Partners",
+        icon: <FaPeopleCarry />,
+      },
+      {
+        href: "/management/trending-products",
+        title: "Trending Products",
+        icon: <FaBoxes />,
+      },
+      {
+        href: "/management/delivery-charges",
+        title: "Delivery Charges",
         icon: <TbTruckDelivery />,
       },
     ],
@@ -103,6 +116,16 @@ const sideBarMainList = [
         href: "/masters/areas",
         title: "Areas",
         icon: <MdAcUnit />,
+      },
+      {
+        href: "/masters/banner",
+        title: "Banner",
+        icon: <BsMailbox />,
+      },
+      {
+        href: "/masters/reason",
+        title: "Reason",
+        icon: <SiReason />,
       },
     ],
   },

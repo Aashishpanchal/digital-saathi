@@ -2,35 +2,44 @@ import React from "react";
 import { useSnackbar } from "notistack";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
-import { MdDashboardCustomize } from "react-icons/md";
-import { FaMapMarked, FaRegEdit } from "react-icons/fa";
-import { Box, Tooltip, IconButton, Typography } from "@mui/material";
-import { retailer } from "../../../http";
-import { TextCenter } from "../orders/styles";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { FaRegEdit } from "react-icons/fa";
+import { shopDeliveryCharge } from "../../../http";
+import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
-import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
-import LinkRouter from "../../../routers/LinkRouter";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
+import { queryToStr, round2 } from "../utils";
+import { NumericFormat } from "react-number-format";
+import { TextCenter } from "../orders/styles";
+import DeliveryChargeFormDialog from "./delivery-charge-form-dialog";
 
-export default function RetailerListResults(props: { searchText: string }) {
+export default function DeliveryChargesList(props: {
+  searchText: string;
+  addOpen: boolean;
+  addClose: () => void;
+}) {
   const { page, setPage, size, setSize } = usePaginate();
-  const [deleteData, setDeleteData] = React.useState<{
-    id: string;
-    open: boolean;
-  }>({
+  const [deleteData, setDeleteData] = React.useState({
     id: "",
     open: false,
   });
 
-  const { searchText } = props;
+  const [edit, setEdit] = React.useState({
+    value: {},
+    open: false,
+  });
+
+  const { searchText, addClose, addOpen } = props;
 
   const postfix = React.useMemo(() => {
-    return searchText
-      ? `${searchText}&page=${page}&size=${size}`
-      : `?page=${page}&size=${size}`;
+    const x = queryToStr({
+      page,
+      size,
+    });
+    return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [searchText, page, size]);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -38,19 +47,19 @@ export default function RetailerListResults(props: { searchText: string }) {
   const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
 
   const { isLoading, refetch, data } = useQuery(
-    ["retailer", postfix],
+    ["delivery-charges", postfix],
     () =>
-      retailer("get", {
+      shopDeliveryCharge("get", {
         postfix,
       }),
     {
-      refetchOnWindowFocus: false,
+      keepPreviousData: true,
     }
   );
 
   const onDelete = async () => {
     try {
-      const res: any = await retailer("delete", {
+      const res: any = await shopDeliveryCharge("delete", {
         params: deleteData?.id,
       });
       if (res.status === 200) {
@@ -60,7 +69,7 @@ export default function RetailerListResults(props: { searchText: string }) {
         });
       }
     } catch (err: any) {
-      console.log(err.response);
+      console.log(err);
       enqueueSnackbar("entry not delete 😢", { variant: "error" });
     }
     deleteBoxClose();
@@ -74,82 +83,62 @@ export default function RetailerListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <SerialNumber cell={cell} page={page} size={size} />
         ),
-        width: "5%",
+        width: 2,
       },
       {
         Header: "Status",
         accessor: "active",
-        width: "10%",
+        width: 2,
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
-            idAccessor="retailer_id"
+            idAccessor="delivery_id"
+            axiosFunction={shopDeliveryCharge}
+            postfix={postfix}
             refetch={refetch}
-            axiosFunction={retailer}
           />
         ),
       },
       {
-        Header: "Auth Code",
-        accessor: "auth_code",
-        width: "20%",
-        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+        Header: "Delivery From",
+        accessor: "delivery_from",
       },
       {
-        Header: "Retailer Name",
-        accessor: "retailer_name",
+        Header: "Delivery To",
+        accessor: "delivery_to",
+      },
+      {
+        Header: "Delivery Charge",
+        accessor: "delivery_charge",
         Cell: (cell: any) => (
-          <Typography fontWeight={"600"} fontSize="small" align="center">
-            {cell.row.original?.company_name} ( {cell.value} )
-          </Typography>
+          <TextCenter fontWeight={600}>
+            <NumericFormat
+              value={round2(cell.value)}
+              displayType={"text"}
+              thousandSeparator={true}
+              prefix={"₹ "}
+            />
+          </TextCenter>
         ),
       },
       {
         Header: "Action",
-        width: "15%",
+        width: "20%",
         Cell: (cell: any) => (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <LinkRouter to={`area/${cell.row.original.retailer_id}`}>
-              <Tooltip title="Retailer Area">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                >
-                  <FaMapMarked />
-                </IconButton>
-              </Tooltip>
-            </LinkRouter>
-            <LinkRouter to={`${cell.row.original.retailer_id}`}>
-              <Tooltip title="Retailer Edit">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                >
-                  <FaRegEdit />
-                </IconButton>
-              </Tooltip>
-            </LinkRouter>
-            <LinkRouter
-              to={`${cell.row.original.retailer_id}/retailer-dashboard`}
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Tooltip
+              title="Edit"
+              onClick={() =>
+                setEdit({
+                  open: true,
+                  value: cell.row.original,
+                })
+              }
             >
-              <Tooltip title="Retailer Dashboard">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                >
-                  <MdDashboardCustomize />
-                </IconButton>
-              </Tooltip>
-            </LinkRouter>
+              <IconButton disableRipple={false} size="small" color="secondary">
+                <FaRegEdit />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Delete">
               <IconButton
                 disableRipple={false}
@@ -158,7 +147,7 @@ export default function RetailerListResults(props: { searchText: string }) {
                 onClick={() =>
                   setDeleteData({
                     open: true,
-                    id: cell.row.original.retailer_id,
+                    id: cell.row.original.delivery_id,
                   })
                 }
               >
@@ -169,12 +158,18 @@ export default function RetailerListResults(props: { searchText: string }) {
         ),
       },
     ],
-    [page, size, postfix]
+    [postfix]
   );
 
   const getData = React.useMemo(() => {
-    if (data?.status === 200) return data.data;
-    return { totalItems: 0, totalPages: 1, retailers: [] };
+    if (data?.status === 200) {
+      return data.data;
+    }
+    return {
+      totalItems: 0,
+      totalPages: 0,
+      deliverycharges: [],
+    };
   }, [data]);
 
   React.useEffect(() => {
@@ -186,7 +181,7 @@ export default function RetailerListResults(props: { searchText: string }) {
       <DataTable
         loading={isLoading}
         columns={columns}
-        data={getData.retailers}
+        data={getData.deliverycharges}
         showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
@@ -206,6 +201,23 @@ export default function RetailerListResults(props: { searchText: string }) {
         onClickClose={deleteBoxClose}
         onClickOk={onDelete}
       />
+      {edit.open && (
+        <DeliveryChargeFormDialog
+          open={edit.open}
+          deliveryCharge={edit.value}
+          close={() => setEdit({ open: false, value: {} })}
+          reload={refetch}
+          variant="edit"
+        />
+      )}
+      {addOpen && (
+        <DeliveryChargeFormDialog
+          open={addOpen}
+          close={addClose}
+          reload={refetch}
+          variant="save"
+        />
+      )}
     </>
   );
 }

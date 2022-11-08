@@ -1,4 +1,5 @@
-import { baseFunc } from "./server-base";
+import { baseUrlImg, imgJwt } from "../config";
+import { api, baseFunc } from "./server-base";
 
 // list of all the endpoints of farmers
 export const farmers = baseFunc("shop_customer");
@@ -34,8 +35,37 @@ export const shopOrders = baseFunc("shop_orders");
 export const shopOrderDetails = baseFunc("shop_orderdetails");
 
 // Retailer Dashboard api's
-// only get request use
 export const shopRetailerProductPrice = baseFunc("shop_retailerproductprice");
 export const shopAssignRetailerProducts = baseFunc(
   "shop_assignretailerproducts"
 );
+
+// shop banner api
+export const shopBanner = baseFunc("shop_banners");
+export const shopBannerUpload = (
+  method: "post" | "put",
+  data: FormData,
+  url: string = ""
+) =>
+  api.request({
+    method: method.toUpperCase(),
+    url: `shop_uploadbanner${url ? `/${url}` : url}`,
+    data,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${imgJwt}`,
+    },
+  });
+export const shopBannerImgDownLoad = (img: any) =>
+  api.request({
+    url: `${baseUrlImg}${img || ""}`,
+    method: "GET",
+    responseType: "blob",
+    headers: {
+      Accept: "*/*",
+      Authorization: `Bearer ${imgJwt}`,
+    },
+  });
+
+// shop delivery charge api
+export const shopDeliveryCharge = baseFunc("shop_deliverycharges");

@@ -2,64 +2,60 @@ import React from "react";
 import { useSnackbar } from "notistack";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
-import { FaArrowRight, FaRegEdit } from "react-icons/fa";
-import { Box, Tooltip, IconButton } from "@mui/material";
-import { farmers } from "../../../http";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { FaRegEdit } from "react-icons/fa";
+import { shopBanner } from "../../../http";
+import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
-import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
-import LinkRouter from "../../../routers/LinkRouter";
-import FarmersFormDialog from "./farmers-form-dialog";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
+import { queryToStr } from "../utils";
+import BannerImg from "../../../pages/admin/master/cell/banner-img";
+import BannerFormDialog from "./form-dialog/banner-form-dialog";
 
-export default function FarmersListResults(props: { searchText: string }) {
+function BannerList(props: { addOpen: boolean; addClose: () => void }) {
   const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState({
-    id: "",
+    value: "",
     open: false,
   });
   const [edit, setEdit] = React.useState({
-    id: "",
+    value: {},
     open: false,
   });
-  const { searchText } = props;
+
+  const { addClose, addOpen } = props;
 
   const postfix = React.useMemo(() => {
-    return searchText
-      ? `${searchText}&page=${page}&size=${size}`
-      : `?page=${page}&size=${size}`;
-  }, [searchText, page, size]);
+    return `?${queryToStr({ page, size })}`;
+  }, [page, size]);
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
+  const deleteBoxClose = () => setDeleteData({ open: false, value: "" });
 
   const { isLoading, refetch, data } = useQuery(
-    ["farmers", postfix],
-    () =>
-      farmers("get", {
-        postfix,
-      }),
+    ["banners", postfix],
+    () => shopBanner("get", { postfix }),
     {
+      keepPreviousData: true,
       refetchOnWindowFocus: false,
     }
   );
 
   const onDelete = async () => {
     try {
-      const res: any = await farmers("delete", {
-        params: deleteData?.id,
-      });
-      if (res.status === 200) {
-        await refetch();
+      const res = await shopBanner("delete");
+      if (res?.status === 200) {
+        refetch();
         enqueueSnackbar("entry success-full deleted 😊", {
           variant: "success",
         });
       }
     } catch (err: any) {
-      console.log(err);
+      console.log(err.response);
       enqueueSnackbar("entry not delete 😢", { variant: "error" });
     }
     deleteBoxClose();
@@ -82,26 +78,29 @@ export default function FarmersListResults(props: { searchText: string }) {
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
-            idAccessor="customer_id"
+            idAccessor="banner_id"
+            axiosFunction={shopBanner}
+            postfix={postfix}
             refetch={refetch}
-            axiosFunction={farmers}
           />
         ),
       },
       {
-        Header: "Auth Code",
-        accessor: "auth_code",
+        Header: "Banner Image",
+        accessor: "image",
+        width: "20%",
+        Cell: (cell: any) => <BannerImg cell={cell} />,
       },
       {
-        Header: "Customer Name",
-        accessor: "customer_name",
+        Header: "Title",
+        accessor: "title",
       },
       {
         Header: "Action",
-        width: "20%",
+        width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Tooltip title="Farmer Edit">
+            <Tooltip title="Banner Edit">
               <IconButton
                 disableRipple={false}
                 size="small"
@@ -109,7 +108,9 @@ export default function FarmersListResults(props: { searchText: string }) {
                 onClick={() =>
                   setEdit({
                     open: true,
-                    id: cell.row.original.customer_id,
+                    value: {
+                      ...cell.row.original,
+                    },
                   })
                 }
               >
@@ -124,24 +125,13 @@ export default function FarmersListResults(props: { searchText: string }) {
                 onClick={() =>
                   setDeleteData({
                     open: true,
-                    id: cell.row.original.customer_id,
+                    value: cell.row.original.banner_id,
                   })
                 }
               >
                 <RiDeleteBinFill />
               </IconButton>
             </Tooltip>
-            <LinkRouter to={`${cell.row.original.customer_id}`}>
-              <Tooltip title="Farmers Orders">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                >
-                  <FaArrowRight />
-                </IconButton>
-              </Tooltip>
-            </LinkRouter>
           </Box>
         ),
       },
@@ -150,20 +140,22 @@ export default function FarmersListResults(props: { searchText: string }) {
   );
 
   const getData = React.useMemo(() => {
-    if (data?.status === 200) return data.data;
-    return { totalItems: 0, totalPages: 1, customers: [] };
+    if (data?.status === 200) {
+      return data.data;
+    }
+    return {
+      totalItems: 0,
+      totalPages: 0,
+      banners: [],
+    };
   }, [data]);
-
-  React.useEffect(() => {
-    if (searchText) setPage(0);
-  }, [searchText]);
 
   return (
     <>
       <DataTable
         loading={isLoading}
         columns={columns}
-        data={getData.customers}
+        data={getData?.banners || []}
         showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
@@ -184,13 +176,24 @@ export default function FarmersListResults(props: { searchText: string }) {
         onClickOk={onDelete}
       />
       {edit.open && (
-        <FarmersFormDialog
+        <BannerFormDialog
           open={edit.open}
-          customerId={edit.id}
-          close={() => setEdit({ open: false, id: "" })}
+          banner={edit.value}
+          close={() => setEdit({ open: false, value: {} })}
           reload={refetch}
+          variant="edit"
+        />
+      )}
+      {addOpen && (
+        <BannerFormDialog
+          open={addOpen}
+          close={addClose}
+          reload={refetch}
+          variant="add"
         />
       )}
     </>
   );
 }
+
+export default React.memo(BannerList);

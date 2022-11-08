@@ -1,4 +1,5 @@
 import React from "react";
+import { useTable } from "react-table";
 import {
   Box,
   Table,
@@ -13,7 +14,6 @@ import { useQuery } from "@tanstack/react-query";
 import ProductAvatar from "../../Image/product-avatar";
 import { shopOrderDetails } from "../../../http";
 import { queryToStr, round2 } from "../utils";
-import { useTable } from "react-table";
 import { TableCustomCell, TextCenter } from "./styles";
 import { NumericFormat } from "react-number-format";
 
@@ -72,14 +72,14 @@ export default function OrderDetailsList(props: {
         accessor: "price",
         width: "10%",
         Cell: (cell: any) => (
-          <Box display={"flex"} justifyContent="center" alignItems={"center"}>
+          <TextCenter fontWeight={"600"}>
             <NumericFormat
               value={round2(cell.value)}
               displayType={"text"}
               thousandSeparator={true}
               prefix={"₹ "}
             />
-          </Box>
+          </TextCenter>
         ),
       },
       {
@@ -87,7 +87,7 @@ export default function OrderDetailsList(props: {
         accessor: "total_price",
         width: "10%",
         Cell: (cell: any) => (
-          <Box display={"flex"} justifyContent="center" alignItems={"center"}>
+          <TextCenter fontWeight={"600"}>
             <NumericFormat
               value={round2(cell.value)}
               displayType={"text"}
@@ -95,7 +95,7 @@ export default function OrderDetailsList(props: {
               decimalScale={2}
               prefix={"₹ "}
             />
-          </Box>
+          </TextCenter>
         ),
       },
     ],

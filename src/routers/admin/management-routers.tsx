@@ -20,6 +20,7 @@ import {
 } from "../../pages/admin/management/products";
 import {
   CreateRetailers,
+  RetailerArea,
   RetailerDashboard,
   Retailers,
   RetrieveUpdateRetailers,
@@ -34,6 +35,8 @@ import {
 } from "../../pages/admin/management/retailers/retailerDashboard";
 import ProductImages from "../../pages/admin/management/products/product-images";
 import FarmersOrders from "../../pages/admin/management/farmers/farmers-orders";
+import { DeliveryCharges } from "../../pages/admin/management/delivery-charge";
+import { TrendingProducts } from "../../pages/admin/management/trending-product";
 
 export default {
   path: "/management",
@@ -61,6 +64,10 @@ export default {
         {
           path: "new",
           element: <CreateRetailers />,
+        },
+        {
+          path: "area/:retailer_id",
+          element: <RetailerArea />,
         },
         {
           path: ":retailer_id",
@@ -191,6 +198,14 @@ export default {
           ],
         },
       ],
+    },
+    {
+      path: "delivery-charges",
+      element: <DeliveryCharges />,
+    },
+    {
+      path: "trending-products",
+      element: <TrendingProducts />,
     },
   ],
 };

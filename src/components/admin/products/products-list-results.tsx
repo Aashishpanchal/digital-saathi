@@ -188,7 +188,7 @@ export default function ProductsListResults(props: { searchText: string }) {
         ),
       },
     ],
-    [page, size, postfix]
+    [postfix]
   );
 
   const getData = React.useMemo(() => {
