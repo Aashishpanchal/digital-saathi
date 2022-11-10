@@ -43,23 +43,27 @@ function DeliveryRetailerCard(props: {
   }, [data]);
 
   const clickHandle = async () => {
+    const changeActive = active === 0 ? 1 : 0;
     try {
       setLoading(true);
       const res = await deliveryRetailer("put", {
         params: del_ret_id,
         data: JSON.stringify({
-          active: active === 0 ? 1 : 0,
+          active: changeActive,
         }),
       });
       if (res?.status === 200) {
         await refetch();
-        enqueueSnackbar((active === 1 ? "On" : "Off") + " successfully 😊", {
-          variant: "success",
-        });
+        enqueueSnackbar(
+          (changeActive === 1 ? "On" : "Off") + " successfully 😊",
+          {
+            variant: "success",
+          }
+        );
       }
     } catch (error) {
       console.log(error);
-      enqueueSnackbar((active === 1 ? "On" : "Off") + " failed", {
+      enqueueSnackbar((changeActive === 1 ? "On" : "Off") + " failed", {
         variant: "error",
       });
     }

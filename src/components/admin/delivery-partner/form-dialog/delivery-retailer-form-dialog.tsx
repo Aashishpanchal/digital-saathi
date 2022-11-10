@@ -21,8 +21,25 @@ function DeliveryRetailerFormDialog(props: {
     undefined
   );
 
-  const { isLoading, data } = useQuery(["get-all-retails"], () =>
-    retailerHttp("get")
+  const { isLoading, data } = useQuery(
+    ["get-all-retails"],
+    () => retailerHttp("get"),
+    {
+      select(data) {
+        if (data?.status === 200) {
+          data.data = (data.data || []).map(
+            (row: { retailer_name: any; retailer_id: any }) => {
+              return {
+                ...row,
+                retailer_name:
+                  row?.retailer_name || row?.retailer_id.toString(),
+              };
+            }
+          );
+        }
+        return data;
+      },
+    }
   );
 
   const retailers = React.useMemo(() => {

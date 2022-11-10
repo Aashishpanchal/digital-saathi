@@ -16,6 +16,7 @@ import {
   shopBannerImgDownLoad,
   shopBannerUpload,
 } from "../../../../http/server-api/server-apis";
+import { useQuery } from "@tanstack/react-query";
 
 export default function BannerFormDialog(props: {
   open: boolean;
@@ -28,6 +29,7 @@ export default function BannerFormDialog(props: {
   const [file, setFile] = React.useState<File | string | undefined>();
   const [data, setData] = React.useState({
     title: banner?.title || "",
+    image: "",
   });
   const [loading, setLoading] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -80,7 +82,7 @@ export default function BannerFormDialog(props: {
     if (file) {
       const bannerData = new FormData();
       bannerData.append("title", data.title);
-      file !== banner?.image ? bannerData.append("image", file) : null;
+      file !== data.image ? bannerData.append("image", file) : null;
       await (variant === "edit" ? putRequest : postRequest)(bannerData);
       setLoading(false);
     } else {
@@ -91,20 +93,25 @@ export default function BannerFormDialog(props: {
     setLoading(false);
   };
 
-  const imgDownload = async () => {
-    try {
-      const res = await shopBannerImgDownLoad(banner?.image);
-      if (res.status === 200) {
-        const img = URL.createObjectURL(res.data);
-        setFile(img);
-      }
-    } catch (error) {
-      console.log(error);
+  const { data: imgDownload, refetch } = useQuery(
+    ["download-img-".concat(banner?.banner_id)],
+    () => shopBannerImgDownLoad(banner?.image),
+    {
+      refetchOnWindowFocus: false,
+      enabled: false,
     }
-  };
+  );
+
+  React.useMemo(() => {
+    if (imgDownload?.status === 200) {
+      const img = URL.createObjectURL(imgDownload.data);
+      setData((prev) => ({ ...prev, image: img }));
+      setFile(img);
+    }
+  }, [imgDownload]);
 
   React.useEffect(() => {
-    if (variant === "edit") imgDownload();
+    if (variant === "edit") refetch();
   }, []);
 
   return (
@@ -122,7 +129,7 @@ export default function BannerFormDialog(props: {
               setData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
             }
           />
-          <ImageView src={file ? file : ""} />
+          <ImageView src={file} />
         </Box>
         <FileUploader handleChange={(file) => setFile(file)} />
       </DialogContent>

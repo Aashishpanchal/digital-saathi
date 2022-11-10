@@ -25,6 +25,20 @@ export default function DeliveryChargeFormDialog(props: {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = React.useState(false);
 
+  const deliveryFormChargeCheck = (
+    deliveryFrom: string,
+    deliveryCharge: string
+  ) => {
+    if (parseFloat(deliveryFrom) <= parseFloat(deliveryCharge)) return true;
+    enqueueSnackbar(
+      "delivery charge should be larger and equal delivery from.!😢",
+      {
+        variant: "error",
+      }
+    );
+    return false;
+  };
+
   const postRequest = async (values: Record<string, any>) => {
     try {
       const res = await shopDeliveryCharge("post", {
@@ -55,31 +69,33 @@ export default function DeliveryChargeFormDialog(props: {
   };
 
   const putRequest = async (values: Record<string, any>) => {
-    try {
-      const res = await shopDeliveryCharge("put", {
-        params: deliveryCharge?.delivery_id,
-        data: JSON.stringify(values),
-      });
-      if (res?.status === 200) {
-        close();
-        reload();
-        setTimeout(() => {
-          enqueueSnackbar("Delivery Charge Update successfully!👍😊", {
-            variant: "success",
-          });
-        }, 200);
-      }
-    } catch (error: any) {
-      const {
-        status,
-        data: { message },
-      } = error.response;
-      if (status === 400) {
-        enqueueSnackbar(message, { variant: "error" });
-      } else {
-        enqueueSnackbar("Delivery Charge Update Failed!😢", {
-          variant: "error",
+    if (deliveryFormChargeCheck(values.delivery_from, values.delivery_charge)) {
+      try {
+        const res = await shopDeliveryCharge("put", {
+          params: deliveryCharge?.delivery_id,
+          data: JSON.stringify(values),
         });
+        if (res?.status === 200) {
+          close();
+          reload();
+          setTimeout(() => {
+            enqueueSnackbar("Delivery Charge Update successfully!👍😊", {
+              variant: "success",
+            });
+          }, 200);
+        }
+      } catch (error: any) {
+        const {
+          status,
+          data: { message },
+        } = error.response;
+        if (status === 400) {
+          enqueueSnackbar(message, { variant: "error" });
+        } else {
+          enqueueSnackbar("Delivery Charge Update Failed!😢", {
+            variant: "error",
+          });
+        }
       }
     }
   };

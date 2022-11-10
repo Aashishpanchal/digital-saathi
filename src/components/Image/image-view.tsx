@@ -9,7 +9,7 @@ const Img = styled(ProductAvatar)`
   display: block;
 `;
 
-export default function ImageView(props: { src: string | File }) {
+export default function ImageView(props: { src?: string | File }) {
   const { src } = props;
 
   const [imgStr, setImgStr] = React.useState("");

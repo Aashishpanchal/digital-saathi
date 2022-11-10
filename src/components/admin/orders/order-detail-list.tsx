@@ -59,7 +59,7 @@ export default function OrderDetailsList(props: {
         Header: "Dimension",
         accessor: "dimension",
         width: "5%",
-        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
+        Cell: (cell: any) => <TextCenter>{cell.value || "0"}</TextCenter>,
       },
       {
         Header: "Weight",

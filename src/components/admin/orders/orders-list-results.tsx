@@ -38,7 +38,6 @@ export default function OrdersListResults(props: {
         postfix,
       }),
     {
-      keepPreviousData: true,
       refetchOnWindowFocus: false,
     }
   );

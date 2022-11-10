@@ -13,8 +13,12 @@ export default function BannerImg(props: { cell: Cell }) {
     },
   }: any = props;
 
-  const { data } = useQuery(["download-img-".concat(original.banner_id)], () =>
-    shopBannerImgDownLoad(value)
+  const { data } = useQuery(
+    ["download-img-".concat(original.banner_id)],
+    () => shopBannerImgDownLoad(value),
+    {
+      refetchOnWindowFocus: false,
+    }
   );
 
   const img = React.useMemo(() => {

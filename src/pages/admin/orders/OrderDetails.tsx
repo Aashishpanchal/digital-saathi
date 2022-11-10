@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 // import { FaSave as SaveIcon } from "react-icons/fa";
 import { AiFillPrinter as PrintIcon } from "react-icons/ai";
@@ -179,7 +179,7 @@ export default function OrderDetails() {
           >
             <Grid container spacing={2}>
               {collectionLabel.map((item, index) => (
-                <Grid key={index} item xs={6}>
+                <Grid key={index} item xs={5.9}>
                   <OrderDetailCard
                     title={item.title}
                     labels={

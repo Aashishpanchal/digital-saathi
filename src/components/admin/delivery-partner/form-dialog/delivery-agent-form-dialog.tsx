@@ -134,7 +134,7 @@ export default function deliveryAgentFormDialog(props: {
   return (
     <Dialog open={open} fullWidth>
       <DialogTitle>
-        Delivery Agent {variant === "edit" ? "Edit" : "Add"}
+        {variant === "edit" ? "Edit" : "Add"} Delivery Agent
       </DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit}>
