@@ -38,21 +38,6 @@ export default function ProductPriceForm(props: {
         placeholder: "gst",
         suffix: "%",
       },
-      // {
-      //   type: "number",
-      //   label: "IGST(%)",
-      //   name: "igst",
-      // },
-      // {
-      //   type: "number",
-      //   label: "CGST(%)",
-      //   name: "cgst",
-      // },
-      // {
-      //   type: "number",
-      //   label: "SGST(%)",
-      //   name: "sgst",
-      // },
       {
         label: "Price",
         name: "price",
@@ -212,18 +197,12 @@ export default function ProductPriceForm(props: {
           label="Packages"
           loading={packageLoading}
           options={packages || []}
-          value={
-            values?.package_id
-              ? !isNaN(Number(values?.package_id))
-                ? Number(values?.package_id)
-                : undefined
-              : undefined
-          }
+          value={values?.package}
           objFilter={{
             title: "package",
             value: "package_id",
           }}
-          onChangeOption={(value) => setFieldValue("package", value)}
+          onChangeOption={(value) => setFieldValue("package", `${value}`)}
           TextInputProps={{
             error: errors["package"] && touched["package"] ? true : false,
             helperText: touched["package"] ? errors["package"] : "",

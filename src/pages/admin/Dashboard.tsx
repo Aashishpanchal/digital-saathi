@@ -1,66 +1,46 @@
 import React from "react";
+import { useQueries } from "@tanstack/react-query";
 import { Box, Container, Grid } from "@mui/material";
+import { FaStore, FaTractor, FaWarehouse } from "react-icons/fa";
 import { MainContainer } from "../../components/layout";
-import TotalOrders from "../../components/dashboard/total-orders";
-import TotalSku from "../../components/dashboard/total-sku";
-import TotalFarmerServiced from "../../components/dashboard/total-farmer-serviced";
 import SaleGraph from "../../components/dashboard/sale-graph";
 import UsersDetails from "../../components/dashboard/users-details";
 import { farmers, retailer, warehouse } from "../../http";
-import { useDispatch } from "react-redux";
-import { setPageLoading } from "../../redux/slices/admin-slice";
+import DashboardCard from "../../components/dashboard/dashboard-card";
 
 export default function Home() {
-  const [totalFarmers, setTotalFarmers] = React.useState(0);
-  const [totalWarehouses, setTotalWarehouses] = React.useState(0);
-  const [totalRetailers, setTotalRetailers] = React.useState(0);
+  const cardsLabels = React.useMemo(
+    () => [
+      { header: "Total Orders", color: "success.main", icon: <FaTractor /> },
+      { header: "Total SKUs", color: "error.main", icon: <FaWarehouse /> },
+      {
+        header: "Total Farmer Serviced",
+        color: "warning.main",
+        icon: <FaStore />,
+      },
+    ],
+    []
+  );
 
-  const dispatch = useDispatch();
+  const results = useQueries({
+    queries: [
+      { queryKey: ["get-all-farmers"], queryFn: () => farmers("get") },
+      { queryKey: ["get-all-warehouse"], queryFn: () => warehouse("get") },
+      { queryKey: ["get-all-retailer"], queryFn: () => retailer("get") },
+    ],
+  });
 
-  const onFarmerTotal = async () => {
-    try {
-      const res: any = await farmers("get");
-      if (res.status === 200) {
-        setTotalFarmers(res.data?.length || 0);
-      }
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
-
-  const onWarehouseTotal = async () => {
-    try {
-      const res: any = await warehouse("get");
-      if (res.status === 200) {
-        setTotalWarehouses(res.data?.totalItems || 0);
-      }
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
-
-  const onRetailer = async () => {
-    try {
-      const res: any = await retailer("get");
-      if (res.status === 200) {
-        setTotalRetailers(res.data?.length || 0);
-      }
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
-
-  const callThree = async () => {
-    dispatch(setPageLoading(true));
-    await onFarmerTotal();
-    await onWarehouseTotal();
-    await onRetailer();
-    dispatch(setPageLoading(false));
-  };
-
-  React.useEffect(() => {
-    callThree();
-  }, []);
+  const queries = React.useCallback(
+    (index: number) => {
+      const res = results[index].data;
+      if (index === 1)
+        return res?.status === 200
+          ? results[index].data?.data?.warehouses?.length || 0
+          : 0;
+      return res?.status === 200 ? res.data?.length || 0 : 0;
+    },
+    [results]
+  );
 
   return (
     <MainContainer>
@@ -73,24 +53,20 @@ export default function Home() {
       >
         <Container maxWidth={false}>
           <Grid container spacing={4}>
-            <Grid item lg={4} sm={6} xl={4} xs={12}>
-              <TotalOrders total={totalFarmers} />
-            </Grid>
-            <Grid item xl={4} lg={4} sm={6} xs={12}>
-              <TotalSku total={totalWarehouses} />
-            </Grid>
-            <Grid item xl={4} lg={4} sm={6} xs={12}>
-              <TotalFarmerServiced total={totalRetailers} />
-            </Grid>
+            {cardsLabels.map((item, index) => (
+              <Grid key={index} item lg={4} sm={6} xl={4} xs={12}>
+                <DashboardCard title={queries(index)} {...item} />
+              </Grid>
+            ))}
             <Grid item lg={8} md={12} xl={9} xs={12}>
               <SaleGraph />
             </Grid>
             <Grid item lg={4} md={6} xl={3} xs={12}>
               <UsersDetails
                 values={{
-                  farmers: totalFarmers,
-                  warehouse: totalWarehouses,
-                  retailers: totalRetailers,
+                  farmers: queries(0),
+                  warehouse: queries(1),
+                  retailers: queries(2),
                 }}
               />
             </Grid>

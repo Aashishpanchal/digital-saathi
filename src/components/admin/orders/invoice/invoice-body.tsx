@@ -256,12 +256,12 @@ export default function InvoiceBody(props: {
             />
           )}
 
-          {order?.delivery_discount && (
+          {order?.delivery_discount ? (
             <TableRowWithColSpan
               title="Discount"
               value={order?.delivery_discount || 0}
             />
-          )}
+          ) : null}
           <TableRowWithColSpan
             title="Amount Payable"
             value={order?.grand_total || 0}

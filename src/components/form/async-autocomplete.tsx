@@ -51,6 +51,16 @@ export default function AsyncAutocomplete(props: {
       if (a) {
         return a;
       }
+    } else if (typeof valueOption === "string") {
+      const num = parseInt(valueOption);
+      if (!isNaN(num)) {
+        const a = options.filter(
+          (values) => values?.[objFilter.value] === num
+        )[0];
+        if (a) {
+          return a;
+        }
+      }
     }
     return null;
   }, [valueOption, options]);

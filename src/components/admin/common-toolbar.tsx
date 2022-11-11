@@ -11,6 +11,7 @@ export default function CommonToolbar(props: {
     title: string;
     onClick: () => void;
   };
+  onClickSort?: () => void;
   onSearch?: (value: string) => void;
   placeholder?: string;
   onClickExport?: () => void;
@@ -22,7 +23,8 @@ export default function CommonToolbar(props: {
     filename?: string;
   };
 }) {
-  const { onAddProps, title, onSearch, exportProps, placeholder } = props;
+  const { onAddProps, onClickSort, title, onSearch, exportProps, placeholder } =
+    props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -64,6 +66,16 @@ export default function CommonToolbar(props: {
                 Export
               </Button>
             </>
+          )}
+          {onClickSort && (
+            <Button
+              sx={{ mr: 1 }}
+              color="secondary"
+              variant="outlined"
+              onClick={onClickSort}
+            >
+              Sort
+            </Button>
           )}
           {onAddProps && (
             <Button
