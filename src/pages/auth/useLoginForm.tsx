@@ -5,16 +5,16 @@ export default function useLoginForm() {
     () => [
       {
         type: "string",
-        label: "Email",
+        label: "Username",
         name: "email",
         defaultValue: "",
-        placeholder: "example@gmail.com",
+        placeholder: "Please Enter User Name",
         validate: true,
-        hintText: "user email is compulsory",
+        hintText: "Username is compulsory",
       },
       {
         type: "password",
-        label: "password",
+        label: "Password",
         name: "password",
         defaultValue: "",
         placeholder: "***********",

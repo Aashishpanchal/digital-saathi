@@ -22,7 +22,7 @@ const GotoContainer = styled("div")`
   input {
     width: 100%;
     min-width: 0;
-    padding: 4.8px 11px;
+    padding: 3px 11px;
     color: #666;
     font-size: 13px;
     line-height: 1.5715;
@@ -30,7 +30,7 @@ const GotoContainer = styled("div")`
     background-image: none;
     border: 1px solid #e5e5e5;
     border-radius: 3px;
-    width: 25px;
+    width: 30px;
     margin: 0 8px;
   }
 `;
@@ -144,6 +144,7 @@ function TablePagination(props: {
                 Go to
               </InputLabel>
               <InputBase
+            
                 value={parseInt(goto) || ""}
                 placeholder="page"
                 onChange={(e) => {

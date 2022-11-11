@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
 import CategoriesListResults from "../../../../components/admin/categories/categories-list-results";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
+import { MdOutlineAccountTree} from "react-icons/md";
 
 export default function Categories() {
   const [searchText, setSearchText] = React.useState("");
@@ -23,8 +24,10 @@ export default function Categories() {
           onClick: onAdd,
         }}
         title={`Categories`}
+        icon={<MdOutlineAccountTree />}
         onSearch={searchHandler}
       />
+      
       <Box sx={{ mt: 3 }}>
         <CategoriesListResults
           searchText={searchText}

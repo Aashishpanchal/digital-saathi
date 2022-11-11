@@ -9,6 +9,7 @@ import { setPageLoading } from "../../../redux/slices/admin-slice";
 import { addSno } from "../../../components/admin/utils";
 import { shopAreas } from "../../../http";
 import { areasFields } from "../../../constants";
+import { MdAcUnit } from "react-icons/md";
 
 export default function Units() {
   const [open, setOpen] = React.useState(false);
@@ -52,6 +53,7 @@ export default function Units() {
     <MainContainer>
       <CommonToolbar
         title="Areas"
+        icon={<MdAcUnit/>}
         onAddProps={{ title: "Add Area", onClick: onAdd }}
         onSearch={searchHandler}
         exportProps={{

@@ -4,6 +4,7 @@ import TrendingProductList from "../../../../components/admin/products/trending-
 import ProductsListToolbar from "../../../../components/admin/products/products-list-toolbar";
 import { MainContainer } from "../../../../components/layout";
 import { queryToStr } from "../../../../components/admin/utils";
+import { FaBoxes } from "react-icons/fa";
 
 export default function TrendingProducts() {
   const [searchText, setSearchText] = React.useState("");
@@ -27,7 +28,7 @@ export default function TrendingProducts() {
 
   return (
     <MainContainer>
-      <ProductsListToolbar title="Trending Products" onSearch={searchHandler} />
+      <ProductsListToolbar icon={<FaBoxes/>} title="Trending Products" onSearch={searchHandler} />
       <Box sx={{ mt: 2 }}>
         <TrendingProductList searchText={searchText} />
       </Box>

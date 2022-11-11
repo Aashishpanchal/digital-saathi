@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import { MainContainer } from "../../../../components/layout";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 import DeliveryChargesList from "../../../../components/admin/delivery-charge/delivery-charges-list";
+import { TbTruckDelivery } from "react-icons/tb";
 
 export default function DeliveryCharges() {
   const [open, setOpen] = React.useState(false);
@@ -18,6 +19,7 @@ export default function DeliveryCharges() {
     <MainContainer>
       <CommonToolbar
         title="Delivery Charges"
+        icon={<TbTruckDelivery/>}
         onAddProps={{
           title: "Add Delivery Charge",
           onClick: onAdd,

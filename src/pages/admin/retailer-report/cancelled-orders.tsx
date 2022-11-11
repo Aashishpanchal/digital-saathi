@@ -19,6 +19,7 @@ import {
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { ordersFields } from "../../../constants";
 import InputAndCancelledList from "../../../components/admin/retailer-report/input-and-cancelled-list";
+import { FaFileAlt } from "react-icons/fa";
 
 const orderStatus = 9;
 
@@ -118,6 +119,7 @@ export default function CancelledOrders() {
     <MainContainer>
       <OrdersToolbar
         onSearch={searchHandler}
+        icon={<FaFileAlt/>}
         exportProps={{
           ref,
           data: csvData,

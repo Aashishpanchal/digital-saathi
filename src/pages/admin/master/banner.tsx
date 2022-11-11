@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import BannerList from "../../../components/admin/master/banner-list";
 import { MainContainer } from "../../../components/layout";
+import { BsMailbox } from "react-icons/bs";
 
 export default function Banner() {
   const [open, setOpen] = React.useState(false);
@@ -14,6 +15,7 @@ export default function Banner() {
     <MainContainer>
       <CommonToolbar
         title="Banners"
+        icon={<BsMailbox/>}
         onAddProps={{
           onClick: onAdd,
           title: "Add Banner",

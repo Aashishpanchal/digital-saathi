@@ -53,7 +53,7 @@ export default function BrandAddEditDialog(props: {
               close();
               setTimeout(
                 () =>
-                  enqueueSnackbar("Brand Update  successfully!👍😊", {
+                  enqueueSnackbar("Brand Updated  Successfully!", {
                     variant: "success",
                   }),
                 200
@@ -62,7 +62,7 @@ export default function BrandAddEditDialog(props: {
             }
           }
         } catch (error) {
-          enqueueSnackbar("Brand Update Failed!😢", {
+          enqueueSnackbar("Brand Could Not be Updated", {
             variant: "error",
           });
         }
@@ -83,7 +83,7 @@ export default function BrandAddEditDialog(props: {
               close();
               setTimeout(
                 () =>
-                  enqueueSnackbar("Brand Add  successfully!👍😊", {
+                  enqueueSnackbar("Brand Added Successfully", {
                     variant: "success",
                   }),
                 200
@@ -92,14 +92,14 @@ export default function BrandAddEditDialog(props: {
             }
           }
         } catch (error) {
-          enqueueSnackbar("Brand Add Failed!😢", {
+          enqueueSnackbar("Brand Could Not be Added", {
             variant: "error",
           });
         }
       }
       setLoading(false);
     } else {
-      enqueueSnackbar("Brand Image Missing😢", {
+      enqueueSnackbar("Brand Image Missing.", {
         variant: "error",
       });
     }

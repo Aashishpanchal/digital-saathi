@@ -19,6 +19,7 @@ import {
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { inputSaleDetailsFields } from "../../../constants";
 import InputAndCancelledList from "../../../components/admin/retailer-report/input-and-cancelled-list";
+import { FaRupeeSign } from "react-icons/fa";
 
 const orderStatus = 5;
 
@@ -117,6 +118,7 @@ export default function InputSaleDetails() {
   return (
     <MainContainer>
       <OrdersToolbar
+      icon={<FaRupeeSign/>}
         onSearch={searchHandler}
         exportProps={{
           ref,

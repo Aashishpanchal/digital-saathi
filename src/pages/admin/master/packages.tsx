@@ -3,6 +3,7 @@ import React from "react";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import PackagesList from "../../../components/admin/master/packages-list";
 import { MainContainer } from "../../../components/layout";
+import { RiShoppingBag3Fill } from "react-icons/ri";
 
 export default function Packages() {
   const [open, setOpen] = React.useState(false);
@@ -14,6 +15,7 @@ export default function Packages() {
     <MainContainer>
       <CommonToolbar
         title="Packages"
+        icon={<RiShoppingBag3Fill />}
         onAddProps={{ title: "Add Package", onClick: onAdd }}
       />
       <Box sx={{ mt: 3 }}>

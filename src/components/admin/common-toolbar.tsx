@@ -7,6 +7,7 @@ import { CSVLink } from "react-csv";
 
 export default function CommonToolbar(props: {
   title: string;
+  icon?: JSX.Element
   onAddProps?: {
     title: string;
     onClick: () => void;
@@ -22,7 +23,7 @@ export default function CommonToolbar(props: {
     filename?: string;
   };
 }) {
-  const { onAddProps, title, onSearch, exportProps, placeholder } = props;
+  const { onAddProps, title, onSearch, exportProps, placeholder, icon } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -42,8 +43,8 @@ export default function CommonToolbar(props: {
           m: -0.5,
         }}
       >
-        <Typography sx={{ m: 1 }} variant="h5">
-          {title}
+        <Typography sx={{ m: 1, display: 'flex', gap: 1}} variant="h5">
+          {icon}{title}
         </Typography>
         <Box sx={{ m: 1 }}>
           {exportProps && (

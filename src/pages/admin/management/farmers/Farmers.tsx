@@ -9,6 +9,7 @@ import CommonToolbar from "../../../../components/admin/common-toolbar";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { addSno } from "../../../../components/admin/utils";
 import { farmersFields } from "../../../../constants";
+import { FaTractor } from "react-icons/fa";
 
 export default function Farmers() {
   const [searchText, setSearchText] = React.useState("");
@@ -48,6 +49,7 @@ export default function Farmers() {
     <MainContainer>
       <CommonToolbar
         title="Farmers"
+        icon={<FaTractor/>}
         onSearch={searchHandler}
         exportProps={{
           ref,

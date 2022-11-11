@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import { MainContainer } from "../../../components/layout";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import ComingSoonPage from "../../../components/ComingSoonPage";
+import { SiReason } from "react-icons/si";
 
 export default function Reason() {
   const [open, setOpen] = React.useState(false);
@@ -18,6 +19,7 @@ export default function Reason() {
     <MainContainer>
       <CommonToolbar
         title="Reason"
+        icon={<SiReason/>}
         onAddProps={{
           title: "Add Reason",
           onClick: onAdd,

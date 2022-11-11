@@ -79,14 +79,14 @@ function CategoriesListResults(props: {
         );
         if (res.status === 200) {
           await refetch();
-          enqueueSnackbar("entry successfully deleted 😊", {
+          enqueueSnackbar("Category Successfully Deleted", {
             variant: "success",
           });
         }
       }
     } catch (err: any) {
       console.log(err.response);
-      enqueueSnackbar("entry not delete 😢", { variant: "error" });
+      enqueueSnackbar("Category Could Not Be Deleted", { variant: "error" });
     }
     deleteBoxClose();
   };

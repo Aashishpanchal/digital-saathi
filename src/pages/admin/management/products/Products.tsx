@@ -9,6 +9,7 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno, queryToStr } from "../../../../components/admin/utils";
 import { productFields } from "../../../../constants";
 import { shopProducts } from "../../../../http";
+import { MdProductionQuantityLimits } from "react-icons/md";
 
 export default function Products() {
   const [searchText, setSearchText] = React.useState("");
@@ -62,6 +63,7 @@ export default function Products() {
     <MainContainer>
       <ProductsListToolbar
         onSearch={searchHandler}
+        icon={<MdProductionQuantityLimits/>}
         exportProps={{
           ref,
           data: csvData,

@@ -9,6 +9,8 @@ import DataSkuUnitList from "../../../components/admin/retailer-report/data-sku-
 import { addSno } from "../../../components/admin/utils";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { dataSkuFields } from "../../../constants";
+import { FaClipboardCheck } from "react-icons/fa";
+
 
 export default function DataSkuUnit() {
   const [searchText, setSearchText] = React.useState("");
@@ -48,6 +50,7 @@ export default function DataSkuUnit() {
     <MainContainer>
       <CommonToolbar
         title="Data SKU Unit"
+        icon={<FaClipboardCheck/>}
         onSearch={searchHandler}
         exportProps={{
           ref,

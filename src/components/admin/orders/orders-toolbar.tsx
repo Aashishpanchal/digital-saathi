@@ -23,6 +23,7 @@ export type DatesType = {
 export default function OrdersToolbar(props: {
   onSearch?: (value: string, dates: DatesType) => void;
   children?: React.ReactNode;
+  icon?:JSX.Element
   exportProps?: {
     ref?: any;
     headers?: Headers;
@@ -31,7 +32,7 @@ export default function OrdersToolbar(props: {
     filename?: string;
   };
 }) {
-  const { onSearch, children, exportProps } = props;
+  const { onSearch, children, exportProps , icon } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -65,8 +66,8 @@ export default function OrdersToolbar(props: {
           m: -1,
         }}
       >
-        <Typography sx={{ m: 1 }} variant="h5">
-          {children}
+        <Typography sx={{ m: 1, display:"flex", gap:1}} variant="h5">
+          {icon}{children}
         </Typography>
         {exportProps && (
           <>

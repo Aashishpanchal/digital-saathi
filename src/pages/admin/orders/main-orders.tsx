@@ -23,9 +23,10 @@ import { ordersFields } from "../../../constants";
 export default function MainOrders(props: {
   orderStatus: number;
   title: string;
+  icon?: JSX.Element;
   filename: string;
 }) {
-  const { orderStatus, title, filename } = props;
+  const { orderStatus, title, icon,filename } = props;
   const [searchText, setSearchText] = React.useState("");
   const { state: csvData, updateState: setCsvData } = useStateWithCallback<
     Array<Record<string, any>>
@@ -120,6 +121,7 @@ export default function MainOrders(props: {
     <MainContainer>
       <OrdersToolbar
         onSearch={searchHandler}
+        icon={icon}
         exportProps={{
           ref,
           data: csvData,

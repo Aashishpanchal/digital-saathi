@@ -8,6 +8,7 @@ import OrdersToolbar, {
 import { shopOrders } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
 import AllOrdersListResults from "../../../components/admin/orders/all-orders-list-results";
+import { FaBorderAll } from "react-icons/fa";
 import {
   addSno,
   addTaxNetAmount,
@@ -111,6 +112,7 @@ export default function AllOrders() {
   return (
     <MainContainer>
       <OrdersToolbar
+      icon={<FaBorderAll/>}
         onSearch={searchHandler}
         exportProps={{
           ref,

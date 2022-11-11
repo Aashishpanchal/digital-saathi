@@ -10,6 +10,9 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno } from "../../../../components/admin/utils";
 import { retailer } from "../../../../http";
 import { retailerFields } from "../../../../constants";
+import {
+  BsShopWindow,
+} from "react-icons/bs";
 
 export default function Retailers() {
   const [searchText, setSearchText] = React.useState("");
@@ -51,6 +54,7 @@ export default function Retailers() {
     <MainContainer>
       <CommonToolbar
         title="Retailer"
+        icon={<BsShopWindow/>}
         onSearch={searchHandler}
         onAddProps={{
           title: "Add Retailer",

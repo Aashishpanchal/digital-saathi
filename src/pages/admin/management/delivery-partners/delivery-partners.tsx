@@ -10,6 +10,7 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { deliveryPartners } from "../../../../http";
 import { addSno } from "../../../../components/admin/utils";
 import { deliveryPartnerFields } from "../../../../constants";
+import { FaPeopleCarry } from "react-icons/fa";
 
 export default function DeliveryPartner() {
   const [searchText, setSearchText] = React.useState("");
@@ -50,6 +51,7 @@ export default function DeliveryPartner() {
     <MainContainer>
       <CommonToolbar
         title="Delivery Partner"
+        icon={<FaPeopleCarry/>}
         onSearch={searchHandler}
         onAddProps={{
           title: "Add Delivery Partner",

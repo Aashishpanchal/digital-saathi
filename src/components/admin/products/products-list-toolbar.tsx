@@ -20,6 +20,7 @@ import AsyncAutocomplete from "../../form/async-autocomplete";
 
 export default function ProductsListToolbar(props: {
   title?: string;
+  icon?:JSX.Element;
   onSearch: (value: string, category?: number, subcategory?: number) => void;
   exportProps?: {
     ref?: any;
@@ -29,7 +30,7 @@ export default function ProductsListToolbar(props: {
     filename?: string;
   };
 }) {
-  const { onSearch, exportProps, title } = props;
+  const { onSearch, exportProps, title, icon } = props;
 
   const [searchText, setSearchText] = React.useState("");
   const [categoryId, setCategoryId] = React.useState<undefined | number>();
@@ -163,8 +164,8 @@ export default function ProductsListToolbar(props: {
           m: -1,
         }}
       >
-        <Typography sx={{ m: 1 }} variant="h5">
-          {title ? title : "Products"}
+        <Typography sx={{ m: 1 , display : "flex" , gap:1}} variant="h5">
+          {icon}{title ? title : "Products"}
         </Typography>
         {exportProps ? (
           <Box sx={{ m: 1 }}>

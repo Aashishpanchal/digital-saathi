@@ -9,6 +9,7 @@ import DataSkuPricingList from "../../../components/admin/retailer-report/data-s
 import { addSno } from "../../../components/admin/utils";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { dataSkuPriceFields } from "../../../constants";
+import { FaShippingFast } from "react-icons/fa";
 
 export default function DataSkuPricing() {
   const [searchText, setSearchText] = React.useState("");
@@ -48,6 +49,7 @@ export default function DataSkuPricing() {
     <MainContainer>
       <CommonToolbar
         title="Data SKU Pricing"
+        icon={<FaShippingFast/>}
         onSearch={searchHandler}
         exportProps={{
           ref,

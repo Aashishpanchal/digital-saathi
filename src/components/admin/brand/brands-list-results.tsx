@@ -71,14 +71,14 @@ function BrandsListResults(props: {
         });
         if (res.status === 200) {
           refetch();
-          enqueueSnackbar("entry success-full deleted 😊", {
+          enqueueSnackbar("Entry success-full deleted", {
             variant: "success",
           });
         }
       }
     } catch (err: any) {
       console.log(err.response);
-      enqueueSnackbar("entry not delete 😢", { variant: "error" });
+      enqueueSnackbar("Entry could not deleted", { variant: "error" });
     }
     deleteBoxClose();
   };

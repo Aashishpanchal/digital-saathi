@@ -3,7 +3,9 @@ import React from "react";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import UnitList from "../../../components/admin/master/unit-list";
 import { MainContainer } from "../../../components/layout";
-
+import {
+  FaBoxes,
+} from "react-icons/fa";
 export default function Units() {
   const [open, setOpen] = React.useState(false);
 
@@ -14,6 +16,7 @@ export default function Units() {
     <MainContainer>
       <CommonToolbar
         title="Units"
+        icon={<FaBoxes/>}
         onAddProps={{ title: "Add Unit", onClick: onAdd }}
       />
       <Box sx={{ mt: 3 }}>

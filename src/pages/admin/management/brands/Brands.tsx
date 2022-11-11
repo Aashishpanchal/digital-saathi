@@ -9,6 +9,7 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno } from "../../../../components/admin/utils";
 import { brands } from "../../../../http";
 import { brandsFields } from "../../../../constants";
+import { TbBrandSublimeText } from "react-icons/tb";
 
 export default function Brands() {
   const [searchText, setSearchText] = React.useState("");
@@ -57,6 +58,7 @@ export default function Brands() {
           onClick: onAdd,
         }}
         title="Brands"
+        icon={<TbBrandSublimeText/>}
         onSearch={searchHandler}
         exportProps={{
           ref,

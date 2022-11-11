@@ -66,7 +66,7 @@ export default function CategoryAddEditDialog(props: {
               setTimeout(
                 () =>
                   enqueueSnackbar(
-                    cateLabel.concat(" Update  successfully!👍😊"),
+                    cateLabel.concat("Category Updated Successfully."),
                     {
                       variant: "success",
                     }
@@ -77,7 +77,7 @@ export default function CategoryAddEditDialog(props: {
             }
           }
         } catch (error) {
-          enqueueSnackbar(cateLabel.concat(" Update Failed!😢"), {
+          enqueueSnackbar(cateLabel.concat("Category Could Not be Updated"), {
             variant: "error",
           });
         }
@@ -101,7 +101,7 @@ export default function CategoryAddEditDialog(props: {
               close();
               setTimeout(
                 () =>
-                  enqueueSnackbar(cateLabel.concat(" Add  successfully!👍😊"), {
+                  enqueueSnackbar(cateLabel.concat("Category Added Successfully"), {
                     variant: "success",
                   }),
                 200
@@ -110,14 +110,14 @@ export default function CategoryAddEditDialog(props: {
             }
           }
         } catch (error) {
-          enqueueSnackbar(cateLabel.concat(" Add Failed!😢"), {
+          enqueueSnackbar(cateLabel.concat("Category Could Not be Added"), {
             variant: "error",
           });
         }
       }
       setLoading(false);
     } else {
-      enqueueSnackbar(cateLabel.concat(" Image Missing😢"), {
+      enqueueSnackbar(cateLabel.concat(" Image Missing"), {
         variant: "error",
       });
     }
