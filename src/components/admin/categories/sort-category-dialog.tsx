@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import DnDList from "../../drag-drop-list/dnd-list";
 import { categories } from "../../../http";
 import { DropResult } from "react-beautiful-dnd";
 import { reorder } from "../utils";
@@ -30,14 +29,6 @@ export default function SortCategoryDialog(props: {
     }
   };
 
-  const onDragEnd = ({ destination, source }: DropResult) => {
-    // dropped outside the list
-    if (!destination) return;
-    console.log(destination.index, source.index);
-    const newItems = reorder(options, source.index, destination.index);
-    setOptions(newItems);
-  };
-
   React.useEffect(() => {
     onGetRequest();
   }, []);
@@ -45,16 +36,7 @@ export default function SortCategoryDialog(props: {
   return (
     <Dialog open={open} fullWidth>
       <DialogTitle>Sort</DialogTitle>
-      <DialogContent>
-        <DnDList
-          options={options}
-          extractObj={{
-            id: "category_id",
-            title: "name",
-          }}
-          onDragEnd={onDragEnd}
-        />
-      </DialogContent>
+      <DialogContent></DialogContent>
       <DialogActions>
         <Box
           sx={{

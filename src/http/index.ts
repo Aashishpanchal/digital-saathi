@@ -20,5 +20,6 @@ export {
   shopRetailerProductPrice,
   shopBanner,
   shopDeliveryCharge,
+  shopRetailerArea,
 } from "./server-api/server-apis";
 export { auth0Users } from "./auth0-api/auth0-apis-endPoints";
