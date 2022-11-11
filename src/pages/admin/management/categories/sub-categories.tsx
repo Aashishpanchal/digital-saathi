@@ -3,18 +3,24 @@ import React from "react";
 import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
 import CategoriesListResults from "../../../../components/admin/categories/categories-list-results";
-import { categories } from "../../../../http";
+import { categories, subCategories } from "../../../../http";
 import { useParams } from "react-router-dom";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 import { useQuery } from "@tanstack/react-query";
+import SortMainDialog from "../../../../components/admin/sort-main-dialog";
+import { queryToStr } from "../../../../components/admin/utils";
 
 export default function SubCategories() {
   const { parent_category_id } = useParams();
   const [searchText, setSearchText] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [sortOpen, setSortOpen] = React.useState(false);
 
   const onAdd = () => setOpen(true);
   const onClose = () => setOpen(false);
+
+  const onSortOpen = () => setSortOpen(true);
+  const onSortClose = () => setSortOpen(false);
 
   const searchHandler = (value: string) =>
     setSearchText(value ? `/search?search_category=${value}` : "");
@@ -37,6 +43,7 @@ export default function SubCategories() {
         }}
         title={`${categoryName} / Sub-Categories`}
         onSearch={searchHandler}
+        onClickSort={onSortOpen}
       />
       <Box sx={{ mt: 3 }}>
         <CategoriesListResults
@@ -46,6 +53,21 @@ export default function SubCategories() {
           categoryPartnerId={parent_category_id}
         />
       </Box>
+      {sortOpen && (
+        <SortMainDialog
+          id="select-subcategories"
+          title="Sort SubCategories"
+          dataKeyExtract="subcategories"
+          open={sortOpen}
+          onClose={onSortClose}
+          extractObj={{
+            value: "name",
+            id: "category_id",
+          }}
+          postfix={"?".concat(queryToStr({ category_id: parent_category_id }))}
+          requestFunc={subCategories}
+        />
+      )}
     </MainContainer>
   );
 }

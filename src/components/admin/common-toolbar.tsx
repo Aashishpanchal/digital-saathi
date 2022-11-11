@@ -73,6 +73,7 @@ export default function CommonToolbar(props: {
               color="secondary"
               variant="outlined"
               onClick={onClickSort}
+              size="small"
             >
               Sort
             </Button>
@@ -82,6 +83,7 @@ export default function CommonToolbar(props: {
               color="secondary"
               variant="contained"
               onClick={onAddProps.onClick}
+              size="small"
             >
               {onAddProps.title}
             </Button>

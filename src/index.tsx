@@ -12,12 +12,12 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <div>
+  <React.StrictMode>
     <Provider store={store}>
       <Router>
         <CssBaseline />
         <App />
       </Router>
     </Provider>
-  </div>
+  </React.StrictMode>
 );

@@ -9,10 +9,12 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno } from "../../../../components/admin/utils";
 import { brands } from "../../../../http";
 import { brandsFields } from "../../../../constants";
+import SortMainDialog from "../../../../components/admin/sort-main-dialog";
 
 export default function Brands() {
   const [searchText, setSearchText] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [sortOpen, setSortOpen] = React.useState(false);
 
   const { state: csvData, updateState: setCsvData } = useStateWithCallback<
     Array<Record<string, any>>
@@ -22,6 +24,9 @@ export default function Brands() {
 
   const onAdd = () => setOpen(true);
   const onClose = () => setOpen(false);
+
+  const onSortOpen = () => setSortOpen(true);
+  const onSortClose = () => setSortOpen(false);
 
   const searchHandler = (value: string) => {
     setSearchText(value ? `/search?search_brand=${value}` : "");
@@ -57,6 +62,7 @@ export default function Brands() {
           onClick: onAdd,
         }}
         title="Brands"
+        onClickSort={onSortOpen}
         onSearch={searchHandler}
         exportProps={{
           ref,
@@ -73,6 +79,19 @@ export default function Brands() {
           addClose={onClose}
         />
       </Box>
+      {sortOpen && (
+        <SortMainDialog
+          id="select-brands"
+          title="Sort Brands"
+          open={sortOpen}
+          onClose={onSortClose}
+          extractObj={{
+            value: "brand_name",
+            id: "brand_id",
+          }}
+          requestFunc={brands}
+        />
+      )}
     </MainContainer>
   );
 }
