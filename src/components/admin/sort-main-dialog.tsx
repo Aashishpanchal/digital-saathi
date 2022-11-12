@@ -32,6 +32,7 @@ export default function SortMainDialog(props: {
   postfix?: string;
   open: boolean;
   onClose?: () => void;
+  refetch?: () => void;
 }) {
   const {
     onClose,
@@ -42,6 +43,7 @@ export default function SortMainDialog(props: {
     id,
     dataKeyExtract,
     postfix,
+    refetch,
   } = props;
   const { enqueueSnackbar } = useSnackbar();
   const ref = React.useRef<HTMLSelectElement>(null);
@@ -78,6 +80,7 @@ export default function SortMainDialog(props: {
         enqueueSnackbar("Data entry sort successfully!", {
           variant: "success",
         });
+        refetch && refetch();
         onClose && onClose();
       }
     } catch (error) {

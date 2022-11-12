@@ -3,6 +3,7 @@ import Units from "../../pages/admin/master/units";
 import Areas from "../../pages/admin/master/areas";
 import Banner from "../../pages/admin/master/banner";
 import Reason from "../../pages/admin/master/reason";
+import PrimaryRetailer from "../../pages/admin/master/primary-retailers";
 
 export default {
   path: "/masters",
@@ -17,7 +18,16 @@ export default {
     },
     {
       path: "areas",
-      element: <Areas />,
+      children: [
+        {
+          path: "",
+          element: <Areas />,
+        },
+        {
+          path: ":area_id/primary-retailer",
+          element: <PrimaryRetailer />,
+        },
+      ],
     },
     {
       path: "banner",

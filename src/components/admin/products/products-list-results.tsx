@@ -15,8 +15,13 @@ import ProductPriceDialog from "./product-price-dialog";
 import usePaginate from "../../../hooks/usePaginate";
 import { useQuery } from "@tanstack/react-query";
 import SerialNumber from "../serial-number";
+import SortMainDialog from "../sort-main-dialog";
 
-export default function ProductsListResults(props: { searchText: string }) {
+export default function ProductsListResults(props: {
+  searchText: string;
+  sortOpen: boolean;
+  onSortClose: () => void;
+}) {
   const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
     id: string;
@@ -29,7 +34,7 @@ export default function ProductsListResults(props: { searchText: string }) {
     open: false,
     id: "",
   });
-  const { searchText } = props;
+  const { searchText, sortOpen, onSortClose } = props;
 
   const postfix = React.useMemo(() => {
     return searchText
@@ -236,6 +241,20 @@ export default function ProductsListResults(props: { searchText: string }) {
           open={price.open}
           id={price.id}
           close={() => setPrice({ open: false, id: "" })}
+        />
+      )}
+      {sortOpen && (
+        <SortMainDialog
+          id="select-products"
+          title="Sort Products"
+          open={sortOpen}
+          onClose={onSortClose}
+          extractObj={{
+            value: "sku_name",
+            id: "sku_id",
+          }}
+          requestFunc={shopProducts}
+          refetch={refetch}
         />
       )}
     </>

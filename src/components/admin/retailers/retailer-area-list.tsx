@@ -28,7 +28,7 @@ export default function RetailerAreaList(props: {
           native
           inputProps={{
             style: {
-              height: "86%",
+              height: "90%",
             },
           }}
           value={value}
