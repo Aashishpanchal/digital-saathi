@@ -1,9 +1,9 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import React from "react";
-import { shopOrderDetails } from "../../../../http";
-import TablePagination from "../../../table/table-pagination";
-import RawDataNotFound from "../../raw-data-not-found";
-import OrderDetailCard from "./order-detail-card";
+import { shopOrderDetails } from "../../../../../http";
+import TablePagination from "../../../../table/table-pagination";
+import RawDataNotFound from "../../../raw-data-not-found";
+import OrderDetailCard from "../cards/order-detail-card";
 
 function OrdersDetailsList(props: { orderId: string }) {
   const { orderId } = props;

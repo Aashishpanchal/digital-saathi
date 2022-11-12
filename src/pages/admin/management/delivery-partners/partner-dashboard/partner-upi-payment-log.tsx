@@ -5,23 +5,23 @@ import { useQuery } from "@tanstack/react-query";
 import { MainContainer } from "../../../../../components/layout";
 import OrdersToolbar from "../../../../../components/admin/orders/orders-toolbar";
 import ComingSoonPage from "../../../../../components/ComingSoonPage";
-import { retailer } from "../../../../../http";
+import { deliveryPartners } from "../../../../../http";
 
-export default function RetailerTargetAchievement() {
-  const { retailer_id } = useParams();
+export default function PartnerUpiPaymentLog() {
+  const { partner_id } = useParams();
 
-  const { data } = useQuery(["retailer-name"], () =>
-    retailer("get", { params: retailer_id })
+  const { data } = useQuery(["delivery-agent-name"], () =>
+    deliveryPartners("get", { params: partner_id })
   );
 
-  const retailerName = React.useMemo(() => {
-    if (data?.status) return data.data?.retailer_name;
+  const partnerName = React.useMemo(() => {
+    if (data?.status) return data.data?.partner_name;
     return "";
   }, [data]);
 
   return (
     <MainContainer>
-      <OrdersToolbar>{retailerName} / Target Achievement</OrdersToolbar>
+      <OrdersToolbar>{partnerName} / UPI Payment Log</OrdersToolbar>
       <Box sx={{ mt: 3 }}>
         <ComingSoonPage />
       </Box>

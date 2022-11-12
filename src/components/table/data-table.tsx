@@ -117,6 +117,7 @@ export default function DataTable(props: DataTableProps) {
                           sx={{
                             display: "flex",
                             justifyContent: "center",
+                            alignItems: "center",
                             gap: 0.2,
                           }}
                         >

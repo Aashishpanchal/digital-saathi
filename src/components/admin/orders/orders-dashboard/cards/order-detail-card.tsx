@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import React from "react";
-import usePrintData from "../../../../hooks/usePrintData";
-import ProductAvatar from "../../../Image/product-avatar";
+import usePrintData from "../../../../../hooks/usePrintData";
+import ProductAvatar from "../../../../Image/product-avatar";
 import { LabelText } from "../styled";
 
 const labels = [

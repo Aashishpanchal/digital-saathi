@@ -8,11 +8,11 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import usePrintData from "../../../../hooks/usePrintData";
 import dayjs from "dayjs";
-import OrdersDetailsList from "./orders-details-list";
+import OrdersDetailsList from "../list/orders-details-list";
 import { LabelText } from "../styled";
 import { useNavigate } from "react-router-dom";
+import usePrintData from "../../../../../hooks/usePrintData";
 
 const label1 = [
   { title: "farmer name", accessor: "customer_name" },

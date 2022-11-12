@@ -13,6 +13,7 @@ import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
 import LinkRouter from "../../../routers/LinkRouter";
 import { queryToStr } from "../utils";
+import { MdDashboardCustomize } from "react-icons/md";
 
 export default function DeliveryPartnerList(props: { searchText: string }) {
   const { page, setPage, size, setSize } = usePaginate();
@@ -128,6 +129,19 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
                   color="secondary"
                 >
                   <FaArrowRight />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
+            <LinkRouter
+              to={`${cell.row.original.partner_id}/partner-dashboard`}
+            >
+              <Tooltip title="Delivery Partner Dashboard">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <MdDashboardCustomize />
                 </IconButton>
               </Tooltip>
             </LinkRouter>

@@ -1,28 +1,27 @@
 import React from "react";
-import { BiStore } from "react-icons/bi";
+import { Box, Typography, Grid } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import {
-  FaBoxes,
   FaCalendarTimes,
   FaRegChartBar,
-  FaRupeeSign,
   FaShoppingBasket,
 } from "react-icons/fa";
-import { useParams } from "react-router-dom";
-import { Box, Grid, Typography } from "@mui/material";
-import RetailerDashboardCards from "../../../../../components/admin/retailers/retailer-dashboard-cards";
+import { BiStore } from "react-icons/bi";
+import CommonToolbar from "../../../../../components/admin/common-toolbar";
 import { MainContainer } from "../../../../../components/layout";
+import { deliveryPartners } from "../../../../../http";
 import LinkRouter from "../../../../../routers/LinkRouter";
-import { useQuery } from "@tanstack/react-query";
-import { retailer } from "../../../../../http";
 import InnerDashboardCards from "../../../../../components/admin/inner-deshboard-two-cards";
+import BhimSvg from "../../../../../assets/bhim-100.svg";
+import PartnerDashboardCards from "../../../../../components/admin/delivery-partner/partner-dashboard-cards";
 import RecentOrdersList from "../../../../../components/admin/orders/recent-orders-list";
 import { queryToStr } from "../../../../../components/admin/utils";
 
-export default function RetailerDashboard() {
-  const { retailer_id } = useParams();
-
-  const { data } = useQuery(["retailer-name"], () =>
-    retailer("get", { params: retailer_id })
+export default function DeliveryPartnerDashboard() {
+  const { partner_id } = useParams();
+  const { data } = useQuery(["delivery-agent-name"], () =>
+    deliveryPartners("get", { params: partner_id })
   );
 
   const layerTwo = React.useMemo(
@@ -30,66 +29,56 @@ export default function RetailerDashboard() {
       {
         Title: "Orders",
         Icon: <FaShoppingBasket />,
-        url: "retailer-orders",
+        url: "partner-orders",
         color: "#dc2626",
       },
       {
         Title: "Input Sale Details",
         Icon: <BiStore />,
-        url: "retailer-input-sale-details",
+        url: "partner-input-sale-details",
         color: "#e81071",
       },
       {
         Title: "Cancelled Orders",
         Icon: <FaCalendarTimes />,
-        url: "retailer-cancelled-orders",
+        url: "partner-cancelled-orders",
         color: "#f59e0b",
       },
       {
-        Title: "Data SKU Units",
-        Icon: <FaBoxes />,
-        url: "retailer-sku-units",
-        color: "#4f46e5",
-      },
-      {
-        Title: "Data SKU Pricing",
-        Icon: <FaRupeeSign />,
-        url: "retailer-sku-pricing",
+        Title: "UPI Payment Log",
+        Icon: <img src={BhimSvg} />,
+        url: "partner-upi-payment-log",
         color: "#059669",
       },
       {
         Title: "Target vs Achievement",
         Icon: <FaRegChartBar />,
-        url: "retailer-target-achievement",
+        url: "partner-target-achievement",
         color: "#830596",
       },
     ],
     []
   );
 
-  const retailerName = React.useMemo(() => {
-    if (data?.status) return data.data?.retailer_name;
+  const partnerName = React.useMemo(() => {
+    if (data?.status) return data.data?.partner_name;
     return "";
   }, [data]);
 
   return (
     <MainContainer>
-      <Box sx={{ my: 1 }}>
-        <Typography variant="h5">
-          {retailerName} / Retailer Dashboard
-        </Typography>
-      </Box>
-      <RetailerDashboardCards retailerId={retailer_id as string} />
-      <Box sx={{ my: 2 }}>
-        <Typography variant={"h6"}>Recent Orders</Typography>
-      </Box>
-      <RecentOrdersList
-        params="retailer"
-        variant="retailer"
-        postfix={"?".concat(queryToStr({ page: 0, size: 10, retailer_id }))}
-      />
+      <CommonToolbar title={`${partnerName} / Partners Dashboard`} />
+      <PartnerDashboardCards partnerId={partner_id as string} />
       <Box sx={{ my: 2 }}>
         <Typography variant={"h6"}>Retailer Action</Typography>
+      </Box>
+      <RecentOrdersList
+        params="partner"
+        variant="partner"
+        postfix={"?".concat(queryToStr({ page: 0, size: 10, partner_id }))}
+      />
+      <Box sx={{ my: 2 }}>
+        <Typography variant={"h6"}>Recent Orders</Typography>
       </Box>
       <Grid container spacing={2} sx={{ mt: 2 }}>
         {layerTwo.map((item, index) => (

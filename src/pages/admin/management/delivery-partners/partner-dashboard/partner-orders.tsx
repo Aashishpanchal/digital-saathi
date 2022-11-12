@@ -3,13 +3,13 @@ import { useParams } from "react-router-dom";
 import { Card, CardContent, Container } from "@mui/material";
 import { MainContainer } from "../../../../../components/layout";
 import { useQuery } from "@tanstack/react-query";
-import { retailer } from "../../../../../http";
+import { deliveryPartners } from "../../../../../http";
 import CommonToolbar from "../../../../../components/admin/common-toolbar";
 import OrdersTab from "../../../../../components/admin/orders/orders-dashboard/orders-tab";
-import RetailerOrdersListResults from "../../../../../components/admin/retailers/retailer-orders-list-results";
+import PartnerOrdersListResults from "../../../../../components/admin/delivery-partner/partner-orders-list-results";
 
 export default function RetailerOrders() {
-  const { retailer_id } = useParams();
+  const { partner_id } = useParams();
   const [searchText, setSearchText] = React.useState("");
   const [orderStatus, setOrderStatus] = React.useState(0);
 
@@ -17,12 +17,12 @@ export default function RetailerOrders() {
     setSearchText(value ? `/search?search_orders=${value}` : "");
   };
 
-  const { data } = useQuery(["retailer-name"], () =>
-    retailer("get", { params: retailer_id })
+  const { data } = useQuery(["delivery-agent-name"], () =>
+    deliveryPartners("get", { params: partner_id })
   );
 
-  const retailerName = React.useMemo(() => {
-    if (data?.status) return data.data?.retailer_name;
+  const partnerName = React.useMemo(() => {
+    if (data?.status) return data.data?.partner_name;
     return "";
   }, [data]);
 
@@ -32,16 +32,16 @@ export default function RetailerOrders() {
       <MainContainer sx={{ pt: 6 }}>
         <Container>
           <CommonToolbar
-            title={`${retailerName} / Retailer Orders`}
+            title={`${partnerName} / Partner Orders`}
             onSearch={searchHandler}
             placeholder="search order id"
           />
           <Card sx={{ mt: 1 }}>
             <CardContent sx={{ minHeight: 180 }}>
-              <RetailerOrdersListResults
+              <PartnerOrdersListResults
                 searchText={searchText}
                 orderStatus={orderStatus}
-                retailerId={retailer_id as string}
+                partnerId={partner_id as string}
               />
             </CardContent>
           </Card>

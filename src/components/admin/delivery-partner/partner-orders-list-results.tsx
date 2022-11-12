@@ -1,33 +1,33 @@
 import React from "react";
-import { shopOrders } from "../../../../http";
+import { shopOrders } from "../../../http";
 import { useQuery } from "@tanstack/react-query";
 import { Box, CircularProgress } from "@mui/material";
-import { queryToStr } from "../../utils";
-import OrderCard from "./order-card";
-import RawDataNotFound from "../../raw-data-not-found";
-import TablePagination from "../../../table/table-pagination";
+import { queryToStr } from "../utils";
+import OrderCard from "../orders/orders-dashboard/cards/order-card";
+import RawDataNotFound from "../raw-data-not-found";
+import TablePagination from "../../table/table-pagination";
 
-function RetailerOrdersListResults(props: {
+function PartnerOrdersListResults(props: {
   searchText: string;
   orderStatus: number;
-  retailerId: string;
+  partnerId: string;
 }) {
   const [page, setPage] = React.useState(0);
   const [size, setSize] = React.useState("4");
 
-  const { orderStatus, retailerId, searchText } = props;
+  const { orderStatus, partnerId, searchText } = props;
   const postfix = React.useMemo(() => {
     const x = queryToStr({
       page,
       size,
       order_status: orderStatus,
-      retailer_id: retailerId,
+      partner_id: partnerId,
     });
     return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [page, size, orderStatus, searchText]);
 
   const { isLoading, data } = useQuery(
-    [`retailer-orders-${orderStatus}`, postfix],
+    [`partner-orders-${orderStatus}`, postfix],
     () =>
       shopOrders("get", {
         postfix,
@@ -94,4 +94,4 @@ function RetailerOrdersListResults(props: {
   );
 }
 
-export default React.memo(RetailerOrdersListResults);
+export default React.memo(PartnerOrdersListResults);

@@ -8,7 +8,7 @@ import {
   Avatar,
 } from "@mui/material";
 
-export default function RetailerDashboardTwoCards(props: {
+export default function InnerDashboardCards(props: {
   icon: React.ReactNode;
   title: string;
   color: string;
