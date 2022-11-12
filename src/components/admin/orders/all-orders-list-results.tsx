@@ -126,7 +126,7 @@ export default function AllOrdersListResults(props: { searchText: string }) {
         ),
       },
     ],
-    [page, size]
+    [postfix]
   );
 
   const getData = React.useMemo(() => {
