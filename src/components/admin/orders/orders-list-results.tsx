@@ -1,24 +1,31 @@
 import React from "react";
 import dayjs from "dayjs";
+import { useQuery } from "@tanstack/react-query";
 import { FaEye, FaFileInvoice } from "react-icons/fa";
+import { MdOutlineDriveFileMove } from "react-icons/md";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { queryToStr } from "../utils";
 import { shopOrders } from "../../../http";
 import DataTable from "../../table/data-table";
 import LinkRouter from "../../../routers/LinkRouter";
 import TablePagination from "../../table/table-pagination";
-import { useQuery } from "@tanstack/react-query";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
+import { TextCenter } from "./styles";
+import MoveOrdersDialog from "./move-orders/move-orders-dailog";
 
 export default function OrdersListResults(props: {
   params?: string;
-  orderStatus: number | Array<number>;
+  orderStatus: number;
   searchText: string;
   otherQuery?: { [key: string]: any };
 }) {
   const { page, setPage, size, setSize } = usePaginate();
   const { searchText, orderStatus, params, otherQuery } = props;
+  const [moveOrder, setMoveOrder] = React.useState({
+    open: false,
+    values: {},
+  });
 
   const postfix = React.useMemo(() => {
     const x = queryToStr({
@@ -41,6 +48,8 @@ export default function OrdersListResults(props: {
       refetchOnWindowFocus: false,
     }
   );
+
+  const onCloseMoveOrder = () => setMoveOrder({ open: false, values: {} });
 
   const columns = React.useMemo(
     () => [
@@ -78,19 +87,20 @@ export default function OrdersListResults(props: {
         width: "8%",
         Cell: (cell: any) => (
           <Typography fontWeight={"600"} textAlign="center">
-            ₹{cell.value}
+            ₹ {cell.value}
           </Typography>
         ),
       },
       {
         Header: "Farmer Name",
         accessor: "customer_name",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
       },
       {
         Header: "Retailer Name",
         accessor: "retailer_name",
         Cell: (cell: any) => (
-          <Typography fontWeight={"600"} fontSize="small">
+          <Typography fontWeight={"600"} fontSize="small" textAlign="center">
             {cell.row.original.retailer_company_name} ( {cell.value} )
           </Typography>
         ),
@@ -100,6 +110,18 @@ export default function OrdersListResults(props: {
         width: "10%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Tooltip title="Move Orders">
+              <IconButton
+                disableRipple={false}
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  setMoveOrder({ open: true, values: cell.row.original })
+                }
+              >
+                <MdOutlineDriveFileMove />
+              </IconButton>
+            </Tooltip>
             <LinkRouter
               to={`/orders/order-details/${cell.row.original.order_id}?order_status=${orderStatus}`}
             >
@@ -149,23 +171,33 @@ export default function OrdersListResults(props: {
   }, [searchText]);
 
   return (
-    <DataTable
-      loading={isLoading}
-      columns={columns}
-      data={getData.orders}
-      showNotFound={getData.totalItems === 0}
-      components={{
-        pagination: (
-          <TablePagination
-            page={page}
-            pageSize={size}
-            totalItems={getData.totalItems}
-            count={getData.totalPages}
-            onChangePage={setPage}
-            onPageSizeSelect={setSize}
-          />
-        ),
-      }}
-    />
+    <>
+      <DataTable
+        loading={isLoading}
+        columns={columns}
+        data={getData.orders}
+        showNotFound={getData.totalItems === 0}
+        components={{
+          pagination: (
+            <TablePagination
+              page={page}
+              pageSize={size}
+              totalItems={getData.totalItems}
+              count={getData.totalPages}
+              onChangePage={setPage}
+              onPageSizeSelect={setSize}
+            />
+          ),
+        }}
+      />
+      {moveOrder.open && (
+        <MoveOrdersDialog
+          open={moveOrder.open}
+          orderStatus={orderStatus}
+          onClose={onCloseMoveOrder}
+          orders={moveOrder.values}
+        />
+      )}
+    </>
   );
 }

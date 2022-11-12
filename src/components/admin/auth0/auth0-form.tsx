@@ -1,4 +1,6 @@
 import React from "react";
+import { Box } from "@mui/material";
+import { TextInput } from "../../form";
 
 export default function Auth0Form(props: {
   errors?: any;
@@ -10,9 +12,10 @@ export default function Auth0Form(props: {
   handleBlur?:
     | React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>
     | undefined;
-  setFieldValue: Function;
 }) {
-  const baseFields = React.useMemo(
+  const { errors, values, touched, handleChange, handleBlur } = props;
+
+  const basicFields = React.useMemo(
     () => [
       {
         label: "Email",
@@ -26,11 +29,25 @@ export default function Auth0Form(props: {
       },
       {
         label: "Nick Name",
-        name: "nick_name",
+        name: "nickname",
         placeholder: "your nick name",
       },
     ],
     []
   );
-  return <div>Auth0Form</div>;
+  return (
+    <Box>
+      {basicFields.map((item, index) => (
+        <TextInput
+          key={index}
+          {...item}
+          value={values[item.name] || ""}
+          onChange={handleChange}
+          error={errors[item.name] && touched[item.name] ? true : false}
+          helperText={touched[item.name] ? errors[item.name] : ""}
+          onBlur={handleBlur}
+        />
+      ))}
+    </Box>
+  );
 }

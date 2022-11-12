@@ -12,12 +12,15 @@ import SerialNumber from "../serial-number";
 import ProductAvatar from "../../Image/product-avatar";
 import { queryToStr } from "../utils";
 import VerifiedPending from "./verified-pending";
-import LinkRouter from "../../../routers/LinkRouter";
+import Auth0EditDialog from "./auth0-edit-dialog";
 
 export default function Auth0List(props: { searchText: string }) {
+  const [edit, setEdit] = React.useState({
+    value: {},
+    open: false,
+  });
   const { page, setPage, size, setSize } = usePaginate();
   const { searchText } = props;
-
   const postfix = React.useMemo(() => {
     const x = queryToStr({
       page,
@@ -92,17 +95,18 @@ export default function Auth0List(props: { searchText: string }) {
         width: "8%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <LinkRouter to={cell.row.original.user_id}>
-              <Tooltip title="Edit">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                >
-                  <FaRegEdit />
-                </IconButton>
-              </Tooltip>
-            </LinkRouter>
+            <Tooltip title="Edit">
+              <IconButton
+                disableRipple={false}
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  setEdit({ value: cell.row.original, open: true })
+                }
+              >
+                <FaRegEdit />
+              </IconButton>
+            </Tooltip>
           </Box>
         ),
       },
@@ -120,23 +124,33 @@ export default function Auth0List(props: { searchText: string }) {
   }, [searchText]);
 
   return (
-    <DataTable
-      loading={isLoading}
-      columns={columns}
-      data={getData.users}
-      showNotFound={getData.total === 0}
-      components={{
-        pagination: (
-          <TablePagination
-            page={page}
-            pageSize={size}
-            totalItems={getData.total}
-            count={Math.ceil(getData.total / Number(size))}
-            onChangePage={setPage}
-            onPageSizeSelect={setSize}
-          />
-        ),
-      }}
-    />
+    <>
+      <DataTable
+        loading={isLoading}
+        columns={columns}
+        data={getData.users}
+        showNotFound={getData.total === 0}
+        components={{
+          pagination: (
+            <TablePagination
+              page={page}
+              pageSize={size}
+              totalItems={getData.total}
+              count={Math.ceil(getData.total / Number(size))}
+              onChangePage={setPage}
+              onPageSizeSelect={setSize}
+            />
+          ),
+        }}
+      />
+      {edit.open && (
+        <Auth0EditDialog
+          open={edit.open}
+          onClose={() => setEdit({ open: false, value: {} })}
+          user={edit.value}
+          refetch={refetch}
+        />
+      )}
+    </>
   );
 }

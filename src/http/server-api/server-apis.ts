@@ -70,3 +70,6 @@ export const shopBannerImgDownLoad = (img: any) =>
 
 // shop delivery charge api
 export const shopDeliveryCharge = baseFunc("shop_deliverycharges");
+
+// shop reason
+export const shopReason = baseFunc("shop_reason");

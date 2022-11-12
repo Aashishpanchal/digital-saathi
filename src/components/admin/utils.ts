@@ -16,6 +16,11 @@ export const getPayload = (
   return result;
 };
 
+export const removePostFix = (value: string): any => {
+  const reg = /([\d]+(?:\.[\d]+)?(?![\d]))|([a-z.]+)(?![a-z.])/gi;
+  return value.match(reg) || ["", ""];
+};
+
 export const margeObj = (
   init: { [key: string]: any },
   data: { [key: string]: any }

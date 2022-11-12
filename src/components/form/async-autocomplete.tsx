@@ -4,7 +4,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
-import { styled } from "@mui/material";
+import { styled, SxProps, Theme } from "@mui/material";
 
 const CustomInput = styled(TextField)(() => ({
   "& .MuiInputBase-input": {
@@ -31,16 +31,18 @@ export default function AsyncAutocomplete(props: {
     helperText?: string;
     onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   };
+  sx?: SxProps<Theme>;
 }) {
   const {
-    options,
-    loading,
-    objFilter,
-    label,
     value: valueOption,
     onChangeOption,
-    id,
     TextInputProps,
+    objFilter,
+    options,
+    loading,
+    label,
+    id,
+    sx,
   } = props;
 
   const v = React.useMemo(() => {
@@ -75,6 +77,7 @@ export default function AsyncAutocomplete(props: {
       loading={loading}
       size="small"
       fullWidth
+      sx={sx}
       renderInput={(params) => (
         <CustomInput
           {...params}

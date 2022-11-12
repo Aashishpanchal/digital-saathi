@@ -12,7 +12,7 @@ import ProductPriceForm, { initialValues } from "./product-price-form";
 import { productPriceSchema } from "./schemas";
 import { shopProductWeightPrice } from "../../../http";
 import { useSnackbar } from "notistack";
-import { removePostFix } from "../../Utils";
+import { removePostFix } from "../utils";
 
 export default function ProductPriceDialog(props: {
   open: boolean;

@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import MainContainer from "../../../../../components/common/MainContainer";
+import { MainContainer } from "../../../../../components/layout";
 import { CSVButton, CSVReader } from "../../../../../components/csv";
 import { UploadDataModal } from "../../../../../components/modals";
-import { CheckDataCell, Table } from "../../../../../components/table";
+import DataTable from "../../../../../components/table/data-table";
+import CheckDataCell from "../../../../../components/table/cell/CheckDataCell";
 import { shopProducts } from "../../../../../http";
 
 export default function ImportCsvProducts() {
@@ -126,7 +127,7 @@ export default function ImportCsvProducts() {
   };
 
   return (
-    <MainContainer heading="Import Product CSV File">
+    <MainContainer>
       <div className="mb-4">
         <CSVButton.SampleDownload
           title="Product Template"
@@ -136,7 +137,7 @@ export default function ImportCsvProducts() {
         <CSVReader.CSVFileReader setFile={setFile} />
       </div>
       {file.data.length !== 0 ? (
-        <Table columns={columns} data={getData} onUpload={onUpload} />
+        <DataTable columns={columns} data={getData} />
       ) : null}
       <UploadDataModal
         show={uploadModalShow}
