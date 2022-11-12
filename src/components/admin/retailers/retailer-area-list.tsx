@@ -26,6 +26,11 @@ export default function RetailerAreaList(props: {
         <Select
           multiple
           native
+          inputProps={{
+            style: {
+              height: "86%",
+            },
+          }}
           value={value}
           onChange={onChange as any}
           fullWidth
@@ -36,10 +41,6 @@ export default function RetailerAreaList(props: {
             "& .MuiInputBase-input:focus": {
               boxShadow: "none",
             },
-            ".css-1yutpuv-MuiNativeSelect-select-MuiInputBase-input-MuiOutlinedInput-input[multiple]":
-              {
-                height: "90%",
-              },
           }}
         >
           {options.map((item: Record<string, any>, index: number) => (
