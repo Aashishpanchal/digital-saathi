@@ -21,5 +21,6 @@ export {
   shopBanner,
   shopDeliveryCharge,
   shopRetailerArea,
+  shopReason,
 } from "./server-api/server-apis";
 export { auth0Users } from "./auth0-api/auth0-apis-endPoints";

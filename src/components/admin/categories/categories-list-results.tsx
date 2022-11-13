@@ -1,6 +1,7 @@
 import React from "react";
 import { useSnackbar } from "notistack";
 import { RiDeleteBinFill } from "react-icons/ri";
+import { useQuery } from "@tanstack/react-query";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { FaArrowRight, FaRegEdit } from "react-icons/fa";
 import { categories, subCategories } from "../../../http";
@@ -13,14 +14,18 @@ import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
 import CategoryAddEditDialog from "./category-add-edit-dialog";
 import usePaginate from "../../../hooks/usePaginate";
-import { useQuery } from "@tanstack/react-query";
 import SerialNumber from "../serial-number";
+import SortMainDialog from "../sort-main-dialog";
+import { queryToStr } from "../utils";
 
 function CategoriesListResults(props: {
   searchText: string;
   addOpen: boolean;
   addClose: () => void;
   categoryPartnerId?: string;
+
+  sortOpen: boolean;
+  onSortClose: () => void;
 }) {
   const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
@@ -38,16 +43,25 @@ function CategoriesListResults(props: {
     open: false,
   });
 
-  const { searchText, addClose, addOpen, categoryPartnerId } = props;
+  const {
+    searchText,
+    addClose,
+    addOpen,
+    categoryPartnerId,
+    sortOpen,
+    onSortClose,
+  } = props;
   const { S3DeleteImage } = useBucket();
 
   const postfix = React.useMemo(() => {
     const subcategoryStr = categoryPartnerId
       ? `&category_id=${categoryPartnerId}`
       : "";
-    return searchText
-      ? `${searchText}&page=${page}&size=${size}${subcategoryStr}`
-      : `?page=${page}&size=${size}${subcategoryStr}`;
+    const x = queryToStr({
+      page,
+      size: `${size}${subcategoryStr}`,
+    });
+    return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [searchText, page, size]);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -101,10 +115,6 @@ function CategoriesListResults(props: {
         ),
         width: "5%",
       },
-      // {
-      //   Header: "S No.",
-      //   accessor: "category_id",
-      // },
       {
         Header: "Status",
         accessor: "active",
@@ -122,17 +132,15 @@ function CategoriesListResults(props: {
         Header: (!categoryPartnerId ? "Category" : "Sub-Category") + " Image",
         accessor: "image",
         width: "20%",
-        Cell: (cell: any) => {
-          return (
-            <Box display="flex" justifyContent={"center"}>
-              <ProductAvatar
-                src={cell.value}
-                sx={{ width: 50, height: 50 }}
-                variant="rounded"
-              />
-            </Box>
-          );
-        },
+        Cell: (cell: any) => (
+          <Box display="flex" justifyContent={"center"}>
+            <ProductAvatar
+              src={cell.value}
+              sx={{ width: 50, height: 50 }}
+              variant="rounded"
+            />
+          </Box>
+        ),
       },
       {
         Header: (!categoryPartnerId ? "Category" : "Sub-Category") + " Name",
@@ -255,6 +263,28 @@ function CategoriesListResults(props: {
           otherData={
             categoryPartnerId ? { parent_category_id: categoryPartnerId } : {}
           }
+        />
+      )}
+      {sortOpen && (
+        <SortMainDialog
+          id={"select-".concat(!categoryPartnerId ? "category" : "subcategory")}
+          title={"Sort ".concat(
+            !categoryPartnerId ? "Categories" : "SubCategories"
+          )}
+          dataKeyExtract={!categoryPartnerId ? "categories" : "subcategories"}
+          open={sortOpen}
+          onClose={onSortClose}
+          extractObj={{
+            value: "name",
+            id: "category_id",
+          }}
+          postfix={
+            !categoryPartnerId
+              ? ""
+              : "?".concat(queryToStr({ category_id: categoryPartnerId }))
+          }
+          requestFunc={!categoryPartnerId ? categories : subCategories}
+          refetch={refetch}
         />
       )}
     </>

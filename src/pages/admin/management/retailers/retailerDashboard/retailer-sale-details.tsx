@@ -1,10 +1,10 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { retailer } from "../../../../../http";
 import { useQuery } from "@tanstack/react-query";
+import { retailer } from "../../../../../http";
 import MainOrders from "../../../orders/main-orders";
 
-export default function retailerSaleDetails() {
+export default function RetailerSaleDetails() {
   const { retailer_id } = useParams();
 
   const { data } = useQuery(["retailer-name"], () =>

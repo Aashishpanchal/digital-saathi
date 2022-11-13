@@ -78,7 +78,16 @@ export default function FarmersOrdersListResults(props: {
         ),
         width: "5%",
       },
-      // { Header: "Order ID", accessor: "order_id", width: 0 },
+      {
+        Header: "Order ID",
+        accessor: "order_id",
+        width: "8%",
+        Cell: (cell: any) => (
+          <Typography fontWeight={"600"} textAlign="center" fontSize={"small"}>
+            {cell.value}
+          </Typography>
+        ),
+      },
       {
         Header: "Order Date",
         accessor: "order_date",

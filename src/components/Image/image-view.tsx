@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, styled } from "@mui/material";
+import { Box, styled, Avatar, SxProps, Theme } from "@mui/material";
 import ProductAvatar from "./product-avatar";
 
 const Img = styled(ProductAvatar)`
@@ -9,8 +9,12 @@ const Img = styled(ProductAvatar)`
   display: block;
 `;
 
-export default function ImageView(props: { src?: string | File }) {
-  const { src } = props;
+export default function ImageView(props: {
+  src?: string | File;
+  useAvatar?: boolean;
+  avatarSx?: SxProps<Theme>;
+}) {
+  const { src, useAvatar, avatarSx } = props;
 
   const [imgStr, setImgStr] = React.useState("");
 
@@ -27,7 +31,9 @@ export default function ImageView(props: { src?: string | File }) {
     }
   }, [src]);
 
-  return (
+  return useAvatar ? (
+    <Avatar src={imgStr} sx={avatarSx} />
+  ) : (
     <Box
       sx={{
         border: "1px solid #e5e7eb",

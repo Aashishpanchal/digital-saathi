@@ -14,11 +14,14 @@ import ActiveDeactive from "../active-deactive";
 import BrandAddEditDialog from "./brand-add-edit-dialog";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
+import SortMainDialog from "../sort-main-dialog";
 
 function BrandsListResults(props: {
   searchText: string;
   addOpen: boolean;
   addClose: () => void;
+  sortOpen: boolean;
+  onSortClose: () => void;
 }) {
   const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
@@ -36,7 +39,7 @@ function BrandsListResults(props: {
     open: false,
   });
 
-  const { searchText, addClose, addOpen } = props;
+  const { searchText, addClose, addOpen, sortOpen, onSortClose } = props;
   const { S3DeleteImage } = useBucket();
 
   const postfix = React.useMemo(() => {
@@ -93,11 +96,6 @@ function BrandsListResults(props: {
         ),
         width: "5%",
       },
-      // {
-      //   Header: "Brand Id",
-      //   accessor: "brand_id",
-      //   width: "10%",
-      // },
       {
         Header: "Status",
         accessor: "active",
@@ -165,7 +163,7 @@ function BrandsListResults(props: {
         ),
       },
     ],
-    [page, size, postfix]
+    [postfix]
   );
 
   const getData = React.useMemo(() => {
@@ -224,6 +222,20 @@ function BrandsListResults(props: {
           brand={null}
           reload={refetch}
           variant="add"
+        />
+      )}
+      {sortOpen && (
+        <SortMainDialog
+          id="select-brands"
+          title="Sort Brands"
+          open={sortOpen}
+          onClose={onSortClose}
+          extractObj={{
+            value: "brand_name",
+            id: "brand_id",
+          }}
+          requestFunc={brands}
+          refetch={refetch}
         />
       )}
     </>

@@ -9,6 +9,7 @@ function FocusStar(props: {
   cell: { [key: string]: any };
   idAccessor?: string;
   axiosFunction?: any;
+  dataKeySet?: string;
   setData?: any;
   postfix?: string;
   payload?: Array<string>;
@@ -22,6 +23,7 @@ function FocusStar(props: {
     payload,
     postfix,
     refetch,
+    dataKeySet,
   } = props;
   const { value } = cell;
   const { original } = cell.row;
@@ -37,7 +39,10 @@ function FocusStar(props: {
       try {
         let res = await axiosFunction("put", {
           params: id,
-          data: JSON.stringify({ ...getPayload(original, payload), focus_sku }),
+          data: JSON.stringify({
+            ...getPayload(original, payload),
+            ...(dataKeySet ? { [dataKeySet]: focus_sku } : { focus_sku }),
+          }),
         });
         if (res.status === 200) {
           enqueueSnackbar(

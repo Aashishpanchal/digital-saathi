@@ -1,15 +1,14 @@
 import React from "react";
 import { Box } from "@mui/material";
+import { useDispatch } from "react-redux";
 import { MainContainer } from "../../../../components/layout";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 import BrandsListResults from "../../../../components/admin/brand/brands-list-results";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
-import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno } from "../../../../components/admin/utils";
 import { brands } from "../../../../http";
 import { brandsFields } from "../../../../constants";
-import SortMainDialog from "../../../../components/admin/sort-main-dialog";
 
 export default function Brands() {
   const [searchText, setSearchText] = React.useState("");
@@ -77,21 +76,10 @@ export default function Brands() {
           searchText={searchText}
           addOpen={open}
           addClose={onClose}
+          sortOpen={sortOpen}
+          onSortClose={onSortClose}
         />
       </Box>
-      {sortOpen && (
-        <SortMainDialog
-          id="select-brands"
-          title="Sort Brands"
-          open={sortOpen}
-          onClose={onSortClose}
-          extractObj={{
-            value: "brand_name",
-            id: "brand_id",
-          }}
-          requestFunc={brands}
-        />
-      )}
     </MainContainer>
   );
 }

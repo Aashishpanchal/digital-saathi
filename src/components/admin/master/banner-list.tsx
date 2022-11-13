@@ -47,7 +47,7 @@ function BannerList(props: { addOpen: boolean; addClose: () => void }) {
 
   const onDelete = async () => {
     try {
-      const res = await shopBanner("delete");
+      const res = await shopBanner("delete", { params: deleteData.value });
       if (res?.status === 200) {
         refetch();
         enqueueSnackbar("entry success-full deleted 😊", {

@@ -3,8 +3,6 @@ import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
 import CategoriesListResults from "../../../../components/admin/categories/categories-list-results";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
-import { categories } from "../../../../http";
-import SortMainDialog from "../../../../components/admin/sort-main-dialog";
 
 export default function Categories() {
   const [searchText, setSearchText] = React.useState("");
@@ -37,22 +35,10 @@ export default function Categories() {
           searchText={searchText}
           addOpen={open}
           addClose={onClose}
+          sortOpen={sortOpen}
+          onSortClose={onSortClose}
         />
       </Box>
-      {sortOpen && (
-        <SortMainDialog
-          id="select-category"
-          title="Sort Categories"
-          dataKeyExtract="categories"
-          open={sortOpen}
-          onClose={onSortClose}
-          extractObj={{
-            value: "name",
-            id: "category_id",
-          }}
-          requestFunc={categories}
-        />
-      )}
     </MainContainer>
   );
 }

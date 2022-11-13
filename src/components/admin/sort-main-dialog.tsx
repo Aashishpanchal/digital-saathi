@@ -7,7 +7,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Paper,
   Select,
 } from "@mui/material";
@@ -33,6 +32,7 @@ export default function SortMainDialog(props: {
   postfix?: string;
   open: boolean;
   onClose?: () => void;
+  refetch?: () => void;
 }) {
   const {
     onClose,
@@ -43,10 +43,12 @@ export default function SortMainDialog(props: {
     id,
     dataKeyExtract,
     postfix,
+    refetch,
   } = props;
   const { enqueueSnackbar } = useSnackbar();
+  const ref = React.useRef<HTMLSelectElement>(null);
 
-  const { moveUp, moveDown, getAllOption } = useSelectUpDown(id);
+  const { moveUp, moveDown, getAllOption } = useSelectUpDown(ref);
   const [loading, setLoading] = React.useState(false);
 
   const { data, isLoading } = useQuery([id], () =>
@@ -78,6 +80,7 @@ export default function SortMainDialog(props: {
         enqueueSnackbar("Data entry sort successfully!", {
           variant: "success",
         });
+        refetch && refetch();
         onClose && onClose();
       }
     } catch (error) {
@@ -108,6 +111,12 @@ export default function SortMainDialog(props: {
             </Box>
           ) : (
             <Select
+              inputProps={{
+                ref: ref,
+                style: {
+                  height: "86%",
+                },
+              }}
               multiple
               native
               fullWidth
@@ -119,10 +128,6 @@ export default function SortMainDialog(props: {
                 "& .MuiInputBase-input:focus": {
                   boxShadow: "none",
                 },
-                ".css-1yutpuv-MuiNativeSelect-select-MuiInputBase-input-MuiOutlinedInput-input[multiple]":
-                  {
-                    height: "86%",
-                  },
               }}
             >
               {options.map((item: Record<string, any>, index: number) => (

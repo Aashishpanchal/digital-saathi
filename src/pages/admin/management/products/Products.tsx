@@ -9,7 +9,6 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno, queryToStr } from "../../../../components/admin/utils";
 import { productFields } from "../../../../constants";
 import { shopProducts } from "../../../../http";
-import SortMainDialog from "../../../../components/admin/sort-main-dialog";
 
 export default function Products() {
   const [searchText, setSearchText] = React.useState("");
@@ -78,21 +77,12 @@ export default function Products() {
         }}
       />
       <Box sx={{ mt: 3 }}>
-        <ProductsListResults searchText={searchText} />
-      </Box>
-      {sortOpen && (
-        <SortMainDialog
-          id="select-products"
-          title="Sort Products"
-          open={sortOpen}
-          onClose={onSortClose}
-          extractObj={{
-            value: "sku_name",
-            id: "sku_id",
-          }}
-          requestFunc={shopProducts}
+        <ProductsListResults
+          searchText={searchText}
+          sortOpen={sortOpen}
+          onSortClose={onSortClose}
         />
-      )}
+      </Box>
     </MainContainer>
   );
 }

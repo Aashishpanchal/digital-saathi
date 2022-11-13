@@ -27,11 +27,11 @@ export default function DeliveryChargeFormDialog(props: {
 
   const deliveryFormChargeCheck = (
     deliveryFrom: string,
-    deliveryCharge: string
+    deliveryTo: string
   ) => {
-    if (parseFloat(deliveryFrom) <= parseFloat(deliveryCharge)) return true;
+    if (parseFloat(deliveryFrom) <= parseFloat(deliveryTo)) return true;
     enqueueSnackbar(
-      "delivery charge should be larger and equal delivery from.!😢",
+      "delivery charge should be larger and equal delivery to.!😢",
       {
         variant: "error",
       }
@@ -69,33 +69,31 @@ export default function DeliveryChargeFormDialog(props: {
   };
 
   const putRequest = async (values: Record<string, any>) => {
-    if (deliveryFormChargeCheck(values.delivery_from, values.delivery_charge)) {
-      try {
-        const res = await shopDeliveryCharge("put", {
-          params: deliveryCharge?.delivery_id,
-          data: JSON.stringify(values),
-        });
-        if (res?.status === 200) {
-          close();
-          reload();
-          setTimeout(() => {
-            enqueueSnackbar("Delivery Charge Update successfully!👍😊", {
-              variant: "success",
-            });
-          }, 200);
-        }
-      } catch (error: any) {
-        const {
-          status,
-          data: { message },
-        } = error.response;
-        if (status === 400) {
-          enqueueSnackbar(message, { variant: "error" });
-        } else {
-          enqueueSnackbar("Delivery Charge Update Failed!😢", {
-            variant: "error",
+    try {
+      const res = await shopDeliveryCharge("put", {
+        params: deliveryCharge?.delivery_id,
+        data: JSON.stringify(values),
+      });
+      if (res?.status === 200) {
+        close();
+        reload();
+        setTimeout(() => {
+          enqueueSnackbar("Delivery Charge Update successfully!👍😊", {
+            variant: "success",
           });
-        }
+        }, 200);
+      }
+    } catch (error: any) {
+      const {
+        status,
+        data: { message },
+      } = error.response;
+      if (status === 400) {
+        enqueueSnackbar(message, { variant: "error" });
+      } else {
+        enqueueSnackbar("Delivery Charge Update Failed!😢", {
+          variant: "error",
+        });
       }
     }
   };
@@ -111,7 +109,9 @@ export default function DeliveryChargeFormDialog(props: {
       enableReinitialize: true,
       async onSubmit(values) {
         setLoading(true);
-        await (variant === "edit" ? putRequest : postRequest)(values);
+        if (deliveryFormChargeCheck(values.delivery_from, values.delivery_to)) {
+          await (variant === "edit" ? putRequest : postRequest)(values);
+        }
         setLoading(false);
       },
     });

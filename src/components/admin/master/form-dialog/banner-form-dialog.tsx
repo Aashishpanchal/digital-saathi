@@ -35,8 +35,9 @@ export default function BannerFormDialog(props: {
   const { enqueueSnackbar } = useSnackbar();
 
   const putRequest = async (bannerData: FormData) => {
+    bannerData.append("id", banner?.banner_id);
     try {
-      const res = await shopBannerUpload("put", bannerData, banner?.banner_id);
+      const res = await shopBannerUpload("post", bannerData);
       if (res.status === 200) {
         close();
         setTimeout(

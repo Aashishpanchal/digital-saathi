@@ -165,9 +165,9 @@ export default function ProductPriceForm(props: {
                   <MenuItem sx={{ fontSize: "small" }} value="">
                     <em>None</em>
                   </MenuItem>
-                  {units.map((item, index) => (
+                  {units.map((item, a) => (
                     <MenuItem
-                      key={index}
+                      key={a}
                       sx={{ fontSize: "small" }}
                       value={item.units}
                     >

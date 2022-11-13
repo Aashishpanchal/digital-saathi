@@ -3,12 +3,10 @@ import React from "react";
 import { Box } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
 import CategoriesListResults from "../../../../components/admin/categories/categories-list-results";
-import { categories, subCategories } from "../../../../http";
+import { categories } from "../../../../http";
 import { useParams } from "react-router-dom";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 import { useQuery } from "@tanstack/react-query";
-import SortMainDialog from "../../../../components/admin/sort-main-dialog";
-import { queryToStr } from "../../../../components/admin/utils";
 
 export default function SubCategories() {
   const { parent_category_id } = useParams();
@@ -51,23 +49,10 @@ export default function SubCategories() {
           addOpen={open}
           addClose={onClose}
           categoryPartnerId={parent_category_id}
+          sortOpen={sortOpen}
+          onSortClose={onSortClose}
         />
       </Box>
-      {sortOpen && (
-        <SortMainDialog
-          id="select-subcategories"
-          title="Sort SubCategories"
-          dataKeyExtract="subcategories"
-          open={sortOpen}
-          onClose={onSortClose}
-          extractObj={{
-            value: "name",
-            id: "category_id",
-          }}
-          postfix={"?".concat(queryToStr({ category_id: parent_category_id }))}
-          requestFunc={subCategories}
-        />
-      )}
     </MainContainer>
   );
 }

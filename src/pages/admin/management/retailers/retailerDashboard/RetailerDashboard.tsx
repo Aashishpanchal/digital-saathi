@@ -11,10 +11,12 @@ import { useParams } from "react-router-dom";
 import { Box, Grid, Typography } from "@mui/material";
 import RetailerDashboardCards from "../../../../../components/admin/retailers/retailer-dashboard-cards";
 import { MainContainer } from "../../../../../components/layout";
-import RetailerDashboardTwoCards from "../../../../../components/admin/retailers/retailer-deshboard-two-cards";
 import LinkRouter from "../../../../../routers/LinkRouter";
 import { useQuery } from "@tanstack/react-query";
 import { retailer } from "../../../../../http";
+import InnerDashboardCards from "../../../../../components/admin/inner-deshboard-two-cards";
+import RecentOrdersList from "../../../../../components/admin/orders/recent-orders-list";
+import { queryToStr } from "../../../../../components/admin/utils";
 
 export default function RetailerDashboard() {
   const { retailer_id } = useParams();
@@ -79,13 +81,21 @@ export default function RetailerDashboard() {
       </Box>
       <RetailerDashboardCards retailerId={retailer_id as string} />
       <Box sx={{ my: 2 }}>
+        <Typography variant={"h6"}>Recent Orders</Typography>
+      </Box>
+      <RecentOrdersList
+        params="retailer"
+        variant="retailer"
+        postfix={"?".concat(queryToStr({ page: 0, size: 10, retailer_id }))}
+      />
+      <Box sx={{ my: 2 }}>
         <Typography variant={"h6"}>Retailer Action</Typography>
       </Box>
       <Grid container spacing={2} sx={{ mt: 2 }}>
         {layerTwo.map((item, index) => (
           <Grid item key={index} lg={4} sm={6} xs={12}>
             <LinkRouter to={item.url}>
-              <RetailerDashboardTwoCards
+              <InnerDashboardCards
                 icon={item.Icon}
                 title={item.Title}
                 color={item.color}

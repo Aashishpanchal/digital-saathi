@@ -1,12 +1,12 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, Container } from "@mui/material";
-import { RetailerOrdersListResults } from "../../../../../components/admin/retailers/retailer-orders";
-import { RetailerOrdersTab } from "../../../../../components/admin/retailers/retailer-orders";
 import { MainContainer } from "../../../../../components/layout";
 import { useQuery } from "@tanstack/react-query";
 import { retailer } from "../../../../../http";
 import CommonToolbar from "../../../../../components/admin/common-toolbar";
+import OrdersTab from "../../../../../components/admin/orders/orders-dashboard/orders-tab";
+import RetailerOrdersListResults from "../../../../../components/admin/retailers/retailer-orders-list-results";
 
 export default function RetailerOrders() {
   const { retailer_id } = useParams();
@@ -28,7 +28,7 @@ export default function RetailerOrders() {
 
   return (
     <>
-      <RetailerOrdersTab onSetOrderStatus={setOrderStatus} />
+      <OrdersTab onSetOrderStatus={setOrderStatus} />
       <MainContainer sx={{ pt: 6 }}>
         <Container>
           <CommonToolbar

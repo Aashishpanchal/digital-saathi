@@ -1,6 +1,6 @@
 import React from "react";
 import { useSnackbar } from "notistack";
-import { FaRegEdit } from "react-icons/fa";
+import { FaArrowRight, FaRegEdit } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { Box, Tooltip, IconButton } from "@mui/material";
@@ -13,6 +13,7 @@ import usePaginate from "../../../hooks/usePaginate";
 import TablePagination from "../../table/table-pagination";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 import AreaFormDialog from "./form-dialog/area-form-dialog";
+import LinkRouter from "../../../routers/LinkRouter";
 
 export default function AreaList(props: {
   searchText: string;
@@ -110,6 +111,17 @@ export default function AreaList(props: {
         width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <LinkRouter to={`${cell.row.original.area_id}/primary-retailer`}>
+              <Tooltip title="Primary Retailer">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <FaArrowRight />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
             <Tooltip title="Edit">
               <IconButton
                 disableRipple={false}

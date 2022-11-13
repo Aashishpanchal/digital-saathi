@@ -37,6 +37,14 @@ import ProductImages from "../../pages/admin/management/products/product-images"
 import FarmersOrders from "../../pages/admin/management/farmers/farmers-orders";
 import { DeliveryCharges } from "../../pages/admin/management/delivery-charge";
 import { TrendingProducts } from "../../pages/admin/management/trending-product";
+import {
+  DeliveryPartnerDashboard,
+  PartnerOrders,
+  PartnerSaleDetails,
+  PartnerTargetAchievement,
+  PartnerUpiPaymentLog,
+} from "../../pages/admin/management/delivery-partners/partner-dashboard";
+import PartnerCancelledOrders from "../../pages/admin/management/delivery-partners/partner-dashboard/partner-cancelled-orders";
 
 export default {
   path: "/management",
@@ -155,6 +163,35 @@ export default {
             {
               path: "dp-agents",
               element: <DeliveryAgents />,
+            },
+            {
+              path: "partner-dashboard",
+              children: [
+                {
+                  path: "",
+                  element: <DeliveryPartnerDashboard />,
+                },
+                {
+                  path: "partner-orders",
+                  element: <PartnerOrders />,
+                },
+                {
+                  path: "partner-input-sale-details",
+                  element: <PartnerSaleDetails />,
+                },
+                {
+                  path: "partner-cancelled-orders",
+                  element: <PartnerCancelledOrders />,
+                },
+                {
+                  path: "partner-upi-payment-log",
+                  element: <PartnerUpiPaymentLog />,
+                },
+                {
+                  path: "partner-target-achievement",
+                  element: <PartnerTargetAchievement />,
+                },
+              ],
             },
           ],
         },
