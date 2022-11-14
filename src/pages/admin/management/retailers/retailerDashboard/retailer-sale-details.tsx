@@ -15,6 +15,7 @@ export default function RetailerSaleDetails() {
     if (data?.status) return data.data?.retailer_name;
     return "";
   }, [data]);
+
   return (
     <MainOrders
       orderStatus={5}

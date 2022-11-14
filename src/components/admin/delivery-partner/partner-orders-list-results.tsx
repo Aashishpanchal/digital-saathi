@@ -30,6 +30,7 @@ function PartnerOrdersListResults(props: {
     [`partner-orders-${orderStatus}`, postfix],
     () =>
       shopOrders("get", {
+        params: "partner",
         postfix,
       }),
     {

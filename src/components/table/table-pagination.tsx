@@ -13,6 +13,7 @@ import {
 import { Box } from "@mui/system";
 
 import Snackbar from "@mui/material/Snackbar";
+import { NumericFormat } from "react-number-format";
 
 const Option = styled(MenuItem)({
   fontSize: "small",
@@ -56,7 +57,7 @@ function TablePagination(props: {
     hiddenSize,
   } = props;
 
-  const [goto, setGoto] = React.useState("");
+  const [goto, setGoto] = React.useState<number | undefined>();
   const [snack, setSnack] = React.useState({
     message: "",
     open: false,
@@ -70,15 +71,12 @@ function TablePagination(props: {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (Number(goto) > (count as number)) {
-      setSnack({ message: `page number is not bigger ${count}`, open: true });
-    } else if (goto === "") {
-      setSnack({
-        message: "Please type page number for render data!!👍",
-        open: true,
-      });
-    } else {
-      onChangePage && onChangePage(Number(goto) - 1);
+    if (goto) {
+      if (goto > (count as number)) {
+        setSnack({ message: `page number is not bigger ${count}`, open: true });
+      } else {
+        onChangePage && onChangePage(Number(goto) - 1);
+      }
     }
   };
 
@@ -143,16 +141,15 @@ function TablePagination(props: {
               <InputLabel htmlFor="goto" sx={{ fontSize: "small" }}>
                 Go to
               </InputLabel>
-              <InputBase
-                value={parseInt(goto) || ""}
+              <NumericFormat
+                value={goto}
                 placeholder="page"
-                onChange={(e) => {
-                  const value = parseInt(e.target.value || "");
-                  setGoto(isNaN(value) ? "" : value.toString());
-                }}
+                onValueChange={(values) => setGoto(values.floatValue)}
                 name="goto"
                 type="text"
                 id="goto"
+                decimalScale={0}
+                customInput={InputBase}
               />
             </GotoContainer>
           </form>

@@ -1,8 +1,10 @@
 import React from "react";
 import { Grid, alpha } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { FaBoxes, FaCartPlus, FaTruckLoading } from "react-icons/fa";
 import { shopOrders, shopProducts } from "../../../http";
 import DashboardCard from "../../dashboard/dashboard-card";
+import { queryToStr } from "../utils";
 
 export default function RetailerDashboardCards(props: { retailerId: string }) {
   const { retailerId } = props;
@@ -10,40 +12,49 @@ export default function RetailerDashboardCards(props: { retailerId: string }) {
   const [totalRetailers, setTotalRetailers] = React.useState(0);
   const [totalFarmers, setTotalFarmers] = React.useState(0);
 
-  const getTotals = async () => {
-    try {
-      let res = await shopOrders("get", {
-        postfix: `?page=0&retailer_id=${retailerId}`,
-      });
-      if (res?.status === 200) {
-        setTotalOrders(res.data?.totalItems || 0);
-      }
-
-      res = await shopProducts("get", {
-        params: "retailerproducts",
-        postfix: `?page=0&retailer_id=${retailerId}`,
-      });
-
-      if (res?.status === 200) {
-        setTotalRetailers(res.data?.totalItems || 0);
-      }
-
-      res = await shopOrders("get", {
+  useQuery(
+    ["total-retailer"],
+    () =>
+      shopOrders("get", {
         params: "retailer",
-        postfix: `?retailer_id=${retailerId}&order_status=5&page=0&size=1`,
-      });
-
-      if (res?.status === 200) {
-        setTotalFarmers(res.data?.totalItems);
-      }
-    } catch (err: any) {
-      console.log(err?.response);
+        postfix: "?".concat(queryToStr({ retailer_id: retailerId, page: 0 })),
+      }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200) setTotalOrders(data.data?.totalItems || 0);
+      },
     }
-  };
+  );
 
-  React.useEffect(() => {
-    getTotals();
-  }, []);
+  useQuery(
+    ["total-sku"],
+    () =>
+      shopProducts("get", {
+        params: "retailerproducts",
+        postfix: "?".concat(queryToStr({ retailer_id: retailerId, page: 0 })),
+      }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200) setTotalRetailers(data.data?.totalItems || 0);
+      },
+    }
+  );
+
+  useQuery(
+    ["total-customer"],
+    () =>
+      shopOrders("get", {
+        params: "retailer",
+        postfix: "?".concat(
+          queryToStr({ retailer_id: retailerId, page: 0, order_status: 5 })
+        ),
+      }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200) setTotalFarmers(data.data?.totalItems || 0);
+      },
+    }
+  );
 
   return (
     <Grid container spacing={2}>

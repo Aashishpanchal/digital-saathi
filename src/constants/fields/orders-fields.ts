@@ -47,7 +47,7 @@ export const allOrdersFields = [
   { label: "Date updated on", key: "" },
   { label: "Helper Column for Identifying repeating farmers", key: "" },
   { label: "Reason Name", key: "reason_name" },
-  { label: "Reason Type", key: "" },
+  { label: "Reason Type", key: "reason_type" },
   { label: "Other Reason", key: "other_reason" },
 ];
 
@@ -160,7 +160,6 @@ export const ordersFields = (orderStatus: number) => [
   { label: "Unique SKUs", key: "" },
   { label: "Count of SKUS", key: "" },
   { label: "Repeating Farmers", key: "" },
-  { label: "Other Reason", key: "other_reason" },
   { label: "Date updated on", key: "" },
   { label: "Helper Column for Identifying repeating farmers", key: "" },
   ...(orderStatus === 7
