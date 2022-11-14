@@ -123,7 +123,7 @@ export default function MainOrders(props: {
         exportProps={{
           ref,
           data: csvData,
-          headers: ordersFields,
+          headers: ordersFields(orderStatus),
           filename,
           onClick: exportHandler,
         }}

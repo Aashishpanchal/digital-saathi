@@ -38,10 +38,10 @@ export default function Login() {
   const basicFields = React.useMemo(
     () => [
       {
-        type: "email",
-        label: "Email",
+        type: "text",
+        label: "Username",
         name: "email",
-        placeholder: "example@gmail.com",
+        placeholder: "username",
       },
       {
         type: "password",
