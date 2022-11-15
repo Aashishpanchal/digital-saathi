@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, alpha } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { FaBoxes, FaCartPlus, FaTruckLoading } from "react-icons/fa";
-import { shopOrders, shopProducts } from "../../../http";
+import { shopOrders, shopAssignRetailerProducts } from "../../../http";
 import DashboardCard from "../../dashboard/dashboard-card";
 import { queryToStr } from "../utils";
 
@@ -29,8 +29,7 @@ export default function RetailerDashboardCards(props: { retailerId: string }) {
   useQuery(
     ["total-sku"],
     () =>
-      shopProducts("get", {
-        params: "retailerproducts",
+      shopAssignRetailerProducts("get", {
         postfix: "?".concat(queryToStr({ retailer_id: retailerId, page: 0 })),
       }),
     {

@@ -24,8 +24,12 @@ export default function MainOrders(props: {
   orderStatus: number;
   title: string;
   filename: string;
+  params?: string;
+  postfix?: string;
+  exportVariant?: "retailer" | "partner";
 }) {
-  const { orderStatus, title, filename } = props;
+  const { orderStatus, title, filename, params, postfix, exportVariant } =
+    props;
   const [searchText, setSearchText] = React.useState("");
   const { state: csvData, updateState: setCsvData } = useStateWithCallback<
     Array<Record<string, any>>
@@ -53,7 +57,12 @@ export default function MainOrders(props: {
     try {
       dispatch(setPageLoading(true));
       const res = await shopOrders("get", {
-        params: "csv",
+        params:
+          exportVariant === "retailer"
+            ? "retailercsv"
+            : exportVariant === "partner"
+            ? "partnercsv"
+            : "csv",
         postfix: searchText
           ? `${searchText}&order_status=${orderStatus}`
           : `?order_status=${orderStatus}`,
@@ -131,7 +140,12 @@ export default function MainOrders(props: {
         {title}
       </OrdersToolbar>
       <Box sx={{ mt: 3 }}>
-        <OrdersListResults searchText={searchText} orderStatus={orderStatus} />
+        <OrdersListResults
+          searchText={searchText}
+          orderStatus={orderStatus}
+          params={params}
+          postfix={postfix}
+        />
       </Box>
     </MainContainer>
   );

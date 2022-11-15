@@ -15,13 +15,20 @@ import { TextCenter } from "./styles";
 import MoveOrdersDialog from "./move-orders/move-orders-dailog";
 
 export default function OrdersListResults(props: {
+  postfix?: string;
   params?: string;
   orderStatus: number;
   searchText: string;
   otherQuery?: { [key: string]: any };
 }) {
   const { page, setPage, size, setSize } = usePaginate();
-  const { searchText, orderStatus, params, otherQuery } = props;
+  const {
+    searchText,
+    orderStatus,
+    params,
+    otherQuery,
+    postfix: otherPostfix,
+  } = props;
   const [moveOrder, setMoveOrder] = React.useState({
     open: false,
     values: {},
@@ -42,7 +49,7 @@ export default function OrdersListResults(props: {
     () =>
       shopOrders("get", {
         params,
-        postfix,
+        postfix: otherPostfix ? `${postfix}&${otherPostfix}` : postfix,
       }),
     {
       refetchOnWindowFocus: false,
