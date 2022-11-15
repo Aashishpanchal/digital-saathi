@@ -1,8 +1,9 @@
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { NumericFormat } from "react-number-format";
 import { Box, Typography, Select, MenuItem } from "@mui/material";
 import { TextInput } from "../../form";
 import { shopPackages, shopUnits } from "../../../http";
-import { NumericFormat } from "react-number-format";
 import AsyncAutocomplete from "../../form/async-autocomplete";
 
 export default function ProductPriceForm(props: {
@@ -22,7 +23,6 @@ export default function ProductPriceForm(props: {
   const [packages, setPackages] = React.useState<Array<{ [key: string]: any }>>(
     []
   );
-  const [packageLoading, setPackageLoading] = React.useState(false);
   const [units, setUnits] = React.useState<Array<{ [key: string]: any }>>([]);
 
   const priceFields = React.useMemo(
@@ -67,58 +67,23 @@ export default function ProductPriceForm(props: {
     []
   );
 
-  const packagesGet = React.useCallback(async () => {
-    try {
-      setPackageLoading(true);
-      let res = await shopPackages("get");
-      if (res?.status === 200) {
-        let { data } = res;
-
-        if (data.totalPages > 1) {
-          res = await shopPackages("get", {
-            postfix: `?page=0&size=${data.totalItems}`,
-          });
-          if (res?.status === 200) {
-            let { data } = res;
-            setPackageLoading(false);
-            return setPackages(data.packages);
-          }
-        }
-        setPackageLoading(false);
-        return setPackages(data.packages);
-      }
-    } catch (error) {
-      setPackageLoading(false);
-      console.log(error);
+  const { isLoading: packageLoading } = useQuery(
+    ["get-all-package"],
+    () => shopPackages("get", { params: "package" }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200)
+          setPackages(data.data instanceof Array ? data.data : []);
+      },
     }
-  }, []);
+  );
 
-  const unitsGet = React.useCallback(async () => {
-    try {
-      let res = await shopUnits("get");
-      if (res?.status === 200) {
-        let { data } = res;
-
-        if (data.totalPages > 1) {
-          res = await shopUnits("get", {
-            postfix: `?page=0&size=${data.totalItems}`,
-          });
-          if (res?.status === 200) {
-            let { data } = res;
-            return setUnits(data.units);
-          }
-        }
-        return setUnits(data.units);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    packagesGet();
-    unitsGet();
-  }, []);
+  useQuery(["get-all-units"], () => shopUnits("get", { params: "units" }), {
+    onSuccess(data) {
+      if (data?.status === 200)
+        setUnits(data.data instanceof Array ? data.data : []);
+    },
+  });
 
   return (
     <Box>

@@ -19,7 +19,7 @@ export default function CategoryAddEditDialog(props: {
   open: boolean;
   close: () => void;
   reload: () => Promise<any>;
-  category: { [key: string]: any } | null;
+  category?: { [key: string]: any };
   variant: "edit" | "add";
   type: "category" | "subcategory";
   otherData?: Record<string, any>;

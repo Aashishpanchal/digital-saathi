@@ -1,4 +1,7 @@
 import React from "react";
+import { FormikErrors } from "formik";
+import { useQuery } from "@tanstack/react-query";
+import { NumericFormat } from "react-number-format";
 import { Box, Typography, Divider } from "@mui/material";
 import { TextInput } from "../../form";
 import {
@@ -6,10 +9,8 @@ import {
   subCategories as subCategoriesHttp,
   brands as brandsHttp,
 } from "../../../http";
-import { FormikErrors } from "formik";
 import AsyncAutocomplete from "../../form/async-autocomplete";
-import { useQuery } from "@tanstack/react-query";
-import { NumericFormat } from "react-number-format";
+import { queryToStr } from "../utils";
 
 export default function ProductBasicForm(props: {
   errors?: any;
@@ -35,14 +36,13 @@ export default function ProductBasicForm(props: {
 }) {
   const { values, handleChange, errors, handleBlur, touched, setFieldValue } =
     props;
+  const [brands, setBrands] = React.useState<Array<{ [key: string]: any }>>([]);
   const [categories, setCategories] = React.useState<
     Array<{ [key: string]: any }>
   >([]);
   const [subCategories, setSubCategories] = React.useState<
     Array<{ [key: string]: any }>
   >([]);
-  const [categoryLoading, setCategoryLoading] = React.useState(false);
-  const [subcategoryLoading, setSubcategoryLoading] = React.useState(false);
 
   const basicFields = React.useMemo(
     () => [
@@ -81,89 +81,43 @@ export default function ProductBasicForm(props: {
     ],
     []
   );
-  const { data: brands, isLoading: brandsLoading } = useQuery(
-    ["get-brands"],
-    () => brandsHttp("get")
+
+  const { isLoading: brandLoading } = useQuery(
+    ["get-all-brands"],
+    () => brandsHttp("get"),
+    {
+      onSuccess(data) {
+        if (data?.status === 200)
+          setBrands(data.data instanceof Array ? data.data : []);
+      },
+    }
   );
-  const getBrandData = React.useMemo(() => {
-    if (brands?.status === 200) return brands.data || [];
-    return [];
-  }, [brands]);
-
-  const categoriesGet = React.useCallback(async () => {
-    try {
-      setCategoryLoading(true);
-      let res = await categoriesHttp("get");
-      if (res?.status === 200) {
-        let {
-          data: { totalItems, categories, totalPages },
-        } = res;
-
-        if (totalPages > 1) {
-          res = await categoriesHttp("get", {
-            postfix: `?page=0&size=${totalItems}`,
-          });
-          if (res?.status === 200) {
-            let {
-              data: { categories },
-            } = res;
-            setCategoryLoading(false);
-            return setCategories(categories);
-          }
-        }
-        setCategoryLoading(false);
-        return setCategories(categories);
-      }
-    } catch (error) {
-      console.log(error);
+  const { isLoading: categoryLoading } = useQuery(
+    ["get-all-categories"],
+    () => categoriesHttp("get", { params: "categories" }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200)
+          setCategories(data.data instanceof Array ? data.data : []);
+      },
     }
-    setCategoryLoading(false);
-  }, []);
-
-  const subCategoriesGet = React.useCallback(async (category_id: string) => {
-    if (category_id) {
-      try {
-        setSubcategoryLoading(true);
-        let res = await subCategoriesHttp("get", {
-          postfix: `?category_id=${category_id}`,
-        });
-        if (res?.status === 200) {
-          let {
-            data: { totalItems, subcategories, totalPages },
-          } = res;
-
-          if (totalPages > 1) {
-            res = await subCategoriesHttp("get", {
-              postfix: `?category_id=${category_id}&page=0&size=${totalItems}`,
-            });
-            if (res?.status === 200) {
-              let {
-                data: { subcategories },
-              } = res;
-              setSubcategoryLoading(false);
-              return setSubCategories(subcategories);
-            }
-          }
-          setSubcategoryLoading(false);
-          return setSubCategories(subcategories);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      setSubcategoryLoading(false);
-      return setSubCategories([]);
+  );
+  const { isLoading: subcategoryLoading } = useQuery(
+    ["get-all-subcategories", values.category_id],
+    () =>
+      subCategoriesHttp("get", {
+        params: "subcategories",
+        postfix: "?".concat(
+          queryToStr({ category_id: values.category_id || 0 })
+        ),
+      }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200)
+          setSubCategories(data.data instanceof Array ? data.data : []);
+      },
     }
-    setSubcategoryLoading(false);
-  }, []);
-
-  React.useEffect(() => {
-    categoriesGet();
-  }, []);
-
-  React.useEffect(() => {
-    subCategoriesGet(values.category_id);
-  }, [values.category_id]);
+  );
 
   return (
     <Box>
@@ -257,9 +211,9 @@ export default function ProductBasicForm(props: {
           <Box sx={{ my: 1 }}>
             <AsyncAutocomplete
               id="brand-option"
-              loading={brandsLoading}
+              loading={brandLoading}
               label="Brand"
-              options={getBrandData}
+              options={brands}
               objFilter={{
                 title: "brand_name",
                 value: "brand_id",

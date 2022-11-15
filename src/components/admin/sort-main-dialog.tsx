@@ -30,6 +30,7 @@ export default function SortMainDialog(props: {
     options?: HttpOption | undefined
   ) => Promise<AxiosResponse<any, any>> | undefined;
   postfix?: string;
+  params?: string;
   open: boolean;
   onClose?: () => void;
   refetch?: () => void;
@@ -44,6 +45,7 @@ export default function SortMainDialog(props: {
     dataKeyExtract,
     postfix,
     refetch,
+    params,
   } = props;
   const { enqueueSnackbar } = useSnackbar();
   const ref = React.useRef<HTMLSelectElement>(null);
@@ -53,14 +55,17 @@ export default function SortMainDialog(props: {
 
   const { data, isLoading } = useQuery([id], () =>
     requestFunc("get", {
-      postfix: postfix,
+      params,
+      postfix,
     })
   );
 
   const options = React.useMemo(() => {
     try {
-      if (data?.status === 200)
-        return dataKeyExtract ? data.data[dataKeyExtract] : data.data;
+      if (data?.status === 200) {
+        const x = dataKeyExtract ? data.data[dataKeyExtract] : data.data;
+        return x instanceof Array ? x : [];
+      }
       return [];
     } catch (error) {
       console.log(error);

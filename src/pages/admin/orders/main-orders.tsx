@@ -65,7 +65,7 @@ export default function MainOrders(props: {
             : "csv",
         postfix: searchText
           ? `${searchText}&order_status=${orderStatus}`
-          : `?order_status=${orderStatus}`,
+          : `?order_status=${orderStatus}${postfix ? `&${postfix}` : ""}`,
       });
       if (res?.status === 200) {
         let csvData = res.data.orders || [];
