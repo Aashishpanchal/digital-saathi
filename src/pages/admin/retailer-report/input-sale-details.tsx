@@ -101,7 +101,7 @@ export default function InputSaleDetails() {
         csvData = addTaxNetAmount(csvData);
 
         // set Order Status
-        csvData = setExtraValue(csvData, "order_status", "Input Sale Details");
+        csvData = setExtraValue(csvData, "order_status", "Delivered");
 
         setCsvData(csvData, () => {
           ref.current.link.click();

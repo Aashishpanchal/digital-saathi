@@ -30,6 +30,7 @@ function RetailerOrdersListResults(props: {
     [`retailer-orders-${orderStatus}`, postfix],
     () =>
       shopOrders("get", {
+        params: "retailer",
         postfix,
       }),
     {

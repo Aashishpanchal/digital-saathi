@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { deliveryPartners } from "../../../../../http";
 import MainOrders from "../../../orders/main-orders";
+import { queryToStr } from "../../../../../components/admin/utils";
 
 export default function PartnerCancelledOrders() {
   const { partner_id } = useParams();
@@ -21,6 +22,9 @@ export default function PartnerCancelledOrders() {
       orderStatus={7}
       filename="partner-cancelled-orders-csv"
       title={`${partnerName} / Cancelled Orders`}
+      params="partner"
+      postfix={queryToStr({ partner_id })}
+      exportVariant={"partner"}
     />
   );
 }

@@ -11,21 +11,23 @@ import usePaginate from "../../../../hooks/usePaginate";
 
 function RetailerSkuListResults(props: {
   retailerId: string;
+  searchText: string;
   variant: "assign" | "unassign";
 }) {
-  const { retailerId, variant } = props;
+  const { retailerId, variant, searchText } = props;
   const { page, setPage, size, setSize } = usePaginate(0, "12", variant);
   const { enqueueSnackbar } = useSnackbar();
 
   const postfix = React.useMemo(() => {
-    return "?".concat(queryToStr({ page, size, retailer_id: retailerId }));
-  }, [page, size]);
+    const x = queryToStr({ page, size, retailer_id: retailerId });
+    return searchText ? `${searchText}&${x}` : "?".concat(x);
+  }, [searchText, page, size]);
 
   const { isLoading, refetch, data } = useQuery(
-    [`retailer-sku-unit-${variant}`, postfix],
+    [`retailer-sku-unit-${variant}`, postfix, variant],
     () =>
       shopAssignRetailerProducts("get", {
-        params: variant === "assign" ? "" : "unassign",
+        params: variant === "assign" ? "" : searchText ? "" : "unassign",
         postfix,
       }),
     {
@@ -84,6 +86,10 @@ function RetailerSkuListResults(props: {
     if (data?.status === 200) return data.data;
     return { totalItems: 0, totalPages: 1, products: [] };
   }, [data]);
+
+  React.useEffect(() => {
+    if (searchText) setPage(0);
+  }, [searchText]);
 
   return (
     <>

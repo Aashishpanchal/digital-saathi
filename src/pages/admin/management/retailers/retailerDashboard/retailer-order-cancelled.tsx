@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { retailer } from "../../../../../http";
 import MainOrders from "../../../orders/main-orders";
+import { queryToStr } from "../../../../../components/admin/utils";
 
 export default function RetailerOrderCancelled() {
   const { retailer_id } = useParams();
@@ -21,6 +22,9 @@ export default function RetailerOrderCancelled() {
       orderStatus={7}
       filename="cancelled-orders-csv"
       title={`${retailerName} / Cancelled Orders`}
+      params="retailer"
+      postfix={queryToStr({ retailer_id })}
+      exportVariant={"retailer"}
     />
   );
 }

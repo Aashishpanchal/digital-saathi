@@ -47,7 +47,7 @@ export const allOrdersFields = [
   { label: "Date updated on", key: "" },
   { label: "Helper Column for Identifying repeating farmers", key: "" },
   { label: "Reason Name", key: "reason_name" },
-  { label: "Reason Type", key: "" },
+  { label: "Reason Type", key: "reason_type" },
   { label: "Other Reason", key: "other_reason" },
 ];
 
@@ -58,7 +58,7 @@ export const inputSaleDetailsFields = [
   { label: "Order ID", key: "order_id" },
   { label: "Order Date", key: "order_date" },
   { label: "Order Time", key: "order_time" },
-  { label: "Order Status", key: "" },
+  { label: "Order Status", key: "order_status" },
   { label: "Sales Date", key: "delivered_date" },
   { label: "Sales Time", key: "delivered_time" },
   { label: "Farmer ID", key: "customer_auth_code" },
@@ -108,13 +108,16 @@ export const inputSaleDetailsFields = [
   { label: "Repeating Farmers", key: "" },
 ];
 
-export const ordersFields = [
+// "Reason Name","Reason Type","Other Reason"
+
+export const ordersFields = (orderStatus: number) => [
   { label: "S.No", key: "s_no" },
   { label: "Invoice_ID", key: "invoice_no" },
   { label: "Bill_No", key: "order_id" },
   { label: "Order_ID", key: "order_id" },
   { label: "Order_Date", key: "order_date" },
   { label: "Order_Time", key: "order_time" },
+  { label: "Order Status", key: "order_status" },
   { label: "Sales_Date", key: "delivered_date" },
   { label: "Sales_Time", key: "delivered_time" },
   { label: "Farmer_ID", key: "customer_auth_code" },
@@ -157,7 +160,13 @@ export const ordersFields = [
   { label: "Unique SKUs", key: "" },
   { label: "Count of SKUS", key: "" },
   { label: "Repeating Farmers", key: "" },
-  { label: "Other Reason", key: "other_reason" },
   { label: "Date updated on", key: "" },
   { label: "Helper Column for Identifying repeating farmers", key: "" },
+  ...(orderStatus === 7
+    ? [
+        { label: "Reason Name", key: "reason_name" },
+        { label: "Reason Type", key: "reason_type" },
+        { label: "Other Reason", key: "other_reason" },
+      ]
+    : []),
 ];

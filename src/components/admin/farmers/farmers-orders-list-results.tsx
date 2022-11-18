@@ -42,7 +42,7 @@ export default function FarmersOrdersListResults(props: {
     ["farmers-orders", postfix],
     () =>
       shopOrders("get", {
-        params: searchText ? "" : "customer",
+        params: "customer",
         postfix: postfix,
       }),
     {

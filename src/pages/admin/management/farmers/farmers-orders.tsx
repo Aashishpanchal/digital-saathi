@@ -1,7 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
 import { useParams } from "react-router-dom";
-import CommonToolbar from "../../../../components/admin/common-toolbar";
 import FarmersOrdersListResults from "../../../../components/admin/farmers/farmers-orders-list-results";
 import { MainContainer } from "../../../../components/layout";
 import {
@@ -11,12 +10,17 @@ import {
   margeAsList,
   margeRowTable,
   orderStatusReadable,
+  queryToStr,
 } from "../../../../components/admin/utils";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { useDispatch } from "react-redux";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
-import { shopOrders } from "../../../../http";
+import { farmers, shopOrders } from "../../../../http";
 import { allOrdersFields } from "../../../../constants";
+import OrdersToolbar, {
+  DatesType,
+} from "../../../../components/admin/orders/orders-toolbar";
+import { useQuery } from "@tanstack/react-query";
 
 export default function FarmersOrders() {
   const { customer_id } = useParams();
@@ -27,8 +31,28 @@ export default function FarmersOrders() {
   const ref = React.useRef<any>(null);
   const dispatch = useDispatch();
 
-  const searchHandler = async (value: string) => {
-    setSearchText(value ? `/search?search_orders=${value}` : "");
+  const { data } = useQuery(["farmer-name"], () =>
+    farmers("get", { params: customer_id })
+  );
+
+  const customerName = React.useMemo(() => {
+    if (data?.status) return data.data?.customer_name;
+    return "";
+  }, [data]);
+
+  const searchHandler = (value: string, dates: DatesType) => {
+    if (dates.from && dates.to) {
+      setSearchText(
+        "?" +
+          queryToStr({
+            date_from: dates.from.format("YYYY-MM-DD"),
+            date_to: dates.to.format("YYYY-MM-DD"),
+            ...(value ? { search_orders: value } : {}),
+          })
+      );
+    } else {
+      setSearchText(value ? `?search_orders=${value}` : "");
+    }
   };
 
   const exportHandle = async () => {
@@ -36,9 +60,9 @@ export default function FarmersOrders() {
       dispatch(setPageLoading(true));
       const res = await shopOrders("get", {
         postfix: searchText
-          ? `${searchText.replace("/search", "")}&customer_id=${customer_id}`
+          ? `${searchText}&customer_id=${customer_id}`
           : `?customer_id=${customer_id}`,
-        params: "csv",
+        params: "customercsv",
       });
       if (res?.status === 200) {
         let csvData = res.data.orders || [];
@@ -100,8 +124,7 @@ export default function FarmersOrders() {
 
   return (
     <MainContainer>
-      <CommonToolbar
-        title="Farmers Orders"
+      <OrdersToolbar
         onSearch={searchHandler}
         exportProps={{
           ref,
@@ -110,7 +133,9 @@ export default function FarmersOrders() {
           filename: `farmers-orders-csv`,
           onClick: exportHandle,
         }}
-      />
+      >
+        {customerName} / Farmers Orders
+      </OrdersToolbar>
       <Box sx={{ mt: 3 }}>
         <FarmersOrdersListResults
           customerId={customer_id as string}

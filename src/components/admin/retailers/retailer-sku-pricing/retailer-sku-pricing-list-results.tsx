@@ -9,8 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 import usePaginate from "../../../../hooks/usePaginate";
 import SkuPricingUpdateDialog from "./sku-pricing-update-dialog";
 
-function RetailerSkuPricingListResults(props: { retailerId: string }) {
-  const { retailerId } = props;
+function RetailerSkuPricingListResults(props: {
+  searchText: string;
+  retailerId: string;
+}) {
+  const { retailerId, searchText } = props;
   const { page, setPage, size, setSize } = usePaginate(0, "12");
 
   const [edit, setEdit] = React.useState({
@@ -18,17 +21,14 @@ function RetailerSkuPricingListResults(props: { retailerId: string }) {
     open: false,
   });
 
-  const postfix = React.useMemo(
-    () =>
-      "?".concat(
-        queryToStr({
-          retailer_id: retailerId,
-          page,
-          size,
-        })
-      ),
-    [page, size]
-  );
+  const postfix = React.useMemo(() => {
+    const x = queryToStr({
+      retailer_id: retailerId,
+      page,
+      size,
+    });
+    return searchText ? `${searchText}&${x}` : `?${x}`;
+  }, [searchText, page, size]);
 
   const { data, isLoading, refetch } = useQuery(
     ["shop-assign-retailer-products", postfix],
@@ -46,6 +46,10 @@ function RetailerSkuPricingListResults(props: { retailerId: string }) {
       products: [],
     };
   }, [data]);
+
+  React.useEffect(() => {
+    if (searchText) setPage(0);
+  }, [searchText]);
 
   return (
     <>

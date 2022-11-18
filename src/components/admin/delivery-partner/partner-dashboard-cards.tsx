@@ -5,6 +5,7 @@ import { shopOrders } from "../../../http";
 import DashboardCard from "../../dashboard/dashboard-card";
 import BhimSvg from "../../../assets/bhim-100.svg";
 import { queryToStr } from "../utils";
+import { useQuery } from "@tanstack/react-query";
 
 export default function PartnerDashboardCards(props: { partnerId: string }) {
   const { partnerId } = props;
@@ -12,38 +13,35 @@ export default function PartnerDashboardCards(props: { partnerId: string }) {
   const [totalUPI, setTotalUPI] = React.useState(0);
   const [totalFarmers, setTotalFarmers] = React.useState(0);
 
-  const getTotals = async () => {
-    try {
-      let res = await shopOrders("get", {
-        postfix: `?page=0&partner_id=${partnerId}`,
-      });
-      if (res?.status === 200) {
-        setTotalOrders(res.data?.totalItems || 0);
-      }
+  useQuery(
+    ["total-partner"],
+    () =>
+      shopOrders("get", {
+        params: "partner",
+        postfix: "?".concat(queryToStr({ partner_id: partnerId, page: 0 })),
+      }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200) setTotalOrders(data.data?.totalItems || 0);
+      },
+    }
+  );
 
-      res = await shopOrders("get", {
+  useQuery(
+    ["total-customer"],
+    () =>
+      shopOrders("get", {
         params: "partner",
         postfix: "?".concat(
-          queryToStr({
-            order_status: 5,
-            page: 0,
-            size: 1,
-            partner_id: partnerId,
-          })
+          queryToStr({ partner_id: partnerId, page: 0, order_status: 5 })
         ),
-      });
-
-      if (res?.status === 200) {
-        setTotalFarmers(res.data?.totalItems);
-      }
-    } catch (err: any) {
-      console.log(err?.response);
+      }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200) setTotalFarmers(data.data?.totalItems || 0);
+      },
     }
-  };
-
-  React.useEffect(() => {
-    getTotals();
-  }, []);
+  );
 
   return (
     <Grid container spacing={2}>

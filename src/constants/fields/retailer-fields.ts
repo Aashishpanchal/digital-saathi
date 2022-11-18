@@ -29,3 +29,20 @@ export const retailerFields = [
   { label: "Distributor Level", key: "distributor_level" },
   { label: "Subzone id", key: "subzone_id" },
 ];
+
+export const retailerSKUPricingFields = [
+  { label: "S.No", key: "s_no" },
+  { label: "sku_name", key: "sku_name" },
+  { label: "sku_name_kannada", key: "sku_name_kannada" },
+  { label: "sku_code", key: "sku_code" },
+  { label: "category", key: "subcategory_name" },
+  { label: "subcategory", key: "subcategory_image" },
+  { label: "brand", key: "brand_name" },
+  { label: "mrp", key: "mrp" },
+  { label: "price", key: "price" },
+  { label: "sale_price", key: "sale_price" },
+  { label: "weight", key: "weight" },
+  { label: "dimension", key: "dimension" },
+  { label: "units_per_case", key: "units_per_case" },
+  { label: "package", key: "package" },
+];

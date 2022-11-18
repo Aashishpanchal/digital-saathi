@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { deliveryPartners } from "../../../../../http";
 import MainOrders from "../../../orders/main-orders";
+import { queryToStr } from "../../../../../components/admin/utils";
 
 export default function PartnerSaleDetails() {
   const { partner_id } = useParams();
@@ -21,6 +22,9 @@ export default function PartnerSaleDetails() {
       orderStatus={5}
       filename="partner-sale-details"
       title={`${partnerName} / Input Sale Details`}
+      params="partner"
+      postfix={queryToStr({ partner_id })}
+      exportVariant={"partner"}
     />
   );
 }

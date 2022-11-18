@@ -144,6 +144,27 @@ export const orderStatusReadable = (
         : null,
   }));
 
+export const strOrderStatus = (value: number) =>
+  value === 0
+    ? "New"
+    : value === 1
+    ? "Accepted"
+    : value === 3
+    ? "In Process "
+    : value === 4
+    ? "Out For Delivery"
+    : value === 5
+    ? "Delivered"
+    : value === 6
+    ? "Returned"
+    : value === 7
+    ? "Cancelled"
+    : value === 8
+    ? "Returning"
+    : value === 9
+    ? "Rejected"
+    : "";
+
 export const dateTimeFormatTable = (
   data: Array<Record<string, any>>,
   dateExtractKeyName: string,
@@ -257,26 +278,7 @@ export const setOrderStatus = (
 ) =>
   data.map((row) => ({
     ...row,
-    order_status:
-      orderStatus === 0
-        ? "New"
-        : orderStatus === 1
-        ? "Accepted"
-        : orderStatus === 3
-        ? "In Process "
-        : orderStatus === 4
-        ? "Out For Delivery"
-        : orderStatus === 5
-        ? "Delivered"
-        : orderStatus === 6
-        ? "Returned"
-        : orderStatus === 7
-        ? "Cancelled"
-        : orderStatus === 8
-        ? "Returning"
-        : orderStatus === 9
-        ? "Rejected"
-        : null,
+    order_status: strOrderStatus(orderStatus),
   }));
 
 // !Table Units End
