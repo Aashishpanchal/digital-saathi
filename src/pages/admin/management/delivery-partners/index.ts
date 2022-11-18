@@ -4,3 +4,4 @@ export { default as RetrieveUpdateDeliveryPartner } from "./edit-delivery-partne
 
 export { default as DeliveryPartnersRetailer } from "./delivery-partners-retailer";
 export { default as DeliveryAgents } from "./delivery-agents";
+export { default as DeliveryPartnersArea } from "./delivery-partner-area";

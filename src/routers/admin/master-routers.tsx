@@ -1,9 +1,8 @@
 import Packages from "../../pages/admin/master/packages";
 import Units from "../../pages/admin/master/units";
-import Areas from "../../pages/admin/master/areas";
+import { Areas, PrimaryAreas } from "../../pages/admin/master/area";
 import Banner from "../../pages/admin/master/banner";
 import Reason from "../../pages/admin/master/reason";
-import PrimaryRetailer from "../../pages/admin/master/primary-retailers";
 
 export default {
   path: "/masters",
@@ -24,8 +23,8 @@ export default {
           element: <Areas />,
         },
         {
-          path: ":area_id/primary-retailer",
-          element: <PrimaryRetailer />,
+          path: ":area_id/primary-areas",
+          element: <PrimaryAreas />,
         },
       ],
     },

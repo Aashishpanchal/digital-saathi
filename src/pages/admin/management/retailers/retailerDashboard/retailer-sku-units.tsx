@@ -72,7 +72,7 @@ export default function RetailerSkuUnits() {
   return (
     <>
       <RetailerSkuUnitTab onChange={setProductTab} value={productTab} />
-      <MainContainer sx={{ pt: 6 }}>
+      <MainContainer>
         <Container>
           <CommonToolbar
             title={`${retailerName} / Retailer Orders`}

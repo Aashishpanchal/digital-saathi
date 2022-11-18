@@ -1,15 +1,14 @@
 import React from "react";
-import { useSnackbar } from "notistack";
 import { useQuery } from "@tanstack/react-query";
-import { queryToStr } from "../utils";
-import { shopAreas, shopRetailerArea } from "../../../http";
-import SerialNumber from "../serial-number";
-import DataTable from "../../table/data-table";
-import usePaginate from "../../../hooks/usePaginate";
-import TablePagination from "../../table/table-pagination";
-import FocusStar from "../focus-star";
+import { queryToStr } from "../../utils";
+import { shopRetailerArea } from "../../../../http";
+import SerialNumber from "../../serial-number";
+import DataTable from "../../../table/data-table";
+import usePaginate from "../../../../hooks/usePaginate";
+import TablePagination from "../../../table/table-pagination";
+import FocusStar from "../../focus-star";
 
-export default function PrimaryRetailersList(props: {
+export default function RetailersAreaList(props: {
   searchText: string;
   area_id: string;
 }) {
@@ -26,7 +25,7 @@ export default function PrimaryRetailersList(props: {
   }, [searchText, page, size]);
 
   const { isLoading, refetch, data } = useQuery(
-    ["areas", postfix],
+    ["retailer-areas", postfix],
     () =>
       shopRetailerArea("get", {
         postfix,

@@ -1,14 +1,14 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { MainContainer } from "../../../components/layout";
-import CommonToolbar from "../../../components/admin/common-toolbar";
-import AreaList from "../../../components/admin/master/area-list";
-import useStateWithCallback from "../../../hooks/useStateWithCallback";
+import { MainContainer } from "../../../../components/layout";
+import CommonToolbar from "../../../../components/admin/common-toolbar";
+import AreaList from "../../../../components/admin/master/area-list";
+import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { useDispatch } from "react-redux";
-import { setPageLoading } from "../../../redux/slices/admin-slice";
-import { addSno } from "../../../components/admin/utils";
-import { shopAreas } from "../../../http";
-import { areasFields } from "../../../constants";
+import { setPageLoading } from "../../../../redux/slices/admin-slice";
+import { addSno } from "../../../../components/admin/utils";
+import { shopAreas } from "../../../../http";
+import { areasFields } from "../../../../constants";
 
 export default function Units() {
   const [open, setOpen] = React.useState(false);

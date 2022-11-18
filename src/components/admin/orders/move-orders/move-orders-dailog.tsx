@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Box,
@@ -13,6 +12,8 @@ import {
   FormControl,
 } from "@mui/material";
 import * as OrderForms from "./order-forms";
+import { useFormik } from "formik";
+import moveOrdersSchemas from "./schemas";
 
 const Option = styled(MenuItem)({
   fontSize: "small",
@@ -43,6 +44,20 @@ export default function MoveOrdersDialog(props: {
     []
   );
 
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: {},
+      ...(select
+        ? {
+            validationSchema:
+              moveOrdersSchemas[select as keyof typeof moveOrdersSchemas],
+          }
+        : {}),
+      async onSubmit(values) {
+        console.log(values);
+      },
+    });
+
   const orderStatusOnForms = React.useMemo<Record<string, any>>(
     () => ({
       "0": <OrderForms.NewOrder />,
@@ -56,73 +71,76 @@ export default function MoveOrdersDialog(props: {
       "9": <OrderForms.CancelledFromRetailer />,
       "10": <OrderForms.CancelledFromAgent />,
     }),
-    []
+    [values, errors, touched, handleBlur, handleChange]
   );
 
   return (
     <Dialog open={open} fullWidth>
       <DialogTitle>Move Orders</DialogTitle>
       <DialogContent>
-        <Box
-          sx={{
-            width: 400,
-            margin: "auto",
-          }}
-        >
-          <FormControl fullWidth sx={{ mt: 1 }} size="small">
-            <InputLabel id="demo-select-small" color="secondary">
-              Move Orders
-            </InputLabel>
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              fullWidth
-              label="Move Orders"
-              color="secondary"
-              value={select}
-              onChange={(e) => setSelect(e.target.value)}
+        <form onSubmit={handleSubmit}>
+          <Box
+            sx={{
+              width: 400,
+              margin: "auto",
+            }}
+          >
+            <FormControl fullWidth sx={{ mt: 1 }} size="small">
+              <InputLabel id="demo-select-small" color="secondary">
+                Move Orders
+              </InputLabel>
+              <Select
+                labelId="demo-select-small"
+                id="demo-select-small"
+                fullWidth
+                label="Move Orders"
+                color="secondary"
+                value={select}
+                onChange={(e) => setSelect(e.target.value)}
+              >
+                <Option value="">
+                  <em>None</em>
+                </Option>
+                {orderStatusList.map((item, index) =>
+                  orderStatus !== item.value ? (
+                    <Option value={item.value.toString()} key={index}>
+                      {item.title}
+                    </Option>
+                  ) : null
+                )}
+              </Select>
+            </FormControl>
+            {orderStatusOnForms[select]}
+          </Box>
+          {select && (
+            <Box
+              sx={{
+                display: "flex",
+                flexFlow: "row-reverse",
+                gap: 2,
+                my: 1,
+              }}
             >
-              <Option value="">
-                <em>None</em>
-              </Option>
-              {orderStatusList.map((item, index) =>
-                orderStatus !== item.value ? (
-                  <Option value={item.value.toString()} key={index}>
-                    {item.title}
-                  </Option>
-                ) : null
-              )}
-            </Select>
-          </FormControl>
-          {orderStatusOnForms[select]}
-        </Box>
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                size="small"
+              >
+                Save
+              </Button>
+              <Button
+                color="secondary"
+                variant="outlined"
+                onClick={onClose}
+                size="small"
+              >
+                Close
+              </Button>
+            </Box>
+          )}
+        </form>
       </DialogContent>
-      <DialogActions>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            flexFlow: "row-reverse",
-          }}
-        >
-          <Button
-            type="submit"
-            color="secondary"
-            variant="contained"
-            size="small"
-          >
-            Save
-          </Button>
-          <Button
-            color="secondary"
-            variant="outlined"
-            onClick={onClose}
-            size="small"
-          >
-            Close
-          </Button>
-        </Box>
-      </DialogActions>
     </Dialog>
   );
 }

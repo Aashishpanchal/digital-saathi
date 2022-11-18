@@ -13,7 +13,7 @@ import {
   FaShippingFast,
   FaTractor,
   FaUserPlus,
-  FaUsers,
+  // FaUsers,
   FaUserTie,
   FaBoxes,
   FaPeopleCarry,
@@ -47,11 +47,11 @@ const sideBarMainList = [
     title: "Dashboard",
     icon: <HiChartPie />,
   },
-  {
-    href: "/auth0-users",
-    title: "Auth0 Users",
-    icon: <FaUsers />,
-  },
+  // {
+  //   href: "/auth0-users",
+  //   title: "Auth0 Users",
+  //   icon: <FaUsers />,
+  // },
   {
     title: "Management",
     icon: <FaUserPlus />,

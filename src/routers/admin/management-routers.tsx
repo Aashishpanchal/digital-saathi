@@ -45,6 +45,7 @@ import {
   PartnerUpiPaymentLog,
 } from "../../pages/admin/management/delivery-partners/partner-dashboard";
 import PartnerCancelledOrders from "../../pages/admin/management/delivery-partners/partner-dashboard/partner-cancelled-orders";
+import DeliveryPartnerArea from "../../pages/admin/management/delivery-partners/delivery-partner-area";
 
 export default {
   path: "/management",
@@ -148,6 +149,10 @@ export default {
         {
           path: "new",
           element: <CreateDeliveryPartner />,
+        },
+        {
+          path: "area/:partner_id",
+          element: <DeliveryPartnerArea />,
         },
         {
           path: ":partner_id",

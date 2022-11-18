@@ -6,11 +6,11 @@ import { Container, Box, Grid, Button, CircularProgress } from "@mui/material";
 import { MainContainer } from "../../../../components/layout";
 import { queryToStr } from "../../../../components/admin/utils";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
-import { retailer, shopAreas, shopRetailerArea } from "../../../../http";
+import { deliveryPartners, shopAreas, shopPartnerArea } from "../../../../http";
 import TextSelectList from "../../../../components/common/text-select-list";
 
-export default function RetailerArea() {
-  const { retailer_id } = useParams();
+export default function DeliveryPartnerArea() {
+  const { partner_id } = useParams();
   const [left, setLeft] = React.useState<Array<Record<string, any>>>([]);
   const [right, setRight] = React.useState<Array<Record<string, any>>>([]);
   const [leftSelectValue, setLeftSelectValue] = React.useState<string[]>([]);
@@ -20,13 +20,15 @@ export default function RetailerArea() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
-  const { data } = useQuery(["retailer-name"], () =>
-    retailer("get", { params: retailer_id })
+  const { data } = useQuery(["delivery-agent-name"], () =>
+    deliveryPartners("get", { params: partner_id })
   );
-  const retailerName = React.useMemo(() => {
-    if (data?.status) return data.data?.retailer_name || "";
+
+  const partnerName = React.useMemo(() => {
+    if (data?.status) return data.data?.partner_name;
     return "";
   }, [data]);
+
   const { isLoading: leftLoading } = useQuery(
     ["get-all-area-left"],
     () => shopAreas("get"),
@@ -38,10 +40,10 @@ export default function RetailerArea() {
     }
   );
   const { isLoading: rightLoading } = useQuery(
-    ["get-all-retailer-area-right"],
+    ["get-all-partner-area-right"],
     () =>
-      shopRetailerArea("get", {
-        postfix: "?" + queryToStr({ retailer_id }),
+      shopPartnerArea("get", {
+        postfix: "?" + queryToStr({ partner_id }),
       }),
     {
       onSuccess(data) {
@@ -107,27 +109,27 @@ export default function RetailerArea() {
     if (right.length !== 0) {
       setLoading(true);
       try {
-        const res = await shopRetailerArea("post", {
+        const res = await shopPartnerArea("post", {
           data: JSON.stringify({
             area_id: right.map((value) => parseInt(value.area_id)),
-            retailer_id,
+            partner_id,
           }),
         });
         if (res?.status === 200) {
-          enqueueSnackbar("Retailer Area add successfully!", {
+          enqueueSnackbar("delivery partner areas add successfully!", {
             variant: "success",
           });
           navigate(-1);
         }
       } catch (error) {
         console.log(error);
-        enqueueSnackbar("Retailer Area add failed!", {
+        enqueueSnackbar("delivery partner areas add failed!", {
           variant: "error",
         });
       }
       setLoading(false);
     } else {
-      enqueueSnackbar("please select retailer areas!", {
+      enqueueSnackbar("please select delivery partner areas!", {
         variant: "error",
       });
     }
@@ -136,7 +138,7 @@ export default function RetailerArea() {
   return (
     <MainContainer>
       <Container>
-        <CommonToolbar title={`${retailerName} / Retailer Area`} />
+        <CommonToolbar title={`${partnerName} / Delivery Partner Area`} />
         <Box mt={2}>
           <Grid
             container

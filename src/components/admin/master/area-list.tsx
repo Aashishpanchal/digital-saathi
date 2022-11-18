@@ -111,8 +111,8 @@ export default function AreaList(props: {
         width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <LinkRouter to={`${cell.row.original.area_id}/primary-retailer`}>
-              <Tooltip title="Primary Retailer">
+            <LinkRouter to={`${cell.row.original.area_id}/primary-areas`}>
+              <Tooltip title="Primary Areas">
                 <IconButton
                   disableRipple={false}
                   size="small"

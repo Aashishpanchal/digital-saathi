@@ -75,8 +75,9 @@ export default function DeliveryPartnerForm(props: {
       },
       {
         type: "numeric",
-        label: "Pin-Code",
+        label: "pincode",
         name: "pincode",
+        inputProps: { maxLength: 6 },
         placeholder: "pincode",
       },
       {

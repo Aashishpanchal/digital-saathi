@@ -70,6 +70,8 @@ export default function FileUploader(props: {
               color: "neutral.400",
             }}
           >
+            Image size should be square (500) x (500),
+            <br />
             Support: jpeg, png
           </Typography>
         </LabelContainer>

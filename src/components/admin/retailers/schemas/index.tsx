@@ -1,15 +1,16 @@
 import * as Yup from "yup";
+import { emptyText, minText } from "../../../../constants/messages";
 
 export const retailerSchema = Yup.object({
   retailer_name: Yup.string()
-    .min(2)
+    .min(2, minText("retailer name"))
     .max(255)
-    .required("Please enter retailer name"),
+    .required(emptyText("retailer name")),
   company_name: Yup.string()
-    .min(2)
+    .min(2, minText("retailer name"))
     .max(255)
-    .required("Please enter company name"),
-  email_id: Yup.string().email().required("Please enter retailer email id"),
+    .required(emptyText("company name")),
+  email_id: Yup.string().email().required(emptyText("email")),
   phone_no: Yup.string().matches(
     /^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[789]\d{9}|(\d[ -]?){10}\d$/,
     {
@@ -17,7 +18,7 @@ export const retailerSchema = Yup.object({
       excludeEmptyString: false,
     }
   ),
-  pincode: Yup.number()
-    .positive("wrong pincode")
-    .required("Please enter pincode"),
+  pincode: Yup.string()
+    .max(6, "invalid pincode")
+    .required(emptyText("pincode")),
 });

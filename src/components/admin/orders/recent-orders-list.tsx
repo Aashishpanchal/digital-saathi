@@ -1,18 +1,20 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import dayjs from "dayjs";
+import { FaEye } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
+import { NumericFormat } from "react-number-format";
+import { Typography, Box, IconButton, Tooltip } from "@mui/material";
 import { shopOrders } from "../../../http";
 import SerialNumber from "../serial-number";
 import OrderStatus from "../orders/order-status";
-import dayjs from "dayjs";
 import DataTable from "../../table/data-table";
 import { TextCenter } from "../orders/styles";
-import { NumericFormat } from "react-number-format";
+import LinkRouter from "../../../routers/LinkRouter";
 
 export default function RecentOrdersList(props: {
   params?: string;
   postfix?: string;
-  variant: "retailer" | "partner";
+  variant: "retailer" | "partner" | "dashboard";
 }) {
   const { params, postfix, variant } = props;
 
@@ -132,6 +134,91 @@ export default function RecentOrdersList(props: {
     []
   );
 
+  const dashboardColumns = React.useMemo(
+    () => [
+      {
+        Header: "S No.",
+        accessor: (_row: any, i: number) => i + 1,
+        Cell: (cell: any) => <SerialNumber cell={cell} page={0} size={"10"} />,
+        width: "2%",
+      },
+      {
+        Header: "Order ID",
+        accessor: "order_id",
+        width: "10%",
+        Cell: (cell: any) => (
+          <Typography fontWeight={"600"} textAlign="center" fontSize={"small"}>
+            {cell.value}
+          </Typography>
+        ),
+      },
+      {
+        Header: "Order Date",
+        accessor: "order_date",
+        width: "10%",
+        Cell: (cell: any) => (
+          <Typography textAlign={"center"} fontSize="small">
+            {dayjs(cell.value).format("D-MMM-YYYY")}
+          </Typography>
+        ),
+      },
+      {
+        Header: "Order Status",
+        accessor: "order_status",
+        width: "15%",
+        Cell: (cell: any) => <OrderStatus value={cell.value} />,
+      },
+      {
+        Header: "Amount",
+        accessor: "grand_total",
+        width: "10%",
+        Cell: (cell: any) => (
+          <TextCenter fontWeight={"600"} fontSize="small">
+            <NumericFormat value={cell.value} prefix="₹ " displayType="text" />
+          </TextCenter>
+        ),
+      },
+      {
+        Header: "Farmer Name",
+        accessor: "customer_name",
+        Cell: (cell: any) => (
+          <TextCenter fontSize="small">{cell.value}</TextCenter>
+        ),
+      },
+      {
+        Header: "Retailer",
+        accessor: "retailer_name",
+        Cell: (cell: any) => (
+          <TextCenter fontWeight={"600"} fontSize="small">
+            {cell.row.original.retailer_company_name} ( {cell.value} )
+          </TextCenter>
+        ),
+      },
+      {
+        Header: "Action",
+        width: "5%",
+        Cell: (cell: any) => (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <LinkRouter
+              to={`/orders/order-details/${cell.row.original.order_id}?order_status=${cell.row.original.order_status}`}
+            >
+              <Tooltip title="View Orders">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <FaEye />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
+          </Box>
+        ),
+      },
+    ],
+    []
+  );
+
   const getData = React.useMemo(() => {
     if (data?.status === 200) {
       return data.data;
@@ -146,7 +233,7 @@ export default function RecentOrdersList(props: {
   return (
     <DataTable
       loading={isLoading}
-      columns={columns}
+      columns={variant === "dashboard" ? dashboardColumns : columns}
       data={getData.orders}
       showNotFound={getData.totalItems === 0}
     />
