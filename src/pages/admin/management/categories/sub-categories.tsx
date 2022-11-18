@@ -1,12 +1,12 @@
 // subcategories
 import React from "react";
 import { Box } from "@mui/material";
-import { MainContainer } from "../../../../components/layout";
-import CategoriesListResults from "../../../../components/admin/categories/categories-list-results";
-import { categories } from "../../../../http";
 import { useParams } from "react-router-dom";
-import CommonToolbar from "../../../../components/admin/common-toolbar";
 import { useQuery } from "@tanstack/react-query";
+import { MainContainer } from "../../../../components/layout";
+import { categories } from "../../../../http";
+import CommonToolbar from "../../../../components/admin/common-toolbar";
+import SubCategoriesList from "../../../../components/admin/categories/sub-categories-list";
 
 export default function SubCategories() {
   const { parent_category_id } = useParams();
@@ -44,11 +44,11 @@ export default function SubCategories() {
         onClickSort={onSortOpen}
       />
       <Box sx={{ mt: 3 }}>
-        <CategoriesListResults
+        <SubCategoriesList
           searchText={searchText}
           addOpen={open}
           addClose={onClose}
-          categoryPartnerId={parent_category_id}
+          categoryId={parent_category_id as string}
           sortOpen={sortOpen}
           onSortClose={onSortClose}
         />

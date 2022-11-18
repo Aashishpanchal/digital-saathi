@@ -3,10 +3,9 @@ import { useSnackbar } from "notistack";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { FaArrowRight, FaRegEdit } from "react-icons/fa";
-import { categories } from "../../../http";
+import { FaRegEdit } from "react-icons/fa";
+import { subCategories } from "../../../http";
 import useBucket from "../../../hooks/useBucket";
-import LinkRouter from "../../../routers/LinkRouter";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 import ProductAvatar from "../../Image/product-avatar";
 import DataTable from "../../table/data-table";
@@ -18,35 +17,38 @@ import SerialNumber from "../serial-number";
 import SortMainDialog from "../sort-main-dialog";
 import { queryToStr } from "../utils";
 
-function CategoriesListResults(props: {
-  searchText: string;
+export default function SubCategoriesList(props: {
   addOpen: boolean;
-  addClose: () => void;
   sortOpen: boolean;
+  categoryId: string;
+  searchText: string;
+  addClose: () => void;
   onSortClose: () => void;
 }) {
   const { page, setPage, size, setSize } = usePaginate();
   const [deleteData, setDeleteData] = React.useState<{
-    value: { [key: string]: any };
+    value: Record<string, any>;
     open: boolean;
   }>({
     value: {},
     open: false,
   });
   const [edit, setEdit] = React.useState<{
-    value?: { [key: string]: any };
+    value?: Record<string, any>;
     open: boolean;
   }>({
     open: false,
   });
 
-  const { searchText, addClose, addOpen, sortOpen, onSortClose } = props;
-  const { S3DeleteImage } = useBucket();
+  const { addOpen, sortOpen, addClose, categoryId, searchText, onSortClose } =
+    props;
+  const { S3DeleteImage } = useBucket("sub-categories");
 
   const postfix = React.useMemo(() => {
     const x = queryToStr({
       page,
       size,
+      category_id: categoryId,
     });
     return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [searchText, page, size]);
@@ -55,10 +57,12 @@ function CategoriesListResults(props: {
 
   const deleteBoxClose = () => setDeleteData({ open: false, value: {} });
 
-  const { isLoading, refetch, data } = useQuery(["categories", postfix], () =>
-    categories("get", {
-      postfix,
-    })
+  const { isLoading, refetch, data } = useQuery(
+    ["sub-categories", postfix],
+    () =>
+      subCategories("get", {
+        postfix,
+      })
   );
 
   const onDelete = async () => {
@@ -66,11 +70,11 @@ function CategoriesListResults(props: {
       const { category_id, image } = deleteData.value;
       const metaData = await S3DeleteImage(image);
       if (metaData?.success) {
-        const res: any = await categories("delete", {
+        const res: any = await subCategories("delete", {
           params: category_id,
         });
         if (res.status === 200) {
-          await refetch();
+          refetch();
           enqueueSnackbar("entry successfully deleted 😊", {
             variant: "success",
           });
@@ -101,13 +105,13 @@ function CategoriesListResults(props: {
           <ActiveDeactive
             cell={cell}
             idAccessor="category_id"
-            axiosFunction={categories}
+            axiosFunction={subCategories}
             refetch={refetch}
           />
         ),
       },
       {
-        Header: "Category Image",
+        Header: "Subcategory Image",
         accessor: "image",
         width: "20%",
         Cell: (cell: any) => (
@@ -121,7 +125,7 @@ function CategoriesListResults(props: {
         ),
       },
       {
-        Header: "Category Name",
+        Header: "Subcategory Name",
         accessor: "name",
       },
       {
@@ -129,7 +133,7 @@ function CategoriesListResults(props: {
         width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Tooltip title={"Category Edit"}>
+            <Tooltip title={"Subcategory Edit"}>
               <IconButton
                 disableRipple={false}
                 size="small"
@@ -153,17 +157,6 @@ function CategoriesListResults(props: {
                 <RiDeleteBinFill />
               </IconButton>
             </Tooltip>
-            <LinkRouter to={`${cell.row.original.category_id}/sub-categories`}>
-              <Tooltip title="Subcategories">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                >
-                  <FaArrowRight />
-                </IconButton>
-              </Tooltip>
-            </LinkRouter>
           </Box>
         ),
       },
@@ -178,7 +171,7 @@ function CategoriesListResults(props: {
     return {
       totalItems: 0,
       totalPages: 0,
-      categories: [],
+      subcategories: [],
     };
   }, [data]);
 
@@ -191,7 +184,7 @@ function CategoriesListResults(props: {
       <DataTable
         loading={isLoading}
         columns={columns}
-        data={getData.categories}
+        data={getData.subcategories}
         showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
@@ -218,7 +211,8 @@ function CategoriesListResults(props: {
           category={edit.value}
           reload={refetch}
           variant="edit"
-          type="category"
+          type={"subcategory"}
+          otherData={{ parent_category_id: categoryId }}
         />
       )}
       {addOpen && (
@@ -227,26 +221,26 @@ function CategoriesListResults(props: {
           close={addClose}
           reload={refetch}
           variant="add"
-          type={"category"}
+          type={"subcategory"}
+          otherData={{ parent_category_id: categoryId }}
         />
       )}
       {sortOpen && (
         <SortMainDialog
-          id={"select-category"}
-          title="Sort Categories"
-          dataKeyExtract={"categories"}
+          id={"select-subcategory"}
+          title={"SubCategories"}
+          dataKeyExtract={"subcategories"}
           open={sortOpen}
           onClose={onSortClose}
           extractObj={{
             value: "name",
             id: "category_id",
           }}
-          requestFunc={categories}
+          postfix={"?".concat(queryToStr({ category_id: categoryId }))}
+          requestFunc={subCategories}
           refetch={refetch}
         />
       )}
     </>
   );
 }
-
-export default React.memo(CategoriesListResults);

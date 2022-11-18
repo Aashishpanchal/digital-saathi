@@ -17,6 +17,8 @@ import {
 import LinkRouter from "../../../routers/LinkRouter";
 import RowSearch from "../../table/row-search";
 import AsyncAutocomplete from "../../form/async-autocomplete";
+import { useQuery } from "@tanstack/react-query";
+import { queryToStr } from "../utils";
 
 export default function ProductsListToolbar(props: {
   title?: string;
@@ -31,110 +33,43 @@ export default function ProductsListToolbar(props: {
   };
 }) {
   const { onSearch, exportProps, title, onClickSort } = props;
-
   const [searchText, setSearchText] = React.useState("");
   const [categoryId, setCategoryId] = React.useState<undefined | number>();
   const [subcategoryId, setSubcategoryId] = React.useState<
     undefined | number
   >();
 
-  const [category, setCategory] = React.useState({
-    categories: [],
-    isLoading: false,
-  });
-  const [subcategory, setSubcategory] = React.useState({
-    subcategories: [],
-    isLoading: false,
-  });
+  const [categories, setCategories] = React.useState<
+    Array<{ [key: string]: any }>
+  >([]);
+  const [subCategories, setSubCategories] = React.useState<
+    Array<{ [key: string]: any }>
+  >([]);
 
-  const categoriesGet = React.useCallback(async () => {
-    try {
-      setCategory({
-        categories: [],
-        isLoading: true,
-      });
-      let res = await categoriesHttp("get");
-      if (res?.status === 200) {
-        let {
-          data: { totalItems, categories, totalPages },
-        } = res;
-
-        if (totalPages > 1) {
-          res = await categoriesHttp("get", {
-            postfix: `?page=0&size=${totalItems}`,
-          });
-          if (res?.status === 200) {
-            let {
-              data: { categories },
-            } = res;
-            return setCategory({
-              categories: categories,
-              isLoading: false,
-            });
-          }
-        }
-        return setCategory({
-          categories: categories,
-          isLoading: false,
-        });
-      }
-    } catch (error) {
-      console.log(error);
+  const { isLoading: categoryLoading } = useQuery(
+    ["get-all-categories"],
+    () => categoriesHttp("get", { params: "categories" }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200)
+          setCategories(data.data instanceof Array ? data.data : []);
+      },
     }
-    setCategory({
-      categories: [],
-      isLoading: false,
-    });
-  }, []);
-
-  const subCategoriesGet = React.useCallback(async (category_id: number) => {
-    if (category_id) {
-      try {
-        setSubcategory({
-          subcategories: [],
-          isLoading: false,
-        });
-        let res = await subCategoriesHttp("get", {
-          postfix: `?category_id=${category_id}`,
-        });
-        if (res?.status === 200) {
-          let {
-            data: { totalItems, subcategories, totalPages },
-          } = res;
-
-          if (totalPages > 1) {
-            res = await subCategoriesHttp("get", {
-              postfix: `?category_id=${category_id}&page=0&size=${totalItems}`,
-            });
-            if (res?.status === 200) {
-              let {
-                data: { subcategories },
-              } = res;
-              return setSubcategory({
-                subcategories: subcategories,
-                isLoading: false,
-              });
-            }
-          }
-          return setSubcategory({
-            subcategories: subcategories,
-            isLoading: false,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      return setSubcategory({
-        subcategories: [],
-        isLoading: false,
-      });
+  );
+  const { isLoading: subcategoryLoading } = useQuery(
+    ["get-all-subcategories", categoryId],
+    () =>
+      subCategoriesHttp("get", {
+        params: "subcategories",
+        postfix: "?".concat(queryToStr({ category_id: categoryId || 0 })),
+      }),
+    {
+      onSuccess(data) {
+        if (data?.status === 200)
+          setSubCategories(data.data instanceof Array ? data.data : []);
+      },
     }
-    setSubcategory({
-      subcategories: [],
-      isLoading: false,
-    });
-  }, []);
+  );
 
   const onReset = () => {
     setSearchText("");
@@ -142,16 +77,6 @@ export default function ProductsListToolbar(props: {
     setCategoryId(undefined);
     setSubcategoryId(undefined);
   };
-
-  React.useEffect(() => {
-    categoriesGet();
-  }, []);
-
-  React.useEffect(() => {
-    if (categoryId) {
-      subCategoriesGet(categoryId);
-    }
-  }, [categoryId]);
 
   return (
     <Box>
@@ -233,9 +158,9 @@ export default function ProductsListToolbar(props: {
                 <Box sx={{ minWidth: 220 }}>
                   <AsyncAutocomplete
                     id="category-option"
-                    loading={category.isLoading}
+                    loading={categoryLoading}
                     label="Category"
-                    options={category.categories || []}
+                    options={categories}
                     objFilter={{
                       title: "name",
                       value: "category_id",
@@ -252,9 +177,9 @@ export default function ProductsListToolbar(props: {
                 <Box sx={{ minWidth: 220 }}>
                   <AsyncAutocomplete
                     id="sub-category-option"
-                    loading={subcategory.isLoading}
+                    loading={subcategoryLoading}
                     label="Sub Category"
-                    options={subcategory.subcategories || []}
+                    options={subCategories}
                     objFilter={{
                       title: "name",
                       value: "category_id",
