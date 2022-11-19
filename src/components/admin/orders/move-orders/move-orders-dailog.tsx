@@ -129,7 +129,7 @@ export default function MoveOrdersDialog(props: {
   );
 
   return (
-    <Dialog open={open} fullWidth>
+    <Dialog open={open} fullWidth onClose={onClose}>
       <DialogTitle>Move Orders</DialogTitle>
       <DialogContent>
         <Box
