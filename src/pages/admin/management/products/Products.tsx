@@ -9,6 +9,7 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno, queryToStr } from "../../../../components/admin/utils";
 import { productFields } from "../../../../constants";
 import { shopProducts } from "../../../../http";
+import { useNavigate } from "react-router-dom";
 
 export default function Products() {
   const [searchText, setSearchText] = React.useState("");
@@ -16,13 +17,12 @@ export default function Products() {
     Array<Record<string, any>>
   >([]);
   const ref = React.useRef<any>(null);
-
   const [sortOpen, setSortOpen] = React.useState(false);
-
   const onSortOpen = () => setSortOpen(true);
   const onSortClose = () => setSortOpen(false);
-
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const searchHandler = (
     value: string,
@@ -68,6 +68,7 @@ export default function Products() {
       <ProductsListToolbar
         onSearch={searchHandler}
         onClickSort={onSortOpen}
+        onAdd={() => navigate("new")}
         exportProps={{
           ref,
           data: csvData,

@@ -23,7 +23,7 @@ export default function AsyncAutocomplete(props: {
     value: string;
   };
   label: string;
-  value?: number;
+  value?: any;
   id: string;
   onChangeOption: (value: any, values?: Record<string, any>) => void;
   TextInputProps?: {

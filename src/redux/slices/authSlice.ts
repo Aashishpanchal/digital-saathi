@@ -15,14 +15,14 @@ export interface authState {
 }
 
 const initialState: authState = {
-  isAuth: true,
+  isAuth: false,
   user: {
     id: "",
     email: "",
     username: "",
     permissions: {
-      isAdmin: true,
-      isActive: true,
+      isAdmin: false,
+      isActive: false,
     },
   },
 };

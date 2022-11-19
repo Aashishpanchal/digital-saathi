@@ -1,30 +1,73 @@
 import React from "react";
-import { Box } from "@mui/material";
-import AsyncAutocomplete from "../../../../form/async-autocomplete";
+import { useFormik } from "formik";
+import { useSnackbar } from "notistack";
+import { Box, Button } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { deliveryPartners, shopDeliveryAgent } from "../../../../../http";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import AsyncAutocomplete from "../../../../form/async-autocomplete";
+import {
+  deliveryPartners,
+  shopDeliveryAgent,
+  shopOrders,
+} from "../../../../../http";
 import { queryToStr } from "../../../utils";
+import moveOrdersSchemas from "../schemas";
 
-export default function InProcess() {
-  const [partnerSelect, setPartnerSelect] = React.useState<
-    number | undefined
-  >();
-  const [partnerAgentSelect, setPartnerAgentSelect] = React.useState<
-    number | undefined
-  >();
+export default function InProcess(props: {
+  onClose: () => void;
+  orders: Record<string, any>;
+  refetch: Function;
+}) {
+  const { onClose, orders, refetch } = props;
+  const [loading, setLoading] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const { values, errors, touched, handleBlur, handleSubmit, setFieldValue } =
+    useFormik({
+      initialValues: {
+        partner_id: "",
+        agent_id: 0,
+      },
+      validationSchema: moveOrdersSchemas[3],
+      async onSubmit(values) {
+        try {
+          setLoading(true);
+          const res = await shopOrders("post", {
+            params: "status",
+            data: JSON.stringify({
+              ...values,
+              order_id: orders.order_id,
+              order_status: 3,
+            }),
+          });
+          if (res?.status === 200) {
+            onClose();
+            refetch();
+            enqueueSnackbar("order move successfully!", {
+              variant: "success",
+            });
+          }
+        } catch (error) {
+          console.log(error);
+          enqueueSnackbar("order move failed!", {
+            variant: "error",
+          });
+        }
+        setLoading(false);
+      },
+    });
 
   const { isLoading, data } = useQuery(["get-all-partner"], () =>
     deliveryPartners("get")
   );
 
   const { isLoading: partnerAgentLoading, data: partnerAgentData } = useQuery(
-    ["get-all-delivery-agent", partnerSelect],
+    ["get-all-delivery-agent", values.partner_id],
     () =>
       shopDeliveryAgent("get", {
         postfix: "?".concat(
           queryToStr({
-            partner_id: partnerSelect,
+            partner_id: values.partner_id,
           })
         ),
       })
@@ -45,31 +88,73 @@ export default function InProcess() {
       <Typography my={1} variant={"h6"}>
         Move order in-process
       </Typography>
-      <AsyncAutocomplete
-        id="partner-option"
-        label="Partner"
-        loading={isLoading}
-        options={partnerOptions}
-        value={partnerSelect}
-        objFilter={{
-          title: "partner_name",
-          value: "partner_id",
-        }}
-        onChangeOption={(value) => setPartnerSelect(value)}
-      />
-      <AsyncAutocomplete
-        id="partner-agent-option"
-        sx={{ my: 2 }}
-        label="Agent"
-        loading={partnerAgentLoading}
-        options={partnerAgent}
-        value={partnerAgentSelect}
-        objFilter={{
-          title: "agent_name",
-          value: "agent_id",
-        }}
-        onChangeOption={(value) => setPartnerAgentSelect(value)}
-      />
+      <form onSubmit={handleSubmit}>
+        <AsyncAutocomplete
+          id="partner-option"
+          label="Partner"
+          loading={isLoading}
+          options={partnerOptions}
+          value={values.partner_id}
+          objFilter={{
+            title: "partner_name",
+            value: "partner_id",
+          }}
+          onChangeOption={(value) => setFieldValue("partner_id", value)}
+          TextInputProps={{
+            error: errors["partner_id"] && touched["partner_id"] ? true : false,
+            helperText: touched["partner_id"] ? errors["partner_id"] : "",
+            onBlur: handleBlur,
+          }}
+        />
+        <AsyncAutocomplete
+          id="partner-agent-option"
+          sx={{ my: 2 }}
+          label="Agent"
+          loading={partnerAgentLoading}
+          options={partnerAgent}
+          value={values.agent_id}
+          objFilter={{
+            title: "agent_name",
+            value: "agent_id",
+          }}
+          onChangeOption={(value) => setFieldValue("agent_id", value)}
+          TextInputProps={{
+            error: errors["agent_id"] && touched["agent_id"] ? true : false,
+            helperText: touched["agent_id"] ? errors["agent_id"] : "",
+            onBlur: handleBlur,
+          }}
+        />
+        <Box
+          sx={{
+            display: "flex",
+            flexFlow: "row-reverse",
+            gap: 2,
+            my: 1,
+          }}
+        >
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            size="small"
+            startIcon={
+              loading ? (
+                <CircularProgress color="inherit" size={20} />
+              ) : undefined
+            }
+          >
+            Save
+          </Button>
+          <Button
+            color="secondary"
+            variant="outlined"
+            onClick={onClose}
+            size="small"
+          >
+            Close
+          </Button>
+        </Box>
+      </form>
     </Box>
   );
 }
