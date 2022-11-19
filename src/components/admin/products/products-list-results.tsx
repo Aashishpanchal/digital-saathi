@@ -1,21 +1,21 @@
 import React from "react";
-import { Box, Tooltip, IconButton } from "@mui/material";
-import { shopProducts } from "../../../http";
-import DataTable from "../../table/data-table";
-import TablePagination from "../../table/table-pagination";
-import ActiveDeactive from "../active-deactive";
-import FocusStar from "../focus-star";
-import { RiDeleteBinFill } from "react-icons/ri";
-import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 import { useSnackbar } from "notistack";
 import { TbListDetails } from "react-icons/tb";
-import LinkRouter from "../../../routers/LinkRouter";
-import { FaRegEdit, FaRegFileImage, FaRupeeSign } from "react-icons/fa";
-import ProductPriceDialog from "./product-price-dialog";
-import usePaginate from "../../../hooks/usePaginate";
+import { RiDeleteBinFill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
+import { Box, Tooltip, IconButton } from "@mui/material";
+import { FaRegEdit, FaRegFileImage, FaRupeeSign } from "react-icons/fa";
+import FocusStar from "../focus-star";
 import SerialNumber from "../serial-number";
+import { shopProducts } from "../../../http";
+import DataTable from "../../table/data-table";
+import ActiveDeactive from "../active-deactive";
 import SortMainDialog from "../sort-main-dialog";
+import LinkRouter from "../../../routers/LinkRouter";
+import usePaginate from "../../../hooks/usePaginate";
+import ProductPriceDialog from "./product-price-dialog";
+import TablePagination from "../../table/table-pagination";
+import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 
 export default function ProductsListResults(props: {
   searchText: string;

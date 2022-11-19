@@ -1,6 +1,7 @@
 import React from "react";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ProductsListResults from "../../../../components/admin/products/products-list-results";
 import ProductsListToolbar from "../../../../components/admin/products/products-list-toolbar";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
@@ -9,7 +10,6 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { addSno, queryToStr } from "../../../../components/admin/utils";
 import { productFields } from "../../../../constants";
 import { shopProducts } from "../../../../http";
-import { useNavigate } from "react-router-dom";
 
 export default function Products() {
   const [searchText, setSearchText] = React.useState("");
@@ -38,7 +38,6 @@ export default function Products() {
           ...(value ? { search_products: value } : {}),
         })
     );
-    // setSearchText(value ? `/searchproduct?search_products=${value}` : "");
   };
 
   const exportHandle = async () => {
@@ -69,6 +68,7 @@ export default function Products() {
         onSearch={searchHandler}
         onClickSort={onSortOpen}
         onAdd={() => navigate("new")}
+        onImport={() => navigate("product-csv-import")}
         exportProps={{
           ref,
           data: csvData,

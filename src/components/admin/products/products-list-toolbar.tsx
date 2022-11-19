@@ -96,7 +96,7 @@ export default function ProductsListToolbar(props: {
         <Box sx={{ m: 1 }}>
           {onImport && (
             <Button
-              color="error"
+              color="secondary"
               startIcon={<FaFileCsv fontSize="small" />}
               sx={{ mr: 1 }}
               size="small"

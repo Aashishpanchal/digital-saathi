@@ -13,7 +13,7 @@ import {
 } from "../../pages/admin/management/delivery-partners";
 import {
   CreateProducts,
-  ImportCsvProducts,
+  ProductCsvImport,
   Products,
   RetrieveUpdateProduct,
   ShopProductDetails,
@@ -214,11 +214,11 @@ export default {
           element: <CreateProducts />,
         },
         {
-          path: "product-import-export",
+          path: "product-csv-import",
           children: [
             {
               path: "",
-              element: <ImportCsvProducts />,
+              element: <ProductCsvImport />,
             },
           ],
         },

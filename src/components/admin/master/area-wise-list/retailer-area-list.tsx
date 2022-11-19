@@ -47,8 +47,8 @@ export default function RetailersAreaList(props: {
       },
       { Header: "Area", accessor: "area" },
       { Header: "Pincode", accessor: "pincode" },
-      { Header: "Company Name", accessor: "company_name" },
       { Header: "Retailer Name", accessor: "retailer_name" },
+      { Header: "Company Name", accessor: "company_name" },
       {
         Header: "Focus Retailer",
         accessor: "focus_retailer",

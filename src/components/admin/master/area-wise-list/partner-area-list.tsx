@@ -47,8 +47,8 @@ export default function PartnerAreaList(props: {
       },
       { Header: "Area", accessor: "area" },
       { Header: "Pincode", accessor: "pincode" },
-      { Header: "Company Name", accessor: "company_name" },
       { Header: "Partner Name", accessor: "partner_name" },
+      { Header: "Zone Name", accessor: "zone_name" },
       {
         Header: "Focus Partner",
         accessor: "focus_partner",
