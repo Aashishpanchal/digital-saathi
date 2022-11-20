@@ -1,12 +1,12 @@
 [
   {
-    "sku_name": "Test",
-    "sku_name_kannada": "test 18",
-    "sku_code": "FB2",
-    "description": "Test is Test",
-    "category_id": 1,
-    "subcategory_id": 5,
-    "brand_id": 2,
-    "hsn_code": 5603
+    "sku_name": "Tomato Insecticides.",
+    "sku_name_kannada": "2, 4-ಡಿ ಮೆನ",
+    "sku_code": "FB2 ew",
+    "description": "I am Tester",
+    "category_id": 72,
+    "subcategory_id": 73,
+    "brand_id": 247,
+    "hsn_code": 2911
   }
 ]

@@ -1,10 +1,18 @@
 import React from "react";
+import { Typography } from "@mui/material";
+import { Cell } from "react-table";
 
-export default function CheckDataCell(props: { cell: any }) {
-  //   const { original } = props.cell.row;
-  const { value } = props.cell;
+export default function CheckDataCell(props: { cell: Cell }) {
+  const {
+    cell: { value },
+  } = props;
+
   if (!value) {
-    return <div className="text-red-600 font-bold">Error No Data</div>;
+    return (
+      <Typography fontSize="small" color="error">
+        Error No Data
+      </Typography>
+    );
   }
-  return <div>{value}</div>;
+  return <Typography fontSize="small">{value}</Typography>;
 }

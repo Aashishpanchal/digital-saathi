@@ -64,7 +64,7 @@ export default function ProductsListResults(props: {
       });
       if (res.status === 200) {
         await refetch();
-        enqueueSnackbar("entry success-full deleted 😊", {
+        enqueueSnackbar("entry successfull deleted 😊", {
           variant: "success",
         });
       }
