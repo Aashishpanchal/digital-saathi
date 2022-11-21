@@ -8,7 +8,7 @@ import ordersRouters from "./admin/orders-routers";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 import PublicRouter from "./PublicRouter";
 import Login from "../pages/auth/Login";
-import ChangePassword from "../pages/admin/user/ChangePassword";
+import ChangePassword from "../pages/admin/user/change-password";
 import { DashboardLayout } from "../components/layout";
 import Dashboard from "../pages/admin/Dashboard";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -34,6 +34,10 @@ export default function AppRouter() {
           path: "/dashboard",
           element: <Dashboard />,
         },
+        {
+          path: "user/change-password",
+          element: <ChangePassword />,
+        },
         auth0Routers,
         managementRouters,
         masterRouters,
@@ -49,10 +53,6 @@ export default function AppRouter() {
           <Login />
         </PublicRouter>
       ),
-    },
-    {
-      path: "user/change-password",
-      element: <ChangePassword />,
     },
     {
       path: "*",

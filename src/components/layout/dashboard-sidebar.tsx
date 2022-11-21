@@ -28,7 +28,7 @@ export default function DashboardSidebar(props: {
   const listDataTwo = React.useMemo(
     () => [
       {
-        href: "/change-password",
+        href: "/user/change-password",
         title: "Change Password",
         icon: <FaKey />,
       },

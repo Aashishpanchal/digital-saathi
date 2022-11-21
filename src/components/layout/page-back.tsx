@@ -21,6 +21,7 @@ function PageBreadcrumbs() {
   const backOff = React.useMemo(
     () =>
       new Set([
+        "/user/change-password",
         "/management/categories",
         "/management/brands",
         "/management/products",
