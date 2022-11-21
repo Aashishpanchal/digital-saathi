@@ -13,7 +13,7 @@ import {
   FaShippingFast,
   FaTractor,
   FaUserPlus,
-  FaUsers,
+  // FaUsers,
   FaUserTie,
   FaBoxes,
   FaPeopleCarry,
@@ -47,11 +47,11 @@ const sideBarMainList = [
     title: "Dashboard",
     icon: <HiChartPie />,
   },
-  {
-    href: "/auth0-users",
-    title: "Auth0 Users",
-    icon: <FaUsers />,
-  },
+  // {
+  //   href: "/auth0-users",
+  //   title: "Auth0 Users",
+  //   icon: <FaUsers />,
+  // },
   {
     title: "Management",
     icon: <FaUserPlus />,
@@ -155,37 +155,37 @@ const sideBarMainList = [
       },
     ],
   },
-  {
-    title: "Report",
-    icon: <TbReportAnalytics />,
-    child: [
-      {
-        href: "/reports/amount-collection-report",
-        title: "Amount collection report",
-        icon: <TbCurrencyRupee />,
-      },
-      {
-        href: "/reports/invoice-wise-delivery-status",
-        title: "Invoice wise delivery status",
-        icon: <MdSave />,
-      },
-      {
-        href: "/reports/ds-margin-claims",
-        title: "DS margin claims",
-        icon: <BsFileEarmarkCheckFill />,
-      },
-      {
-        href: "/reports/order-fulfillment",
-        title: "Order fulfillment",
-        icon: <TbTruckDelivery />,
-      },
-      {
-        href: "/reports/sale",
-        title: "Sale",
-        icon: <BsGraphUp />,
-      },
-    ],
-  },
+  // {
+  //   title: "Report",
+  //   icon: <TbReportAnalytics />,
+  //   child: [
+  //     {
+  //       href: "/reports/amount-collection-report",
+  //       title: "Amount collection report",
+  //       icon: <TbCurrencyRupee />,
+  //     },
+  //     {
+  //       href: "/reports/invoice-wise-delivery-status",
+  //       title: "Invoice wise delivery status",
+  //       icon: <MdSave />,
+  //     },
+  //     {
+  //       href: "/reports/ds-margin-claims",
+  //       title: "DS margin claims",
+  //       icon: <BsFileEarmarkCheckFill />,
+  //     },
+  //     {
+  //       href: "/reports/order-fulfillment",
+  //       title: "Order fulfillment",
+  //       icon: <TbTruckDelivery />,
+  //     },
+  //     {
+  //       href: "/reports/sale",
+  //       title: "Sale",
+  //       icon: <BsGraphUp />,
+  //     },
+  //   ],
+  // },
   {
     title: "Orders",
     icon: <BsJournalBookmark />,

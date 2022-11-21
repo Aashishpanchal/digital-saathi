@@ -16,15 +16,26 @@ export default function CommonToolbar(props: {
   placeholder?: string;
   onClickExport?: () => void;
   exportProps?: {
+    title?: string;
     ref?: any;
     headers?: Headers;
     onClick?: () => void;
     data: string | Data | (() => string | Data);
     filename?: string;
   };
+  uploadComponent?: React.ReactNode;
+  titleVariant?: "subtitle" | "h6";
 }) {
-  const { onAddProps, onClickSort, title, onSearch, exportProps, placeholder } =
-    props;
+  const {
+    onAddProps,
+    onClickSort,
+    title,
+    onSearch,
+    exportProps,
+    placeholder,
+    titleVariant,
+    uploadComponent,
+  } = props;
 
   const [searchText, setSearchText] = React.useState("");
 
@@ -44,7 +55,16 @@ export default function CommonToolbar(props: {
           m: -0.5,
         }}
       >
-        <Typography sx={{ m: 1 }} variant="h5">
+        <Typography
+          sx={{ m: 1 }}
+          variant={
+            titleVariant === "subtitle"
+              ? "subtitle1"
+              : titleVariant === "h6"
+              ? "h6"
+              : "h5"
+          }
+        >
           {title}
         </Typography>
         <Box sx={{ m: 1 }}>
@@ -63,7 +83,7 @@ export default function CommonToolbar(props: {
                 onClick={exportProps?.onClick}
                 startIcon={<FaFileCsv fontSize="small" />}
               >
-                Export
+                {exportProps.title ? exportProps.title : "Export"}
               </Button>
             </>
           )}

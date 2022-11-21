@@ -90,12 +90,6 @@ export default function RetailerListResults(props: { searchText: string }) {
         ),
       },
       {
-        Header: "Auth Code",
-        accessor: "auth_code",
-        width: "20%",
-        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
-      },
-      {
         Header: "Retailer Name",
         accessor: "retailer_name",
         Cell: (cell: any) => (
@@ -103,6 +97,12 @@ export default function RetailerListResults(props: { searchText: string }) {
             {cell.row.original?.company_name} ( {cell.value} )
           </Typography>
         ),
+      },
+      {
+        Header: "Email Id",
+        accessor: "email_id",
+        width: "20%",
+        Cell: (cell: any) => <TextCenter>{cell.value}</TextCenter>,
       },
       {
         Header: "Action",

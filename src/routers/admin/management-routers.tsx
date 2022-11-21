@@ -13,7 +13,7 @@ import {
 } from "../../pages/admin/management/delivery-partners";
 import {
   CreateProducts,
-  ImportCsvProducts,
+  ProductCsvImport,
   Products,
   RetrieveUpdateProduct,
   ShopProductDetails,
@@ -45,6 +45,7 @@ import {
   PartnerUpiPaymentLog,
 } from "../../pages/admin/management/delivery-partners/partner-dashboard";
 import PartnerCancelledOrders from "../../pages/admin/management/delivery-partners/partner-dashboard/partner-cancelled-orders";
+import DeliveryPartnerArea from "../../pages/admin/management/delivery-partners/delivery-partner-area";
 
 export default {
   path: "/management",
@@ -150,6 +151,10 @@ export default {
           element: <CreateDeliveryPartner />,
         },
         {
+          path: "area/:partner_id",
+          element: <DeliveryPartnerArea />,
+        },
+        {
           path: ":partner_id",
           children: [
             {
@@ -209,11 +214,11 @@ export default {
           element: <CreateProducts />,
         },
         {
-          path: "product-import-export",
+          path: "product-csv-import",
           children: [
             {
               path: "",
-              element: <ImportCsvProducts />,
+              element: <ProductCsvImport />,
             },
           ],
         },

@@ -11,6 +11,7 @@ export default function RowSearch(props: TextFieldProps) {
     <TextField
       fullWidth
       sx={{
+        backgroundColor: "#fff",
         "& .MuiInputBase-input": {
           padding: 1,
         },

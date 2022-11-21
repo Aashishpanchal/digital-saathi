@@ -1,12 +1,45 @@
 import { Box, Paper, Select, CircularProgress } from "@mui/material";
 
-export default function RetailerAreaList(props: {
+export default function TextSelectList(props: {
   value: Array<string>;
   loading: boolean;
   onChange: Function;
   options: Array<Record<string, any>>;
+  extractObj: {
+    value: string;
+    label: string | Array<string>;
+  };
 }) {
-  const { options, value, onChange, loading } = props;
+  const { options, value, onChange, loading, extractObj } = props;
+
+  const getLabel = (
+    labels: string | Array<string>,
+    values: Record<string, any>
+  ) => {
+    let labelStr = "";
+    if (labels instanceof Array) {
+      for (const label of labels) {
+        const x = label.split(" ");
+        if (x.length !== 0) {
+          const [f, ...s] = x;
+          labelStr += values[f]
+            ? ` ${values[f]}${
+                s.length !== 0
+                  ? s.reduce(
+                      (p, c) => (p === "" ? " " : p) + (c === "" ? " " : c)
+                    )
+                  : ""
+              }`
+            : "";
+        } else {
+          labelStr += values[x[0]] ? values[x[0]] : "";
+        }
+      }
+    } else if (typeof labels === "string") {
+      return values[labels] ? values[labels] : "";
+    }
+    return labelStr;
+  };
 
   return (
     <Paper>
@@ -44,8 +77,8 @@ export default function RetailerAreaList(props: {
           }}
         >
           {options.map((item: Record<string, any>, index: number) => (
-            <option key={index} value={item.area_id}>
-              {item?.pincode} - {item?.area}, {item?.state}
+            <option key={index} value={item[extractObj.value]}>
+              {getLabel(extractObj.label, item)}
             </option>
           ))}
         </Select>

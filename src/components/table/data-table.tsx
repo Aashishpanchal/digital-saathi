@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  useTable,
-  useSortBy,
-  useFilters,
-  useGlobalFilter,
-  Column,
-} from "react-table";
+import { useTable, useSortBy, Column } from "react-table";
 import {
   Table,
   TableHead,
@@ -20,7 +14,6 @@ import {
 } from "@mui/material";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import { styled } from "@mui/material";
-import RowSearch from "./row-search";
 import RawDataNotFound from "../admin/raw-data-not-found";
 
 const TableHeaderCell = styled(TableCell)(({ theme }) => ({
@@ -47,36 +40,18 @@ export interface DataTableProps {
 }
 
 export default function DataTable(props: DataTableProps) {
-  const {
-    columns,
-    data,
-    components,
-    loading,
-    filtersHidden,
-    showNotFound,
-    children,
-  } = props;
+  const { columns, data, components, loading, showNotFound, children } = props;
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    ...others
-  } = useTable(
+  const { headerGroups, rows, prepareRow } = useTable(
     {
       columns: columns,
       data: data,
     },
-    useGlobalFilter,
-    useFilters,
     useSortBy
   );
 
   return (
     <Card sx={{ paddingBottom: 2 }}>
-      {filtersHidden && <RowSearch {...(others as any)} />}
       <Box
         sx={{
           marginBottom: 2,

@@ -89,12 +89,16 @@ export default function FarmersListResults(props: { searchText: string }) {
         ),
       },
       {
-        Header: "Auth Code",
+        Header: "Customer Id",
         accessor: "auth_code",
       },
       {
         Header: "Customer Name",
         accessor: "customer_name",
+      },
+      {
+        Header: "Phone no",
+        accessor: "phone_no",
       },
       {
         Header: "Action",

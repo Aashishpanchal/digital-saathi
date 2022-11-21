@@ -84,7 +84,7 @@ export default function ProductBasicForm(props: {
 
   const { isLoading: brandLoading } = useQuery(
     ["get-all-brands"],
-    () => brandsHttp("get"),
+    () => brandsHttp("get", { params: "brands" }),
     {
       onSuccess(data) {
         if (data?.status === 200)

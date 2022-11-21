@@ -1,6 +1,7 @@
 import React from "react";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ProductsListResults from "../../../../components/admin/products/products-list-results";
 import ProductsListToolbar from "../../../../components/admin/products/products-list-toolbar";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
@@ -16,13 +17,12 @@ export default function Products() {
     Array<Record<string, any>>
   >([]);
   const ref = React.useRef<any>(null);
-
   const [sortOpen, setSortOpen] = React.useState(false);
-
   const onSortOpen = () => setSortOpen(true);
   const onSortClose = () => setSortOpen(false);
-
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const searchHandler = (
     value: string,
@@ -38,7 +38,6 @@ export default function Products() {
           ...(value ? { search_products: value } : {}),
         })
     );
-    // setSearchText(value ? `/searchproduct?search_products=${value}` : "");
   };
 
   const exportHandle = async () => {
@@ -68,6 +67,8 @@ export default function Products() {
       <ProductsListToolbar
         onSearch={searchHandler}
         onClickSort={onSortOpen}
+        onAdd={() => navigate("new")}
+        onImport={() => navigate("product-csv-import")}
         exportProps={{
           ref,
           data: csvData,

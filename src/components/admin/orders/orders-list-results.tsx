@@ -44,7 +44,7 @@ export default function OrdersListResults(props: {
     return searchText ? `${searchText}&${x}` : `?${x}`;
   }, [searchText, page, size]);
 
-  const { isLoading, data } = useQuery(
+  const { isLoading, data, refetch } = useQuery(
     [`order-${orderStatus}`, postfix],
     () =>
       shopOrders("get", {
@@ -74,6 +74,16 @@ export default function OrdersListResults(props: {
         width: "8%",
         Cell: (cell: any) => (
           <Typography fontWeight={"600"} textAlign="center" fontSize="small">
+            {cell.value}
+          </Typography>
+        ),
+      },
+      {
+        Header: "Suborder No",
+        accessor: "suborder_no",
+        width: "8%",
+        Cell: (cell: any) => (
+          <Typography fontWeight={"600"} textAlign="center" fontSize={"small"}>
             {cell.value}
           </Typography>
         ),
@@ -159,7 +169,7 @@ export default function OrdersListResults(props: {
         ),
       },
     ],
-    [page, size]
+    [postfix]
   );
 
   const getData = React.useMemo(() => {
@@ -203,6 +213,7 @@ export default function OrdersListResults(props: {
           orderStatus={orderStatus}
           onClose={onCloseMoveOrder}
           orders={moveOrder.values}
+          refetch={refetch}
         />
       )}
     </>

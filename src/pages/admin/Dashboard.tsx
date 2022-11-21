@@ -1,12 +1,14 @@
 import React from "react";
 import { useQueries } from "@tanstack/react-query";
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import { FaStore, FaTractor, FaWarehouse } from "react-icons/fa";
 import { MainContainer } from "../../components/layout";
-import SaleGraph from "../../components/dashboard/sale-graph";
-import UsersDetails from "../../components/dashboard/users-details";
+// import SaleGraph from "../../components/dashboard/sale-graph";
+// import UsersDetails from "../../components/dashboard/users-details";
 import { farmers, retailer, warehouse } from "../../http";
 import DashboardCard from "../../components/dashboard/dashboard-card";
+import RecentOrdersList from "../../components/admin/orders/recent-orders-list";
+import { queryToStr } from "../../components/admin/utils";
 
 export default function Home() {
   const cardsLabels = React.useMemo(
@@ -58,7 +60,17 @@ export default function Home() {
                 <DashboardCard title={queries(index)} {...item} />
               </Grid>
             ))}
-            <Grid item lg={8} md={12} xl={9} xs={12}>
+            <Grid item xs={12}>
+              <Box sx={{ my: 2 }}>
+                <Typography variant={"h6"}>Recent Orders</Typography>
+              </Box>
+              <RecentOrdersList
+                params="partner"
+                variant="dashboard"
+                postfix={"?".concat(queryToStr({ page: 0, size: 10 }))}
+              />
+            </Grid>
+            {/* <Grid item lg={8} md={12} xl={9} xs={12}>
               <SaleGraph />
             </Grid>
             <Grid item lg={4} md={6} xl={3} xs={12}>
@@ -69,7 +81,7 @@ export default function Home() {
                   retailers: queries(2),
                 }}
               />
-            </Grid>
+            </Grid> */}
           </Grid>
         </Container>
       </Box>

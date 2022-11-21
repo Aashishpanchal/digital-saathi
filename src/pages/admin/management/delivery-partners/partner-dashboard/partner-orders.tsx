@@ -130,7 +130,7 @@ export default function PartnerOrders() {
   return (
     <>
       <OrdersTab onSetOrderStatus={setOrderStatus} />
-      <MainContainer sx={{ pt: 6 }}>
+      <MainContainer>
         <Container>
           <OrdersToolbar
             onSearch={searchHandler}

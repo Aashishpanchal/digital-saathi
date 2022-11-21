@@ -1,8 +1,8 @@
-import { FileUploader as ReactFileUploader } from "react-drag-drop-files";
-import { styled, Typography } from "@mui/material";
-import upload from "../../../assets/upload.png";
-import { useSnackbar } from "notistack";
 import React from "react";
+import { useSnackbar } from "notistack";
+import { styled, Typography } from "@mui/material";
+import { FileUploader as ReactFileUploader } from "react-drag-drop-files";
+import upload from "../../../assets/upload.png";
 
 const ImageContainer = styled("div")`
   --tw-border-opacity: 1;
@@ -70,6 +70,8 @@ export default function FileUploader(props: {
               color: "neutral.400",
             }}
           >
+            Image size should be square (500) x (500),
+            <br />
             Support: jpeg, png
           </Typography>
         </LabelContainer>

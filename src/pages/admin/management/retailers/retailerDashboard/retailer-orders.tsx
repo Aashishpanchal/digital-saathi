@@ -131,7 +131,7 @@ export default function RetailerOrders() {
   return (
     <>
       <OrdersTab onSetOrderStatus={setOrderStatus} />
-      <MainContainer sx={{ pt: 6 }}>
+      <MainContainer>
         <Container>
           <OrdersToolbar
             onSearch={searchHandler}

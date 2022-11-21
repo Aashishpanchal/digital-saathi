@@ -40,7 +40,7 @@ export const shopAssignRetailerProducts = baseFunc(
   "shop_assignretailerproducts"
 );
 export const shopRetailerArea = baseFunc("shop_retailerareas");
-
+export const shopPartnerArea = baseFunc("shop_partnerareas");
 // shop banner api
 export const shopBanner = baseFunc("shop_banners");
 export const shopBannerUpload = (

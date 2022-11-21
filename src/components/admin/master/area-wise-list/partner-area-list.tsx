@@ -1,15 +1,14 @@
 import React from "react";
-import { useSnackbar } from "notistack";
 import { useQuery } from "@tanstack/react-query";
-import { queryToStr } from "../utils";
-import { shopAreas, shopRetailerArea } from "../../../http";
-import SerialNumber from "../serial-number";
-import DataTable from "../../table/data-table";
-import usePaginate from "../../../hooks/usePaginate";
-import TablePagination from "../../table/table-pagination";
-import FocusStar from "../focus-star";
+import { queryToStr } from "../../utils";
+import { shopPartnerArea } from "../../../../http";
+import SerialNumber from "../../serial-number";
+import DataTable from "../../../table/data-table";
+import usePaginate from "../../../../hooks/usePaginate";
+import TablePagination from "../../../table/table-pagination";
+import FocusStar from "../../focus-star";
 
-export default function PrimaryRetailersList(props: {
+export default function PartnerAreaList(props: {
   searchText: string;
   area_id: string;
 }) {
@@ -26,9 +25,9 @@ export default function PrimaryRetailersList(props: {
   }, [searchText, page, size]);
 
   const { isLoading, refetch, data } = useQuery(
-    ["areas", postfix],
+    ["partner-Areas", postfix],
     () =>
-      shopRetailerArea("get", {
+      shopPartnerArea("get", {
         postfix,
       }),
     {
@@ -48,19 +47,19 @@ export default function PrimaryRetailersList(props: {
       },
       { Header: "Area", accessor: "area" },
       { Header: "Pincode", accessor: "pincode" },
-      { Header: "Company Name", accessor: "company_name" },
-      { Header: "Retailer Name", accessor: "retailer_name" },
+      { Header: "Partner Name", accessor: "partner_name" },
+      { Header: "Zone Name", accessor: "zone_name" },
       {
-        Header: "Focus Retailer",
-        accessor: "focus_retailer",
+        Header: "Focus Partner",
+        accessor: "focus_partner",
         Cell: (cell: any) => (
           <FocusStar
             cell={cell}
-            idAccessor="retailer_area_id"
+            idAccessor="partner_area_id"
             payload={["area_id"]}
-            dataKeySet="focus_retailer"
+            dataKeySet="focus_partner"
             refetch={refetch}
-            axiosFunction={shopRetailerArea}
+            axiosFunction={shopPartnerArea}
           />
         ),
       },

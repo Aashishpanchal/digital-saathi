@@ -1,11 +1,9 @@
 import React from "react";
 import {
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Box,
-  Button,
   Select,
   styled,
   MenuItem,
@@ -23,8 +21,9 @@ export default function MoveOrdersDialog(props: {
   orders: Record<string, any>;
   open: boolean;
   onClose: () => void;
+  refetch: Function;
 }) {
-  const { open, onClose, orderStatus, orders } = props;
+  const { open, onClose, orderStatus, orders, refetch } = props;
   const [select, setSelect] = React.useState("");
 
   const orderStatusList = React.useMemo(
@@ -45,22 +44,92 @@ export default function MoveOrdersDialog(props: {
 
   const orderStatusOnForms = React.useMemo<Record<string, any>>(
     () => ({
-      "0": <OrderForms.NewOrder />,
-      "1": <OrderForms.Accepted />,
-      "3": <OrderForms.InProcess />,
-      "4": <OrderForms.OutForDelivery />,
-      "5": <OrderForms.Delivered />,
-      "6": <OrderForms.Returned />,
-      "8": <OrderForms.Returning />,
-      "7": <OrderForms.CancelledFromFarmer />,
-      "9": <OrderForms.CancelledFromRetailer />,
-      "10": <OrderForms.CancelledFromAgent />,
+      "0": (
+        <OrderForms.NewOrder
+          key={0}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "1": (
+        <OrderForms.Accepted
+          key={1}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "3": (
+        <OrderForms.InProcess
+          key={3}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "4": (
+        <OrderForms.OutForDelivery
+          key={4}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "5": (
+        <OrderForms.Delivered
+          key={5}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "6": (
+        <OrderForms.Returned
+          key={6}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "8": (
+        <OrderForms.Returning
+          key={8}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "7": (
+        <OrderForms.CancelledFromFarmer
+          key={7}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "9": (
+        <OrderForms.CancelledFromRetailer
+          key={9}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
+      "10": (
+        <OrderForms.CancelledFromAgent
+          key={10}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+        />
+      ),
     }),
-    []
+    [orders]
   );
 
   return (
-    <Dialog open={open} fullWidth>
+    <Dialog open={open} fullWidth onClose={onClose}>
       <DialogTitle>Move Orders</DialogTitle>
       <DialogContent>
         <Box
@@ -97,32 +166,6 @@ export default function MoveOrdersDialog(props: {
           {orderStatusOnForms[select]}
         </Box>
       </DialogContent>
-      <DialogActions>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            flexFlow: "row-reverse",
-          }}
-        >
-          <Button
-            type="submit"
-            color="secondary"
-            variant="contained"
-            size="small"
-          >
-            Save
-          </Button>
-          <Button
-            color="secondary"
-            variant="outlined"
-            onClick={onClose}
-            size="small"
-          >
-            Close
-          </Button>
-        </Box>
-      </DialogActions>
     </Dialog>
   );
 }

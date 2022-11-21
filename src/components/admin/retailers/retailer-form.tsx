@@ -83,6 +83,7 @@ function RetailerForm(props: {
         type: "numeric",
         label: "Pin-Code",
         name: "pincode",
+        inputProps: { maxLength: 6 },
         placeholder: "pincode",
       },
     ],
@@ -95,12 +96,14 @@ function RetailerForm(props: {
         type: "text",
         label: "Pan No",
         name: "pan_no",
+        inputProps: { maxLength: 15 },
         placeholder: "pan no",
       },
       {
         type: "text",
         label: "GST Number",
         name: "gst_number",
+        inputProps: { maxLength: 15 },
         placeholder: "gst number",
       },
       {
@@ -238,6 +241,7 @@ function RetailerForm(props: {
                 key={index}
                 {...item}
                 value={values[item.name] || ""}
+                // inputProps={{ minLength: 12 }}
                 onChange={handleChange}
                 error={errors[item.name] && touched[item.name] ? true : false}
                 helperText={touched[item.name] ? errors[item.name] : ""}
@@ -284,6 +288,8 @@ export const initialValues = {
   terms_conditions: "",
   pan_no: "",
   default_credit_limit: "",
+  gst_number: "",
+  distributor_level: "",
   default_credit_period: "",
   subzone_id: "",
 };

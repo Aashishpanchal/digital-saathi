@@ -14,7 +14,6 @@ import {
   categories as categoriesHttp,
   subCategories as subCategoriesHttp,
 } from "../../../http";
-import LinkRouter from "../../../routers/LinkRouter";
 import RowSearch from "../../table/row-search";
 import AsyncAutocomplete from "../../form/async-autocomplete";
 import { useQuery } from "@tanstack/react-query";
@@ -24,6 +23,8 @@ export default function ProductsListToolbar(props: {
   title?: string;
   onClickSort?: () => void;
   onSearch: (value: string, category?: number, subcategory?: number) => void;
+  onImport?: () => void;
+  onAdd?: () => void;
   exportProps?: {
     ref?: any;
     headers?: Headers;
@@ -32,7 +33,7 @@ export default function ProductsListToolbar(props: {
     filename?: string;
   };
 }) {
-  const { onSearch, exportProps, title, onClickSort } = props;
+  const { onSearch, exportProps, title, onClickSort, onImport, onAdd } = props;
   const [searchText, setSearchText] = React.useState("");
   const [categoryId, setCategoryId] = React.useState<undefined | number>();
   const [subcategoryId, setSubcategoryId] = React.useState<
@@ -92,52 +93,60 @@ export default function ProductsListToolbar(props: {
         <Typography sx={{ m: 1 }} variant="h5">
           {title ? title : "Products"}
         </Typography>
-        {exportProps ? (
-          <Box sx={{ m: 1 }}>
-            <LinkRouter to={"product-import-export"}>
-              <Button
-                color="error"
-                startIcon={<FaFileCsv fontSize="small" />}
-                sx={{ mr: 1 }}
-                size="small"
-              >
-                Import
-              </Button>
-            </LinkRouter>
-            <CSVLink
-              data={exportProps.data}
-              headers={exportProps.headers}
-              filename={exportProps?.filename}
-              target="_blank"
-              ref={exportProps.ref}
-            />
+        <Box sx={{ m: 1 }}>
+          {onImport && (
             <Button
-              sx={{ mr: 1 }}
               color="secondary"
-              onClick={exportProps?.onClick}
-              size="small"
               startIcon={<FaFileCsv fontSize="small" />}
+              sx={{ mr: 1 }}
+              size="small"
+              onClick={onImport}
             >
-              Export
+              Import
             </Button>
-            {onClickSort && (
+          )}
+          {exportProps && (
+            <>
+              <CSVLink
+                data={exportProps.data}
+                headers={exportProps.headers}
+                filename={exportProps?.filename}
+                target="_blank"
+                ref={exportProps.ref}
+              />
               <Button
                 sx={{ mr: 1 }}
                 color="secondary"
-                variant="outlined"
-                onClick={onClickSort}
+                onClick={exportProps?.onClick}
                 size="small"
+                startIcon={<FaFileCsv fontSize="small" />}
               >
-                Sort
+                Export
               </Button>
-            )}
-            <LinkRouter to={"new"}>
-              <Button color="secondary" variant="contained" size="small">
-                Add Product
-              </Button>
-            </LinkRouter>
-          </Box>
-        ) : null}
+            </>
+          )}
+          {onClickSort && (
+            <Button
+              sx={{ mr: 1 }}
+              color="secondary"
+              variant="outlined"
+              onClick={onClickSort}
+              size="small"
+            >
+              Sort
+            </Button>
+          )}
+          {onAdd && (
+            <Button
+              color="secondary"
+              variant="contained"
+              size="small"
+              onClick={onAdd}
+            >
+              Add Product
+            </Button>
+          )}
+        </Box>
       </Box>
       <Box sx={{ mt: 2 }}>
         <Card>

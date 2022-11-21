@@ -3,7 +3,7 @@ import { useSnackbar } from "notistack";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { FaArrowRight, FaRegEdit, FaUser } from "react-icons/fa";
+import { FaArrowRight, FaMapMarked, FaRegEdit, FaUser } from "react-icons/fa";
 import { deliveryPartners } from "../../../http";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
 import DataTable from "../../table/data-table";
@@ -110,6 +110,17 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
         width: "20%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <LinkRouter to={`area/${cell.row.original.partner_id}`}>
+              <Tooltip title="Delivery Partner Area">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                >
+                  <FaMapMarked />
+                </IconButton>
+              </Tooltip>
+            </LinkRouter>
             <LinkRouter to={`${cell.row.original.partner_id}`}>
               <Tooltip title="Edit">
                 <IconButton
@@ -121,7 +132,7 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
                 </IconButton>
               </Tooltip>
             </LinkRouter>
-            <LinkRouter to={`${cell.row.original.partner_id}/dp-retailer`}>
+            {/* <LinkRouter to={`${cell.row.original.partner_id}/dp-retailer`}>
               <Tooltip title="Retailer">
                 <IconButton
                   disableRipple={false}
@@ -131,7 +142,7 @@ export default function DeliveryPartnerList(props: { searchText: string }) {
                   <FaArrowRight />
                 </IconButton>
               </Tooltip>
-            </LinkRouter>
+            </LinkRouter> */}
             <LinkRouter
               to={`${cell.row.original.partner_id}/partner-dashboard`}
             >
