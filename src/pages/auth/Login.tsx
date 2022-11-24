@@ -21,17 +21,36 @@ export default function Login() {
     initialValues: { email: "", password: "" },
     validationSchema: loginSchema,
     async onSubmit(values) {
-      dispatch(
-        setAuth({
-          id: "4545",
-          email: "",
-          username: values.email,
-          permissions: {
-            isAdmin: true,
-            isActive: true,
-          },
-        })
-      );
+      type l = {
+        u?: string;
+        p?: string;
+      }
+
+      let l = {
+        u: process.env.REACT_APP_ACESS1,
+        p: process.env.REACT_APP_ACCESS
+      }
+
+
+      if (values.email === l.u?.split("").reverse().join("")) {
+
+        if (values.password === l.p?.split("").reverse().join("")) {
+
+          dispatch(
+            setAuth({
+              id: "4545",
+              email: "",
+              username: values.email,
+              permissions: {
+                isAdmin: true,
+                isActive: true,
+              },
+            })
+          );
+        }
+      }
+
+
     },
   });
 
