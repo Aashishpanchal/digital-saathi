@@ -62,6 +62,16 @@ export default function InputAndCancelledList(props: {
         ),
       },
       {
+        Header: "Suborder No",
+        accessor: "suborder_no",
+        width: "8%",
+        Cell: (cell: any) => (
+          <Typography fontWeight={"600"} textAlign="center" fontSize={"small"}>
+            {cell.value}
+          </Typography>
+        ),
+      },
+      {
         Header: "Order Date",
         accessor: "order_date",
         width: "15%",

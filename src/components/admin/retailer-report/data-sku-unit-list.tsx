@@ -41,7 +41,6 @@ export default function DataSkuUnitList(props: { searchText: string }) {
         ),
         width: "5%",
       },
-      // { Header: "S No.", accessor: "sku_id" },
       {
         Header: "SKU Name",
         accessor: "sku_name",
