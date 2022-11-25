@@ -1,21 +1,20 @@
 import React from "react";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { FaArrowRight, FaRegEdit } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { RiDeleteBinFill } from "react-icons/ri";
-import { Box, Tooltip, IconButton } from "@mui/material";
-import { queryToStr } from "../utils";
-import { shopAreas } from "../../../http";
-import SerialNumber from "../serial-number";
-import DataTable from "../../table/data-table";
-import ActiveDeactive from "../active-deactive";
 import usePaginate from "../../../hooks/usePaginate";
+import { shopReason } from "../../../http";
+import ActiveDeactive from "../active-deactive";
+import SerialNumber from "../serial-number";
+import { queryToStr } from "../utils";
+import { FaRegEdit } from "react-icons/fa";
+import { RiDeleteBinFill } from "react-icons/ri";
+import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
-import AreaFormDialog from "./form-dialog/area-form-dialog";
-import LinkRouter from "../../../routers/LinkRouter";
+import ReasonFormDialog from "./form-dialog/reason-form-dialog";
 
-export default function AreaList(props: {
+export default function ReasonList(props: {
   searchText: string;
   addOpen: boolean;
   addClose: () => void;
@@ -27,7 +26,7 @@ export default function AreaList(props: {
   });
 
   const [edit, setEdit] = React.useState<{
-    value: { [key: string]: any } | null;
+    value?: Record<string, any>;
     open: boolean;
   }>({
     value: {},
@@ -49,9 +48,9 @@ export default function AreaList(props: {
   const deleteBoxClose = () => setDeleteData({ open: false, id: "" });
 
   const { isLoading, refetch, data } = useQuery(
-    ["areas", postfix],
+    ["reason", postfix],
     () =>
-      shopAreas("get", {
+      shopReason("get", {
         postfix,
       }),
     {
@@ -61,7 +60,7 @@ export default function AreaList(props: {
 
   const onDelete = async () => {
     try {
-      const res: any = await shopAreas("delete", {
+      const res: any = await shopReason("delete", {
         params: deleteData?.id,
       });
       if (res.status === 200) {
@@ -90,38 +89,23 @@ export default function AreaList(props: {
       {
         Header: "Status",
         accessor: "active",
-        width: "10%",
+        width: "15%",
         Cell: (cell: any) => (
           <ActiveDeactive
             cell={cell}
-            idAccessor="area_id"
+            idAccessor="reason_id"
             refetch={refetch}
-            payload={["areas"]}
-            axiosFunction={shopAreas}
+            axiosFunction={shopReason}
           />
         ),
       },
-      { Header: "Areas", accessor: "area" },
-      { Header: "City", accessor: "city" },
-      { Header: "State", accessor: "state" },
-      { Header: "Pincode", accessor: "pincode" },
-      { Header: "Country", accessor: "country" },
+      { Header: "Reason", accessor: "reason_name" },
+      { Header: "Type", accessor: "type" },
       {
         Header: "Action",
         width: "15%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <LinkRouter to={`${cell.row.original.area_id}/primary-areas`}>
-              <Tooltip title="Primary Areas">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                >
-                  <FaArrowRight />
-                </IconButton>
-              </Tooltip>
-            </LinkRouter>
             <Tooltip title="Edit">
               <IconButton
                 disableRipple={false}
@@ -145,7 +129,7 @@ export default function AreaList(props: {
                 onClick={() =>
                   setDeleteData({
                     open: true,
-                    id: cell.row.original.area_id,
+                    id: cell.row.original.reason_id,
                   })
                 }
               >
@@ -161,19 +145,18 @@ export default function AreaList(props: {
 
   const getData = React.useMemo(() => {
     if (data?.status === 200) return data.data;
-    return { totalItems: 0, totalPages: 1, areas: [] };
+    return { totalItems: 0, totalPages: 1, reasons: [] };
   }, [data]);
 
   React.useEffect(() => {
     if (searchText) setPage(0);
   }, [searchText]);
-
   return (
     <>
       <DataTable
         loading={isLoading}
         columns={columns}
-        data={getData.areas}
+        data={getData.reasons}
         showNotFound={getData.totalItems === 0}
         components={{
           pagination: (
@@ -194,19 +177,18 @@ export default function AreaList(props: {
         onClickOk={onDelete}
       />
       {edit && (
-        <AreaFormDialog
+        <ReasonFormDialog
           open={edit.open}
-          close={() => setEdit({ open: false, value: null })}
-          area={edit.value}
+          close={() => setEdit({ open: false })}
+          reason={edit.value}
           reload={refetch}
           variant="edit"
         />
       )}
       {addOpen && (
-        <AreaFormDialog
+        <ReasonFormDialog
           open={addOpen}
           close={addClose}
-          area={null}
           reload={refetch}
           variant="save"
         />

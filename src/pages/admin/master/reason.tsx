@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import { MainContainer } from "../../../components/layout";
 import CommonToolbar from "../../../components/admin/common-toolbar";
-import ComingSoonPage from "../../../components/ComingSoonPage";
+import ReasonList from "../../../components/admin/master/reason-list";
 
 export default function Reason() {
   const [open, setOpen] = React.useState(false);
@@ -12,20 +12,20 @@ export default function Reason() {
   const onClose = () => setOpen(false);
 
   const searchHandler = (value: string) =>
-    setSearchText(value ? `?search_delivery_charges=${value}` : "");
+    setSearchText(value ? `?search_reason=${value}` : "");
 
   return (
     <MainContainer>
       <CommonToolbar
         title="Reason"
+        onSearch={searchHandler}
         onAddProps={{
           title: "Add Reason",
           onClick: onAdd,
         }}
-        onSearch={searchHandler}
       />
       <Box sx={{ mt: 2 }}>
-        <ComingSoonPage />
+        <ReasonList searchText={searchText} addClose={onClose} addOpen={open} />
       </Box>
     </MainContainer>
   );
