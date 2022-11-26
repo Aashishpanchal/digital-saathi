@@ -44,7 +44,7 @@ export default function AllOrdersListResults(props: { searchText: string }) {
       },
       {
         Header: "Order ID",
-        accessor: "order_id",
+        accessor: "main_order_no",
         width: "8%",
         Cell: (cell: any) => (
           <Typography fontWeight={"600"} textAlign="center" fontSize={"small"}>

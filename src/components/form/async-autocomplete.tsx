@@ -2,9 +2,8 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import parse from "autosuggest-highlight/parse";
-import match from "autosuggest-highlight/match";
 import { styled, SxProps, Theme } from "@mui/material";
+import HighLightText from "../common/high-light-text";
 
 const CustomInput = styled(TextField)(() => ({
   "& .MuiInputBase-input": {
@@ -100,29 +99,14 @@ export default function AsyncAutocomplete(props: {
           }}
         />
       )}
-      renderOption={(props, option, { inputValue }) => {
-        const matches = match(option[objFilter.title], inputValue, {
-          insideWords: true,
-        });
-        const parts = parse(option[objFilter.title], matches);
-
-        return (
-          <li {...props} key={option[objFilter.value]}>
-            <div>
-              {parts.map((part, index) => (
-                <span
-                  key={index}
-                  style={{
-                    fontWeight: part.highlight ? 700 : 400,
-                  }}
-                >
-                  {part.text}
-                </span>
-              ))}
-            </div>
-          </li>
-        );
-      }}
+      renderOption={(props, option, { inputValue }) => (
+        <li {...props} key={option[objFilter.value]}>
+          <HighLightText
+            text={option[objFilter.title]}
+            highListText={inputValue}
+          />
+        </li>
+      )}
     />
   );
 }

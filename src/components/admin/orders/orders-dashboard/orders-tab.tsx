@@ -24,6 +24,10 @@ function RetailerOrdersTab(props: {
         order_status: 2 /*3*/,
       },
       {
+        label: "out for delivery",
+        order_status: 4,
+      },
+      {
         label: "delivered orders",
         order_status: 5,
       },

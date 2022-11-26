@@ -35,10 +35,8 @@ export default function ProductsListToolbar(props: {
 }) {
   const { onSearch, exportProps, title, onClickSort, onImport, onAdd } = props;
   const [searchText, setSearchText] = React.useState("");
-  const [categoryId, setCategoryId] = React.useState<undefined | number>();
-  const [subcategoryId, setSubcategoryId] = React.useState<
-    undefined | number
-  >();
+  const [categoryId, setCategoryId] = React.useState(0);
+  const [subcategoryId, setSubcategoryId] = React.useState(0);
 
   const [categories, setCategories] = React.useState<
     Array<{ [key: string]: any }>
@@ -75,8 +73,8 @@ export default function ProductsListToolbar(props: {
   const onReset = () => {
     setSearchText("");
     onSearch("");
-    setCategoryId(undefined);
-    setSubcategoryId(undefined);
+    setCategoryId(0);
+    setSubcategoryId(0);
   };
 
   return (
@@ -169,7 +167,7 @@ export default function ProductsListToolbar(props: {
                     id="category-option"
                     loading={categoryLoading}
                     label="Category"
-                    options={categories}
+                    options={[{ name: "All", category_id: 0 }, ...categories]}
                     objFilter={{
                       title: "name",
                       value: "category_id",
@@ -177,7 +175,7 @@ export default function ProductsListToolbar(props: {
                     value={categoryId}
                     onChangeOption={(value) => {
                       setCategoryId(value);
-                      setSubcategoryId(undefined);
+                      setSubcategoryId(0);
                     }}
                   />
                 </Box>
@@ -188,7 +186,10 @@ export default function ProductsListToolbar(props: {
                     id="sub-category-option"
                     loading={subcategoryLoading}
                     label="Sub Category"
-                    options={subCategories}
+                    options={[
+                      { name: "All", category_id: 0 },
+                      ...subCategories,
+                    ]}
                     objFilter={{
                       title: "name",
                       value: "category_id",

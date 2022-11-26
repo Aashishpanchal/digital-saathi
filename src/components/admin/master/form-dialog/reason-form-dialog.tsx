@@ -27,6 +27,22 @@ const reasonOptions = [
     label: "Delivery Partners",
     value: 3,
   },
+  {
+    label: "Return Farmers",
+    value: 4,
+  },
+  {
+    label: "Return Retailers",
+    value: 5,
+  },
+  {
+    label: "Return Delivery Partners",
+    value: 6,
+  },
+  {
+    label: "Return Delivery Agents",
+    value: 7,
+  },
 ];
 
 const getReasonId = (reason: string = "") =>
@@ -138,9 +154,9 @@ export default function ReasonFormDialog(props: {
             />
           </Box>
           <TextInput
-            label="Reason Name"
+            label="Reason"
             name="reason_name"
-            placeholder="reason name"
+            placeholder="reason"
             value={values.reason_name}
             onChange={handleChange}
             error={errors.reason_name && touched.reason_name ? true : false}

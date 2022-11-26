@@ -18,29 +18,29 @@ export default function Login() {
     handleChange,
     handleSubmit,
   }: any = useFormik({
-    initialValues: { email: "", password: "" },
+    initialValues: { username: "", password: "" },
     validationSchema: loginSchema,
     async onSubmit(values) {
       type l = {
         u?: string;
         p?: string;
-      }
+      };
 
       let l = {
         u: process.env.REACT_APP_ACESS1,
-        p: process.env.REACT_APP_ACCESS
-      }
+        p: process.env.REACT_APP_ACCESS,
+      };
 
+      console.log(values);
 
-      if (values.email === l.u?.split("").reverse().join("")) {
-
+      if (values.username === l.u?.split("").reverse().join("")) {
         if (values.password === l.p?.split("").reverse().join("")) {
-
+          localStorage.setItem("user-detail", JSON.stringify(values));
           dispatch(
             setAuth({
               id: "4545",
               email: "",
-              username: values.email,
+              username: values.username,
               permissions: {
                 isAdmin: true,
                 isActive: true,
@@ -49,8 +49,6 @@ export default function Login() {
           );
         }
       }
-
-
     },
   });
 
@@ -59,7 +57,7 @@ export default function Login() {
       {
         type: "text",
         label: "Username",
-        name: "email",
+        name: "username",
         placeholder: "username",
       },
       {

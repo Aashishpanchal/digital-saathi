@@ -22,7 +22,8 @@ const label1 = [
 ];
 
 const label2 = [
-  { title: "order no", accessor: "order_id" },
+  { title: "order no", accessor: "main_order_no" },
+  { title: "suborder no", accessor: "suborder_no" },
   {
     title: "order date",
     accessor: "order_date",

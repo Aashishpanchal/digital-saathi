@@ -35,7 +35,7 @@ export default function RecentOrdersList(props: {
       },
       {
         Header: "Order ID",
-        accessor: "order_id",
+        accessor: "main_order_no",
         Cell: (cell: any) => (
           <Typography fontWeight={"600"} textAlign="center" fontSize={"small"}>
             {cell.value}
@@ -154,7 +154,7 @@ export default function RecentOrdersList(props: {
       },
       {
         Header: "Order ID",
-        accessor: "order_id",
+        accessor: "main_order_no",
         width: "10%",
         Cell: (cell: any) => (
           <Typography fontWeight={"600"} textAlign="center" fontSize={"small"}>
@@ -173,7 +173,6 @@ export default function RecentOrdersList(props: {
         ),
       },
 
-      
       {
         Header: "Order Date",
         accessor: "order_date",
@@ -241,7 +240,6 @@ export default function RecentOrdersList(props: {
     []
   );
 
-
   const getData = React.useMemo(() => {
     if (data?.status === 200) {
       return data.data;
@@ -252,7 +250,7 @@ export default function RecentOrdersList(props: {
         orders: [],
       };
   }, [data]);
-  
+
   return (
     <DataTable
       loading={isLoading}

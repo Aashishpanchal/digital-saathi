@@ -109,7 +109,7 @@ export default function RetailerArea() {
       try {
         const res = await shopRetailerArea("post", {
           data: JSON.stringify({
-            area_id: right.map((value) => parseInt(value.area_id)),
+            area_id: right.map((value) => value.area_id),
             retailer_id,
           }),
         });
