@@ -3,8 +3,8 @@ import { useMediaQuery, Divider, Drawer, Box, List } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import NavItem from "./nav-item";
 import Logo from "./logo";
-import { FaKey } from "react-icons/fa";
-import { FiLogOut } from "react-icons/fi";
+// import { FaKey } from "react-icons/fa";
+// import { FiLogOut } from "react-icons/fi";
 import sideBarMainList from "./sidebar-list";
 
 export default function DashboardSidebar(props: {
@@ -25,17 +25,17 @@ export default function DashboardSidebar(props: {
     }
   }, [location.pathname]);
 
-  const listDataTwo = React.useMemo(
+  const listDataTwo = React.useMemo<Array<Record<string, any>>>(
     () => [
-      {
-        href: "/user/change-password",
-        title: "Change Password",
-        icon: <FaKey />,
-      },
-      {
-        title: "Logout",
-        icon: <FiLogOut />,
-      },
+      // {
+      //   href: "/user/change-password",
+      //   title: "Change Password",
+      //   icon: <FaKey />,
+      // },
+      // {
+      //   title: "Logout",
+      //   icon: <FiLogOut />,
+      // },
     ],
     []
   );
@@ -87,7 +87,7 @@ export default function DashboardSidebar(props: {
             )
           )}
         </Box>
-        <Divider sx={{ my: 1 }} />
+        {/* <Divider sx={{ my: 1 }} />
         <Box sx={{ flexGrow: 1 }}>
           {listDataTwo.map((item, index) => (
             <NavItem
@@ -97,7 +97,7 @@ export default function DashboardSidebar(props: {
               title={item.title}
             />
           ))}
-        </Box>
+        </Box> */}
       </Box>
     </>
   );

@@ -1,14 +1,14 @@
 import React from "react";
-import { Box, IconButton, Tooltip } from "@mui/material";
 import { useSnackbar } from "notistack";
+import { FaRegEdit } from "react-icons/fa";
+import { RiDeleteBinFill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import usePaginate from "../../../hooks/usePaginate";
 import { shopReason } from "../../../http";
 import ActiveDeactive from "../active-deactive";
 import SerialNumber from "../serial-number";
 import { queryToStr } from "../utils";
-import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBinFill } from "react-icons/ri";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";

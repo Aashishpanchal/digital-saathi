@@ -18,11 +18,11 @@ import {
   margeAsList,
   margeRowTable,
   queryToStr,
-  setOrderStatus as setOS,
-  strOrderStatus,
+  setExtraValue,
 } from "../../../../../components/admin/utils";
 import { setPageLoading } from "../../../../../redux/slices/admin-slice";
 import { ordersFields } from "../../../../../constants";
+import { getStrOrderStatus } from "../../../../../constants/messages";
 
 export default function RetailerOrders() {
   const { retailer_id } = useParams();
@@ -115,7 +115,11 @@ export default function RetailerOrders() {
         // add tax and net amount
         csvData = addTaxNetAmount(csvData);
         // set Order Status
-        csvData = setOS(csvData, orderStatus);
+        csvData = setExtraValue(
+          csvData,
+          "order_status",
+          getStrOrderStatus(orderStatus)
+        );
 
         setCsvData(csvData, () => {
           ref.current.link.click();
@@ -139,9 +143,7 @@ export default function RetailerOrders() {
               ref,
               data: csvData,
               headers: ordersFields(orderStatus),
-              filename: `retailer-${strOrderStatus(orderStatus)
-                .toLowerCase()
-                .replace(" ", "-")}-csv`,
+              filename: `retailer-order-csv`,
               onClick: exportHandler,
             }}
           >

@@ -1,3 +1,4 @@
+export { api2 } from "./server-api/server-base";
 export {
   brands,
   categories,
@@ -23,5 +24,6 @@ export {
   shopRetailerArea,
   shopReason,
   shopPartnerArea,
+  shopImgDownLoad,
 } from "./server-api/server-apis";
 export { auth0Users } from "./auth0-api/auth0-apis-endPoints";

@@ -1,9 +1,9 @@
 import {
   TbBrandSublimeText,
-  TbCurrencyRupee,
-  TbReportAnalytics,
+  // TbCurrencyRupee,
+  // TbReportAnalytics,
   TbTruckDelivery,
-  TbTruckReturn,
+  // TbTruckReturn,
 } from "react-icons/tb";
 import {
   FaBorderAll,
@@ -20,8 +20,8 @@ import {
 } from "react-icons/fa";
 import {
   BsBookmarkCheckFill,
-  BsFileEarmarkCheckFill,
-  BsGraphUp,
+  // BsFileEarmarkCheckFill,
+  // BsGraphUp,
   BsJournalBookmark,
   BsMailbox,
   BsShopWindow,
@@ -31,7 +31,7 @@ import {
   MdFreeCancellation,
   MdOutlineAccountTree,
   MdProductionQuantityLimits,
-  MdSave,
+  // MdSave,
 } from "react-icons/md";
 import { RiShoppingBag3Fill } from "react-icons/ri";
 import { VscNewFile } from "react-icons/vsc";
@@ -221,13 +221,8 @@ const sideBarMainList = [
         icon: <GiStorkDelivery />,
       },
       {
-        title: "Returning",
-        href: "/orders/orders-returning",
-        icon: <TbTruckReturn />,
-      },
-      {
-        title: "Returned",
-        href: "/orders/orders-returned",
+        title: "Return",
+        href: "/orders/orders-return",
         icon: <BsBookmarkCheckFill />,
       },
       {

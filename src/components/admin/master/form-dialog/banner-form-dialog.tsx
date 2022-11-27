@@ -11,12 +11,9 @@ import {
 import { useSnackbar } from "notistack";
 import { TextInput } from "../../../form";
 import FileUploader from "../../../form/inputs/file-uploader";
-import ImageView from "../../../Image/image-view";
-import {
-  shopBannerImgDownLoad,
-  shopBannerUpload,
-} from "../../../../http/server-api/server-apis";
-import { useQuery } from "@tanstack/react-query";
+import { emptyText } from "../../../../constants/messages";
+import ShopAvatar from "../../../Image/shop-avatar";
+import { api2 } from "../../../../http/server-api/server-base";
 
 export default function BannerFormDialog(props: {
   open: boolean;
@@ -26,10 +23,12 @@ export default function BannerFormDialog(props: {
   variant: "edit" | "add";
 }) {
   const { open, close, banner, reload, variant } = props;
-  const [file, setFile] = React.useState<File | string | undefined>();
+  const [file, setFile] = React.useState<File | string | undefined>(
+    banner?.image
+  );
   const [data, setData] = React.useState({
     title: banner?.title || "",
-    image: "",
+    image: banner?.image,
   });
   const [loading, setLoading] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -37,7 +36,7 @@ export default function BannerFormDialog(props: {
   const putRequest = async (bannerData: FormData) => {
     bannerData.append("id", banner?.banner_id);
     try {
-      const res = await shopBannerUpload("post", bannerData);
+      const res = await api2.post("shop_uploadbanner", bannerData);
       if (res.status === 200) {
         close();
         setTimeout(
@@ -49,16 +48,20 @@ export default function BannerFormDialog(props: {
         );
         reload();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      enqueueSnackbar("Banner update failed!😢", {
-        variant: "error",
-      });
+      setTimeout(
+        () =>
+          enqueueSnackbar("Banner update failed!😢", {
+            variant: "error",
+          }),
+        200
+      );
     }
   };
   const postRequest = async (bannerData: FormData) => {
     try {
-      const res = await shopBannerUpload("post", bannerData);
+      const res = await api2.post("shop_uploadbanner", bannerData);
       if (res.status === 200) {
         close();
         setTimeout(
@@ -83,37 +86,15 @@ export default function BannerFormDialog(props: {
     if (file) {
       const bannerData = new FormData();
       bannerData.append("title", data.title);
-      file !== data.image ? bannerData.append("image", file) : null;
+      if (file !== data.image) bannerData.append("image", file);
       await (variant === "edit" ? putRequest : postRequest)(bannerData);
-      setLoading(false);
     } else {
-      enqueueSnackbar("banner Image Missing😢", {
+      enqueueSnackbar(emptyText("banner image"), {
         variant: "error",
       });
     }
     setLoading(false);
   };
-
-  const { data: imgDownload, refetch } = useQuery(
-    ["download-img-".concat(banner?.banner_id)],
-    () => shopBannerImgDownLoad(banner?.image),
-    {
-      refetchOnWindowFocus: false,
-      enabled: false,
-    }
-  );
-
-  React.useMemo(() => {
-    if (imgDownload?.status === 200) {
-      const img = URL.createObjectURL(imgDownload.data);
-      setData((prev) => ({ ...prev, image: img }));
-      setFile(img);
-    }
-  }, [imgDownload]);
-
-  React.useEffect(() => {
-    if (variant === "edit") refetch();
-  }, []);
 
   return (
     <Dialog open={open} fullWidth>
@@ -130,7 +111,15 @@ export default function BannerFormDialog(props: {
               setData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
             }
           />
-          <ImageView src={file} />
+          <ShopAvatar
+            src={file}
+            download={!(file instanceof File)}
+            sx={{
+              width: "100%",
+              height: "auto",
+            }}
+            variant="rounded"
+          />
         </Box>
         <FileUploader handleChange={(file) => setFile(file)} />
       </DialogContent>

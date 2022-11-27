@@ -4,8 +4,7 @@ import AcceptedOrders from "../../pages/admin/orders/accepted";
 import OutForDeliveryOrders from "../../pages/admin/orders/out-for-delivery";
 import DeliveredOrders from "../../pages/admin/orders/delivered";
 import CancelledOrders from "../../pages/admin/orders/cancelled";
-import ReturningOrders from "../../pages/admin/orders/returning";
-import ReturnedOrders from "../../pages/admin/orders/returned";
+import ReturnOrders from "../../pages/admin/orders/return";
 import OrderInvoicePrint from "../../pages/admin/orders/order-invoice";
 import OrderDetails from "../../pages/admin/orders/OrderDetails";
 import AllOrders from "../../pages/admin/orders/all-orders";
@@ -50,12 +49,8 @@ export default {
       element: <CancelledOrders />,
     },
     {
-      path: "orders-returning",
-      element: <ReturningOrders />,
-    },
-    {
-      path: "orders-returned",
-      element: <ReturnedOrders />,
+      path: "orders-return",
+      element: <ReturnOrders />,
     },
   ],
 };

@@ -10,6 +10,8 @@ import {
 import styled from "@emotion/styled";
 import { FaLock } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../redux/slices/authSlice";
 
 const PasswordLock = styled(FaLock)`
   font-size: 1.25rem;
@@ -25,6 +27,22 @@ export default function AccountPopover(props: {
   open: boolean;
 }) {
   const { anchorEl, onClose, open } = props;
+  const dispatch = useDispatch();
+
+  const onLogout = () => {
+    localStorage.removeItem("user-detail");
+    dispatch(
+      setAuth({
+        id: "",
+        email: "",
+        username: "",
+        permissions: {
+          isAdmin: false,
+          isActive: false,
+        },
+      })
+    );
+  };
   return (
     <Popover
       anchorEl={anchorEl}
@@ -74,7 +92,7 @@ export default function AccountPopover(props: {
           <ListItemIcon>
             <Logout />
           </ListItemIcon>
-          <ListItemText>logout</ListItemText>
+          <ListItemText onClick={onLogout}>logout</ListItemText>
         </MenuItem>
       </MenuList>
     </Popover>

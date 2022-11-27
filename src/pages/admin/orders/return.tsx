@@ -1,13 +1,10 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { MainContainer } from "../../../components/layout";
-import OrdersListResults from "../../../components/admin/orders/orders-list-results";
+import OrdersTab from "../../../components/admin/orders/orders-dashboard/orders-tab";
 import OrdersToolbar, {
-  type DatesType,
+  DatesType,
 } from "../../../components/admin/orders/orders-toolbar";
-import { shopOrders } from "../../../http";
-import { setPageLoading } from "../../../redux/slices/admin-slice";
+import { MainContainer } from "../../../components/layout";
 import {
   addSno,
   addTaxNetAmount,
@@ -17,20 +14,16 @@ import {
   queryToStr,
   setExtraValue,
 } from "../../../components/admin/utils";
+import OrdersListResults from "../../../components/admin/orders/orders-list-results";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
-import { ordersFields } from "../../../constants";
+import { setPageLoading } from "../../../redux/slices/admin-slice";
+import { useDispatch } from "react-redux";
+import { shopOrders } from "../../../http";
 import { getStrOrderStatus } from "../../../constants/messages";
+import { ordersFields } from "../../../constants";
 
-export default function MainOrders(props: {
-  orderStatus: number;
-  title: string;
-  filename: string;
-  params?: string;
-  postfix?: string;
-  exportVariant?: "retailer" | "partner";
-}) {
-  const { orderStatus, title, filename, params, postfix, exportVariant } =
-    props;
+export default function Return() {
+  const [orderStatus, setOrderStatus] = React.useState(6);
   const [searchText, setSearchText] = React.useState("");
   const { state: csvData, updateState: setCsvData } = useStateWithCallback<
     Array<Record<string, any>>
@@ -52,21 +45,54 @@ export default function MainOrders(props: {
     }
   };
 
+  const labelLists = React.useMemo(
+    () => [
+      {
+        label: "new orders",
+        order_status: 6,
+      },
+      {
+        label: "accepted orders",
+        order_status: 8,
+      },
+      {
+        label: "in process",
+        order_status: 12,
+      },
+      {
+        label: "pickup",
+        order_status: 14,
+      },
+      {
+        label: "out for pickup",
+        order_status: 16,
+      },
+      {
+        label: "returning",
+        order_status: 17,
+      },
+      {
+        label: "returned",
+        order_status: 18,
+      },
+      {
+        label: "cancel",
+        order_status: 11 /*13, 15*/,
+      },
+    ],
+    []
+  );
+
   const dispatch = useDispatch();
 
   const exportHandler = async () => {
     try {
       dispatch(setPageLoading(true));
       const res = await shopOrders("get", {
-        params:
-          exportVariant === "retailer"
-            ? "retailercsv"
-            : exportVariant === "partner"
-            ? "partnercsv"
-            : "csv",
+        params: "csv",
         postfix: searchText
           ? `${searchText}&order_status=${orderStatus}`
-          : `?order_status=${orderStatus}${postfix ? `&${postfix}` : ""}`,
+          : `?order_status=${orderStatus}`,
       });
       if (res?.status === 200) {
         let csvData = res.data.orders || [];
@@ -131,27 +157,31 @@ export default function MainOrders(props: {
   };
 
   return (
-    <MainContainer>
-      <OrdersToolbar
-        onSearch={searchHandler}
-        exportProps={{
-          ref,
-          data: csvData,
-          headers: ordersFields(orderStatus),
-          filename,
-          onClick: exportHandler,
-        }}
-      >
-        {title}
-      </OrdersToolbar>
-      <Box sx={{ mt: 3 }}>
-        <OrdersListResults
-          searchText={searchText}
-          orderStatus={orderStatus}
-          params={params}
-          postfix={postfix}
-        />
-      </Box>
-    </MainContainer>
+    <>
+      <OrdersTab
+        onSetOrderStatus={setOrderStatus}
+        labelStatusList={labelLists}
+      />
+      <MainContainer>
+        <OrdersToolbar
+          onSearch={searchHandler}
+          exportProps={{
+            ref,
+            data: csvData,
+            headers: ordersFields(orderStatus),
+            filename: `return-orders-csv`,
+            onClick: exportHandler,
+          }}
+        >
+          Return Orders
+        </OrdersToolbar>
+        <Box sx={{ mt: 3 }}>
+          <OrdersListResults
+            searchText={searchText}
+            orderStatus={orderStatus}
+          />
+        </Box>
+      </MainContainer>
+    </>
   );
 }

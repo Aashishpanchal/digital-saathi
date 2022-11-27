@@ -33,9 +33,7 @@ export default function MoveOrdersDialog(props: {
       { title: "In Process", value: 3 },
       { title: "Out for Delivery", value: 4 },
       { title: "Delivered", value: 5 },
-      { title: "Returned", value: 6 },
       { title: "Cancelled from Farmer", value: 7 },
-      { title: "Returning", value: 8 },
       { title: "Cancelled from Retailer", value: 9 },
       { title: "Cancelled from Delivery agent", value: 10 },
     ],
@@ -79,22 +77,6 @@ export default function MoveOrdersDialog(props: {
       "5": (
         <OrderForms.Delivered
           key={5}
-          onClose={onClose}
-          orders={orders}
-          refetch={refetch}
-        />
-      ),
-      "6": (
-        <OrderForms.Returned
-          key={6}
-          onClose={onClose}
-          orders={orders}
-          refetch={refetch}
-        />
-      ),
-      "8": (
-        <OrderForms.Returning
-          key={8}
           onClose={onClose}
           orders={orders}
           refetch={refetch}

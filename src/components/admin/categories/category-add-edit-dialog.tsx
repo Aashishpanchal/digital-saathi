@@ -9,11 +9,12 @@ import {
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React from "react";
-import useBucket from "../../../hooks/useBucket";
-import { categories, subCategories } from "../../../http";
+import { emptyText } from "../../../constants/messages";
+import { api2 } from "../../../http";
 import { TextInput } from "../../form";
 import FileUploader from "../../form/inputs/file-uploader";
 import ImageView from "../../Image/image-view";
+import { objectToForm } from "../utils";
 
 export default function CategoryAddEditDialog(props: {
   open: boolean;
@@ -32,9 +33,6 @@ export default function CategoryAddEditDialog(props: {
     image: category?.image || "",
   });
   const [loading, setLoading] = React.useState(false);
-  const { S3UpdateImage, S3ImageUploader } = useBucket(
-    type === "category" ? "category-images" : "sub-category-images"
-  );
   const { enqueueSnackbar } = useSnackbar();
 
   const cateLabel = React.useMemo(
@@ -42,85 +40,73 @@ export default function CategoryAddEditDialog(props: {
     []
   );
 
-  const onUpload = async () => {
-    if (file) {
-      if (category) {
-        try {
-          setLoading(true);
-          const metadata: any = await S3UpdateImage(data.image, file);
-          if (metadata) {
-            // upload data in server
-            const res = await (type === "category"
-              ? categories
-              : subCategories)("put", {
-              params: category?.category_id,
-              data: JSON.stringify({
-                ...data,
-                ...otherData,
-                image: metadata.Location,
-              }),
-            });
-            // uploading finish return true
-            if (res?.status === 200) {
-              close();
-              setTimeout(
-                () =>
-                  enqueueSnackbar(
-                    cateLabel.concat(" Update  successfully!👍😊"),
-                    {
-                      variant: "success",
-                    }
-                  ),
-                200
-              );
-              reload();
-            }
-          }
-        } catch (error) {
-          enqueueSnackbar(cateLabel.concat(" Update Failed!😢"), {
-            variant: "error",
-          });
-        }
-      } else {
-        try {
-          setLoading(true);
-          const metadata: any = await S3ImageUploader(file as File);
-          if (metadata) {
-            // upload data in server
-            const res = await (type === "category"
-              ? categories
-              : subCategories)("post", {
-              data: JSON.stringify({
-                ...data,
-                ...otherData,
-                image: metadata.Location,
-              }),
-            });
-            // uploading finish return true
-            if (res?.status === 200) {
-              close();
-              setTimeout(
-                () =>
-                  enqueueSnackbar(cateLabel.concat(" Add  successfully!👍😊"), {
-                    variant: "success",
-                  }),
-                200
-              );
-              reload();
-            }
-          }
-        } catch (error) {
-          enqueueSnackbar(cateLabel.concat(" Add Failed!😢"), {
-            variant: "error",
-          });
-        }
+  const putRequest = async (categoryData: FormData) => {
+    categoryData.append("id", category?.category_id);
+    try {
+      const res = await api2.post("shop_upload".concat(type), categoryData);
+      if (res.status === 200) {
+        close();
+        setTimeout(
+          () =>
+            enqueueSnackbar(type + " update successfully!👍😊", {
+              variant: "success",
+            }),
+          200
+        );
+        reload();
       }
-      setLoading(false);
+    } catch (error: any) {
+      console.log(error);
+      setTimeout(
+        () =>
+          enqueueSnackbar(type + " update failed!😢", {
+            variant: "error",
+          }),
+        200
+      );
+    }
+  };
+
+  const postRequest = async (categoryData: FormData) => {
+    try {
+      const res = await api2.post("shop_upload".concat(type), categoryData);
+      if (res.status === 200) {
+        close();
+        setTimeout(
+          () =>
+            enqueueSnackbar(type + " add successfully!👍😊", {
+              variant: "success",
+            }),
+          200
+        );
+        reload();
+      }
+    } catch (error) {
+      console.log(error);
+      setTimeout(
+        () =>
+          enqueueSnackbar(type + " add failed!😢", {
+            variant: "error",
+          }),
+        200
+      );
+    }
+  };
+
+  const onUpload = async () => {
+    setLoading(true);
+    if (file) {
+      const { image, ...others } = data;
+      const formData = objectToForm({ ...others, ...otherData });
+      if (file !== data.image) formData.append("image", file);
+      console.log(formData.get("image"));
+      await (variant === "edit" ? putRequest : postRequest)(formData);
     } else {
-      enqueueSnackbar(cateLabel.concat(" Image Missing😢"), {
+      enqueueSnackbar(emptyText(type + " image"), {
         variant: "error",
       });
     }
+    setLoading(false);
   };
 
   return (

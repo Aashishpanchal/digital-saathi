@@ -42,7 +42,7 @@ export default function OrdersListResults(props: {
       order_status: orderStatus,
     });
     return searchText ? `${searchText}&${x}` : `?${x}`;
-  }, [searchText, page, size]);
+  }, [searchText, page, size, orderStatus]);
 
   const { isLoading, data, refetch } = useQuery(
     [`order-${orderStatus}`, postfix],

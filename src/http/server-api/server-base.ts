@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseUrl } from "../config";
+import { baseUrl, imgJwt } from "../config";
 
 export const api = axios.create({
   baseURL: baseUrl,
@@ -7,6 +7,14 @@ export const api = axios.create({
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
+  },
+});
+
+export const api2 = axios.create({
+  baseURL: baseUrl,
+  headers: {
+    "Content-Type": "multipart/form-data",
+    token: `Bearer ${imgJwt}`,
   },
 });
 

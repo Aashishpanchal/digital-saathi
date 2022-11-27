@@ -12,8 +12,8 @@ import ActiveDeactive from "../active-deactive";
 import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
 import { queryToStr } from "../utils";
-import BannerImg from "../../../pages/admin/master/cell/banner-img";
 import BannerFormDialog from "./form-dialog/banner-form-dialog";
+import ShopAvatar from "../../Image/shop-avatar";
 
 function BannerList(props: { addOpen: boolean; addClose: () => void }) {
   const { page, setPage, size, setSize } = usePaginate();
@@ -40,7 +40,6 @@ function BannerList(props: { addOpen: boolean; addClose: () => void }) {
     ["banners", postfix],
     () => shopBanner("get", { postfix }),
     {
-      keepPreviousData: true,
       refetchOnWindowFocus: false,
     }
   );
@@ -49,7 +48,7 @@ function BannerList(props: { addOpen: boolean; addClose: () => void }) {
     try {
       const res = await shopBanner("delete", { params: deleteData.value });
       if (res?.status === 200) {
-        refetch();
+        await refetch();
         enqueueSnackbar("entry success-full deleted 😊", {
           variant: "success",
         });
@@ -89,7 +88,16 @@ function BannerList(props: { addOpen: boolean; addClose: () => void }) {
         Header: "Banner Image",
         accessor: "image",
         width: "20%",
-        Cell: (cell: any) => <BannerImg cell={cell} />,
+        Cell: (cell: any) => (
+          <Box display="flex" justifyContent={"center"}>
+            <ShopAvatar
+              src={cell.value}
+              sx={{ width: 50, height: 50 }}
+              variant="rounded"
+              download
+            />
+          </Box>
+        ),
       },
       {
         Header: "Title",

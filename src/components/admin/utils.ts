@@ -144,27 +144,6 @@ export const orderStatusReadable = (
         : null,
   }));
 
-export const strOrderStatus = (value: number) =>
-  value === 0
-    ? "New"
-    : value === 1
-    ? "Accepted"
-    : value === 3
-    ? "In Process "
-    : value === 4
-    ? "Out For Delivery"
-    : value === 5
-    ? "Delivered"
-    : value === 6
-    ? "Returned"
-    : value === 7
-    ? "Cancelled"
-    : value === 8
-    ? "Returning"
-    : value === 9
-    ? "Rejected"
-    : "";
-
 export const dateTimeFormatTable = (
   data: Array<Record<string, any>>,
   dateExtractKeyName: string,
@@ -204,12 +183,12 @@ export const addTaxNetAmount = (
   data.map((row) => {
     const both = row?.retailer_state !== row?.billing_state;
     const { gst, igstNum } = totalGst(
-      nullFree(row?.order_total_price),
-      nullFree(row?.order_igst)
+      nullFree(row?.total_price),
+      nullFree(row?.igst)
     );
     if (igstNum !== 0) {
       const netAmount = gst;
-      const taxAmount = nullFree(row?.order_total_price) - gst;
+      const taxAmount = nullFree(row?.total_price) - gst;
       return {
         ...row,
         [taxKeyName]: taxAmount.toFixed(2),
@@ -219,11 +198,11 @@ export const addTaxNetAmount = (
               sgst_amt: (taxAmount / 2).toFixed(2),
               cgst_amt: (taxAmount / 2).toFixed(2),
               igst_amt: "",
-              order_igst: "",
+              igst: "",
             }
           : {
-              order_sgst: "",
-              order_cgst: "",
+              sgst: "",
+              cgst: "",
               sgst_amt: "",
               cgst_amt: "",
               igst_amt: taxAmount.toFixed(2),
@@ -233,17 +212,17 @@ export const addTaxNetAmount = (
       return {
         ...row,
         [taxKeyName]: 0,
-        [netKeyName]: row?.order_total_price,
+        [netKeyName]: row?.total_price,
         ...(both
           ? {
               sgst_amt: 0,
               cgst_amt: 0,
               igst_amt: "",
-              order_igst: "",
+              igst: "",
             }
           : {
-              order_sgst: "",
-              order_cgst: "",
+              sgst: "",
+              cgst: "",
               sgst_amt: "",
               cgst_amt: "",
               igst_amt: 0,
@@ -272,13 +251,14 @@ export const setExtraValue = (
     [keyName]: setName,
   }));
 
-export const setOrderStatus = (
-  data: Array<Record<string, any>>,
-  orderStatus: number
-) =>
-  data.map((row) => ({
-    ...row,
-    order_status: strOrderStatus(orderStatus),
-  }));
-
 // !Table Units End
+
+export const objectToForm = (obj: Record<string, any>) => {
+  const formData = new FormData();
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      formData.append(key, obj[key]);
+    }
+  }
+  return formData;
+};
