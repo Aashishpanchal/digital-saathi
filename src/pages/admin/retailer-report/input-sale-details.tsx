@@ -20,7 +20,7 @@ import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { inputSaleDetailsFields } from "../../../constants";
 import InputAndCancelledList from "../../../components/admin/retailer-report/input-and-cancelled-list";
 
-const orderStatus = 5;
+const orderStatus = "5";
 
 export default function InputSaleDetails() {
   const [searchText, setSearchText] = React.useState("");

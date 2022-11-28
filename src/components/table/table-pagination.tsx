@@ -74,6 +74,11 @@ function TablePagination(props: {
     if (goto) {
       if (goto > (count as number)) {
         setSnack({ message: `page number is not bigger ${count}`, open: true });
+      } else if (goto <= 0) {
+        setSnack({
+          message: `page number is not smaller 1`,
+          open: true,
+        });
       } else {
         onChangePage && onChangePage(Number(goto) - 1);
       }

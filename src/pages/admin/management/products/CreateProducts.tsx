@@ -1,3 +1,4 @@
+import React from "react";
 import { MainContainer } from "../../../../components/layout";
 import {
   Box,
@@ -6,6 +7,8 @@ import {
   CardContent,
   Container,
   Typography,
+  Grid,
+  CircularProgress,
 } from "@mui/material";
 import ProductBasicForm, {
   initialValues,
@@ -16,10 +19,38 @@ import LinkRouter from "../../../../routers/LinkRouter";
 import { shopProducts } from "../../../../http";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
+import FileUploader from "../../../../components/form/inputs/file-uploader";
+import ShopAvatar from "../../../../components/Image/shop-avatar";
+import useBucket from "../../../../hooks/useBucket";
 
 export default function CreateProducts() {
   const { enqueueSnackbar } = useSnackbar();
+  const { imgUploader } = useBucket();
   const navigate = useNavigate();
+  const [file, setFile] = React.useState<File>();
+  const [loading, setLoading] = React.useState(false);
+
+  const onPost = async (data: Record<string, any>) => {
+    try {
+      const res = await shopProducts("post", {
+        data: JSON.stringify(data),
+      });
+
+      if (res?.status === 200) {
+        navigate(-1);
+        setTimeout(() => {
+          enqueueSnackbar("Product Save successfully!👍😊", {
+            variant: "success",
+          });
+        }, 200);
+      }
+    } catch (error) {
+      console.log(error);
+      setTimeout(() => {
+        enqueueSnackbar("Product Save Failed!😢", { variant: "error" });
+      }, 200);
+    }
+  };
 
   const {
     values,
@@ -33,22 +64,23 @@ export default function CreateProducts() {
     initialValues: initialValues,
     validationSchema: productSchema,
     async onSubmit(values) {
-      shopProducts("post", {
-        data: JSON.stringify(values),
-      })
-        ?.then((res) => {
-          if (res.status === 200) {
-            navigate(-1);
-            setTimeout(() => {
-              enqueueSnackbar("Product Save successfully!👍😊", {
-                variant: "success",
-              });
-            }, 200);
+      setLoading(true);
+      if (file) {
+        try {
+          const res = await imgUploader(file);
+          if (res.status === "success") {
+            await onPost({ ...values, image_url: res.image });
           }
-        })
-        .catch((err) => {
-          enqueueSnackbar("Product Save Failed!😢", { variant: "error" });
-        });
+        } catch (error) {
+          console.log(error);
+          setTimeout(() => {
+            enqueueSnackbar("Product Save Failed!😢", { variant: "error" });
+          }, 200);
+        }
+      } else {
+        await onPost(values);
+      }
+      setLoading(false);
     },
   });
 
@@ -67,6 +99,22 @@ export default function CreateProducts() {
                 touched={touched}
                 setFieldValue={setFieldValue}
               />
+              <Grid container spacing={2} mb={2}>
+                <Grid item xs={6}>
+                  <ShopAvatar
+                    src={file}
+                    imgRectangle
+                    sx={{
+                      width: "100%",
+                      height: 248,
+                    }}
+                    variant="rounded"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <FileUploader handleChange={(file) => setFile(file)} />
+                </Grid>
+              </Grid>
               <Box
                 sx={{
                   display: "flex",
@@ -74,7 +122,17 @@ export default function CreateProducts() {
                   flexFlow: "row-reverse",
                 }}
               >
-                <Button type="submit" color="secondary" variant="contained">
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  disabled={loading}
+                  startIcon={
+                    loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : undefined
+                  }
+                >
                   Save
                 </Button>
                 <LinkRouter to={-1}>

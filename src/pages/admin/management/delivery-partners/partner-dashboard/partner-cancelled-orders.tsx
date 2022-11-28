@@ -19,7 +19,7 @@ export default function PartnerCancelledOrders() {
 
   return (
     <MainOrders
-      orderStatus={7}
+      orderStatus={"7,9,10"}
       filename="partner-cancelled-orders-csv"
       title={`${partnerName} / Cancelled Orders`}
       params="partner"

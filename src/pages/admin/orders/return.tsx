@@ -23,7 +23,7 @@ import { getStrOrderStatus } from "../../../constants/messages";
 import { ordersFields } from "../../../constants";
 
 export default function Return() {
-  const [orderStatus, setOrderStatus] = React.useState(6);
+  const [orderStatus, setOrderStatus] = React.useState("6");
   const [searchText, setSearchText] = React.useState("");
   const { state: csvData, updateState: setCsvData } = useStateWithCallback<
     Array<Record<string, any>>
@@ -49,35 +49,35 @@ export default function Return() {
     () => [
       {
         label: "new orders",
-        order_status: 6,
+        order_status: "6",
       },
       {
         label: "accepted orders",
-        order_status: 8,
+        order_status: "8",
       },
       {
         label: "in process",
-        order_status: 12,
+        order_status: "12",
       },
       {
         label: "pickup",
-        order_status: 14,
+        order_status: "14",
       },
       {
         label: "out for pickup",
-        order_status: 16,
+        order_status: "16",
       },
       {
         label: "returning",
-        order_status: 17,
+        order_status: "17",
       },
       {
         label: "returned",
-        order_status: 18,
+        order_status: "18",
       },
       {
         label: "cancel",
-        order_status: 11 /*13, 15*/,
+        order_status: "11,13,15",
       },
     ],
     []
@@ -179,6 +179,8 @@ export default function Return() {
           <OrdersListResults
             searchText={searchText}
             orderStatus={orderStatus}
+            moveVariant="return"
+            moveCellShow
           />
         </Box>
       </MainContainer>

@@ -10,7 +10,7 @@ import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
 
 export default function InputAndCancelledList(props: {
-  orderStatus: number;
+  orderStatus: string;
   params?: string;
   searchText: string;
   otherQuery?: { [key: string]: any };

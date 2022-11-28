@@ -5,9 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { FaRegEdit } from "react-icons/fa";
 import { subCategories } from "../../../http";
-import useBucket from "../../../hooks/useBucket";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
-import ProductAvatar from "../../Image/product-avatar";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
@@ -16,6 +14,7 @@ import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
 import SortMainDialog from "../sort-main-dialog";
 import { queryToStr } from "../utils";
+import ShopAvatar from "../../Image/shop-avatar";
 
 export default function SubCategoriesList(props: {
   addOpen: boolean;
@@ -42,7 +41,6 @@ export default function SubCategoriesList(props: {
 
   const { addOpen, sortOpen, addClose, categoryId, searchText, onSortClose } =
     props;
-  const { S3DeleteImage } = useBucket("sub-categories");
 
   const postfix = React.useMemo(() => {
     const x = queryToStr({
@@ -67,18 +65,15 @@ export default function SubCategoriesList(props: {
 
   const onDelete = async () => {
     try {
-      const { category_id, image } = deleteData.value;
-      const metaData = await S3DeleteImage(image);
-      if (metaData?.success) {
-        const res: any = await subCategories("delete", {
-          params: category_id,
+      const { category_id } = deleteData.value;
+      const res: any = await subCategories("delete", {
+        params: category_id,
+      });
+      if (res.status === 200) {
+        refetch();
+        enqueueSnackbar("entry successfully deleted 😊", {
+          variant: "success",
         });
-        if (res.status === 200) {
-          refetch();
-          enqueueSnackbar("entry successfully deleted 😊", {
-            variant: "success",
-          });
-        }
       }
     } catch (err: any) {
       console.log(err.response);
@@ -116,10 +111,11 @@ export default function SubCategoriesList(props: {
         width: "20%",
         Cell: (cell: any) => (
           <Box display="flex" justifyContent={"center"}>
-            <ProductAvatar
+            <ShopAvatar
               src={cell.value}
               sx={{ width: 50, height: 50 }}
               variant="rounded"
+              download
             />
           </Box>
         ),

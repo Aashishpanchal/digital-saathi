@@ -5,10 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { FaArrowRight, FaRegEdit } from "react-icons/fa";
 import { categories } from "../../../http";
-// import useBucket from "../../../hooks/useBucket";
 import LinkRouter from "../../../routers/LinkRouter";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
-// import ProductAvatar from "../../Image/product-avatar";
 import DataTable from "../../table/data-table";
 import TablePagination from "../../table/table-pagination";
 import ActiveDeactive from "../active-deactive";
@@ -42,7 +40,6 @@ function CategoriesListResults(props: {
   });
 
   const { searchText, addClose, addOpen, sortOpen, onSortClose } = props;
-  // const { S3DeleteImage } = useBucket();
 
   const postfix = React.useMemo(() => {
     const x = queryToStr({
@@ -64,9 +61,7 @@ function CategoriesListResults(props: {
 
   const onDelete = async () => {
     try {
-      const { category_id /*image*/ } = deleteData.value;
-      // const metaData = await S3DeleteImage(image);
-      // if (metaData?.success) {
+      const { category_id } = deleteData.value;
       const res: any = await categories("delete", {
         params: category_id,
       });

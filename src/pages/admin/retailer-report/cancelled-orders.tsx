@@ -20,7 +20,7 @@ import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { ordersFields } from "../../../constants";
 import InputAndCancelledList from "../../../components/admin/retailer-report/input-and-cancelled-list";
 
-const orderStatus = 7;
+const orderStatus = "7";
 
 export default function CancelledOrders() {
   const [searchText, setSearchText] = React.useState("");

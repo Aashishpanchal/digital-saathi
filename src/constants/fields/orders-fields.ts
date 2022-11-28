@@ -1,3 +1,5 @@
+import { checkCancelOrderStatus } from "../../components/admin/utils";
+
 export const allOrdersFields = [
   { label: "S.No", key: "s_no" },
   { label: "Invoice ID", key: "invoice_no" },
@@ -112,7 +114,7 @@ export const inputSaleDetailsFields = [
 
 // "Reason Name","Reason Type","Other Reason"
 
-export const ordersFields = (orderStatus: number) => [
+export const ordersFields = (orderStatus: string) => [
   { label: "S.No", key: "s_no" },
   { label: "Invoice_ID", key: "invoice_no" },
   { label: "Bill_No", key: "suborder_no" },
@@ -165,7 +167,7 @@ export const ordersFields = (orderStatus: number) => [
   { label: "Repeating Farmers", key: "" },
   { label: "Date updated on", key: "" },
   { label: "Helper Column for Identifying repeating farmers", key: "" },
-  ...(orderStatus === 7
+  ...(checkCancelOrderStatus(orderStatus)
     ? [
         { label: "Reason Name", key: "reason_name" },
         { label: "Reason Type", key: "reason_type" },

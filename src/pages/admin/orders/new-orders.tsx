@@ -1,5 +1,5 @@
 import MainOrders from "./main-orders";
-const orderId = 0;
+const orderId = "0";
 
 export default function NewOrders() {
   return (

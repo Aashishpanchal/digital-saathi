@@ -1,5 +1,5 @@
 import MainOrders from "./main-orders";
-const orderId = 7;
+const orderId = "7,9,10";
 
 export default function Cancelled() {
   return (

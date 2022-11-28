@@ -7,6 +7,8 @@ import {
   CardContent,
   Container,
   Typography,
+  Grid,
+  CircularProgress,
 } from "@mui/material";
 import ProductBasicForm, {
   initialValues,
@@ -17,12 +19,41 @@ import LinkRouter from "../../../../routers/LinkRouter";
 import { shopProducts } from "../../../../http";
 import { useSnackbar } from "notistack";
 import { useNavigate, useParams } from "react-router-dom";
+import useBucket from "../../../../hooks/useBucket";
+import ShopAvatar from "../../../../components/Image/shop-avatar";
+import FileUploader from "../../../../components/form/inputs/file-uploader";
 
 export default function EditProducts() {
   const { enqueueSnackbar } = useSnackbar();
+  const { imgUploader } = useBucket();
   const navigate = useNavigate();
   const { sku_id } = useParams();
   const [data, setData] = React.useState<{ [key: string]: any }>(initialValues);
+  const [file, setFile] = React.useState<File>();
+  const [loading, setLoading] = React.useState(false);
+
+  const onPut = async (putData: Record<string, any>) => {
+    try {
+      const res = await shopProducts("put", {
+        params: sku_id,
+        data: JSON.stringify(putData),
+      });
+
+      if (res?.status === 200) {
+        navigate(-1);
+        setTimeout(() => {
+          enqueueSnackbar("Product Update successfully!👍😊", {
+            variant: "success",
+          });
+        }, 200);
+      }
+    } catch (error) {
+      console.log(error);
+      setTimeout(() => {
+        enqueueSnackbar("Product Update Failed!😢", { variant: "error" });
+      }, 200);
+    }
+  };
 
   const {
     values,
@@ -36,27 +67,24 @@ export default function EditProducts() {
     initialValues: data,
     enableReinitialize: true,
     validationSchema: productSchema,
-    async onSubmit(values, action) {
-      try {
-        shopProducts("put", {
-          params: sku_id,
-          data: JSON.stringify(values),
-        })
-          ?.then((res) => {
-            if (res.status === 200) {
-              action.resetForm();
-              setTimeout(() => {
-                enqueueSnackbar("Product Update  successfully!👍😊", {
-                  variant: "success",
-                });
-                navigate(-1);
-              }, 200);
-            }
-          })
-          .catch((err) => {
+    async onSubmit(values) {
+      setLoading(true);
+      if (file instanceof File) {
+        try {
+          const res = await imgUploader(file);
+          if (res.status === "success") {
+            await onPut({ ...values, image_url: res.image });
+          }
+        } catch (error) {
+          console.log(error);
+          setTimeout(() => {
             enqueueSnackbar("Product Update Failed!😢", { variant: "error" });
-          });
-      } catch (error) {}
+          }, 200);
+        }
+      } else {
+        await onPut(values);
+      }
+      setLoading(false);
     },
   });
 
@@ -75,17 +103,19 @@ export default function EditProducts() {
           category_id,
           subcategory_id,
           brand_id,
+          image_url,
         } = res.data[0];
         setData({
           sku_name,
           sku_name_kannada,
           sku_code,
-          hsn_code,
+          hsn_code: hsn_code ? hsn_code : "",
           description: description ? description : "",
           category_id,
           subcategory_id,
           brand_id,
         });
+        setFile(image_url);
       }
     } catch (error) {
       console.log(error);
@@ -111,6 +141,23 @@ export default function EditProducts() {
                 touched={touched}
                 setFieldValue={setFieldValue}
               />
+              <Grid container spacing={2} mb={2}>
+                <Grid item xs={6}>
+                  <ShopAvatar
+                    src={file}
+                    download={!(file instanceof File)}
+                    imgRectangle
+                    sx={{
+                      width: "100%",
+                      height: 248,
+                    }}
+                    variant="rounded"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <FileUploader handleChange={(file) => setFile(file)} />
+                </Grid>
+              </Grid>
               <Box
                 sx={{
                   display: "flex",
@@ -118,7 +165,17 @@ export default function EditProducts() {
                   flexFlow: "row-reverse",
                 }}
               >
-                <Button type="submit" color="secondary" variant="contained">
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  disabled={loading}
+                  startIcon={
+                    loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : undefined
+                  }
+                >
                   Update
                 </Button>
                 <LinkRouter to={-1}>

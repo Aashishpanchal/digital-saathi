@@ -13,7 +13,8 @@ import { TextInput } from "../../../form";
 import FileUploader from "../../../form/inputs/file-uploader";
 import { emptyText } from "../../../../constants/messages";
 import ShopAvatar from "../../../Image/shop-avatar";
-import { api2 } from "../../../../http/server-api/server-base";
+import { shopBanner } from "../../../../http";
+import useBucket from "../../../../hooks/useBucket";
 
 export default function BannerFormDialog(props: {
   open: boolean;
@@ -23,21 +24,22 @@ export default function BannerFormDialog(props: {
   variant: "edit" | "add";
 }) {
   const { open, close, banner, reload, variant } = props;
-  const [file, setFile] = React.useState<File | string | undefined>(
-    banner?.image
-  );
+  const [file, setFile] = React.useState<File>(banner?.image);
   const [data, setData] = React.useState({
     title: banner?.title || "",
     image: banner?.image,
   });
   const [loading, setLoading] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const { imgUploader, imgUpdate } = useBucket();
 
-  const putRequest = async (bannerData: FormData) => {
-    bannerData.append("id", banner?.banner_id);
+  const putRequest = async (bannerData: Record<string, any>) => {
     try {
-      const res = await api2.post("shop_uploadbanner", bannerData);
-      if (res.status === 200) {
+      const res = await shopBanner("put", {
+        params: banner?.banner_id,
+        data: JSON.stringify(bannerData),
+      });
+      if (res?.status === 200) {
         close();
         setTimeout(
           () =>
@@ -59,10 +61,12 @@ export default function BannerFormDialog(props: {
       );
     }
   };
-  const postRequest = async (bannerData: FormData) => {
+  const postRequest = async (bannerData: Record<string, any>) => {
     try {
-      const res = await api2.post("shop_uploadbanner", bannerData);
-      if (res.status === 200) {
+      const res = await shopBanner("post", {
+        data: JSON.stringify(bannerData),
+      });
+      if (res?.status === 200) {
         close();
         setTimeout(
           () =>
@@ -84,10 +88,23 @@ export default function BannerFormDialog(props: {
   const onUpload = async () => {
     setLoading(true);
     if (file) {
-      const bannerData = new FormData();
-      bannerData.append("title", data.title);
-      if (file !== data.image) bannerData.append("image", file);
-      await (variant === "edit" ? putRequest : postRequest)(bannerData);
+      if (variant === "edit") {
+        const metaData = await imgUpdate(data.image, file);
+        if (metaData.status === "success") {
+          await putRequest({
+            ...data,
+            image: metaData.image,
+          });
+        }
+      } else {
+        const metaData = await imgUploader(file);
+        if (metaData.status === "success") {
+          await postRequest({
+            ...data,
+            image: metaData.image,
+          });
+        }
+      }
     } else {
       enqueueSnackbar(emptyText("banner image"), {
         variant: "error",
@@ -114,6 +131,7 @@ export default function BannerFormDialog(props: {
           <ShopAvatar
             src={file}
             download={!(file instanceof File)}
+            imgRectangle
             sx={{
               width: "100%",
               height: "auto",

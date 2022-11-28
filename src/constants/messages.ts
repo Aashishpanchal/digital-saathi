@@ -6,7 +6,7 @@ export function minText(label: string): string {
   return `${label} must be at least 2 characters`;
 }
 
-export function getStrOrderStatus(status: number | number[]) {
+export function getStrOrderStatus(status: string) {
   const value: Record<string | number, string> = {
     0: "New",
     1: "Accepted",
@@ -15,10 +15,10 @@ export function getStrOrderStatus(status: number | number[]) {
     4: "Out For Delivery",
     5: "Delivered",
     6: "Return from farmer",
-    7: "Cancelled",
+    7: "Cancel from farmer",
     8: "Return in process",
-    9: "Rejected",
-    10: "Rejected",
+    9: "Cancel from retailer",
+    10: "Cancel from manager/agent",
     11: "Cancel return",
     12: "Return in process",
     13: "Cancel return",
@@ -31,6 +31,6 @@ export function getStrOrderStatus(status: number | number[]) {
     "2,3": "In Process",
     "9,10": "Rejected",
   };
-  const key = status instanceof Array ? status.join(",") : status;
-  return value[key];
+  // const key = status instanceof Array ? status.join(",") : status;
+  return value[status];
 }

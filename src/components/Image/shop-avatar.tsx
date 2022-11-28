@@ -1,13 +1,12 @@
 import React from "react";
-import ProductAvatar from "./product-avatar";
-import { shopImgDownLoad } from "../../http";
-import { AvatarProps } from "@mui/material/Avatar";
+import ProductAvatar, { ProductAvatarPropsI } from "./product-avatar";
+import useBucket from "../../hooks/useBucket";
 
 type Modify<T, R> = Omit<T, keyof R> & R;
 
 interface PropsI
   extends Modify<
-    AvatarProps,
+    ProductAvatarPropsI,
     {
       src?: string | File;
     }
@@ -18,13 +17,16 @@ interface PropsI
 function ShopAvatar(props: PropsI) {
   const { src, download, ...otherProps } = props;
   const [imgStr, setImgStr] = React.useState("");
+  const { imgDownload } = useBucket();
 
   const onDownload = async () => {
-    try {
-      const res = await shopImgDownLoad(src);
-      if (res.status === 200) setImgStr(URL.createObjectURL(res.data));
-    } catch (error) {
-      // console.log(error);
+    if (typeof src === "string") {
+      try {
+        const res = await imgDownload(src);
+        if (res.status === 200) setImgStr(URL.createObjectURL(res.data));
+      } catch (error) {
+        // console.log(error);
+      }
     }
   };
 

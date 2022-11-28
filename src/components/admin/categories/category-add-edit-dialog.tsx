@@ -10,11 +10,11 @@ import {
 import { useSnackbar } from "notistack";
 import React from "react";
 import { emptyText } from "../../../constants/messages";
-import { api2 } from "../../../http";
+import useBucket from "../../../hooks/useBucket";
+import { categories, subCategories } from "../../../http";
 import { TextInput } from "../../form";
 import FileUploader from "../../form/inputs/file-uploader";
-import ImageView from "../../Image/image-view";
-import { objectToForm } from "../utils";
+import ShopAvatar from "../../Image/shop-avatar";
 
 export default function CategoryAddEditDialog(props: {
   open: boolean;
@@ -40,15 +40,22 @@ export default function CategoryAddEditDialog(props: {
     []
   );
 
-  const putRequest = async (categoryData: FormData) => {
-    categoryData.append("id", category?.category_id);
+  const { imgUploader, imgUpdate } = useBucket();
+
+  const putRequest = async (values: Record<string, any>) => {
     try {
-      const res = await api2.post("shop_upload".concat(type), categoryData);
-      if (res.status === 200) {
+      const res = await (type === "category" ? categories : subCategories)(
+        "put",
+        {
+          params: category?.category_id,
+          data: JSON.stringify(values),
+        }
+      );
+      if (res?.status === 200) {
         close();
         setTimeout(
           () =>
-            enqueueSnackbar(type + " update successfully!👍😊", {
+            enqueueSnackbar(cateLabel + " update successfully!👍😊", {
               variant: "success",
             }),
           200
@@ -59,22 +66,26 @@ export default function CategoryAddEditDialog(props: {
       console.log(error);
       setTimeout(
         () =>
-          enqueueSnackbar(type + " update failed!😢", {
+          enqueueSnackbar(cateLabel + " update failed!😢", {
             variant: "error",
           }),
         200
       );
     }
   };
-
-  const postRequest = async (categoryData: FormData) => {
+  const postRequest = async (values: Record<string, any>) => {
     try {
-      const res = await api2.post("shop_upload".concat(type), categoryData);
-      if (res.status === 200) {
+      const res = await (type === "category" ? categories : subCategories)(
+        "post",
+        {
+          data: JSON.stringify(values),
+        }
+      );
+      if (res?.status === 200) {
         close();
         setTimeout(
           () =>
-            enqueueSnackbar(type + " add successfully!👍😊", {
+            enqueueSnackbar(cateLabel + " add successfully!👍😊", {
               variant: "success",
             }),
           200
@@ -83,24 +94,35 @@ export default function CategoryAddEditDialog(props: {
       }
     } catch (error) {
       console.log(error);
-      setTimeout(
-        () =>
-          enqueueSnackbar(type + " add failed!😢", {
-            variant: "error",
-          }),
-        200
-      );
+      enqueueSnackbar(cateLabel + " add failed!😢", {
+        variant: "error",
+      });
     }
   };
 
   const onUpload = async () => {
     setLoading(true);
     if (file) {
-      const { image, ...others } = data;
-      const formData = objectToForm({ ...others, ...otherData });
-      if (file !== data.image) formData.append("image", file);
-      console.log(formData.get("image"));
-      await (variant === "edit" ? putRequest : postRequest)(formData);
+      if (variant === "edit") {
+        const metaData = await imgUpdate(data.image, file);
+        if (metaData.status === "success") {
+          await putRequest({
+            ...data,
+            ...otherData,
+            image: metaData.image,
+          });
+        }
+      } else {
+        const metaData = await imgUploader(file);
+        if (metaData.status === "success") {
+          await postRequest({
+            ...data,
+
+            ...otherData,
+            image: metaData.image,
+          });
+        }
+      }
     } else {
       enqueueSnackbar(emptyText(type + " image"), {
         variant: "error",
@@ -136,7 +158,16 @@ export default function CategoryAddEditDialog(props: {
             multiline
             rows={4}
           />
-          <ImageView src={file ? file : data?.image} />
+          <ShopAvatar
+            src={file}
+            download={!(file instanceof File)}
+            imgRectangle
+            sx={{
+              width: "100%",
+              height: "auto",
+            }}
+            variant="rounded"
+          />
         </Box>
         <FileUploader handleChange={(file) => setFile(file)} />
       </DialogContent>

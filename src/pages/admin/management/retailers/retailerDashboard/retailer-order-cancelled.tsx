@@ -19,7 +19,7 @@ export default function RetailerOrderCancelled() {
 
   return (
     <MainOrders
-      orderStatus={7}
+      orderStatus={"7,9,10"}
       filename="cancelled-orders-csv"
       title={`${retailerName} / Cancelled Orders`}
       params="retailer"

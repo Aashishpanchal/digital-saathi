@@ -7,7 +7,11 @@ import {
   secretAccessKey,
   region,
   bucketName,
+  baseUrl,
+  imgJwt,
+  baseUrlImg,
 } from "../http/config";
+import axios from "axios";
 
 const s3 = new S3Client({
   region,
@@ -19,6 +23,45 @@ const s3 = new S3Client({
 
 function useBucket(subDirName?: string) {
   const [progress, setProgress] = React.useState<Progress>();
+
+  const imgUploader = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const res = await axios.post<{ status: string; image: string }>(
+        `${baseUrl}shop_upload`,
+        formData,
+        {
+          headers: {
+            token: imgJwt,
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return {
+        status: "error",
+        image: "",
+      };
+    }
+  };
+
+  const imgDownload = async (img: string) =>
+    axios.get(`${baseUrlImg}${img}`, {
+      responseType: "blob",
+      headers: {
+        Authorization: imgJwt,
+      },
+    });
+
+  const imgUpdate = async (prevImageUrl: string, files: any) => {
+    if (prevImageUrl === files) {
+      return { status: "success", image: prevImageUrl };
+    } else {
+      return imgUploader(files);
+    }
+  };
 
   const S3ImageUploader = async (file: File) => {
     if (file instanceof File) {
@@ -75,7 +118,16 @@ function useBucket(subDirName?: string) {
     }
   };
 
-  return { S3ImageUploader, progress, S3DeleteImage, S3UpdateImage };
+  return {
+    S3ImageUploader,
+    progress,
+    S3DeleteImage,
+    S3UpdateImage,
+
+    imgDownload,
+    imgUploader,
+    imgUpdate,
+  };
 }
 
 export default useBucket;

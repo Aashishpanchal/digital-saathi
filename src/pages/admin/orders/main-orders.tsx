@@ -22,7 +22,7 @@ import { ordersFields } from "../../../constants";
 import { getStrOrderStatus } from "../../../constants/messages";
 
 export default function MainOrders(props: {
-  orderStatus: number;
+  orderStatus: string;
   title: string;
   filename: string;
   params?: string;
@@ -150,6 +150,7 @@ export default function MainOrders(props: {
           orderStatus={orderStatus}
           params={params}
           postfix={postfix}
+          moveCellShow={orderStatus === "5"}
         />
       </Box>
     </MainContainer>

@@ -13,13 +13,16 @@ import usePaginate from "../../../hooks/usePaginate";
 import SerialNumber from "../serial-number";
 import { TextCenter } from "./styles";
 import MoveOrdersDialog from "./move-orders/move-orders-dailog";
+import ReturnMoveOrdersDialog from "./move-orders/return-move-orders-dailog";
 
 export default function OrdersListResults(props: {
   postfix?: string;
   params?: string;
-  orderStatus: number;
+  orderStatus: string;
   searchText: string;
   otherQuery?: { [key: string]: any };
+  moveVariant?: "return" | "normal";
+  moveCellShow?: boolean;
 }) {
   const { page, setPage, size, setSize } = usePaginate();
   const {
@@ -28,6 +31,8 @@ export default function OrdersListResults(props: {
     params,
     otherQuery,
     postfix: otherPostfix,
+    moveVariant,
+    moveCellShow,
   } = props;
   const [moveOrder, setMoveOrder] = React.useState({
     open: false,
@@ -127,18 +132,20 @@ export default function OrdersListResults(props: {
         width: "10%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Tooltip title="Move Orders">
-              <IconButton
-                disableRipple={false}
-                size="small"
-                color="secondary"
-                onClick={() =>
-                  setMoveOrder({ open: true, values: cell.row.original })
-                }
-              >
-                <MdOutlineDriveFileMove />
-              </IconButton>
-            </Tooltip>
+            {moveCellShow ? (
+              <Tooltip title="Move Orders">
+                <IconButton
+                  disableRipple={false}
+                  size="small"
+                  color="secondary"
+                  onClick={() =>
+                    setMoveOrder({ open: true, values: cell.row.original })
+                  }
+                >
+                  <MdOutlineDriveFileMove />
+                </IconButton>
+              </Tooltip>
+            ) : null}
             <LinkRouter
               to={`/orders/order-details/${cell.row.original.order_id}?order_status=${orderStatus}`}
             >
@@ -207,15 +214,24 @@ export default function OrdersListResults(props: {
           ),
         }}
       />
-      {moveOrder.open && (
-        <MoveOrdersDialog
-          open={moveOrder.open}
-          orderStatus={orderStatus}
-          onClose={onCloseMoveOrder}
-          orders={moveOrder.values}
-          refetch={refetch}
-        />
-      )}
+      {moveOrder.open &&
+        (moveVariant === "return" ? (
+          <ReturnMoveOrdersDialog
+            open={moveOrder.open}
+            orderStatus={orderStatus}
+            onClose={onCloseMoveOrder}
+            orders={moveOrder.values}
+            refetch={refetch}
+          />
+        ) : (
+          <MoveOrdersDialog
+            open={moveOrder.open}
+            orderStatus={orderStatus}
+            onClose={onCloseMoveOrder}
+            orders={moveOrder.values}
+            refetch={refetch}
+          />
+        ))}
     </>
   );
 }

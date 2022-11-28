@@ -7,17 +7,17 @@ import MenuItem from "@mui/material/MenuItem";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 
 function RetailerOrdersTab(props: {
-  onSetOrderStatus: (value: number) => void;
+  onSetOrderStatus: (value: string) => void;
   labelStatusList?: Array<{
     id?: string;
     label: string;
-    order_status: number;
-    child?: Array<{ label: string; order_status: number }>;
+    order_status: string;
+    child?: Array<{ label: string; order_status: string }>;
   }>;
 }) {
   const { onSetOrderStatus, labelStatusList } = props;
   const [value, setValue] = React.useState(
-    labelStatusList ? labelStatusList[0].order_status : 0
+    labelStatusList ? labelStatusList[0].order_status : "0"
   );
   const [anchorEl, setAnchorEl] = React.useState<
     Record<string, null | HTMLElement>
@@ -29,66 +29,66 @@ function RetailerOrdersTab(props: {
       labelStatusList || [
         {
           label: "new orders",
-          order_status: 0,
+          order_status: "0",
         },
         {
           label: "accepted orders",
-          order_status: 1,
+          order_status: "1",
         },
         {
           label: "in transit orders",
-          order_status: 2 /*3*/,
+          order_status: "2,3",
         },
         {
           label: "out for delivery",
-          order_status: 4,
+          order_status: "4",
         },
         {
           label: "delivered orders",
-          order_status: 5,
+          order_status: "5",
         },
         {
           id: "return-order-menu",
           label: "return orders",
-          order_status: 6,
+          order_status: "6",
           child: [
             {
               label: "new orders",
-              order_status: 6,
+              order_status: "6",
             },
             {
               label: "accepted orders",
-              order_status: 8,
+              order_status: "8",
             },
             {
               label: "in process",
-              order_status: 12,
+              order_status: "12",
             },
             {
               label: "pickup",
-              order_status: 14,
+              order_status: "14",
             },
             {
               label: "out for pickup",
-              order_status: 16,
+              order_status: "16",
             },
             {
               label: "returning",
-              order_status: 17,
+              order_status: "17",
             },
             {
               label: "returned",
-              order_status: 18,
+              order_status: "18",
             },
             {
               label: "cancel",
-              order_status: 11 /*13, 15*/,
+              order_status: "11,13,15",
             },
           ],
         },
         {
           label: "cancelled orders",
-          order_status: 7 /*9, 10*/,
+          order_status: "7,9,10",
         },
       ],
     []
@@ -96,7 +96,7 @@ function RetailerOrdersTab(props: {
 
   const handleClickTab = (
     e: React.MouseEvent<HTMLElement>,
-    orderStatus: number,
+    orderStatus: string,
     id?: string
   ) => {
     if (id) {
@@ -107,12 +107,13 @@ function RetailerOrdersTab(props: {
     } else {
       onSetOrderStatus(orderStatus);
       setValue(orderStatus);
+      setSelectedIndex(-1);
     }
   };
 
   const handleMenuItemClick = (
     index: number,
-    orderStatus: number,
+    orderStatus: string,
     id?: string
   ) => {
     onSetOrderStatus(orderStatus);

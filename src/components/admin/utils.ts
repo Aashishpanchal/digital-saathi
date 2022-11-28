@@ -2,6 +2,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { ToWords } from "to-words";
 import dayjs from "dayjs";
+import { getStrOrderStatus } from "../../constants/messages";
 
 export const getPayload = (
   original: { [key: string]: any },
@@ -128,20 +129,7 @@ export const orderStatusReadable = (
 ) =>
   data.map((row) => ({
     ...row,
-    [addKeyName]:
-      row[extractName] === 0
-        ? "New"
-        : row[extractName] === 1
-        ? "Accepted"
-        : row[extractName] === 3
-        ? "Picked-up "
-        : row[extractName] === 5
-        ? "Delivered"
-        : row[extractName] === 7
-        ? "Reject By Farmer"
-        : row[extractName] === 9
-        ? "Rejected"
-        : null,
+    [addKeyName]: getStrOrderStatus(`${row[extractName]}`),
   }));
 
 export const dateTimeFormatTable = (
@@ -262,3 +250,13 @@ export const objectToForm = (obj: Record<string, any>) => {
   }
   return formData;
 };
+
+export function checkCancelOrderStatus(status: string) {
+  const value: Array<string> = ["7", "9", "10", "11", "13", "15", "11,13,15"];
+  for (const iterator of value) {
+    if (status === iterator) {
+      return true;
+    }
+  }
+  return false;
+}

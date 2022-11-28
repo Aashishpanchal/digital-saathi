@@ -26,7 +26,7 @@ import { getStrOrderStatus } from "../../../../../constants/messages";
 
 export default function PartnerOrders() {
   const { partner_id } = useParams();
-  const [orderStatus, setOrderStatus] = React.useState(0);
+  const [orderStatus, setOrderStatus] = React.useState("0");
   const [searchText, setSearchText] = React.useState("");
   const { state: csvData, updateState: setCsvData } = useStateWithCallback<
     Array<Record<string, any>>

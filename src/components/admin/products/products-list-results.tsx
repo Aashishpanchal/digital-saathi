@@ -4,7 +4,7 @@ import { TbListDetails } from "react-icons/tb";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Tooltip, IconButton } from "@mui/material";
-import { FaRegEdit, FaRegFileImage, FaRupeeSign } from "react-icons/fa";
+import { FaRegEdit, /* FaRegFileImage, */ FaRupeeSign } from "react-icons/fa";
 import FocusStar from "../focus-star";
 import SerialNumber from "../serial-number";
 import { shopProducts } from "../../../http";
@@ -16,6 +16,7 @@ import usePaginate from "../../../hooks/usePaginate";
 import ProductPriceDialog from "./product-price-dialog";
 import TablePagination from "../../table/table-pagination";
 import DeleteDialogBox from "../../dialog-box/delete-dialog-box";
+import ShopAvatar from "../../Image/shop-avatar";
 
 export default function ProductsListResults(props: {
   searchText: string;
@@ -98,6 +99,20 @@ export default function ProductsListResults(props: {
         ),
       },
       {
+        Header: "Image",
+        accessor: "image_url",
+        Cell: (cell: any) => (
+          <Box display="flex" justifyContent={"center"}>
+            <ShopAvatar
+              src={cell.value}
+              sx={{ width: 50, height: 50 }}
+              variant="rounded"
+              download
+            />
+          </Box>
+        ),
+      },
+      {
         Header: "SKU Name",
         accessor: "sku_name",
       },
@@ -155,7 +170,7 @@ export default function ProductsListResults(props: {
                 <FaRupeeSign />
               </IconButton>
             </Tooltip>
-            <LinkRouter to={`${cell.row.original.sku_id}/product-more-images`}>
+            {/* <LinkRouter to={`${cell.row.original.sku_id}/product-more-images`}>
               <Tooltip title="Product Images">
                 <IconButton
                   disableRipple={false}
@@ -165,7 +180,7 @@ export default function ProductsListResults(props: {
                   <FaRegFileImage />
                 </IconButton>
               </Tooltip>
-            </LinkRouter>
+            </LinkRouter> */}
             <LinkRouter to={`${cell.row.original.sku_id}/product-details`}>
               <Tooltip title="Product Details">
                 <IconButton

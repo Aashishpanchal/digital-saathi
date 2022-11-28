@@ -26,7 +26,7 @@ import { getStrOrderStatus } from "../../../../../constants/messages";
 
 export default function RetailerOrders() {
   const { retailer_id } = useParams();
-  const [orderStatus, setOrderStatus] = React.useState(0);
+  const [orderStatus, setOrderStatus] = React.useState("0");
   const [searchText, setSearchText] = React.useState("");
   const { state: csvData, updateState: setCsvData } = useStateWithCallback<
     Array<Record<string, any>>

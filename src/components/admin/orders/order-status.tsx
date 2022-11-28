@@ -9,6 +9,10 @@ const label: { [key: string]: any } = {
     name: "accepted",
     color: "#e90e69",
   },
+  "2": {
+    name: "in-process",
+    color: "#a414dd",
+  },
   "3": {
     name: "in-process",
     color: "#a414dd",
@@ -22,20 +26,56 @@ const label: { [key: string]: any } = {
     color: "#1896ea",
   },
   "6": {
-    name: "returned",
+    name: "return from farmer",
     color: "#0ee932",
   },
   "7": {
-    name: "cancelled",
+    name: "cancel from farmer",
     color: "#e90e24",
   },
   "8": {
-    name: "returning",
+    name: "return in process",
     color: "#0ee932",
   },
+  "9": {
+    name: "cancel from retailer",
+    color: "#d77b11",
+  },
   "10": {
-    name: "returning",
+    name: "cancel from manager/agent",
     color: "#0ee932",
+  },
+  "11": {
+    name: "cancel return",
+    color: "#e90e69",
+  },
+  "12": {
+    name: "return in process",
+    color: "#0ee932",
+  },
+  "13": {
+    name: "cancel return",
+    color: "#e90e69",
+  },
+  "14": {
+    name: "return in process",
+    color: "#0ee932",
+  },
+  "15": {
+    name: "cancel return",
+    color: "#e90e69",
+  },
+  "16": {
+    name: "return in process",
+    color: "#0ee932",
+  },
+  "17": {
+    name: "returned",
+    color: "#120ee9",
+  },
+  "18": {
+    name: "refunded",
+    color: "#a414dd",
   },
 };
 

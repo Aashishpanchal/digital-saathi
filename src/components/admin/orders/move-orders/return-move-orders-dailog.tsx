@@ -11,12 +11,13 @@ import {
   FormControl,
 } from "@mui/material";
 import * as OrderForms from "./order-forms";
+import * as ReturnOrderForms from "./return-order-forms";
 
 const Option = styled(MenuItem)({
   fontSize: "small",
 });
 
-export default function MoveOrdersDialog(props: {
+export default function ReturnMoveOrdersDialog(props: {
   orderStatus: string;
   orders: Record<string, any>;
   open: boolean;
@@ -25,85 +26,116 @@ export default function MoveOrdersDialog(props: {
 }) {
   const { open, onClose, orderStatus, orders, refetch } = props;
   const [select, setSelect] = React.useState("");
-
   const orderStatusList = React.useMemo(
     () => [
-      { title: "New", value: "0" },
-      { title: "Accepted", value: "1" },
-      { title: "In Process", value: "3" },
-      { title: "Out for Delivery", value: "4" },
-      { title: "Delivered", value: "5" },
-      { title: "Cancelled from Farmer", value: "7" },
-      { title: "Cancelled from Retailer", value: "9" },
-      { title: "Cancelled from Delivery agent", value: "10" },
+      { title: "New", value: "6" },
+      { title: "Accept", value: "8" },
+      { title: "In Process", value: "12" },
+      { title: "Pickup", value: "14" },
+      { title: "Out of pickup", value: "16" },
+      { title: "Returning", value: "17" },
+      { title: "Returned", value: "18" },
+      { title: "Cancel return order by retailer", value: "11" },
+      { title: "Cancel return order by delivery partner", value: "13" },
+      { title: "Cancel return order by delivery agent", value: "15" },
     ],
     []
   );
 
   const orderStatusOnForms = React.useMemo<Record<string, any>>(
     () => ({
-      "0": (
-        <OrderForms.NewOrder
+      "6": (
+        <ReturnOrderForms.MoveOnReason
           key={0}
           onClose={onClose}
           orders={orders}
           refetch={refetch}
+          variant="farmer"
+          orderStatus={6}
         />
       ),
-      "1": (
-        <OrderForms.Accepted
+      "8": (
+        <ReturnOrderForms.Accept
           key={1}
           onClose={onClose}
           orders={orders}
           refetch={refetch}
         />
       ),
-      "3": (
-        <OrderForms.InProcess
+      "12": (
+        <ReturnOrderForms.InProcess
           key={3}
           onClose={onClose}
           orders={orders}
           refetch={refetch}
         />
       ),
-      "4": (
-        <OrderForms.OutForDelivery
-          key={4}
+      "14": (
+        <ReturnOrderForms.MoveOnOrderStatus
+          key={11}
+          title="Move Pickup"
+          orderStatus={14}
           onClose={onClose}
           orders={orders}
           refetch={refetch}
         />
       ),
-      "5": (
-        <OrderForms.Delivered
-          key={5}
+      "16": (
+        <ReturnOrderForms.MoveOnOrderStatus
+          key={11}
+          title="Move Out For Pickup"
+          orderStatus={16}
           onClose={onClose}
           orders={orders}
           refetch={refetch}
         />
       ),
-      "7": (
-        <OrderForms.CancelledFromFarmer
-          key={7}
+      "17": (
+        <ReturnOrderForms.MoveOnOrderStatus
+          key={11}
+          title="Move Returning"
+          orderStatus={17}
           onClose={onClose}
           orders={orders}
           refetch={refetch}
         />
       ),
-      "9": (
-        <OrderForms.CancelledFromRetailer
+      "18": (
+        <ReturnOrderForms.Returned
           key={9}
           onClose={onClose}
           orders={orders}
           refetch={refetch}
         />
       ),
-      "10": (
-        <OrderForms.CancelledFromAgent
+      "11": (
+        <ReturnOrderForms.MoveOnReason
           key={10}
           onClose={onClose}
           orders={orders}
           refetch={refetch}
+          variant="retailer"
+          orderStatus={11}
+        />
+      ),
+      "13": (
+        <ReturnOrderForms.MoveOnReason
+          key={11}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+          variant="delivery-partner"
+          orderStatus={13}
+        />
+      ),
+      "15": (
+        <ReturnOrderForms.MoveOnReason
+          key={12}
+          onClose={onClose}
+          orders={orders}
+          refetch={refetch}
+          variant="delivery-agent"
+          orderStatus={15}
         />
       ),
     }),

@@ -19,7 +19,7 @@ export default function PartnerSaleDetails() {
 
   return (
     <MainOrders
-      orderStatus={5}
+      orderStatus={"5"}
       filename="partner-sale-details"
       title={`${partnerName} / Input Sale Details`}
       params="partner"

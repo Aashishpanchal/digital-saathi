@@ -9,7 +9,7 @@ import TablePagination from "../../table/table-pagination";
 
 function PartnerOrdersListResults(props: {
   searchText: string;
-  orderStatus: number;
+  orderStatus: string;
   partnerId: string;
 }) {
   const [page, setPage] = React.useState(0);
