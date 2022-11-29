@@ -13,11 +13,21 @@ export default function MoveOnReason(props: {
   orders: Record<string, any>;
   refetch: Function;
   variant: "farmer" | "retailer" | "delivery-partner" | "delivery-agent";
-  orderStatus: number;
 }) {
-  const { onClose, orders, refetch, variant, orderStatus } = props;
+  const { onClose, orders, refetch, variant } = props;
   const [loading, setLoading] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
+
+  const orderStatus = React.useMemo(
+    () => ({
+      farmer: "6",
+      retailer: "11",
+      "delivery-partner": "13",
+      "delivery-agent": "15",
+    }),
+    []
+  );
+
   const {
     values,
     errors,
@@ -40,7 +50,7 @@ export default function MoveOnReason(props: {
           data: JSON.stringify({
             ...values,
             order_id: orders.order_id,
-            order_status: orderStatus,
+            order_status: orderStatus[variant],
             agent_id: orders.agent_id,
           }),
         });
@@ -65,8 +75,8 @@ export default function MoveOnReason(props: {
     () => ({
       farmer: "farmer_return",
       retailer: "retailer_return",
-      "delivery-partner": "deliverypartner_return",
-      "delivery-agent": "deliveryagent_return",
+      "delivery-partner": "deliverypartner__return",
+      "delivery-agent": "deliveryagent__return",
     }),
     []
   );

@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import React from "react";
 import usePrintData from "../../../../../hooks/usePrintData";
-import ProductAvatar from "../../../../Image/product-avatar";
+import ShopAvatar from "../../../../Image/shop-avatar";
 import { LabelText } from "../styled";
 
 const labels = [
@@ -42,10 +42,11 @@ function OrderDetailsCard(props: { orderDetail: { [key: string]: any } }) {
           </Grid>
         </CardContent>
       </Box>
-      <ProductAvatar
-        variant="square"
-        sx={{ height: 180, width: 150 }}
+      <ShopAvatar
         src={orderDetail?.sku_image}
+        sx={{ height: 180, width: 150 }}
+        variant="square"
+        download
         {...props}
       />
     </Card>

@@ -13,7 +13,7 @@ import {
 import { AiFillPrinter as PrintIcon } from "react-icons/ai";
 import { MainContainer } from "../../../../components/layout";
 import {
-  shopProductImages,
+  // shopProductImages,
   shopProducts,
   shopProductWeightPrice,
 } from "../../../../http";
@@ -22,6 +22,7 @@ import CardMedia from "@mui/material/CardMedia";
 import SpeedDialTooltipAction from "../../../../components/admin/speed-dial-tooltip-action";
 // import { reactToPdf } from "../../../../components/admin/utils";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
+import ShopAvatar from "../../../../components/Image/shop-avatar";
 
 const productLabels = [
   { label: "SKU Name", accessor: "sku_name" },
@@ -53,9 +54,9 @@ export default function ShopProductDetails() {
   const [productPriceData, setProductPriceData] = React.useState<
     Record<string, any>
   >({});
-  const [productImageData, setProductImageData] = React.useState<Array<any>>(
-    []
-  );
+  // const [productImageData, setProductImageData] = React.useState<Array<any>>(
+  //   []
+  // );
   let componentRef = React.useRef<any>(null);
 
   const { printData: obj1 } = usePrintData({
@@ -82,12 +83,12 @@ export default function ShopProductDetails() {
         setProductPriceData(res.data[0] || {});
       }
 
-      res = await shopProductImages("get", {
-        postfix: `?sku_id=${sku_id}`,
-      });
-      if (res?.status === 200) {
-        setProductImageData(res.data.product_images);
-      }
+      // res = await shopProductImages("get", {
+      //   postfix: `?sku_id=${sku_id}`,
+      // });
+      // if (res?.status === 200) {
+      //   setProductImageData(res.data.product_images);
+      // }
     } catch (err: any) {
       console.log(err?.response);
     }
@@ -162,26 +163,35 @@ export default function ShopProductDetails() {
             ref={componentRef}
           >
             {/* Card One */}
-            <Card>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  View Product
-                </Typography>
-                <Grid container>
-                  {obj1.map((item, index) => (
-                    <Grid key={index} item xs={12}>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        textAlign={"justify"}
-                      >
-                        <strong>{item.get("label")}: </strong>
-                        {item.get("Cell")}
-                      </Typography>
-                    </Grid>
-                  ))}
-                </Grid>
-              </CardContent>
+            <Card sx={{ display: "flex", maxHeight: 260 }}>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    View Product
+                  </Typography>
+                  <Grid container>
+                    {obj1.map((item, index) => (
+                      <Grid key={index} item xs={12}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          textAlign={"justify"}
+                        >
+                          <strong>{item.get("label")}: </strong>
+                          {item.get("Cell")}
+                        </Typography>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Box>
+              <CardMedia
+                component={"img"}
+                image={
+                  "https://mui.com/static/images/cards/live-from-space.jpg"
+                }
+                sx={{ height: "100%" }}
+              />
             </Card>
             {/* Card Two */}
             <Card>
@@ -202,7 +212,7 @@ export default function ShopProductDetails() {
               </CardContent>
             </Card>
             {/* Card three */}
-            {productImageData.length !== 0 && (
+            {/* {productImageData.length !== 0 && (
               <Card>
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
@@ -231,7 +241,7 @@ export default function ShopProductDetails() {
                   </Grid>
                 </CardContent>
               </Card>
-            )}
+            )} */}
           </Box>
         </Container>
       </MainContainer>

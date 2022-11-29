@@ -51,7 +51,6 @@ export default function ReturnMoveOrdersDialog(props: {
           orders={orders}
           refetch={refetch}
           variant="farmer"
-          orderStatus={6}
         />
       ),
       "8": (
@@ -115,7 +114,6 @@ export default function ReturnMoveOrdersDialog(props: {
           orders={orders}
           refetch={refetch}
           variant="retailer"
-          orderStatus={11}
         />
       ),
       "13": (
@@ -125,7 +123,6 @@ export default function ReturnMoveOrdersDialog(props: {
           orders={orders}
           refetch={refetch}
           variant="delivery-partner"
-          orderStatus={13}
         />
       ),
       "15": (
@@ -135,7 +132,6 @@ export default function ReturnMoveOrdersDialog(props: {
           orders={orders}
           refetch={refetch}
           variant="delivery-agent"
-          orderStatus={15}
         />
       ),
     }),

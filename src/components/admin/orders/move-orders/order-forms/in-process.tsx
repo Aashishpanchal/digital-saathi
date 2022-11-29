@@ -6,11 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import AsyncAutocomplete from "../../../../form/async-autocomplete";
-import {
-  deliveryPartners,
-  shopDeliveryAgent,
-  shopOrders,
-} from "../../../../../http";
+import { shopAreas, shopDeliveryAgent, shopOrders } from "../../../../../http";
 import { queryToStr } from "../../../utils";
 import moveOrdersSchemas from "../schemas";
 
@@ -22,6 +18,7 @@ export default function InProcess(props: {
   const { onClose, orders, refetch } = props;
   const [loading, setLoading] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
+
   const { values, errors, touched, handleBlur, handleSubmit, setFieldValue } =
     useFormik({
       initialValues: {
@@ -57,8 +54,11 @@ export default function InProcess(props: {
       },
     });
 
-  const { isLoading, data } = useQuery(["get-all-partner"], () =>
-    deliveryPartners("get")
+  const { isLoading, data } = useQuery(["pincode-found"], () =>
+    shopAreas("get", {
+      params: "partners",
+      postfix: `?pincode=${orders?.shipping_pincode}`,
+    })
   );
 
   const { isLoading: partnerAgentLoading, data: partnerAgentData } = useQuery(
@@ -67,14 +67,14 @@ export default function InProcess(props: {
       shopDeliveryAgent("get", {
         postfix: "?".concat(
           queryToStr({
-            partner_id: values.partner_id,
+            partner_id: values.partner_id || 0,
           })
         ),
       })
   );
 
   const partnerOptions = React.useMemo(() => {
-    if (data?.status === 200) return data.data || [];
+    if (data?.status === 200) return data.data.partners;
     return [];
   }, [data]);
 

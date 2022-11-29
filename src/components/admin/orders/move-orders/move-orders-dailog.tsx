@@ -11,6 +11,7 @@ import {
   FormControl,
 } from "@mui/material";
 import * as OrderForms from "./order-forms";
+import * as ReturnOrderForms from "./return-order-forms";
 
 const Option = styled(MenuItem)({
   fontSize: "small",
@@ -26,8 +27,8 @@ export default function MoveOrdersDialog(props: {
   const { open, onClose, orderStatus, orders, refetch } = props;
   const [select, setSelect] = React.useState("");
 
-  const orderStatusList = React.useMemo(
-    () => [
+  const orderStatusList = React.useMemo(() => {
+    const defaultList = [
       { title: "New", value: "0" },
       { title: "Accepted", value: "1" },
       { title: "In Process", value: "3" },
@@ -36,12 +37,18 @@ export default function MoveOrdersDialog(props: {
       { title: "Cancelled from Farmer", value: "7" },
       { title: "Cancelled from Retailer", value: "9" },
       { title: "Cancelled from Delivery agent", value: "10" },
-    ],
-    []
-  );
+    ];
+    if (orderStatus === "5") {
+      return [
+        ...defaultList,
+        { title: "Return from Farmer", value: "return-farmer" },
+      ];
+    }
+    return defaultList;
+  }, []);
 
-  const orderStatusOnForms = React.useMemo<Record<string, any>>(
-    () => ({
+  const orderStatusOnForms = React.useMemo<Record<string, any>>(() => {
+    const defaultObj = {
       "0": (
         <OrderForms.NewOrder
           key={0}
@@ -106,9 +113,22 @@ export default function MoveOrdersDialog(props: {
           refetch={refetch}
         />
       ),
-    }),
-    [orders]
-  );
+    };
+    if (orderStatus === "5")
+      return {
+        ...defaultObj,
+        "return-farmer": (
+          <ReturnOrderForms.MoveOnReason
+            key={10}
+            onClose={onClose}
+            orders={orders}
+            refetch={refetch}
+            variant="farmer"
+          />
+        ),
+      };
+    return defaultObj;
+  }, [orders]);
 
   return (
     <Dialog open={open} fullWidth onClose={onClose}>

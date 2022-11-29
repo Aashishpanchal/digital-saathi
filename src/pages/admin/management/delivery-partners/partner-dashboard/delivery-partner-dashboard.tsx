@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import {
   FaCalendarTimes,
-  FaRegChartBar,
+  // FaRegChartBar,
   FaShoppingBasket,
 } from "react-icons/fa";
 import { BiStore } from "react-icons/bi";
@@ -50,12 +50,12 @@ export default function DeliveryPartnerDashboard() {
         url: "partner-upi-payment-log",
         color: "#059669",
       },
-      {
-        Title: "Target vs Achievement",
-        Icon: <FaRegChartBar />,
-        url: "partner-target-achievement",
-        color: "#830596",
-      },
+      // {
+      //   Title: "Target vs Achievement",
+      //   Icon: <FaRegChartBar />,
+      //   url: "partner-target-achievement",
+      //   color: "#830596",
+      // },
     ],
     []
   );

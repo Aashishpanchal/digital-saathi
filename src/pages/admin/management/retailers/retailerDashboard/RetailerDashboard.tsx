@@ -3,7 +3,7 @@ import { BiStore } from "react-icons/bi";
 import {
   FaBoxes,
   FaCalendarTimes,
-  FaRegChartBar,
+  // FaRegChartBar,
   FaRupeeSign,
   FaShoppingBasket,
 } from "react-icons/fa";
@@ -57,12 +57,12 @@ export default function RetailerDashboard() {
         url: "retailer-sku-pricing",
         color: "#059669",
       },
-      {
-        Title: "Target vs Achievement",
-        Icon: <FaRegChartBar />,
-        url: "retailer-target-achievement",
-        color: "#830596",
-      },
+      // {
+      //   Title: "Target vs Achievement",
+      //   Icon: <FaRegChartBar />,
+      //   url: "retailer-target-achievement",
+      //   color: "#830596",
+      // },
     ],
     []
   );

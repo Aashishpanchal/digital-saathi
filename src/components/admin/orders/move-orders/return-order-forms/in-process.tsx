@@ -6,11 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import AsyncAutocomplete from "../../../../form/async-autocomplete";
-import {
-  deliveryPartners,
-  shopDeliveryAgent,
-  shopOrders,
-} from "../../../../../http";
+import { shopAreas, shopDeliveryAgent, shopOrders } from "../../../../../http";
 import { queryToStr } from "../../../utils";
 import moveOrdersSchemas from "../schemas";
 
@@ -57,24 +53,26 @@ export default function InProcess(props: {
       },
     });
 
-  const { isLoading, data } = useQuery(["get-all-partner"], () =>
-    deliveryPartners("get")
+  const { isLoading, data } = useQuery(["pincode-found"], () =>
+    shopAreas("get", {
+      params: "partners",
+      postfix: `?pincode=${orders?.shipping_pincode}`,
+    })
   );
-
   const { isLoading: partnerAgentLoading, data: partnerAgentData } = useQuery(
     ["get-all-delivery-agent", values.return_partner_id],
     () =>
       shopDeliveryAgent("get", {
         postfix: "?".concat(
           queryToStr({
-            return_partner_id: values.return_partner_id,
+            partner_id: values.return_partner_id || 0,
           })
         ),
       })
   );
 
   const partnerOptions = React.useMemo(() => {
-    if (data?.status === 200) return data.data || [];
+    if (data?.status === 200) return data.data.partners || [];
     return [];
   }, [data]);
 
@@ -97,7 +95,7 @@ export default function InProcess(props: {
           value={values.return_partner_id}
           objFilter={{
             title: "partner_name",
-            value: "return_partner_id",
+            value: "partner_id",
           }}
           onChangeOption={(value) => setFieldValue("return_partner_id", value)}
           TextInputProps={{
