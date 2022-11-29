@@ -12,7 +12,7 @@ export default function Reason() {
   const onClose = () => setOpen(false);
 
   const searchHandler = (value: string) =>
-    setSearchText(value ? `?search_reason=${value}` : "");
+    setSearchText(value ? `/search?search_reason=${value}` : "");
 
   return (
     <MainContainer>
