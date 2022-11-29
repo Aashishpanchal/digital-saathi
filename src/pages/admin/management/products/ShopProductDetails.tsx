@@ -185,13 +185,13 @@ export default function ShopProductDetails() {
                   </Grid>
                 </CardContent>
               </Box>
-              <CardMedia
+              {/* <CardMedia
                 component={"img"}
                 image={
                   "https://mui.com/static/images/cards/live-from-space.jpg"
                 }
                 sx={{ height: "100%" }}
-              />
+              /> */}
             </Card>
             {/* Card Two */}
             <Card>
