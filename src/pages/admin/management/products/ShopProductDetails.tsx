@@ -18,7 +18,6 @@ import {
   shopProductWeightPrice,
 } from "../../../../http";
 import usePrintData from "../../../../hooks/usePrintData";
-import CardMedia from "@mui/material/CardMedia";
 import SpeedDialTooltipAction from "../../../../components/admin/speed-dial-tooltip-action";
 // import { reactToPdf } from "../../../../components/admin/utils";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
@@ -28,8 +27,8 @@ const productLabels = [
   { label: "SKU Name", accessor: "sku_name" },
   { label: "SKU Name Kannada", accessor: "sku_name_kannada" },
   { label: "SKU Code", accessor: "sku_code" },
-  { label: "Category", accessor: "category_id" },
-  { label: "Sub Category", accessor: "subcategory_id" },
+  { label: "Category", accessor: "category_name" },
+  { label: "Sub Category", accessor: "subcategory_name" },
   { label: "Brand", accessor: "brand_id" },
   { label: "HSN Code", accessor: "hsn_code" },
   { label: "Description", accessor: "description" },
@@ -163,8 +162,35 @@ export default function ShopProductDetails() {
             ref={componentRef}
           >
             {/* Card One */}
-            <Card sx={{ display: "flex", maxHeight: 260 }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Card
+              sx={{
+                display: "flex",
+                maxHeight: 360,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ShopAvatar
+                src={productData?.image_url}
+                sx={{ height: "100%", width: "40%" }}
+                defaultImg={{
+                  variant: "rounded",
+                  sx: {
+                    height: 150,
+                    width: 150,
+                  },
+                }}
+                variant="square"
+                download
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  maxHeight: 350,
+                  overflow: "auto",
+                }}
+              >
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     View Product
@@ -185,13 +211,6 @@ export default function ShopProductDetails() {
                   </Grid>
                 </CardContent>
               </Box>
-              {/* <CardMedia
-                component={"img"}
-                image={
-                  "https://mui.com/static/images/cards/live-from-space.jpg"
-                }
-                sx={{ height: "100%" }}
-              /> */}
             </Card>
             {/* Card Two */}
             <Card>

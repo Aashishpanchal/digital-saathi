@@ -134,7 +134,7 @@ export default function BannerFormDialog(props: {
             imgRectangle
             sx={{
               width: "100%",
-              height: "auto",
+              height: 240,
             }}
             variant="rounded"
           />

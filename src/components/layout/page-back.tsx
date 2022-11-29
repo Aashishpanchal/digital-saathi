@@ -8,15 +8,20 @@ function PageBreadcrumbs() {
   const navigate = useNavigate();
   const onBack = () => navigate(-1);
 
-  const addMarginTop = React.useMemo(
-    () =>
-      new Set([
-        "/management/retailers/2/retailer-dashboard/retailer-orders",
-        "/management/delivery-partners/2/partner-dashboard/partner-orders",
-        "/management/retailers/3/retailer-dashboard/retailer-sku-units",
-      ]),
-    []
-  );
+  const addMarginTop = React.useMemo(() => {
+    const lists = [
+      "retailer-dashboard/retailer-orders",
+      "partner-dashboard/partner-orders",
+      "retailer-dashboard/retailer-sku-units",
+      "partner-dashboard/partner-orders",
+    ];
+    for (const iterator of lists) {
+      if (pathname.includes(iterator)) {
+        return true;
+      }
+    }
+    return false;
+  }, [pathname]);
 
   const backOff = React.useMemo(
     () =>
@@ -58,7 +63,7 @@ function PageBreadcrumbs() {
   );
 
   return backOff.has(pathname) ? null : (
-    <Box mt={addMarginTop.has(pathname) ? 7 : 1} mb={1} mr={5} alignSelf="end">
+    <Box mt={addMarginTop ? 7 : 1} mb={1} mr={5} alignSelf="end">
       <Button
         variant="outlined"
         startIcon={<BiArrowBack size={20} />}

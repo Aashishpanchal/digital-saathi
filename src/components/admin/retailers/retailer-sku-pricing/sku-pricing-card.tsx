@@ -4,7 +4,6 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardMedia,
   Chip,
   CircularProgress,
   Grid,
@@ -17,6 +16,7 @@ import ErrorSuccessChip from "../../../common/error-success-chip";
 import { MdError } from "react-icons/md";
 // import { shopProducts } from "../../../../http";
 import { useSnackbar } from "notistack";
+import ShopAvatar from "../../../Image/shop-avatar";
 
 const label1 = [
   { title: "weight", accessor: "weight" },
@@ -77,7 +77,20 @@ export default function SkuPricingCard(props: {
 
   return (
     <Card sx={{ width: 350 }} elevation={5}>
-      <CardMedia component="img" sx={{ height: 160 }} image={sku.image} />
+      <ShopAvatar
+        src={sku.image}
+        sx={{ height: 180, width: "100%" }}
+        defaultImg={{
+          variant: "rounded",
+          sx: {
+            backgroundColor: "#fff",
+            height: 150,
+            width: 150,
+          },
+        }}
+        variant="square"
+        download
+      />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {sku?.sku_name || "No Name"}

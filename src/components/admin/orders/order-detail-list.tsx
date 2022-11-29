@@ -11,11 +11,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import ProductAvatar from "../../Image/product-avatar";
 import { shopOrderDetails } from "../../../http";
 import { queryToStr, round2 } from "../utils";
 import { TableCustomCell, TextCenter } from "./styles";
 import { NumericFormat } from "react-number-format";
+import ShopAvatar from "../../Image/shop-avatar";
 
 export default function OrderDetailsList(props: {
   orderId: string;
@@ -31,7 +31,12 @@ export default function OrderDetailsList(props: {
         width: "10%",
         Cell: (cell: any) => (
           <Box display="flex" justifyContent={"center"}>
-            <ProductAvatar src={cell.value} sx={{ width: 50, height: 50 }} />
+            <ShopAvatar
+              src={cell.value}
+              sx={{ width: 50, height: 50 }}
+              variant="rounded"
+              download
+            />
           </Box>
         ),
       },

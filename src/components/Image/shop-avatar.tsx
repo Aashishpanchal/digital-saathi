@@ -21,11 +21,15 @@ function ShopAvatar(props: PropsI) {
 
   const onDownload = async () => {
     if (typeof src === "string") {
-      try {
-        const res = await imgDownload(src);
-        if (res.status === 200) setImgStr(URL.createObjectURL(res.data));
-      } catch (error) {
-        // console.log(error);
+      if (!src.includes("http")) {
+        try {
+          const res = await imgDownload(src);
+          if (res.status === 200) setImgStr(URL.createObjectURL(res.data));
+        } catch (error) {
+          // console.log(error);
+        }
+      } else {
+        setImgStr(src);
       }
     }
   };

@@ -1,16 +1,15 @@
-import React from "react";
 import {
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  CardMedia,
   Grid,
   Typography,
 } from "@mui/material";
 import { LabelText } from "../styled";
 import usePrintData from "../../../../hooks/usePrintData";
+import ShopAvatar from "../../../Image/shop-avatar";
 
 const label1 = [
   { title: "weight", accessor: "weight" },
@@ -42,7 +41,20 @@ export default function SkuCard(props: {
 
   return (
     <Card sx={{ width: 350 }} elevation={5}>
-      <CardMedia component="img" sx={{ height: 160 }} image={sku.image} />
+      <ShopAvatar
+        src={sku.image}
+        sx={{ height: 180, width: "100%" }}
+        defaultImg={{
+          variant: "rounded",
+          sx: {
+            backgroundColor: "#fff",
+            height: 150,
+            width: 150,
+          },
+        }}
+        variant="square"
+        download
+      />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {sku?.sku_name || "No Name"}

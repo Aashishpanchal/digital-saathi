@@ -148,7 +148,7 @@ export default function BrandAddEditDialog(props: {
             imgRectangle
             sx={{
               width: "100%",
-              height: "auto",
+              height: 240,
             }}
             variant="rounded"
           />

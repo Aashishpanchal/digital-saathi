@@ -2,17 +2,23 @@ import { Avatar as MaterialAvatar, AvatarProps } from "@mui/material";
 
 export interface ProductAvatarPropsI extends AvatarProps {
   imgRectangle?: boolean;
+  defaultImg?: AvatarProps;
 }
 
 export default function ProductAvatar(props: ProductAvatarPropsI) {
-  const { imgRectangle, ...other } = props;
+  const { imgRectangle, defaultImg, ...other } = props;
+
+  const defaultImgProps = {
+    ...other,
+    ...(defaultImg ? defaultImg : {}),
+  };
   return (
     <MaterialAvatar
       {...other}
       sx={{
         ...other.sx,
-        backgroundColor: imgRectangle ? "#fff" : "",
-        border: imgRectangle ? "1px solid green" : "",
+        backgroundColor: "#fff",
+        boxShadow: imgRectangle ? 6 : "",
       }}
     >
       {imgRectangle ? (
@@ -25,7 +31,7 @@ export default function ProductAvatar(props: ProductAvatarPropsI) {
           }}
         />
       ) : (
-        <MaterialAvatar {...props} src="/images/default-image.jpg" />
+        <MaterialAvatar {...defaultImgProps} src="/images/default-image.jpg" />
       )}
     </MaterialAvatar>
   );
