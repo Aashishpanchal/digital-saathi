@@ -87,7 +87,7 @@ export default function InvoiceBody(props: {
   }, [data]);
 
   const bothGst = React.useMemo(
-    () => order?.retailer_state !== order?.billing_state,
+    () => order?.retailer_state === order?.billing_state,
     [order]
   );
 

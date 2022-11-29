@@ -27,7 +27,7 @@ export default function Accepted(props: {
           const res = await shopOrders("post", {
             params: "status",
             data: JSON.stringify({
-              ...values,
+              retailer_id: orders.retailer_id,
               order_id: orders.order_id,
               invoice_no: orders.invoice_no,
               order_status: 1,
@@ -50,56 +50,12 @@ export default function Accepted(props: {
       },
     });
 
-  const { isLoading, data } = useQuery(
-    ["get-all-retails"],
-    () => retailer("get"),
-    {
-      select(data) {
-        if (data?.status === 200) {
-          data.data = (data.data || []).map(
-            (row: { retailer_name: any; retailer_id: any }) => {
-              return {
-                ...row,
-                retailer_name:
-                  row?.retailer_name || row?.retailer_id.toString(),
-              };
-            }
-          );
-        }
-        return data;
-      },
-    }
-  );
-
-  const retailerOptions = React.useMemo(() => {
-    if (data?.status === 200) return data.data || [];
-    return [];
-  }, [data]);
-
   return (
     <Box mt={2}>
       <Typography my={1} variant={"h6"}>
         Move order accepted
       </Typography>
       <form onSubmit={handleSubmit}>
-        <AsyncAutocomplete
-          id="partner-agent-option"
-          sx={{ my: 2 }}
-          label="Retailer"
-          loading={isLoading}
-          options={retailerOptions}
-          value={values.retailer_id}
-          objFilter={{
-            title: "retailer_name",
-            value: "retailer_id",
-          }}
-          onChangeOption={(value) => setFieldValue("retailer_id", value)}
-          TextInputProps={{
-            error: errors.retailer_id && touched.retailer_id ? true : false,
-            helperText: touched.retailer_id ? errors.retailer_id : "",
-            onBlur: handleBlur,
-          }}
-        />
         <Box
           sx={{
             display: "flex",

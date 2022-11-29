@@ -132,20 +132,18 @@ export default function OrdersListResults(props: {
         width: "10%",
         Cell: (cell: any) => (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            {moveCellShow ? (
-              <Tooltip title="Move Orders">
-                <IconButton
-                  disableRipple={false}
-                  size="small"
-                  color="secondary"
-                  onClick={() =>
-                    setMoveOrder({ open: true, values: cell.row.original })
-                  }
-                >
-                  <MdOutlineDriveFileMove />
-                </IconButton>
-              </Tooltip>
-            ) : null}
+            <Tooltip title="Move Orders">
+              <IconButton
+                disableRipple={false}
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  setMoveOrder({ open: true, values: cell.row.original })
+                }
+              >
+                <MdOutlineDriveFileMove />
+              </IconButton>
+            </Tooltip>
             <LinkRouter
               to={`/orders/order-details/${cell.row.original.order_id}?order_status=${orderStatus}`}
             >

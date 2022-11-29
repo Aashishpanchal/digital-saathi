@@ -142,9 +142,9 @@ export const dateTimeFormatTable = (
       ? {
           ...row,
           [dateExtractKeyName]: dayjs(row[dateExtractKeyName]).format(
-            "D-MMM-YYYY"
+            "D-M-YYYY"
           ),
-          [addTimeKeyName]: dayjs(row[dateExtractKeyName]).format("h:mm A"),
+          [addTimeKeyName]: dayjs(row[dateExtractKeyName]).format("h:mm"),
         }
       : row
   );
@@ -169,7 +169,7 @@ export const addTaxNetAmount = (
   netKeyName: string = "net_amount"
 ) =>
   data.map((row) => {
-    const both = row?.retailer_state !== row?.billing_state;
+    const both = row?.retailer_state === row?.billing_state;
     const { gst, igstNum } = totalGst(
       nullFree(row?.total_price),
       nullFree(row?.igst)
@@ -252,7 +252,16 @@ export const objectToForm = (obj: Record<string, any>) => {
 };
 
 export function checkCancelOrderStatus(status: string) {
-  const value: Array<string> = ["7", "9", "10", "11", "13", "15", "11,13,15"];
+  const value: Array<string> = [
+    "7",
+    "9",
+    "10",
+    "11",
+    "13",
+    "15",
+    "11,13,15",
+    "7,9,10",
+  ];
   for (const iterator of value) {
     if (status === iterator) {
       return true;

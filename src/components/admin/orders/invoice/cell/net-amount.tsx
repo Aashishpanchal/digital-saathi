@@ -16,7 +16,7 @@ export default function NetAmount(props: { cell: Cell }) {
       nullFree(original?.total_price),
       nullFree(original?.igst)
     );
-    return igstNum === 0 ? 0 : gst;
+    return igstNum === 0 ? original?.total_price : gst;
   }, []);
   return (
     <TextCenter>
