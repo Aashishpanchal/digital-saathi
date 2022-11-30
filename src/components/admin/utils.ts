@@ -245,7 +245,7 @@ export const removeEsc = (data: Array<Record<string, any>>) =>
     for (const key in row) {
       if (Object.prototype.hasOwnProperty.call(row, key)) {
         if (typeof row[key] === "string") {
-          newRow[key] = row[key].replace(/\t/g, "\\t").replace(/\n/g, "\\n");
+          newRow[key] = row[key].replace(/\t/g, " ").replace(/\n/g, " ");
         }
       }
     }
