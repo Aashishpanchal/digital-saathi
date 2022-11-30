@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import SpeedDialTooltipAction from "../../../components/admin/speed-dial-tooltip-action";
 
 const orderLabel = [
-  { label: "Order ID", accessor: "order_id" },
+  { label: "Order ID", accessor: "suborder_no" },
   {
     label: "Order Date",
     accessor: "order_date",
