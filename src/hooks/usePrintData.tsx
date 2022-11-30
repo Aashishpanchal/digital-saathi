@@ -29,12 +29,41 @@ export default function usePrintData(props: {
     return <>{cell.value}</>;
   };
 
+  const getAccessor = (
+    labels: string | Array<string>,
+    values: Record<string, any>
+  ) => {
+    let labelStr = "";
+    if (labels instanceof Array) {
+      for (const label of labels) {
+        const x = label.split(" ");
+        if (x.length !== 0) {
+          const [f, ...s] = x;
+          labelStr += values[f]
+            ? ` ${values[f]}${
+                s.length !== 0
+                  ? s.reduce(
+                      (p, c) => (p === "" ? " " : p) + (c === "" ? " " : c)
+                    )
+                  : ""
+              }`
+            : "";
+        } else {
+          labelStr += values[x[0]] ? values[x[0]] : "";
+        }
+      }
+    } else if (typeof labels === "string") {
+      return values[labels] ? values[labels] : "";
+    }
+    return labelStr;
+  };
+
   const instanceCall = () => {
     const valueSet =
       props.labels?.map((item) => {
-        let values = { ...item };
+        let values: Record<string, any> = { ...item, original: props.data };
         if (props.data) {
-          values["value"] = props.data[item.accessor || ""] || "";
+          values["value"] = getAccessor(item.accessor, props.data);
         }
         values["Cell"] =
           typeof values["Cell"] === "function"
