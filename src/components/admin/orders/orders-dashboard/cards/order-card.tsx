@@ -16,7 +16,7 @@ import usePrintData from "../../../../../hooks/usePrintData";
 
 const label1 = [
   { title: "farmer name", accessor: "customer_name" },
-  { title: "farmer address", accessor: "retailer_address" },
+  { title: "farmer address", accessor: "shipping_address" },
   { title: "partner name", accessor: "partner_name" },
   { title: "partner address", accessor: "partner_address" },
 ];
