@@ -17,10 +17,10 @@ function PageBreadcrumbs() {
     ];
     for (const iterator of lists) {
       if (pathname.includes(iterator)) {
-        return true;
+        return 10;
       }
     }
-    return false;
+    return 1;
   }, [pathname]);
 
   const backOff = React.useMemo(
@@ -63,7 +63,7 @@ function PageBreadcrumbs() {
   );
 
   return backOff.has(pathname) ? null : (
-    <Box mt={addMarginTop ? 7 : 1} mb={1} mr={5} alignSelf="end">
+    <Box mt={addMarginTop} mb={1} mr={5} alignSelf="end">
       <Button
         variant="outlined"
         startIcon={<BiArrowBack size={20} />}
