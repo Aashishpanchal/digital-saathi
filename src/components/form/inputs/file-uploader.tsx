@@ -50,7 +50,7 @@ export default function FileUploader(props: {
       types={["JPEG", "PNG"]}
       onTypeError={typeError}
       onSizeError={sizeError}
-      maxSize={1}
+      // maxSize={1}
       multiple={false}
       handleChange={handleChange}
     >
