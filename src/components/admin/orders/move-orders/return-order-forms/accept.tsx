@@ -29,7 +29,6 @@ export default function Accept(props: {
             data: JSON.stringify({
               ...values,
               order_id: orders.order_id,
-              invoice_no: orders.invoice_no,
               order_status: 8,
             }),
           });
