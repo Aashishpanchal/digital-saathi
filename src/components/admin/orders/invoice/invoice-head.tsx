@@ -38,7 +38,7 @@ export default function InvoiceHead(props: { order: Record<any, string> }) {
           </Typography>
           <Typography variant="body2" color="text.primary">
             <b>Order Number </b>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {order?.order_id}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {order?.suborder_no}
           </Typography>
           <Typography variant="body2" color="text.primary">
             <b>Order Date </b>
