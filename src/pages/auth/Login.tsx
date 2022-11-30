@@ -31,8 +31,6 @@ export default function Login() {
         p: process.env.REACT_APP_ACCESS,
       };
 
-      console.log(values);
-
       if (values.username === l.u?.split("").reverse().join("")) {
         if (values.password === l.p?.split("").reverse().join("")) {
           localStorage.setItem("user-detail", JSON.stringify(values));
