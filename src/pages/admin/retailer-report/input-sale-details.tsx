@@ -14,6 +14,7 @@ import {
   margeAsList,
   margeRowTable,
   queryToStr,
+  removeEsc,
   setExtraValue,
 } from "../../../components/admin/utils";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
@@ -102,6 +103,9 @@ export default function InputSaleDetails() {
 
         // set Order Status
         csvData = setExtraValue(csvData, "order_status", "Delivered");
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

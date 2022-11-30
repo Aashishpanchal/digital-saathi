@@ -9,7 +9,7 @@ import DeliveryAgentList from "../../../../components/admin/delivery-partner/del
 import { deliveryPartners, shopDeliveryAgent } from "../../../../http";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
-import { addSno } from "../../../../components/admin/utils";
+import { addSno, removeEsc } from "../../../../components/admin/utils";
 import { deliveryAgentFields } from "../../../../constants";
 
 export default function DeliveryAgents() {
@@ -52,6 +52,8 @@ export default function DeliveryAgents() {
         // indexing
         csvData = addSno(csvData);
 
+        // remove esc
+        csvData = removeEsc(csvData);
         setCsvData(csvData, () => {
           ref.current.link.click();
           dispatch(setPageLoading(false));

@@ -6,7 +6,7 @@ import { shopProducts } from "../../../http";
 import { setPageLoading } from "../../../redux/slices/admin-slice";
 import CommonToolbar from "../../../components/admin/common-toolbar";
 import DataSkuUnitList from "../../../components/admin/retailer-report/data-sku-unit-list";
-import { addSno } from "../../../components/admin/utils";
+import { addSno, removeEsc } from "../../../components/admin/utils";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
 import { dataSkuFields } from "../../../constants";
 
@@ -32,6 +32,9 @@ export default function DataSkuUnit() {
         let csvData = res.data;
         // indexing
         csvData = addSno(csvData);
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

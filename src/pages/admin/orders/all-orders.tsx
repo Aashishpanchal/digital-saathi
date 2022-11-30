@@ -16,6 +16,7 @@ import {
   margeRowTable,
   orderStatusReadable,
   queryToStr,
+  removeEsc,
 } from "../../../components/admin/utils";
 import { allOrdersFields } from "../../../constants";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
@@ -51,7 +52,7 @@ export default function AllOrders() {
         params: "csv",
       });
       if (res?.status === 200) {
-        let csvData = res.data.orders || [];
+        let csvData = (res.data.orders as Array<Record<string, any>>) || [];
         // indexing
         csvData = addSno(csvData);
         // for order date
@@ -96,6 +97,9 @@ export default function AllOrders() {
         );
         // add tax and net amount
         csvData = addTaxNetAmount(csvData);
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

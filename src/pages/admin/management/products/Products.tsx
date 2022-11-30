@@ -7,7 +7,11 @@ import ProductsListToolbar from "../../../../components/admin/products/products-
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { MainContainer } from "../../../../components/layout";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
-import { addSno, queryToStr } from "../../../../components/admin/utils";
+import {
+  addSno,
+  queryToStr,
+  removeEsc,
+} from "../../../../components/admin/utils";
 import { productFields } from "../../../../constants";
 import { shopProducts } from "../../../../http";
 
@@ -50,6 +54,9 @@ export default function Products() {
         let csvData = res.data || [];
         // indexing
         csvData = addSno(csvData);
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

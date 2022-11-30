@@ -239,6 +239,19 @@ export const setExtraValue = (
     [keyName]: setName,
   }));
 
+export const removeEsc = (data: Array<Record<string, any>>) =>
+  data.map((row) => {
+    const newRow: typeof row = {};
+    for (const key in row) {
+      if (Object.prototype.hasOwnProperty.call(row, key)) {
+        if (typeof row[key] === "string") {
+          newRow[key] = row[key].replace(/\t/g, "\\t").replace(/\n/g, "\\n");
+        }
+      }
+    }
+    return { ...row, ...newRow };
+  });
+
 // !Table Units End
 
 export const objectToForm = (obj: Record<string, any>) => {

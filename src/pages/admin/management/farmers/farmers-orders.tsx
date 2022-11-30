@@ -11,6 +11,7 @@ import {
   margeRowTable,
   orderStatusReadable,
   queryToStr,
+  removeEsc,
 } from "../../../../components/admin/utils";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { useDispatch } from "react-redux";
@@ -110,6 +111,9 @@ export default function FarmersOrders() {
         );
         // add tax and net amount
         csvData = addTaxNetAmount(csvData);
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

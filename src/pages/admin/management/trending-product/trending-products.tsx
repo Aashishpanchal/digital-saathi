@@ -4,7 +4,11 @@ import { useDispatch } from "react-redux";
 import TrendingProductList from "../../../../components/admin/products/trending-product/trending-products-list";
 import ProductsListToolbar from "../../../../components/admin/products/products-list-toolbar";
 import { MainContainer } from "../../../../components/layout";
-import { addSno, queryToStr } from "../../../../components/admin/utils";
+import {
+  addSno,
+  queryToStr,
+  removeEsc,
+} from "../../../../components/admin/utils";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { shopProducts } from "../../../../http";
@@ -46,6 +50,8 @@ export default function TrendingProducts() {
         // indexing
         csvData = addSno(csvData);
 
+        // remove esc
+        csvData = removeEsc(csvData);
         setCsvData(csvData, () => {
           ref.current.link.click();
           dispatch(setPageLoading(false));

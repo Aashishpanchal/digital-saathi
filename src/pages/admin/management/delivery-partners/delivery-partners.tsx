@@ -8,7 +8,7 @@ import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import DeliveryPartnerList from "../../../../components/admin/delivery-partner/delivery-partner-list";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import { deliveryPartners } from "../../../../http";
-import { addSno } from "../../../../components/admin/utils";
+import { addSno, removeEsc } from "../../../../components/admin/utils";
 import { deliveryPartnerFields } from "../../../../constants";
 
 export default function DeliveryPartner() {
@@ -35,6 +35,10 @@ export default function DeliveryPartner() {
         let csvData = res.data || [];
         // indexing
         csvData = addSno(csvData);
+
+        // remove esc
+        csvData = removeEsc(csvData);
+
         setCsvData(csvData, () => {
           ref.current.link.click();
           dispatch(setPageLoading(false));

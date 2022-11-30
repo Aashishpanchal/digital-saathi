@@ -7,7 +7,7 @@ import { setPageLoading } from "../../../../redux/slices/admin-slice";
 import FarmersListResults from "../../../../components/admin/farmers/farmers-list-results";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
-import { addSno } from "../../../../components/admin/utils";
+import { addSno, removeEsc } from "../../../../components/admin/utils";
 import { farmersFields } from "../../../../constants";
 
 export default function Farmers() {
@@ -32,6 +32,9 @@ export default function Farmers() {
         let csvData = res.data || [];
         // indexing
         csvData = addSno(csvData);
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

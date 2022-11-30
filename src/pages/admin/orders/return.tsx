@@ -12,6 +12,7 @@ import {
   margeAsList,
   margeRowTable,
   queryToStr,
+  removeEsc,
   setExtraValue,
 } from "../../../components/admin/utils";
 import OrdersListResults from "../../../components/admin/orders/orders-list-results";
@@ -144,6 +145,9 @@ export default function Return() {
           "order_status",
           getStrOrderStatus(orderStatus)
         );
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

@@ -6,7 +6,7 @@ import CommonToolbar from "../../../../components/admin/common-toolbar";
 import BrandsListResults from "../../../../components/admin/brand/brands-list-results";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
 import { setPageLoading } from "../../../../redux/slices/admin-slice";
-import { addSno } from "../../../../components/admin/utils";
+import { addSno, removeEsc } from "../../../../components/admin/utils";
 import { brands } from "../../../../http";
 import { brandsFields } from "../../../../constants";
 
@@ -41,6 +41,9 @@ export default function Brands() {
         let csvData = res.data || [];
         // indexing
         csvData = addSno(csvData);
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

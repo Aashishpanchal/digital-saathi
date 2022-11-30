@@ -15,6 +15,7 @@ import {
   margeAsList,
   margeRowTable,
   queryToStr,
+  removeEsc,
   setExtraValue,
 } from "../../../components/admin/utils";
 import useStateWithCallback from "../../../hooks/useStateWithCallback";
@@ -118,6 +119,9 @@ export default function MainOrders(props: {
           "order_status",
           getStrOrderStatus(orderStatus)
         );
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();

@@ -47,7 +47,7 @@ export default function FileUploader(props: {
 
   return (
     <ReactFileUploader
-      types={["JPEG", "PNG"]}
+      types={["JPEG", "PNG", "JPG"]}
       onTypeError={typeError}
       onSizeError={sizeError}
       // maxSize={1}
@@ -72,7 +72,7 @@ export default function FileUploader(props: {
           >
             Image size should be square (500) x (500),
             <br />
-            Support: jpeg, png
+            Support: jpeg, png, jpg
           </Typography>
         </LabelContainer>
       </ImageContainer>

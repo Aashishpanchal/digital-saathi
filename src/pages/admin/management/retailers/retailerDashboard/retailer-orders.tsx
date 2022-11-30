@@ -18,6 +18,7 @@ import {
   margeAsList,
   margeRowTable,
   queryToStr,
+  removeEsc,
   setExtraValue,
 } from "../../../../../components/admin/utils";
 import { setPageLoading } from "../../../../../redux/slices/admin-slice";
@@ -120,6 +121,9 @@ export default function RetailerOrders() {
           "order_status",
           getStrOrderStatus(orderStatus)
         );
+
+        // remove esc
+        csvData = removeEsc(csvData);
 
         setCsvData(csvData, () => {
           ref.current.link.click();
