@@ -121,8 +121,9 @@ export default function ProductPriceForm(props: {
                       p: 1,
                     },
                   }}
+                 
                   name="unit"
-                  value={values.unit}
+                  value={values.unit } 
                   onChange={handleChange as any}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}

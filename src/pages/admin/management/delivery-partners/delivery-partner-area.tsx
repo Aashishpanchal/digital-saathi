@@ -8,6 +8,9 @@ import { queryToStr } from "../../../../components/admin/utils";
 import CommonToolbar from "../../../../components/admin/common-toolbar";
 import { deliveryPartners, shopAreas, shopPartnerArea } from "../../../../http";
 import TextSelectList from "../../../../components/common/text-select-list";
+import useStateWithCallback from "../../../../hooks/useStateWithCallback";
+import { areaFields } from "../../../../constants";
+import { addSno, removeEsc } from "../../../../components/admin/utils";
 
 export default function DeliveryPartnerArea() {
   const { partner_id } = useParams();
@@ -16,6 +19,10 @@ export default function DeliveryPartnerArea() {
   const [leftSelectValue, setLeftSelectValue] = React.useState<string[]>([]);
   const [rightSelectValue, setRightSelectValue] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const { state: csvData, updateState: setCsvData } = useStateWithCallback<
+    Array<Record<string, any>>
+  >([]);
+  const ref = React.useRef<any>(null);
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -55,17 +62,17 @@ export default function DeliveryPartnerArea() {
 
   const handleChangeMultiple =
     (variant: "left" | "right") =>
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const { options } = event.target;
-      const value: string[] = [];
-      for (let i = 0, l = options.length; i < l; i += 1) {
-        if (options[i].selected) {
-          value.push(options[i].value);
+      (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const { options } = event.target;
+        const value: string[] = [];
+        for (let i = 0, l = options.length; i < l; i += 1) {
+          if (options[i].selected) {
+            value.push(options[i].value);
+          }
         }
-      }
-      if (variant === "left") setLeftSelectValue(value);
-      else if (variant === "right") setRightSelectValue(value);
-    };
+        if (variant === "left") setLeftSelectValue(value);
+        else if (variant === "right") setRightSelectValue(value);
+      };
 
   const handleLeftRight = (variant: "left" | "right") => () => {
     const leftNewValue: Record<string, any>[] = [];
@@ -135,10 +142,31 @@ export default function DeliveryPartnerArea() {
     }
   };
 
+  const exportHandle = () => {
+    try {
+      let csvData = right ? right : []
+
+      csvData = addSno(csvData)
+      csvData = removeEsc(csvData)
+      setCsvData(csvData, () => {
+        ref.current.link.click()
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <MainContainer>
       <Container>
-        <CommonToolbar title={`${partnerName} / Delivery Partner Area`} />
+        <CommonToolbar 
+        title={`${partnerName} / Delivery Partner Area`} exportProps={{
+          ref,
+          data: csvData,
+          filename: `Retailer-area-csv`,
+          onClick: exportHandle,
+          headers: areaFields
+        }} />
         <Box mt={2}>
           <Grid
             container

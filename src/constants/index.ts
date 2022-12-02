@@ -11,4 +11,5 @@ export { dataSkuFields } from "./fields/data-sku-unit-fields";
 export { dataSkuPriceFields } from "./fields/data-sku-price-fields";
 export { productFields } from "./fields/product-fields";
 export { deliveryAgentFields } from "./fields/delivery-agent-fields";
+export{areaFields} from "./fields/areas-fields"
 export { areasFields } from "./fields/master-fields";

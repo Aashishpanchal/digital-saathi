@@ -72,7 +72,6 @@ export const inputSaleDetailsFields = [
   { label: "Farmer Address", key: "" },
   { label: "Type", key: "" },
   { label: "Phone no", key: "customer_phone_no" },
-  { label: "Mobile No", key: "" },
   { label: "City", key: "" },
   { label: "State", key: "" },
   { label: "Area", key: "" },

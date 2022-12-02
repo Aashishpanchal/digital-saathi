@@ -36,10 +36,23 @@ export default function ProductPriceDialog(props: {
     initialValues: data,
     enableReinitialize: true,
     validationSchema: productPriceSchema,
+
     async onSubmit(values) {
+
+      //please update this in product validation schema and romove this line
+      if (parseInt(values.price) > parseInt(values.mrp)) {
+        return setTimeout(() => {
+          enqueueSnackbar("Product Price is greater than MRP", {
+            variant: "error",
+          });
+        }, 200);
+      }
+
       let { weight, unit, gst, ...others }: any = values;
       gst = gst ? parseFloat(gst) : 0;
       const [igst, cgst, sgst] = [`${gst}%`, `${gst / 2}%`, `${gst / 2}%`];
+
+
 
       if (priceId) {
         try {

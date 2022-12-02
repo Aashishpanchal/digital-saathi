@@ -5,7 +5,7 @@ import { FaStore, FaTractor, FaWarehouse } from "react-icons/fa";
 import { MainContainer } from "../../components/layout";
 // import SaleGraph from "../../components/dashboard/sale-graph";
 // import UsersDetails from "../../components/dashboard/users-details";
-import { farmers, retailer, warehouse } from "../../http";
+import { farmers, retailer, shopProducts } from "../../http";
 import DashboardCard from "../../components/dashboard/dashboard-card";
 import RecentOrdersList from "../../components/admin/orders/recent-orders-list";
 import { queryToStr } from "../../components/admin/utils";
@@ -27,7 +27,7 @@ export default function Home() {
   const results = useQueries({
     queries: [
       { queryKey: ["get-all-farmers"], queryFn: () => farmers("get") },
-      { queryKey: ["get-all-warehouse"], queryFn: () => warehouse("get") },
+      { queryKey: ["get-all-products"], queryFn: () => shopProducts("get") },
       { queryKey: ["get-all-retailer"], queryFn: () => retailer("get") },
     ],
   });
@@ -35,10 +35,10 @@ export default function Home() {
   const queries = React.useCallback(
     (index: number) => {
       const res = results[index].data;
-      if (index === 1)
-        return res?.status === 200
-          ? results[index].data?.data?.warehouses?.length || 0
-          : 0;
+      // if (index === 1)
+      //   return res?.status === 200
+      //     ? results[index].data?.data?.warehouses?.length || 0
+      //     : 0;
       return res?.status === 200 ? res.data?.length || 0 : 0;
     },
     [results]

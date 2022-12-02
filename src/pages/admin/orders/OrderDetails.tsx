@@ -79,7 +79,7 @@ const collectionLabel = [
             Cell: (cell: any) => <>{dayjs(cell.value).format("D-MMM-YYYY")}</>,
           },
           { label: "Payment Method", accessor: "payment_method" },
-          { label: "Amount Recieve", accessor: "amount_recieve" },
+          { label: "Amount Recieve", accessor: "amount_receive" },
           { label: "Payment To", accessor: "payment_to" },
         ];
       return orderLabel;

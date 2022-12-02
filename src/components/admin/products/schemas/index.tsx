@@ -21,7 +21,7 @@ export const productPriceSchema = Yup.object({
   gst: Yup.string().required(emptyText("product gst")),
   price: Yup.string().required(emptyText("product price")),
   package: Yup.string(),
-  weight: Yup.string(),
+  weight: Yup.string().required(emptyText("product weight")),
   dimension: Yup.string(),
   totalweight: Yup.string(),
   units_per_case: Yup.string(),
