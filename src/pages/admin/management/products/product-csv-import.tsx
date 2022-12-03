@@ -41,7 +41,7 @@ export default function ProductCsvImport() {
         { label: "package", dtype: "number" },
         { label: "units_per_case", dtype: "number" },
         { label: "dimension", dtype: "number" },
-        { label: "actualweight", dtype: "number" },
+        { label: "actualweight", dtype: "string" },
       ],
       []
     );
