@@ -30,6 +30,7 @@ export function getStrOrderStatus(status: string) {
     "11,13,15": "Cancel return",
     "2,3": "In Process",
     "9,10": "Rejected",
+    "7,9,10" "Cancelled"
   };
   // const key = status instanceof Array ? status.join(",") : status;
   return value[status];
