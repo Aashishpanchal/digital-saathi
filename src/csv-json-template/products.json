@@ -7,6 +7,14 @@
     "category_id": 72,
     "subcategory_id": 73,
     "brand_id": 247,
-    "hsn_code": 2911
+    "hsn_code": 2911,
+    "mrp": "700",
+    "gst": "9%",
+    "price": "670",
+    "weight": "1litre",
+    "package": "2",
+    "units_per_case": 10,
+    "dimension": "0",
+    "actualweight": "900 gm"
   }
 ]

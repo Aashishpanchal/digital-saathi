@@ -10,6 +10,7 @@ import PreviewTable from "../../../../components/table/preview-table";
 import CheckDataCell from "../../../../components/table/cell/CheckDataCell";
 import { shopProducts } from "../../../../http";
 import { useNavigate } from "react-router-dom";
+import { dtypeValidation } from "../../../../components/admin/utils";
 
 export default function ProductCsvImport() {
   const ref = React.useRef<any>(null);
@@ -18,19 +19,32 @@ export default function ProductCsvImport() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
-  const validateList = React.useMemo(
-    () => [
-      "sku_name",
-      "sku_name_kannada",
-      "description",
-      "sku_code",
-      "category_id",
-      "subcategory_id",
-      "brand_id",
-      "hsn_code",
-    ],
-    []
-  );
+  const validateList =
+    React.useMemo<
+    Array<{
+      label: string;
+      dtype: "string" | "number";
+    }>>(
+      () => [
+        { label: "sku_name", dtype: "string" },
+        { label: "sku_name_kannada", dtype: "string" },
+        { label: "description", dtype: "string" },
+        { label: "sku_code", dtype: "string" },
+        { label: "category_id", dtype: "number" },
+        { label: "subcategory_id", dtype: "number" },
+        { label: "brand_id", dtype: "number" },
+        { label: "hsn_code", dtype: "number" },
+        { label: "mrp", dtype: "number" },
+        { label: "price", dtype: "number" },
+        { label: "gst", dtype: "string" },
+        { label: "weight", dtype: "number" },
+        { label: "package", dtype: "number" },
+        { label: "units_per_case", dtype: "number" },
+        { label: "dimension", dtype: "number" },
+        { label: "actualweight", dtype: "number" },
+      ],
+      []
+    );
 
   const columns = React.useMemo(
     () => [
@@ -43,47 +57,82 @@ export default function ProductCsvImport() {
       {
         Header: "SKU Name",
         accessor: "sku_name",
-        Cell: (cell: any) => <CheckDataCell cell={cell} />,
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="string" />,
       },
       {
         Header: "SKU Name Kannada",
         accessor: "sku_name_kannada",
-        Cell: (cell: any) => <CheckDataCell cell={cell} />,
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="string" />,
       },
       {
         Header: "Description",
         accessor: "description",
-        Cell: (cell: any) => <CheckDataCell cell={cell} />,
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="string" />,
       },
       {
         Header: "SKU Code",
         accessor: "sku_code",
-        width: "6%",
-        Cell: (cell: any) => <CheckDataCell cell={cell} />,
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="string" />,
       },
       {
         Header: "Category",
         accessor: "category_id",
-        width: "6%",
-        Cell: (cell: any) => <CheckDataCell cell={cell} />,
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
       },
       {
         Header: "Sub Category",
         accessor: "subcategory_id",
-        width: "6%",
-        Cell: (cell: any) => <CheckDataCell cell={cell} />,
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
       },
       {
         Header: "Brand",
         accessor: "brand_id",
-        width: "6%",
-        Cell: (cell: any) => <CheckDataCell cell={cell} />,
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
       },
       {
         Header: "Hsn Code",
         accessor: "hsn_code",
-        width: "6%",
-        Cell: (cell: any) => <CheckDataCell cell={cell} />,
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
+      },
+      {
+        Header: "MRP",
+        accessor: "mrp",
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
+      },
+      {
+        Header: "Price",
+        accessor: "price",
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
+      },
+      {
+        Header: "Gst",
+        accessor: "gst",
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="string" />,
+      },
+      {
+        Header: "Weight",
+        accessor: "weight",
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="string" />,
+      },
+      {
+        Header: "Package",
+        accessor: "package",
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
+      },
+      {
+        Header: "Units per case",
+        accessor: "units_per_case",
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
+      },
+      {
+        Header: "Dimension",
+        accessor: "dimension",
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="number" />,
+      },
+      {
+        Header: "Actual Weight",
+        accessor: "actualweight",
+        Cell: (cell: any) => <CheckDataCell cell={cell} dtype="string" />,
       },
     ],
     []
@@ -110,22 +159,17 @@ export default function ProductCsvImport() {
     let show = false;
     for (let index = 0; index < data.length; index++) {
       const row = data[index];
-      let col = "";
       for (const column of validateList) {
-        if (
-          typeof row[column] === "undefined" ||
-          row[column] === null ||
-          row[column] === ""
-        ) {
-          col += column + ", ";
-          show = true;
-        }
+        const { error } = dtypeValidation(
+          row[column.label],
+          column.dtype
+        );
+        show = error;
       }
       if (show) {
-        enqueueSnackbar(
-          `${col} not allowed to be empty, please check S No. ${index + 1}`,
-          { variant: "error" }
-        );
+        enqueueSnackbar(`please check S No. ${index + 1}`, {
+          variant: "error",
+        });
         break;
       }
     }

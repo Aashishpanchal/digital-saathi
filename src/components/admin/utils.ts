@@ -282,3 +282,21 @@ export function checkCancelOrderStatus(status: string) {
   }
   return false;
 }
+
+export function dtypeValidation(value: any, dtype: "number" | "string") {
+  if (dtype === "number") {
+    if (typeof value === "number") {
+      if (value < 0)
+        return { error: true, message: "value should be positive" };
+    } else {
+      return { error: true, message: "data required" };
+    }
+  } else if (dtype === "string") {
+    if (typeof value === "string") {
+      if (!value) return { error: true, message: "not allowed to be empty" };
+    } else {
+      return { error: true, message: "data required" };
+    }
+  }
+  return { error: false, message: "" };
+}

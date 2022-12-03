@@ -46,3 +46,15 @@ export const retailerSKUPricingFields = [
   { label: "units_per_case", key: "units_per_case" },
   { label: "package", key: "package" },
 ];
+
+export const retailerAreaFields = [
+  { label: "S.No", key: "s_no" },
+  { label: "area_id", key: "area_id" },
+  { label: "area", key: "area" },
+  { label: "city", key: "city" },
+  { label: "state", key: "state" },
+  { label: "country", key: "country" },
+  { label: "pincode", key: "pincode" },
+  { label: "Company Name", key: "company_name" },
+  { label: "Retailer Name", key: "retailer_name" },
+];

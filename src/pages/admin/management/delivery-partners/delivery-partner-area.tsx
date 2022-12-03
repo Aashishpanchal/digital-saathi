@@ -9,7 +9,7 @@ import CommonToolbar from "../../../../components/admin/common-toolbar";
 import { deliveryPartners, shopAreas, shopPartnerArea } from "../../../../http";
 import TextSelectList from "../../../../components/common/text-select-list";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
-import { areaFields } from "../../../../constants";
+import { partnerAreaFields } from "../../../../constants";
 import { addSno, removeEsc } from "../../../../components/admin/utils";
 
 export default function DeliveryPartnerArea() {
@@ -163,9 +163,9 @@ export default function DeliveryPartnerArea() {
         title={`${partnerName} / Delivery Partner Area`} exportProps={{
           ref,
           data: csvData,
-          filename: `Retailer-area-csv`,
+          filename: `partner-area-csv`,
           onClick: exportHandle,
-          headers: areaFields
+          headers: partnerAreaFields
         }} />
         <Box mt={2}>
           <Grid

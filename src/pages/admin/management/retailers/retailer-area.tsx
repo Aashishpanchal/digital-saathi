@@ -9,7 +9,7 @@ import CommonToolbar from "../../../../components/admin/common-toolbar";
 import { retailer, shopAreas, shopRetailerArea } from "../../../../http";
 import TextSelectList from "../../../../components/common/text-select-list";
 import useStateWithCallback from "../../../../hooks/useStateWithCallback";
-import { areaFields } from "../../../../constants";
+import { retailerAreaFields } from "../../../../constants";
 import { addSno, removeEsc } from "../../../../components/admin/utils";
 
 export default function RetailerArea() {
@@ -165,7 +165,7 @@ export default function RetailerArea() {
             data: csvData,
             filename: `Retailer-area-csv`,
             onClick: exportHandle,
-            headers: areaFields
+            headers: retailerAreaFields
           }}
         />
         <Box mt={2}>

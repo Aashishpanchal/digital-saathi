@@ -48,3 +48,15 @@ export const deliveryPartnerFields = [
     key: "subzone_id",
   },
 ];
+
+export const partnerAreaFields = [
+  { label: "S.No", key: "s_no" },
+  { label: "area_id", key: "area_id" },
+  { label: "area", key: "area" },
+  { label: "city", key: "city" },
+  { label: "state", key: "state" },
+  { label: "country", key: "country" },
+  { label: "pincode", key: "pincode" },
+  { label: "Partner Name", key: "partner_name" },
+  { label: "phone no", key: "phone_no" },
+];

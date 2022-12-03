@@ -33,26 +33,26 @@ export const productFields = [
   },
   {
     label: "MRP",
-    key: "",
+    key: "mrp",
   },
   {
     label: "Price",
-    key: "",
+    key: "price",
   },
   {
     label: "units_per_case",
-    key: "",
+    key: "units_per_case",
   },
   {
     label: "weight",
-    key: "",
+    key: "weight",
   },
   {
     label: "dimension",
-    key: "",
+    key: "dimension",
   },
   {
     label: "packages",
-    key: "",
+    key: "package_name",
   },
 ];
