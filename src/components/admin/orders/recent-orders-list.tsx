@@ -104,7 +104,7 @@ export default function RecentOrdersList(props: {
       {
         Header: "Delivery Address",
         accessor:
-          variant === "retailer" ? "retailer_address" : "partner_address",
+          variant === "retailer" ? "partner_address" : "partner_address",
         Cell: (cell: any) => (
           <TextCenter fontSize="small">{cell.value}</TextCenter>
         ),
