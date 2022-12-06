@@ -38,9 +38,12 @@ export const baseFunc = (endURL: string) => {
         options?.data instanceof FormData
           ? "multipart/form-data"
           : "application/json",
+        Authorization: process.env.REACT_APP_AUTHORIZATION_TOKEN
     };
-    if (method.toLowerCase() === "get") {
-      return api.get(url);
+    if (method.toLowerCase() === "get" ) {
+      return api.get(url, {headers:{
+        Authorization:process.env.REACT_APP_AUTHORIZATION_TOKEN
+      }});
     } else if (method.toLowerCase() === "post") {
       return api.post(url, options?.data, { headers: header });
     } else if (method.toLowerCase() === "put") {
