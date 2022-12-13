@@ -7,7 +7,7 @@ import {
   secretAccessKey,
   region,
   bucketName,
-  baseUrl,
+  baseUrl4,
   imgJwt,
   baseUrlImg,
 } from "../http/config";
@@ -29,11 +29,11 @@ function useBucket(subDirName?: string) {
     formData.append("image", file);
     try {
       const res = await axios.post<{ status: string; image: string }>(
-        `${baseUrl}shop_upload`,
+        `${baseUrl4}shop_upload`,
         formData,
         {
           headers: {
-            token: imgJwt,
+            Authorization: imgJwt,
           },
         }
       );

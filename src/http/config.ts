@@ -1,4 +1,5 @@
 export const baseUrl = process.env.REACT_APP_BASE_URL || "";
+export const baseUrl4=process.env.REACT_APP_BASE_URL_V4 ||"";
 // export const auth0BaseUrl = `https://dev-pwaq157w.us.auth0.com/`;
 // export const baseUrlImg =
 //   "https://api-dev.dev.dev-cglcloud.com/api/remoteassistance/digitalsaathi/v4";
